@@ -28,6 +28,7 @@ from crossmatch import AdvancedQuery, CrossmatchService, QueryValidator
 from datasets import DatasetEngine, MetadataStore, enqueue_dataset, process_dataset_async, submit_to_redis
 from models import CatalogRegistry, Settings
 from providers import CacheManager, SesameResolver, provider_map
+from astronomy import ArchiveError, object_summary, summarize_system
 
 # ---------------------------------------------------------------------------
 # Logging and Prometheus Metrics
@@ -349,6 +350,31 @@ class SavedQueryRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     name: str = Field(..., min_length=1, max_length=100)
     query: SearchRequest
+
+
+class SystemSummaryRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    name: str = Field(..., min_length=1, max_length=300)
+
+
+@app.post("/api/v1/summaries/system")
+async def system_summary_endpoint(req: SystemSummaryRequest):
+    try:
+        return await summarize_system(app.state.client, req.name)
+    except LookupError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    except ArchiveError as exc:
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
+
+
+@app.post("/api/v1/summaries/object")
+async def object_summary_endpoint(req: SearchRequest):
+    try:
+        return object_summary(await _search(req))
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
 
 
 # ---------------------------------------------------------------------------

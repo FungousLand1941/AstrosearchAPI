@@ -1,5 +1,18 @@
 # AstroSearch
 
+## Astronomical Summarizer and MIT CSAIL Mantis
+
+Object and extrasolar-system summaries, complete Exoplanet Archive ingestion, SIMBAD host identity cross-references, typed Mantis map exports, and recurring refresh support are documented in [ASTRONOMY.md](ASTRONOMY.md).
+
+```sh
+pip install -e '.[dev]'
+python -m astronomy_pipeline summarize TRAPPIST-1
+python -m astronomy_pipeline sync
+python -m astronomy_pipeline publish
+```
+
+Mantis publication requires a valid local `mantis setup` connection. The summary and data pipeline work independently of Mantis authentication.
+
 **AstroSearch** is a high-performance Python backend system for cross-matching sky coordinates and astronomical object identities across major public astronomical survey archives (Gaia, SIMBAD, NED, 2MASS, AllWISE, Pan-STARRS, SDSS, FIRST, NVSS, Chandra, XMM, etc.), applying astrophysical filters, and generating streaming datasets in JSON, CSV, Parquet, and FITS formats.
 
 The entire codebase is organized into **6 production-grade monolithic scripts**, providing complete architectural clarity, maximum execution speed, and self-contained operation.

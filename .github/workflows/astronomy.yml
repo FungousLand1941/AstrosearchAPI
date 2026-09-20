@@ -1,0 +1,52 @@
+name: Astronomy verification and snapshots
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 6 * * *'
+permissions:
+  contents: read
+concurrency:
+  group: astronomy-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -e '.[dev]'
+      - run: python -m ruff check astronomy.py astronomy_pipeline.py tests
+      - run: python -m pytest tests -q
+      - run: python main.py verify
+  snapshot:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install .
+      - uses: actions/cache/restore@v4
+        with:
+          path: astronomy-data
+          key: astronomy-snapshot-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: astronomy-snapshot-
+      - run: python -m astronomy_pipeline sync --state-dir astronomy-data
+      - uses: actions/upload-artifact@v4
+        with:
+          name: astronomy-snapshot-${{ github.run_id }}
+          path: astronomy-data
+          retention-days: 30
+      - uses: actions/cache/save@v4
+        with:
+          path: astronomy-data
+          key: astronomy-snapshot-${{ github.run_id }}-${{ github.run_attempt }}
