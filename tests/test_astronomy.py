@@ -222,6 +222,20 @@ def test_publication_reuses_saved_space_and_marks_only_submitted(tmp_path, monke
     assert "--private" not in calls[-1]
 
 
+def test_publication_can_use_valid_rest_when_mcp_is_unavailable(tmp_path, monkeypatch):
+    import json
+    import subprocess
+    calls = []
+    def invoke(args, **kwargs):
+        calls.append(args)
+        body = json.dumps({"space_id": "6aa1d8cf-9d4c-497b-8bed-a6337b11f4a2", "map_id": "test-map"})
+        return subprocess.CompletedProcess(args, 1 if args[0] == "use" else 0, stdout=body)
+    monkeypatch.setattr("astronomy_pipeline.run_mantis", invoke)
+    commit_snapshot(tmp_path, [planet()], no_match(), [])
+    assert publish(tmp_path)["status"] == "submitted"
+    assert [c[0] for c in calls] == ["use", "spaces", "create"]
+
+
 def test_object_summary_preserves_failures_and_candidates():
     result = object_summary({"target": {"ra": 1, "dec": 2}, "counterparts": {"optical": [{"source": "test"}]},
                              "catalogs_queried": 2, "failures": [{"catalog": "simbad"}]})

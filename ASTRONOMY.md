@@ -65,7 +65,9 @@ python -m astronomy_pipeline publish --state-dir astronomy-data --dry-run
 python -m astronomy_pipeline publish --state-dir astronomy-data
 ```
 
-The first publication creates a private space called **Astronomical Catalogs**. Subsequent changed snapshots are new versioned maps in that same space. To use an existing destination, pass its real UUID with `--space-id`. The publisher does not change the current Mantis space/thread selection.
+The first publication creates a space called **Astronomical Catalogs** using the CLI's `--private` option. The current server reports this visibility as `unlisted`; consult Mantis sharing controls before treating a link as restricted access. Subsequent changed snapshots are new versioned maps in that same space. To use an existing destination, pass its real UUID with `--space-id`. The publisher does not change the current Mantis space/thread selection.
+
+The publisher checks MCP context first. If that interface is unavailable but a REST space-list request authenticates successfully, it proceeds through the official REST-backed map creation command. A transient MCP rejection therefore does not require replacing a valid API key.
 
 The CLI submits asynchronous map creation. `submitted` means Mantis accepted the job, not that embedding is finished. Open the returned space URL and inspect the map once it finishes. A submitted snapshot is not uploaded again. A timeout or ambiguous response leaves a pending checkpoint and blocks automatic retries: inspect Mantis and reconcile `publications.json` before retrying, so a lost response cannot create duplicate maps. Save the existing map identifiers when the upload succeeded; remove a pending entry only after confirming that no corresponding map exists.
 
