@@ -24,7 +24,7 @@ from astropy.io.votable import parse_single_table
 NEA_TAP = "https://exoplanetarchive.ipac.caltech.edu/TAP/sync"
 SIMBAD_TAP = "https://simbad.cds.unistra.fr/simbad/sim-tap/sync"
 NEA_DOCS = "https://exoplanetarchive.ipac.caltech.edu/docs/API_PS_columns.html"
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 MEASURES = {
     "pl_orbper": ("orbital period", "days"),
     "pl_orbsmax": ("semi-major axis", "AU"),

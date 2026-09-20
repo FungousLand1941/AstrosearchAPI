@@ -120,7 +120,7 @@ async def test_identity_ambiguity_and_multiple_planets():
     edges = relationships(summary)
     assert sum(e["relation"] == "orbits_host" for e in edges) == 3
     assert sum(e["relation"] == "ambiguous_candidate" for e in edges) == 2
-    assert len({r["id"] for r in map_rows(summary)}) == 7
+    assert len({r["catalog_id"] for r in map_rows(summary)}) == 7
 
 
 @pytest.mark.asyncio
@@ -158,6 +158,8 @@ def test_snapshots_idempotent_updates_deletes_and_csv(tmp_path):
     with (tmp_path / "snapshots" / second["fingerprint"] / "mantis.csv").open(encoding="utf-8") as handle:
         rows = list(csv.DictReader(handle))
     assert len(rows) == 2
+    assert "id" not in rows[0]  # Mantis reserves its own internal point identifier.
+    assert len({r["catalog_id"] for r in rows}) == 2
     assert {r["kind"] for r in rows} == {"planet", "host_system"}
     with pytest.raises(ArchiveError):
         commit_snapshot(tmp_path, [], {}, [])

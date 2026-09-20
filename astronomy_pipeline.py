@@ -34,7 +34,7 @@ from astronomy import (
     utcnow,
 )
 
-MAP_FIELDS = ["id", "title", "kind", "host_id", "summary", "source", "source_url", "match_status",
+MAP_FIELDS = ["catalog_id", "title", "kind", "host_id", "summary", "source", "source_url", "match_status",
               "ra_deg", "dec_deg", "planet_count", "discovery_method", "period_days", "radius_earth",
               "mass_earth", "distance_pc", "source_updated_at"]
 
@@ -74,14 +74,14 @@ def map_rows(summary: dict[str, Any]) -> list[dict[str, Any]]:
         members = system["planets"]
         first = members[0]["record"]
         crossref = system["simbad"]
-        rows.append({"id": system["id"], "title": system["name"], "kind": "host_system",
+        rows.append({"catalog_id": system["id"], "title": system["name"], "kind": "host_system",
                      "host_id": system["id"], "summary": system["text"], "source": "NASA Exoplanet Archive + SIMBAD",
                      "source_url": "https://exoplanetarchive.ipac.caltech.edu/overview/" + quote(system["name"], safe=""),
                      "match_status": crossref["status"], "planet_count": len(members),
                      "ra_deg": first.get("ra"), "dec_deg": first.get("dec"), "distance_pc": first.get("sy_dist")})
         for p in members:
             raw = p["record"]
-            rows.append({"id": p["id"], "title": p["name"], "kind": "planet", "host_id": system["id"],
+            rows.append({"catalog_id": p["id"], "title": p["name"], "kind": "planet", "host_id": system["id"],
                          "summary": p["text"] + " " + " ".join(p["warnings"]), "source": "NASA Exoplanet Archive",
                          "source_url": p["source_url"], "source_updated_at": p["source_updated_at"],
                          "match_status": "host_" + crossref["status"], "ra_deg": raw.get("ra"), "dec_deg": raw.get("dec"),
@@ -93,13 +93,13 @@ def map_rows(summary: dict[str, Any]) -> list[dict[str, Any]]:
             if sid in seen_simbad:
                 continue
             seen_simbad.add(sid)
-            rows.append({"id": sid, "title": star["main_id"], "kind": "simbad_object", "source": "SIMBAD",
+            rows.append({"catalog_id": sid, "title": star["main_id"], "kind": "simbad_object", "source": "SIMBAD",
                          "summary": f"{star['main_id']}. SIMBAD type {star.get('otype') or 'unknown'}. "
                                     f"Spectral type {star.get('sp_type') or 'unknown'}. "
                                     "Identifier cross-reference candidate for exoplanet host records; see relationships.json.",
                          "source_url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=" + quote(star["main_id"], safe=""),
                          "match_status": "candidate", "ra_deg": star.get("ra"), "dec_deg": star.get("dec")})
-    return sorted(rows, key=lambda r: r["id"])
+    return sorted(rows, key=lambda r: r["catalog_id"])
 
 
 def relationships(summary: dict[str, Any]) -> list[dict[str, Any]]:
@@ -177,7 +177,7 @@ def mantis_command(csv_path: Path, fingerprint: str, *, space_id: str | None = N
     else:
         command.extend(["--space-name", space_name, "--private"])
     command.extend(["--map-name", f"Exoplanets and SIMBAD {fingerprint[:12]}", "--title-column", "title",
-                    "--semantic-column", "summary", "--categoric-column", "id,kind,host_id,source,match_status,discovery_method",
+                    "--semantic-column", "summary", "--categoric-column", "catalog_id,kind,host_id,source,match_status,discovery_method",
                     "--numeric-column", "ra_deg,dec_deg,planet_count,period_days,radius_earth,mass_earth,distance_pc",
                     "--date-column", "source_updated_at", "--links-column", "source_url", "--no-activate"])
     return command
