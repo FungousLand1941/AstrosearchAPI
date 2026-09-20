@@ -218,6 +218,11 @@ def test_publication_reuses_saved_space_and_marks_only_submitted(tmp_path, monke
     assert publish(tmp_path)["status"] == "submitted"
     assert publish(tmp_path)["status"] == "submitted"
     assert len(calls) == 2
+    checkpoint = load_json(tmp_path / "publications.json")
+    next(iter(checkpoint.values()))["status"] = "complete"
+    (tmp_path / "publications.json").write_text(json.dumps(checkpoint), encoding="utf-8")
+    assert publish(tmp_path)["status"] == "complete"
+    assert len(calls) == 2
     commit_snapshot(tmp_path, [planet(pl_orbper=9)], no_match(), [])
     assert publish(tmp_path)["status"] == "submitted"
     assert "--space-id" in calls[-1] and sid in calls[-1]

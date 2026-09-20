@@ -211,7 +211,7 @@ def publish(root: Path, *, space_id: str | None = None, space_name: str = "Astro
         key = target + ":" + fingerprint
         if key in publications:
             saved = publications[key]
-            if saved["status"] != "submitted":
+            if saved["status"] not in {"submitted", "complete"}:
                 raise RuntimeError("Previous publication has an uncertain outcome. Inspect Mantis before reconciling publications.json; automatic retry could duplicate a map")
             return saved
         context = run_mantis(["use", "get_space_context"], timeout=60)
