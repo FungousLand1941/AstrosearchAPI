@@ -3,9 +3,11 @@ import json
 
 import numpy as np
 import pytest
+from astropy.io import fits
 
 from representations import VECTOR_SIZE, RepresentationError, cross_reference_observation, mantis_signal_row, represent_signal
 from signal_pipeline import commit_signal_batch
+from tess_adapter import read_tess_light_curve
 
 
 def observation(**changes):
@@ -88,3 +90,39 @@ def test_mantis_row_and_atomic_idempotent_batch(tmp_path):
     conflict = observation(values=(np.linspace(0, 1, 64) ** 2).tolist())
     with pytest.raises(ValueError, match="conflicting duplicate"):
         commit_signal_batch(tmp_path, [item, conflict], [known])
+
+
+def test_tess_fits_adapter_preserves_quality_and_provenance(tmp_path):
+    columns = [
+        fits.Column(name="TIME", format="D", unit="d", array=np.arange(16, dtype=float)),
+        fits.Column(name="SAP_FLUX", format="E", unit="electron/s", array=np.linspace(100, 102, 16)),
+        fits.Column(name="SAP_FLUX_ERR", format="E", unit="electron/s", array=np.ones(16)),
+        fits.Column(name="PDCSAP_FLUX", format="E", unit="electron/s", array=np.linspace(1, 2, 16)),
+        fits.Column(name="PDCSAP_FLUX_ERR", format="E", unit="electron/s", array=np.full(16, 0.1)),
+        fits.Column(name="QUALITY", format="J", array=np.asarray([0] * 15 + [8])),
+    ]
+    primary = fits.PrimaryHDU()
+    primary.header.update({"TICID": 42, "SECTOR": 7, "RA_OBJ": 10.0, "DEC_OBJ": -20.0, "PROCVER": "test"})
+    path = tmp_path / "tess-test_lc.fits"
+    fits.HDUList([primary, fits.BinTableHDU.from_columns(columns)]).writeto(path)
+    result = read_tess_light_curve(path, source_url="https://mast.example/product")
+    assert result["quality"][-1] == 8
+    assert result["provenance"]["value_kind"] == "PDCSAP_FLUX"
+    assert result["observation_id"] == "tess-sector-7-tic-42-pdcsap_flux"
+    assert represent_signal(result).sample_count == 15
+
+
+def test_tess_fits_adapter_serializes_missing_samples_as_null(tmp_path):
+    columns = [
+        fits.Column(name="TIME", format="D", array=np.arange(8, dtype=float)),
+        fits.Column(name="PDCSAP_FLUX", format="E", array=np.asarray([1, 2, np.nan, 4, 5, 6, 7, 8])),
+        fits.Column(name="PDCSAP_FLUX_ERR", format="E", array=np.full(8, 0.1)),
+        fits.Column(name="QUALITY", format="J", array=np.zeros(8, dtype=int)),
+    ]
+    primary = fits.PrimaryHDU()
+    primary.header.update({"TICID": 1, "SECTOR": 1, "RA_OBJ": 1.0, "DEC_OBJ": 2.0})
+    path = tmp_path / "missing_lc.fits"
+    fits.HDUList([primary, fits.BinTableHDU.from_columns(columns)]).writeto(path)
+    result = read_tess_light_curve(path)
+    assert result["values"][2] is None
+    json.dumps(result, allow_nan=False)

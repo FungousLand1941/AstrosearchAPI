@@ -35,7 +35,8 @@ AstroSearch/
 ├── astronomy.py      # Evidence-based summaries, Exoplanet Archive and SIMBAD identity matching
 ├── astronomy_pipeline.py # Atomic snapshots, Mantis exports, publication and refresh CLI
 ├── representations.py # Light-curve/spectrum vectors and evidence-bounded novelty triage
-└── signal_pipeline.py # Immutable telescope deliveries and Mantis signal exports
+├── signal_pipeline.py # Immutable telescope deliveries and Mantis signal exports
+└── tess_adapter.py    # TESS SPOC FITS to canonical signal observations
 ```
 
 1. **[models.py](models.py)**: Dataclasses (`Target`, `CatalogSource`, `UnifiedRecord`), Astropy spherical coordinate normalization, field normalizers mapping 30+ column aliases, multi-format response parsers (VOTable, IPAC ASCII, CSV, JSON), runtime settings, and the complete embedded 19-catalog registry.

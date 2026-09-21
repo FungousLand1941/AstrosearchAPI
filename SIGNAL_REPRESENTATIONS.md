@@ -78,6 +78,8 @@ Every reference vector must include its `modality` and `representation_version`.
 
 The adapter, rather than the representation function, owns mission-specific decisions. For TESS it must preserve the sector and distinguish SAP from PDCSAP. For NEOWISE it must preserve W1/W2, upper limits, `cc_flags`, SNR, reduced chi-squared, frame identifiers, and the observation epoch. Spectra must preserve wavelength frame, flux convention, spectral resolution, calibration level, redshift/rest-frame treatment, and masks.
 
+`tess_adapter.py` implements the first mission adapter for SPOC light-curve FITS files. It supports SAP and PDCSAP explicitly and preserves the full quality array, uncertainty array, sector, detector, pipeline version, units, archive URL, and original product name.
+
 ## Cross-reference states
 
 | Status | Meaning | Next action |
