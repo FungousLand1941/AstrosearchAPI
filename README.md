@@ -6,6 +6,8 @@ Object and extrasolar-system summaries, complete Exoplanet Archive ingestion, SI
 
 Time-series and spectral ingestion, versioned signal vectors, Mantis similarity maps, and scientifically bounded novelty triage are documented in [SIGNAL_REPRESENTATIONS.md](SIGNAL_REPRESENTATIONS.md).
 
+The `mantis-extension/astrosearch-observatory` package adds an organized Mantis mission-control dashboard for the catalog, Gaia, sky-coordinate, and TESS research layers.
+
 ```sh
 pip install -e '.[dev]'
 python -m astronomy_pipeline summarize TRAPPIST-1

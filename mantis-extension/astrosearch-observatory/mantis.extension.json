@@ -1,0 +1,21 @@
+{
+  "manifestVersion": 1,
+  "id": "astrosearch.observatory",
+  "name": "AstroSearch Observatory",
+  "version": "1.0.1",
+  "apiVersion": "1.0.0",
+  "description": "A polished mission-control dashboard for the AstroSearch catalog, Gaia Mega Atlas, and TESS signal maps.",
+  "publisher": "AstroSearchAPI",
+  "permissions": ["maps:read", "selection:read"],
+  "contributes": {
+    "panels": [
+      {
+        "id": "observatory",
+        "title": "AstroSearch Observatory",
+        "description": "Navigate datasets, review candidates, and understand the astronomy space.",
+        "entry": "dist/panel.js",
+        "styles": ["dist/styles.css"]
+      }
+    ]
+  }
+}

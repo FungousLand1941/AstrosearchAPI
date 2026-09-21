@@ -4,6 +4,12 @@ For continuously updated telescope light curves and spectra, see [SIGNAL_REPRESE
 
 This extension adds catalog-grounded object and extrasolar-system summaries, a full NASA Exoplanet Archive snapshot, SIMBAD host cross-references, typed Mantis imports, and refresh workflows. It uses **MIT CSAIL Mantis**, at https://mantis.csail.mit.edu. No language-model API key is required.
 
+## AstroSearch Observatory dashboard
+
+The repository includes a packaged Mantis dashboard extension under `mantis-extension/astrosearch-observatory`. It provides a polished entry point for the 50,000-record Mega Atlas, semantic catalog, ICRS sky atlas, and TESS signal map. The dashboard exposes the curated Gaia review queues and scientific views while keeping the interpretation boundary explicit: proximity, variability, and representation similarity identify candidates for human review; they do not establish discovery.
+
+Package that directory as a `.mantisx` ZIP with `mantis.extension.json` at the archive root, then install it in a space with the Mantis extension manager or CLI. The extension requests only `maps:read` and `selection:read`; it has no backend, network access, or data-write permission.
+
 ## Install and summarize
 
 Use Python 3.12 or later in a virtual environment:
