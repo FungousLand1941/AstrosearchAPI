@@ -1,5 +1,7 @@
 # Astronomical summaries and MIT CSAIL Mantis
 
+For continuously updated telescope light curves and spectra, see [SIGNAL_REPRESENTATIONS.md](SIGNAL_REPRESENTATIONS.md). That pipeline preserves arrays, uncertainty, quality flags, and provenance; the catalog pipeline in this document continues to handle known-object records.
+
 This extension adds catalog-grounded object and extrasolar-system summaries, a full NASA Exoplanet Archive snapshot, SIMBAD host cross-references, typed Mantis imports, and refresh workflows. It uses **MIT CSAIL Mantis**, at https://mantis.csail.mit.edu. No language-model API key is required.
 
 ## Install and summarize

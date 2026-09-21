@@ -49,3 +49,20 @@ def test_object_summary_route(client, monkeypatch):
 def test_summaries_use_existing_auth(client, monkeypatch):
     monkeypatch.setenv("API_KEYS", "offline-test-key")
     assert client.post("/api/v1/summaries/system", json={"name": "Example"}).status_code == 401
+
+
+def test_signal_cross_reference_route(client):
+    axis = list(range(16))
+    payload = {"observation": {"observation_id": "obs-1", "modality": "light_curve", "ra_deg": 1, "dec_deg": 2,
+                               "axis": axis, "values": [1 + (i % 3) * 0.1 for i in axis], "quality": [0] * 16},
+               "references": []}
+    response = client.post("/api/v1/signals/cross-reference", json=payload)
+    assert response.status_code == 200
+    assert response.json()["status"] == "insufficient_reference_coverage"
+    assert response.json()["discovery_claim"] is False
+
+
+def test_signal_route_rejects_unusable_data(client):
+    response = client.post("/api/v1/signals/cross-reference", json={"observation": {"observation_id": "bad",
+                           "modality": "light_curve", "ra_deg": 1, "dec_deg": 2, "axis": [1], "values": [1]}})
+    assert response.status_code == 422

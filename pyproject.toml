@@ -46,9 +46,10 @@ worker = [
 [project.scripts]
 astrosearch = "main:main"
 astrosearch-astronomy = "astronomy_pipeline:main"
+astrosearch-signals = "signal_pipeline:main"
 
 [tool.setuptools]
-py-modules = ["models", "providers", "crossmatch", "datasets", "api", "main", "astronomy", "astronomy_pipeline"]
+py-modules = ["models", "providers", "crossmatch", "datasets", "api", "main", "astronomy", "astronomy_pipeline", "representations", "signal_pipeline"]
 
 [tool.ruff]
 line-length = 140

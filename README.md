@@ -4,11 +4,14 @@
 
 Object and extrasolar-system summaries, complete Exoplanet Archive ingestion, SIMBAD host identity cross-references, typed Mantis map exports, and recurring refresh support are documented in [ASTRONOMY.md](ASTRONOMY.md).
 
+Time-series and spectral ingestion, versioned signal vectors, Mantis similarity maps, and scientifically bounded novelty triage are documented in [SIGNAL_REPRESENTATIONS.md](SIGNAL_REPRESENTATIONS.md).
+
 ```sh
 pip install -e '.[dev]'
 python -m astronomy_pipeline summarize TRAPPIST-1
 python -m astronomy_pipeline sync
 python -m astronomy_pipeline publish
+python -m signal_pipeline telescope-delivery.jsonl --references known-signal-references.json
 ```
 
 Mantis publication requires a valid local `mantis setup` connection. The summary and data pipeline work independently of Mantis authentication.
@@ -30,7 +33,9 @@ AstroSearch/
 ├── api.py            # 5. Production FastAPI REST Service (Auth, Quotas, Metrics, 15 Endpoints)
 ├── main.py           # 6. Master Programmatic Facade, Unified CLI & Built-in Verification
 ├── astronomy.py      # Evidence-based summaries, Exoplanet Archive and SIMBAD identity matching
-└── astronomy_pipeline.py # Atomic snapshots, Mantis exports, publication and refresh CLI
+├── astronomy_pipeline.py # Atomic snapshots, Mantis exports, publication and refresh CLI
+├── representations.py # Light-curve/spectrum vectors and evidence-bounded novelty triage
+└── signal_pipeline.py # Immutable telescope deliveries and Mantis signal exports
 ```
 
 1. **[models.py](models.py)**: Dataclasses (`Target`, `CatalogSource`, `UnifiedRecord`), Astropy spherical coordinate normalization, field normalizers mapping 30+ column aliases, multi-format response parsers (VOTable, IPAC ASCII, CSV, JSON), runtime settings, and the complete embedded 19-catalog registry.

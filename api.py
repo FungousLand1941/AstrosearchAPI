@@ -24,11 +24,12 @@ from fastapi.responses import FileResponse, JSONResponse, Response, StreamingRes
 from prometheus_client import CONTENT_TYPE_LATEST, Counter, Gauge, Histogram, generate_latest
 from pydantic import BaseModel, ConfigDict, Field
 
+from astronomy import ArchiveError, object_summary, summarize_system
 from crossmatch import AdvancedQuery, CrossmatchService, QueryValidator
 from datasets import DatasetEngine, MetadataStore, enqueue_dataset, process_dataset_async, submit_to_redis
 from models import CatalogRegistry, Settings
 from providers import CacheManager, SesameResolver, provider_map
-from astronomy import ArchiveError, object_summary, summarize_system
+from representations import RepresentationError, cross_reference_observation
 
 # ---------------------------------------------------------------------------
 # Logging and Prometheus Metrics
@@ -357,6 +358,16 @@ class SystemSummaryRequest(BaseModel):
     name: str = Field(..., min_length=1, max_length=300)
 
 
+class SignalObservationRequest(BaseModel):
+    """A calibrated one-dimensional light curve or spectrum plus known references."""
+    model_config = ConfigDict(extra="forbid")
+    observation: dict[str, Any]
+    references: list[dict[str, Any]] = Field(default_factory=list, max_length=10000)
+    radius_arcsec: float = Field(2.0, gt=0, le=3600)
+    representation_threshold: float = Field(0.25, ge=0, le=2)
+    anomaly_threshold: float = Field(0.45, ge=0, le=2)
+
+
 @app.post("/api/v1/summaries/system")
 async def system_summary_endpoint(req: SystemSummaryRequest):
     try:
@@ -374,6 +385,18 @@ async def object_summary_endpoint(req: SearchRequest):
     try:
         return object_summary(await _search(req))
     except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.post("/api/v1/signals/cross-reference")
+async def signal_cross_reference_endpoint(req: SignalObservationRequest):
+    """Represent a signal, rank known counterparts, and triage novelty for review."""
+    try:
+        return cross_reference_observation(
+            req.observation, req.references, radius_arcsec=req.radius_arcsec,
+            representation_threshold=req.representation_threshold, anomaly_threshold=req.anomaly_threshold,
+        )
+    except RepresentationError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
 
 
