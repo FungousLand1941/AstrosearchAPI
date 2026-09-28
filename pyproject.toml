@@ -31,6 +31,7 @@ dependencies = [
 dev = [
     "pytest>=8.0.0",
     "pytest-asyncio>=0.23.0",
+    "respx>=0.21.0",
     "pytest-cov>=4.1.0",
     "ruff>=0.5.0",
     "mypy>=1.10.0",
@@ -56,3 +57,16 @@ line-length = 140
 python_version = "3.12"
 warn_unused_configs = true
 ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = [".", "tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+addopts = "-m 'not live'"
+markers = [
+    "live: hits real public astronomy archives over the network (run with -m live)",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning:pkg_resources.*",
+]

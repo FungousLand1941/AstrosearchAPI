@@ -25,6 +25,7 @@ from crossmatch import (
 )
 from datasets import DatasetEngine, DatasetWriter
 from models import (
+    AstroSearchError,
     CatalogDefinition,
     CatalogRegistry,
     CatalogSource,
@@ -35,6 +36,7 @@ from models import (
     normalize_source_record,
     parse_ipac_records,
     parse_json_records,
+    resolved_target,
     validate_target,
 )
 from providers import (
@@ -58,6 +60,7 @@ def build_service(
     """Build a configured CrossmatchService instance."""
     active_settings = settings or Settings()
     registry = CatalogRegistry(registry_path or active_settings.catalog_registry_path)
+    registry.startup_check()  # logs problems; raises when CATALOG_REGISTRY_STRICT=true
     providers = provider_map(
         client,
         timeout=active_settings.request_timeout_seconds,
@@ -68,6 +71,7 @@ def build_service(
         providers,
         radius_arcsec=active_settings.default_radius_arcsec,
         timeout=active_settings.request_timeout_seconds,
+        timeout_cap=active_settings.catalog_timeout_cap_seconds,
     )
 
 
@@ -79,12 +83,20 @@ async def crossmatch(
     epoch: float | None = None,
     profile: str | None = None,
     settings: Settings | None = None,
+    pm_ra_masyr: float | None = None,
+    pm_dec_masyr: float | None = None,
+    parallax_mas: float | None = None,
 ) -> UnifiedRecord:
-    """Execute a single coordinate crossmatch using a fresh client session."""
+    """Execute a single coordinate crossmatch using a fresh client session.
+
+    ``epoch`` is the Julian year of (ra, dec); with ``pm_ra_masyr``/``pm_dec_masyr``
+    the target is followed to each catalog's epoch.
+    """
     active_settings = settings or Settings()
     async with httpx.AsyncClient(timeout=active_settings.request_timeout_seconds, follow_redirects=True) as client:
         service = build_service(settings=active_settings, client=client)
-        return await service.crossmatch(ra, dec, radius_arcsec=radius_arcsec, epoch=epoch, profile=profile)
+        return await service.crossmatch(ra, dec, radius_arcsec=radius_arcsec, epoch=epoch, profile=profile,
+                                        pm_ra_masyr=pm_ra_masyr, pm_dec_masyr=pm_dec_masyr, parallax_mas=parallax_mas)
 
 
 async def search_object(
@@ -100,7 +112,9 @@ async def search_object(
     async with httpx.AsyncClient(timeout=active_settings.request_timeout_seconds, follow_redirects=True) as client:
         active_resolver = resolver or SesameResolver(client, endpoint=active_settings.resolver_endpoint)
         resolved = await active_resolver.resolve(name)
-        target = validate_target(resolved.ra_deg, resolved.dec_deg, epoch=resolved.epoch)
+        # Carries the resolver epoch (J2000 for SIMBAD) and proper motion (Galactic
+        # objects) so every catalog cone follows the object to that catalog's epoch.
+        target = resolved_target(resolved)
         service = build_service(settings=active_settings, client=client)
         result = await service.crossmatch(
             target.ra,
@@ -108,6 +122,10 @@ async def search_object(
             radius_arcsec=radius_arcsec,
             epoch=target.epoch,
             profile=profile,
+            pm_ra_masyr=target.pm_ra_masyr,
+            pm_dec_masyr=target.pm_dec_masyr,
+            pm_source="resolver" if target.proper_motion is not None else None,
+            parallax_mas=target.parallax_mas,
         )
         result.resolved_object = resolved.as_dict()
         result.provenance["resolver"] = resolved.resolver
@@ -217,24 +235,22 @@ def run_verification() -> bool:
 
     # 7. CDS Sesame XML Parsing
     def test_sesame():
-        xml_payload = """
-        <Sesame>
-          <Result>
-            <oname>M 87</oname>
-            <alias>NGC 4486</alias>
-            <alias>Virgo A</alias>
-            <jradeg>187.705930</jradeg>
-            <jdedeg>12.391123</jdedeg>
-            <otyp>G</otyp>
-            <z_value>0.00428</z_value>
-          </Result>
-        </Sesame>
+        # Structure of a real Sesame -oxp answer (nested pm/z elements, Resolver name).
+        xml_payload = """<?xml version="1.0" encoding="UTF-8"?>
+        <Sesame><Target option="SNV"><name>Barnard's star</name>
+          <Resolver name="Sc=Simbad (CDS, via client/server)">
+            <otype>BY*</otype><jradeg>269.45207696</jradeg><jdedeg>4.69336497</jdedeg>
+            <pm><v>10393.349</v><pmRA>-801.551</pmRA><pmDE>10362.394</pmDE></pm>
+            <Vel><v>-110.11</v></Vel><plx><v>546.9759</v></plx>
+            <oname>NAME Barnard's star</oname>
+          </Resolver></Target></Sesame>
         """
-        res = SesameResolver.parse_response("M87", xml_payload)
-        assert res.canonical_name == "M 87"
-        assert abs(res.ra_deg - 187.705930) < 1e-5
-        assert res.object_type == "G"
-        assert res.redshift == 0.00428
+        res = SesameResolver.parse_response("Barnard's star", xml_payload)
+        assert res.canonical_name == "NAME Barnard's star"
+        assert abs(res.ra_deg - 269.45207696) < 1e-7
+        assert res.object_type == "BY*"
+        assert res.pm_ra_masyr == -801.551 and res.pm_dec_masyr == 10362.394
+        assert res.epoch == 2000.0 and res.resolver_metadata["parallax_mas"] == 546.9759
 
     check("CDS Sesame XML resolver parser", test_sesame)
 
@@ -411,6 +427,15 @@ def main() -> None:
             sys.exit(1)
 
         async def do_search():
+            try:
+                await run_search()
+            except (AstroSearchError, ValueError) as exc:
+                # An unresolvable name or an invalid profile/coordinate: a one-line
+                # error, not a traceback (and not a 'catalogs failed' message).
+                print(f"Error: {exc}", file=sys.stderr)
+                sys.exit(1)
+
+        async def run_search():
             if args.name:
                 print(f"Resolving '{args.name}' via CDS Sesame...")
                 res = await search_object(args.name, radius_arcsec=args.radius, profile=args.profile)

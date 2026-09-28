@@ -324,7 +324,8 @@ class DatasetEngine:
         QueryValidator.validate(query, self.registry)
 
         for target in targets:
-            validate_target(target["ra"], target["dec"], epoch=target.get("epoch"))
+            validate_target(target["ra"], target["dec"], epoch=target.get("epoch"),
+                            pm_ra_masyr=target.get("pm_ra_masyr"), pm_dec_masyr=target.get("pm_dec_masyr"))
 
         dataset_id = dataset_id or uuid.uuid4().hex
         path = Path(export_path).resolve() if export_path else self.storage / f"{dataset_id}.{output_format.lower()}"

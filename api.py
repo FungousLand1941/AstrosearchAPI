@@ -26,7 +26,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from crossmatch import AdvancedQuery, CrossmatchService, QueryValidator
 from datasets import DatasetEngine, MetadataStore, enqueue_dataset, process_dataset_async, submit_to_redis
-from models import CatalogRegistry, Settings
+from models import CatalogRegistry, ObjectResolutionError, Settings, resolved_target
 from providers import CacheManager, SesameResolver, provider_map
 
 # ---------------------------------------------------------------------------
@@ -158,6 +158,8 @@ def authenticate(request: Request) -> str | JSONResponse:
 async def lifespan(application: FastAPI):
     settings = Settings()
     registry = CatalogRegistry(settings.catalog_registry_path)
+    # Log every registry problem at startup; CATALOG_REGISTRY_STRICT=true refuses to start.
+    registry.startup_check()
     async with httpx.AsyncClient(timeout=settings.request_timeout_seconds, follow_redirects=True) as client:
         application.state.client = client
         application.state.registry = registry
@@ -167,6 +169,7 @@ async def lifespan(application: FastAPI):
             application.state.providers,
             radius_arcsec=settings.default_radius_arcsec,
             timeout=settings.request_timeout_seconds,
+            timeout_cap=settings.catalog_timeout_cap_seconds,
         )
         application.state.engine = DatasetEngine(
             registry_path=settings.catalog_registry_path,
@@ -210,7 +213,8 @@ def get_service() -> CrossmatchService:
     if service is None:
         settings = Settings()
         registry = CatalogRegistry(settings.catalog_registry_path)
-        service = CrossmatchService(registry, provider_map(timeout=settings.request_timeout_seconds))
+        service = CrossmatchService(registry, provider_map(timeout=settings.request_timeout_seconds),
+                                    timeout_cap=settings.catalog_timeout_cap_seconds)
     return service
 
 
@@ -311,7 +315,11 @@ class SearchRequest(BaseModel):
     name: str | None = Field(None, description="Astronomical object name (will be resolved)")
     radius_arcsec: float = Field(3.0, description="Search radius in arcseconds", gt=0)
     profile: str | None = Field(None, description="Catalog profile: optical, infrared, radio, etc.")
-    epoch: float | None = Field(None, ge=1800, le=2200, description="Julian epoch for proper motion correction")
+    epoch: float | None = Field(None, ge=1800, le=2200, description="Julian epoch of ra/dec for proper motion correction")
+    pm_ra_masyr: float | None = Field(None, description="Target proper motion in RA*cos(Dec), mas/yr (with pm_dec_masyr)")
+    pm_dec_masyr: float | None = Field(None, description="Target proper motion in Dec, mas/yr (with pm_ra_masyr)")
+    parallax_mas: float | None = Field(None, ge=0, lt=1000,
+                                       description="Target parallax in mas (removes the annual parallax from single-epoch catalogs)")
     object_types: list[str] | None = Field(None, description="Filter by object types")
     spectral_types: list[str] | None = Field(None, description="Filter by spectral classification")
     morphology: list[str] | None = None
@@ -396,18 +404,32 @@ async def _search(req: SearchRequest) -> dict[str, Any]:
     service = get_service()
     client = getattr(app.state, "client", None)
 
+    epoch, pm_ra, pm_dec, parallax = req.epoch, req.pm_ra_masyr, req.pm_dec_masyr, req.parallax_mas
+    pm_source = "input" if pm_ra is not None else None
     if req.name:
         resolver = SesameResolver(client)
         resolved = await resolver.resolve(req.name)
         resolved_info = resolved.as_dict()
-        ra, dec = resolved.ra_deg, resolved.dec_deg
+        # The resolver position has its own epoch (J2000 for SIMBAD) and proper motion.
+        resolved_tgt = resolved_target(resolved)
+        ra, dec = resolved_tgt.ra, resolved_tgt.dec
+        if resolved_tgt.epoch is not None:
+            epoch = resolved_tgt.epoch
+            if resolved_tgt.proper_motion is not None and pm_ra is None and pm_dec is None:
+                pm_ra, pm_dec = resolved_tgt.pm_ra_masyr, resolved_tgt.pm_dec_masyr
+                pm_source = "resolver"
+                if parallax is None:
+                    parallax = resolved_tgt.parallax_mas
     else:
         ra, dec = req.ra, req.dec
 
     query = AdvancedQuery.from_dict({
         "ra": ra,
         "dec": dec,
-        "epoch": req.epoch,
+        "epoch": epoch,
+        "pm_ra_masyr": pm_ra,
+        "pm_dec_masyr": pm_dec,
+        "parallax_mas": parallax,
         "radius_arcsec": req.radius_arcsec,
         "profiles": [req.profile] if req.profile else None,
         "object_types": req.object_types,
@@ -424,15 +446,41 @@ async def _search(req: SearchRequest) -> dict[str, Any]:
         "adaptive_radius": req.adaptive_radius,
         "min_distance_pc": req.min_distance_pc,
         "max_distance_pc": req.max_distance_pc,
+        "metadata": {"pm_source": pm_source} if pm_source else None,
     })
 
     result = await service.crossmatch(ra, dec, query=query)
     if resolved_info:
         result.resolved_object = resolved_info
+    record_catalog_metrics(result.provenance.get("catalog_stats") or {})
 
     data = result.as_dict()
-    cache.set(cache_key, data, ttl=300)
+    # Never replay a transient archive failure to later identical searches: only
+    # records in which every catalog answered are cached.
+    if not result.failures:
+        cache.set(cache_key, data, ttl=search_cache_ttl())
     return data
+
+
+def record_catalog_metrics(catalog_stats: dict[str, Any]) -> None:
+    """Count per-catalog outcomes (success/empty/failed; '+fallback' when a fallback
+    archive answered or was tried) in astrosearch_catalog_queries_total, and latencies."""
+    for name, stats in catalog_stats.items():
+        status_label = str(stats.get("status") or "unknown")
+        if stats.get("fallback"):
+            status_label += "+fallback"
+        CATALOG_QUERIES.labels(catalog=name, status=status_label).inc()
+        elapsed = stats.get("elapsed_ms")
+        if isinstance(elapsed, (int, float)):
+            CATALOG_LATENCY.labels(catalog=name).observe(float(elapsed) / 1000.0)
+
+
+def search_cache_ttl() -> int:
+    """TTL (s) of the API-level search cache; API_SEARCH_CACHE_TTL_SECONDS, default 300 (0 disables)."""
+    try:
+        return max(0, int(os.getenv("API_SEARCH_CACHE_TTL_SECONDS", "300")))
+    except ValueError:
+        return 300
 
 
 @app.post("/api/v1/search", response_model=dict[str, Any])
@@ -441,6 +489,9 @@ async def search_endpoint(req: SearchRequest):
     logger.info("search_request", endpoint="/api/v1/search", ra=req.ra, dec=req.dec, name=req.name)
     try:
         return await _search(req)
+    except ObjectResolutionError as e:
+        # The name did not resolve: the catalogs never ran, so this is not a 502.
+        raise HTTPException(status_code=404, detail=f"Object name could not be resolved: {e}") from e
     except ValueError as e:
         raise HTTPException(status_code=422, detail=str(e)) from e
     except HTTPException:
@@ -462,8 +513,12 @@ async def batch_search(requests: list[SearchRequest], max_concurrent: int = Quer
         try:
             async with semaphore:
                 return await _search(req)
+        except ObjectResolutionError as e:
+            return {"error": f"Object name could not be resolved: {e}", "status_code": 404, "request": req.model_dump()}
+        except ValueError as e:
+            return {"error": str(e), "status_code": 422, "request": req.model_dump()}
         except Exception as e:
-            return {"error": str(e), "request": req.model_dump()}
+            return {"error": str(e), "status_code": 502, "request": req.model_dump()}
 
     return await asyncio.gather(*(one(req) for req in requests))
 

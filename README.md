@@ -150,6 +150,88 @@ python main.py benchmark --rows 50000 --format parquet
 python main.py verify
 ```
 
+### Test Suite
+```bash
+python -m pytest -q            # offline: replays real archive responses from tests/fixtures (no network)
+python -m pytest -q -m live    # live canaries: 3C 273, M87, HD 106785, HD 209458 against every catalog
+python tests/fixture_io.py record          # re-record fixtures from the live archives
+python scripts/catalog_census.py 10        # sources per catalog within 10" for 3C 273 and M87
+```
+Live tests skip only when an archive is unreachable (network error, timeout, HTTP 5xx);
+query errors, parse failures, or a missing known object fail the run.
+
+### Per-catalog result status
+`catalog_results[<catalog>]["status"]` is `success` (rows inside the requested radius),
+`empty` (valid query, none inside the radius: e.g. outside the survey footprint) or
+`failed` (with `error_type` and the archive's own `message`). Row counts (`row_count` = rows
+inside the radius, the nearest `max_rows`; `returned_count` = rows in `sources` after an
+AdvancedQuery/REST confidence or type filter; `raw_row_count` = `row_count` + `pad_row_count`
++ `excess_row_count` + `dropped_rows`), elapsed milliseconds, truncation, `warnings` and
+citations are recorded per catalog in `provenance["catalog_stats"]` /
+`provenance["citations"]`; all warnings are also collected in `provenance["warnings"]`.
+`truncated` is true when the archive held more rows than were fetched or more than `max_rows`
+lie inside the radius, and a warning then states how much of the radius the kept rows cover.
+Every `CatalogSource.positional_error_arcsec` is a 1-sigma circular error in arcsec,
+converted from each catalog's native convention (mas, degrees, seconds of time, 95%/90%
+ellipses, pixels) as declared by the registry's `pos_error` spec; `CatalogSource.epoch`
+is the Julian year of the catalog position (None when unknown, e.g. NED positions whose
+`pos_bibcode` is not a known survey). Rows observed at an unrecorded time within a known
+span -- Chandra CSC master sources (1999.5-2022.0), NVSS, LoTSS, 1RXS, and NED positions
+copied from 2MASS or WISE -- have `epoch` None and `epoch_range` (earliest, latest); a
+moving target is matched against its closest approach during that span
+(`epoch_propagation` = `target_pm_span`).
+
+### Epochs and proper motion
+Pass `epoch` (Julian year of the coordinates) and, when known, `pm_ra_masyr`/`pm_dec_masyr`
+(`crossmatch(...)`, `AdvancedQuery`, or the REST `SearchRequest`). Name searches use the
+resolver's epoch (J2000 for SIMBAD) and proper motion automatically (extragalactic objects
+are treated as stationary). With an epoch, each catalog cone follows the target to that
+catalog's epoch (declared by `epoch` or `parameters.epoch_range`): with a proper motion the
+cone is re-centred on the target's path; without one it is widened by the largest plausible
+motion (`EPOCH_PAD_MAX_PM_ARCSEC_PER_YR`, default 10.5"/yr, capped at `EPOCH_PAD_MAX_ARCSEC`,
+default 300", fetching up to `EPOCH_PAD_MAX_ROWS`, default 2000, rows). Rows are compared after
+propagation; rows fetched only because of the widening are returned as `pad_sources`, never
+counted. When the target's proper motion is not given it is adopted from the nearest matching
+row that has one (e.g. Gaia), recorded in `provenance["target_proper_motion"]` (`source`:
+`input`, `resolver`, `adopted`, or `extragalactic` when the nearest identified row is a
+galaxy/QSO, which is then treated as stationary), so catalogs without proper motions (2MASS,
+AllWISE, PS1, CSC) can be matched too. Every fetched row -- in radius beyond `max_rows`, or
+pad -- is kept until this final re-split, so adopting the motion can never lose a counterpart.
+Without an epoch, positions are compared as given and cones are exact.
+
+Adoption is refused (with a provenance warning) when a candidate with a different motion lies
+within 2 x the nearest separation + 0.5" (crowded fields such as the S-stars around Sgr A*).
+Rows without their own proper motion in catalogs that publish them (Gaia 2-parameter
+solutions, SIMBAD positions without pm) are compared at their catalog positions
+(`epoch_propagation` = `stationary`, with `target_pm_separation_arcsec` for reference); only
+rows of catalogs without proper motions are moved with the target's motion. Pass
+`parallax_mas` (name searches take it from the resolver; otherwise a significant parallax is
+adopted with the motion) to remove the annual parallax from single-epoch positions (2MASS,
+SDSS, FIRST, VLASS, 2RXS: `target_pm_parallax`; Proxima's 2MASS row goes from 0.71" to
+0.05"); rows where it cannot be removed get it as extra uncertainty in their confidence.
+5XMM `time`/`end_time` are the span of the detection stack, so 5XMM rows spanning more than
+0.1 yr have an `epoch_range`, not a midpoint epoch. SIMBAD rows without a proper motion keep
+the epoch of their original measurement (from `coo_bibcode`, else the span 1990-2025).
+
+### Resilience settings
+`PROVIDER_REQUESTS_PER_SECOND`, `PROVIDER_FAILURE_THRESHOLD`, `PROVIDER_RECOVERY_SECONDS` and
+`PROVIDER_PROBE_TIMEOUT_SECONDS` tune the per-endpoint rate limiter and circuit breaker (a
+cancelled or timed-out request always counts as a failure, and a stuck recovery probe expires).
+HTTP 429/408 raise `RateLimitedError` (a `CatalogUnavailableError`, so fallbacks apply).
+`CATALOG_REGISTRY_STRICT=true` makes the API/CLI refuse to start with an invalid registry
+(problems are always logged); an unparseable registry file raises `RegistryError`.
+`API_SEARCH_CACHE_TTL_SECONDS` (default 300, 0 disables) caches only searches in which every
+catalog answered.
+Catalog timeouts come from the registry (60-90 s); `CATALOG_TIMEOUT_CAP_SECONDS` (or an
+explicitly set `REQUEST_TIMEOUT_SECONDS`) caps them. A fallback archive gets the rest of the
+catalog's budget (at least min(timeout, 20 s)); when both fail, the error names both causes
+and `catalog_stats[...]["fallback"]` records the primary's error. The in-process response
+cache is a bounded LRU (`PROVIDER_CACHE_MAX_ENTRIES`, default 512;
+`PROVIDER_CACHE_MAX_BYTES`, default 64 MB). Per-catalog outcomes are exported as
+`astrosearch_catalog_queries_total{catalog,status}` (`status` gets `+fallback` when a fallback
+was used). An unknown profile is rejected (HTTP 422 / CLI error) and an unresolvable object
+name returns HTTP 404.
+
 ---
 
 ## 🌐 HTTP REST API

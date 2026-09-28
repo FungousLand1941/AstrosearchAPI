@@ -5,16 +5,16 @@ from __future__ import annotations
 import asyncio
 import math
 import statistics
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from datetime import date, datetime
 from time import monotonic
 from typing import Any
 
 from astropy import units as u
 from astropy.coordinates import SkyCoord
-from astropy.time import Time
 
 from models import (
+    TARGET_PM_METHODS,
     CatalogDefinition,
     CatalogFailure,
     CatalogRegistry,
@@ -25,9 +25,38 @@ from models import (
     QueryTimeoutError,
     Target,
     UnifiedRecord,
+    _to_float,
+    epoch_separation_arcsec,
+    haversine_arcsec,
+    is_extragalactic_type,
+    source_position_at,
     validate_target,
 )
-from providers import CatalogProvider
+from providers import CatalogProvider, QueryResult, classify_sources
+
+# A proper motion is adopted from a matched catalog row only when that row lies this
+# close to the target (after propagation), so an unrelated field star is not used.
+PM_ADOPTION_MAX_ARCSEC = 2.0
+# |z| above this (cz ~ 900 km/s, beyond any Galactic star's radial velocity) marks the
+# target's identity row as extragalactic, so its catalog proper motion is not adopted.
+EXTRAGALACTIC_MIN_REDSHIFT = 0.003
+# A Gaia-like row whose parallax is below this significance and whose proper motion is
+# smaller than PM_NOISE_MASYR is not used for adoption: such a motion is consistent with
+# a distant or extragalactic source, and ignoring it changes positions by < 0.02"/yr.
+PM_ADOPTION_MIN_PARALLAX_SNR = 3.0
+PM_NOISE_MASYR = 20.0
+# Two candidate motions describe the same object when they differ by less than
+# max(PM_AGREE_MASYR, PM_AGREE_FRACTION x |pm|) (catalogs differ by a few mas/yr).
+PM_AGREE_MASYR = 10.0
+PM_AGREE_FRACTION = 0.1
+# A candidate with a DIFFERENT motion closer than 2 x (nearest separation) + this margin
+# makes the adoption ambiguous (crowded field, e.g. the S-stars around Sgr A*).
+PM_AMBIGUITY_MARGIN_ARCSEC = 0.5
+# A parallax is adopted with the motion when it is at least this significant.
+PARALLAX_ADOPTION_MIN_SNR = 5.0
+# Rows whose parallax could not be removed get the target parallax as extra uncertainty
+# when it is at least this large (smaller parallaxes are within catalog errors).
+PARALLAX_INFLATION_MIN_MAS = 50.0
 
 # ---------------------------------------------------------------------------
 # Advanced Query Representation
@@ -71,7 +100,12 @@ class AdvancedQuery:
         if ra is None or dec is None:
             raise ValueError("Coordinates (ra and dec) are required")
 
-        target = validate_target(ra, dec, epoch=target_data.get("epoch", data.get("epoch")))
+        pm_ra = target_data.get("pm_ra_masyr", data.get("pm_ra_masyr"))
+        pm_dec = target_data.get("pm_dec_masyr", data.get("pm_dec_masyr"))
+        target = validate_target(
+            ra, dec, epoch=target_data.get("epoch", data.get("epoch")), pm_ra_masyr=pm_ra, pm_dec_masyr=pm_dec,
+            parallax_mas=target_data.get("parallax_mas", data.get("parallax_mas")),
+        )
         return cls(
             target=target,
             radius_arcsec=float(data.get("radius_arcsec", 3.0)),
@@ -288,12 +322,32 @@ class QueryValidator:
             if not math.isfinite(inner) or not math.isfinite(outer) or inner < 0 or outer > query.radius_arcsec or outer <= inner:
                 raise ValueError("radius zones must lie within radius_arcsec")
 
-        if query.catalogs:
+        if query.catalogs or query.profiles:
             active_registry = registry or CatalogRegistry()
-            for name in query.catalogs:
+            for name in query.catalogs or []:
                 if name not in active_registry.enabled_catalogs():
                     raise ValueError(f"Unknown catalog: {name}")
+            for profile in query.profiles or []:
+                validate_profile(profile, active_registry)
         return True
+
+
+def known_profiles(registry: CatalogRegistry) -> set[str]:
+    """Profiles declared by at least one enabled catalog."""
+    return {p for catalog in registry.enabled_catalogs().values() for p in catalog.profiles}
+
+
+def validate_profile(profile: str | None, registry: CatalogRegistry) -> None:
+    """Raise ValueError for a profile no enabled catalog declares (a typo would otherwise
+    plan zero catalogs and return an empty but 'successful' result)."""
+    if profile is None:
+        return
+    enabled = registry.enabled_catalogs().values()
+    if any(not catalog.profiles for catalog in enabled):
+        return  # a catalog without profiles is planned for every profile
+    known = known_profiles(registry)
+    if profile not in known:
+        raise ValueError(f"Unknown profile '{profile}'; known profiles: {', '.join(sorted(known))}")
 
 
 class QueryBuilder:
@@ -337,39 +391,32 @@ class QueryBuilder:
 # ---------------------------------------------------------------------------
 
 
-def _source_coordinate(source: CatalogSource, epoch: float | None = None) -> SkyCoord:
-    """Propagate catalog source coordinate to target epoch using proper motion."""
-    coordinate = SkyCoord(ra=source.ra * u.deg, dec=source.dec * u.deg, frame="icrs")
-    if (
-        epoch is not None
-        and source.epoch is not None
-        and source.proper_motion_ra_masyr is not None
-        and source.proper_motion_dec_masyr is not None
-    ):
-        try:
-            moving = SkyCoord(
-                ra=source.ra * u.deg,
-                dec=source.dec * u.deg,
-                pm_ra_cosdec=source.proper_motion_ra_masyr * u.mas / u.yr,
-                pm_dec=source.proper_motion_dec_masyr * u.mas / u.yr,
-                obstime=Time(source.epoch, format="jyear"),
-                frame="icrs",
-            )
-            coordinate = moving.apply_space_motion(new_obstime=Time(epoch, format="jyear"))
-        except (TypeError, ValueError, u.UnitConversionError):
-            pass
-    return coordinate
+def _source_coordinate(source: CatalogSource, epoch: float | None = None,
+                       fallback_pm: tuple[float, float] | None = None) -> SkyCoord:
+    """Catalog source coordinate at ``epoch`` (own proper motion, else ``fallback_pm``)."""
+    ra, dec, _ = source_position_at(source, epoch, fallback_pm)
+    return SkyCoord(ra=ra * u.deg, dec=dec * u.deg, frame="icrs")
+
+
+def _icrs_target(target: Target) -> Target:
+    """Targets are matched in ICRS; other frames are converted once up front."""
+    if str(target.frame).lower() == "icrs":
+        return target
+    coord = SkyCoord(ra=target.ra * u.deg, dec=target.dec * u.deg, frame=target.frame).icrs
+    return replace(target, ra=float(coord.ra.deg) % 360.0, dec=float(coord.dec.deg), frame="icrs")
 
 
 def angular_separation_arcsec(target: Target, source: CatalogSource | Target) -> float:
-    """Compute spherical angular separation in arcseconds."""
-    target_coord = SkyCoord(ra=target.ra * u.deg, dec=target.dec * u.deg, frame=target.frame)
-    source_coord = (
-        _source_coordinate(source, target.epoch)
-        if isinstance(source, CatalogSource)
-        else SkyCoord(ra=source.ra * u.deg, dec=source.dec * u.deg, frame="icrs")
-    )
-    return float(target_coord.separation(source_coord).to(u.arcsec).value)
+    """Angular separation in arcseconds; catalog sources are brought to the target epoch.
+
+    A source moves with its own proper motion; one without (2MASS, AllWISE, ...) moves
+    with the target's proper motion when that is known.
+    """
+    target = _icrs_target(target)
+    if isinstance(source, CatalogSource):
+        return epoch_separation_arcsec(target, source)[0]
+    other = _icrs_target(source)
+    return haversine_arcsec(target.ra, target.dec, other.ra, other.dec)
 
 
 def match_score(
@@ -391,18 +438,35 @@ def match_score(
     return round(max(0.0, 1.0 - min(scale, 10.0) / 10.0), 6)
 
 
+def parallax_uncertainty_arcsec(target: Target, method: str) -> float | None:
+    """Extra target uncertainty (arcsec) for a row placed with the target's motion whose
+    annual parallax could not be removed (unknown row epoch, or a multi-epoch mean such
+    as AllWISE/PS1): up to the parallax itself. None when nothing is added."""
+    if not target.parallax_mas or method not in TARGET_PM_METHODS or method == "target_pm_parallax":
+        return None
+    if target.parallax_mas < PARALLAX_INFLATION_MIN_MAS:
+        return None
+    return target.parallax_mas / 1000.0
+
+
 def match_target(target: Target, sources: list[CatalogSource], radius_arcsec: float) -> list[Match]:
-    """Filter sources by radius and rank by separation."""
+    """Filter sources by radius and rank by separation.
+
+    Rows compared through the target's own motion without a parallax correction get the
+    target's parallax as an extra (target-side) uncertainty in their confidence.
+    """
+    icrs = _icrs_target(target)
     matches = []
     for source in sources:
-        sep = angular_separation_arcsec(target, source)
+        sep, method = epoch_separation_arcsec(icrs, source)
         if sep <= radius_arcsec:
             matches.append(
                 Match(
                     source.catalog,
                     source,
                     sep,
-                    match_score(sep, positional_error_arcsec=source.positional_error_arcsec),
+                    match_score(sep, positional_error_arcsec=source.positional_error_arcsec,
+                                target_uncertainty_arcsec=parallax_uncertainty_arcsec(icrs, method)),
                 )
             )
     return sorted(matches, key=lambda m: m.separation_arcsec)
@@ -423,6 +487,7 @@ def _source_dict(match: Match) -> dict[str, Any]:
         "provenance": source.provenance,
         "positional_error_arcsec": source.positional_error_arcsec,
         "epoch": source.epoch,
+        "epoch_range": list(source.epoch_range) if source.epoch_range else None,
         "proper_motion_ra_masyr": source.proper_motion_ra_masyr,
         "proper_motion_dec_masyr": source.proper_motion_dec_masyr,
         "physical": source.metadata.get("physical", {}),
@@ -447,11 +512,11 @@ def _group_matches(matches: list[Match], target: Target, radius_arcsec: float) -
         if root_i != root_j:
             parent[root_j] = root_i
 
+    anchor = (target.ra, target.dec)
+    positions = [source_position_at(m.source, target.epoch, target.proper_motion, anchor)[:2] for m in matches]
     for i in range(len(matches)):
         for j in range(i + 1, len(matches)):
-            coord_i = _source_coordinate(matches[i].source, target.epoch)
-            coord_j = _source_coordinate(matches[j].source, target.epoch)
-            sep = float(coord_i.separation(coord_j).to(u.arcsec).value)
+            sep = haversine_arcsec(*positions[i], *positions[j])
             allowed = max(
                 radius_arcsec,
                 matches[i].source.positional_error_arcsec or 0.0,
@@ -487,6 +552,7 @@ class QueryPlanner:
         self.registry = registry
 
     def plan(self, radius_arcsec: float, profile: str | None = None) -> list[QueryPlan]:
+        validate_profile(profile, self.registry)
         return [
             QueryPlan(
                 catalog=name,
@@ -502,44 +568,159 @@ class QueryPlanner:
 
 
 class QueryExecutor:
-    """Executes catalog queries concurrently with timeouts and error isolation."""
+    """Executes catalog queries concurrently with timeouts, fallbacks, and error isolation.
 
-    def __init__(self, providers: dict[str, CatalogProvider], *, timeout: float = 30.0) -> None:
+    When a registry is supplied the full CatalogDefinition (epoch, pos_error,
+    citation, timeouts, ...) is used; otherwise a minimal one is rebuilt from the plan.
+    A catalog may declare ``parameters["fallback"]`` (provider/endpoint/catalog/
+    parameters overrides) that is tried when the primary archive is unavailable.
+    """
+
+    # When the primary fails, the fallback gets the rest of the catalog's time budget but
+    # at least min(limit, this) seconds, so one catalog takes at most limit + that.
+    FALLBACK_MIN_SECONDS = 20.0
+
+    def __init__(
+        self,
+        providers: dict[str, CatalogProvider],
+        *,
+        timeout: float = 30.0,
+        registry: CatalogRegistry | None = None,
+        timeout_cap: float | None = None,
+    ) -> None:
         self.providers = providers
         self.timeout = timeout
+        self.registry = registry
+        # Upper bound on every catalog's own timeout_seconds (Settings.catalog_timeout_cap_seconds).
+        self.timeout_cap = timeout_cap
+
+    def catalog_limit(self, catalog: CatalogDefinition) -> float:
+        """Time allowed for one catalog query: its own timeout (else the default), capped."""
+        limit = float(catalog.timeout_seconds or self.timeout)
+        if self.timeout_cap is not None:
+            limit = min(limit, float(self.timeout_cap))
+        return limit
+
+    def definition_for(self, plan: QueryPlan) -> CatalogDefinition:
+        """Resolve the CatalogDefinition used to execute ``plan``."""
+        base = self.registry.catalogs.get(plan.catalog) if self.registry is not None else None
+        if base is not None:
+            return replace(
+                base,
+                provider=plan.provider or base.provider,
+                endpoint=plan.endpoint or base.endpoint,
+                table=plan.parameters.get("table") or base.table,
+                catalog=plan.parameters.get("catalog") or base.catalog,
+                parameters={**base.parameters, **plan.parameters},
+            )
+        return CatalogDefinition(
+            name=plan.catalog,
+            provider=plan.provider,
+            wavelength=plan.wavelength,
+            endpoint=plan.endpoint,
+            table=plan.parameters.get("table"),
+            catalog=plan.parameters.get("catalog"),
+            parameters=dict(plan.parameters),
+        )
+
+    async def _run_one(
+        self, catalog: CatalogDefinition, target: Target, radius_arcsec: float, limit: float | None = None
+    ) -> list[CatalogSource]:
+        provider = self.providers.get(catalog.provider)
+        if provider is None:
+            raise CatalogUnavailableError(f"No provider configured for {catalog.provider}")
+        limit = self.catalog_limit(catalog) if limit is None else limit
+        # Providers size their own request budget from timeout_seconds: hand them the
+        # (capped) limit so their timeout path runs before the executor's.
+        catalog = replace(catalog, timeout_seconds=limit)
+        try:
+            return await asyncio.wait_for(provider.query(catalog, target, radius_arcsec), timeout=limit)
+        except TimeoutError as exc:
+            raise QueryTimeoutError(f"Catalog {catalog.name} timed out after {limit:g}s") from exc
+
+    async def _run_plan(self, plan: QueryPlan, target: Target) -> tuple[str, list[CatalogSource]]:
+        catalog = self.definition_for(plan)
+        started = monotonic()
+        fallback_used: dict[str, Any] | None = None
+        try:
+            try:
+                sources = await self._run_one(catalog, target, plan.radius_arcsec)
+            except (CatalogUnavailableError, QueryTimeoutError) as primary_error:
+                fallback = catalog.parameters.get("fallback")
+                if not isinstance(fallback, dict):
+                    raise
+                fallback_def = replace(
+                    catalog,
+                    provider=str(fallback.get("provider", catalog.provider)),
+                    endpoint=fallback.get("endpoint", catalog.endpoint),
+                    catalog=fallback.get("catalog", catalog.catalog),
+                    table=fallback.get("table", catalog.table),
+                    parameters={**catalog.parameters, **(fallback.get("parameters") or {}), "fallback": None},
+                )
+                fallback_used = {
+                    "provider": fallback_def.provider,
+                    "endpoint": fallback_def.endpoint,
+                    "reason": f"{primary_error.__class__.__name__}: {primary_error}",
+                }
+                limit = self.catalog_limit(catalog)
+                remaining = limit - (monotonic() - started)
+                budget = max(remaining, min(limit, self.FALLBACK_MIN_SECONDS))
+                try:
+                    sources = await self._run_one(fallback_def, target, plan.radius_arcsec, budget)
+                except Exception as fallback_error:
+                    raise _combined_failure(primary_error, fallback_error, fallback_used) from fallback_error
+        except Exception as exc:
+            exc.elapsed_ms = round((monotonic() - started) * 1000.0, 1)  # type: ignore[attr-defined]
+            raise
+        meta = dict(getattr(sources, "meta", {}) or {})
+        meta["status"] = "success" if sources else "empty"
+        meta["row_count"] = len(sources)
+        meta["elapsed_ms"] = round((monotonic() - started) * 1000.0, 1)
+        if fallback_used:
+            meta["fallback"] = fallback_used
+        return plan.catalog, QueryResult(list(sources), meta)
 
     async def execute(
         self, plans: list[QueryPlan], target: Target
     ) -> tuple[list[tuple[str, list[CatalogSource]]], list[CatalogFailure]]:
-        async def run(plan: QueryPlan) -> tuple[str, list[CatalogSource]]:
-            provider = self.providers.get(plan.provider)
-            if provider is None:
-                raise CatalogUnavailableError(f"No provider configured for {plan.provider}")
-            catalog = CatalogDefinition(
-                name=plan.catalog,
-                provider=plan.provider,
-                wavelength=plan.wavelength,
-                endpoint=plan.endpoint,
-                table=plan.parameters.get("table"),
-                catalog=plan.parameters.get("catalog"),
-                parameters=dict(plan.parameters),
-            )
-            try:
-                sources = await asyncio.wait_for(provider.query(catalog, target, plan.radius_arcsec), timeout=self.timeout)
-                return plan.catalog, sources
-            except TimeoutError as exc:
-                raise QueryTimeoutError(f"Catalog {plan.catalog} timed out after {self.timeout:g}s") from exc
-
-        gathered = await asyncio.gather(*(run(p) for p in plans), return_exceptions=True)
+        gathered = await asyncio.gather(*(self._run_plan(p, target) for p in plans), return_exceptions=True)
         successes: list[tuple[str, list[CatalogSource]]] = []
         failures: list[CatalogFailure] = []
 
         for plan, item in zip(plans, gathered):
             if isinstance(item, BaseException):
-                failures.append(CatalogFailure(plan.catalog, error_type=item.__class__.__name__, message=str(item)))
+                failures.append(
+                    CatalogFailure(
+                        plan.catalog,
+                        error_type=item.__class__.__name__,
+                        message=str(item),
+                        elapsed_ms=getattr(item, "elapsed_ms", None),
+                        fallback=getattr(item, "fallback", None),
+                    )
+                )
             else:
                 successes.append(item)
         return successes, failures
+
+
+def _combined_failure(primary: BaseException, fallback: BaseException, fallback_used: dict[str, Any]) -> Exception:
+    """The error reported when both the primary archive and its fallback failed.
+
+    Keeps the fallback's error class (the final outcome) but names both causes, so the
+    root cause (usually the primary outage) is never hidden behind the fallback's error.
+    """
+    message = (
+        f"primary {primary.__class__.__name__}: {primary}; "
+        f"fallback {fallback.__class__.__name__}: {fallback}"
+    )
+    try:
+        combined = type(fallback)(message)
+    except Exception:
+        combined = CatalogUnavailableError(message)
+    if not isinstance(combined, Exception):  # e.g. a BaseException subclass
+        combined = CatalogUnavailableError(message)
+    combined.fallback = {**fallback_used, "error": f"{fallback.__class__.__name__}: {fallback}"}  # type: ignore[attr-defined]
+    return combined
 
 
 # ---------------------------------------------------------------------------
@@ -557,12 +738,13 @@ class CrossmatchService:
         *,
         radius_arcsec: float = 3.0,
         timeout: float = 30.0,
+        timeout_cap: float | None = None,
     ) -> None:
         self.registry = registry
         self.providers = providers
         self.radius_arcsec = radius_arcsec
         self.planner = QueryPlanner(registry)
-        self.executor = QueryExecutor(providers, timeout=timeout)
+        self.executor = QueryExecutor(providers, timeout=timeout, registry=registry, timeout_cap=timeout_cap)
 
     async def crossmatch(
         self,
@@ -573,16 +755,46 @@ class CrossmatchService:
         epoch: float | None = None,
         profile: str | None = None,
         query: AdvancedQuery | None = None,
+        pm_ra_masyr: float | None = None,
+        pm_dec_masyr: float | None = None,
+        pm_source: str | None = None,
+        parallax_mas: float | None = None,
     ) -> UnifiedRecord:
-        """Execute full crossmatch pipeline for given coordinates or AdvancedQuery."""
-        target = validate_target(ra, dec, epoch=epoch)
+        """Execute full crossmatch pipeline for given coordinates or AdvancedQuery.
+
+        ``parallax_mas`` (the target's parallax; with a query, ``query.target.parallax_mas``)
+        removes the annual parallax from single-epoch positions of the target (2MASS, SDSS,
+        ...); when not given, a significant parallax is adopted with the proper motion.
+
+        ``epoch`` is the Julian year of (ra, dec); with it, every catalog cone follows
+        the target to that catalog's epoch (using ``pm_ra_masyr``/``pm_dec_masyr`` when
+        given, else widened by the largest plausible proper motion) and rows are
+        compared after propagation. Without it positions are compared as given.
+        ``pm_source`` records where a given proper motion came from ("input" by
+        default, "resolver" for a name-resolver motion; with a query it is read from
+        ``query.metadata["pm_source"]``).
+
+        Catalog statistics: ``row_count``/``status`` count the rows inside the radius
+        (the nearest ``max_rows``); with an AdvancedQuery, ``sources`` holds only the rows
+        that pass its confidence/type filters and ``returned_count`` is their number.
+        """
+        target = validate_target(ra, dec, epoch=epoch, pm_ra_masyr=pm_ra_masyr, pm_dec_masyr=pm_dec_masyr,
+                                 parallax_mas=parallax_mas)
         if query is not None:
             QueryValidator.validate(query, self.registry)
+            pm_source = (query.metadata or {}).get("pm_source") or pm_source
+            use_pm = query.proper_motion
             target = validate_target(
                 query.target.ra,
                 query.target.dec,
-                epoch=query.target.epoch if query.proper_motion else None,
+                epoch=query.target.epoch if use_pm else None,
+                pm_ra_masyr=query.target.pm_ra_masyr if use_pm else None,
+                pm_dec_masyr=query.target.pm_dec_masyr if use_pm else None,
+                parallax_mas=query.target.parallax_mas if use_pm else None,
             )
+        else:
+            validate_profile(profile, self.registry)
+        target = _icrs_target(target)
 
         try:
             search_radius = (
@@ -595,6 +807,53 @@ class CrossmatchService:
 
         plans = QueryBuilder(self.registry).build(query) if query else self.planner.plan(search_radius, profile=profile)
         successes, failures = await self.executor.execute(plans, target)
+
+        # Target proper motion: given, or adopted from a matched catalog row (e.g. Gaia)
+        # so rows without their own proper motion (2MASS, AllWISE, ...) can be checked.
+        pm_origin: dict[str, Any] | None = None
+        parallax_origin: dict[str, Any] | None = None
+        if target.parallax_mas is not None:
+            parallax_origin = {"parallax_mas": target.parallax_mas,
+                               "source": "resolver" if pm_source == "resolver" else "input"}
+        adoption_warnings: list[str] = []
+        if not plans:
+            adoption_warnings.append(
+                "No catalogs were queried: no enabled catalog matches the requested profile/catalog selection."
+            )
+        if target.proper_motion is not None:
+            pm_origin = {"source": pm_source or "input"}
+            if target.parallax_mas is None:
+                found = _adopt_parallax(target, successes, search_radius)
+                if found is not None:
+                    target, parallax_origin = found
+        elif target.epoch is not None:
+            adopted = _adopt_proper_motion(target, successes, search_radius, warnings=adoption_warnings)
+            if adopted is not None:
+                target, pm_origin = adopted
+                if pm_origin.get("parallax") is not None:
+                    parallax_origin = pm_origin["parallax"]
+
+        # Final in-cone / pad split with the final target model over EVERY fetched row
+        # (in-radius, beyond max_rows, and pad): rows fetched only because of the epoch
+        # pad are never counted as results, and none is lost to a provider-level cut.
+        classified: list[tuple[str, QueryResult]] = []
+        for name, sources in successes:
+            meta = dict(getattr(sources, "meta", {}) or {})
+            combined = list(sources) + list(meta.get("excess_sources") or []) + list(meta.get("pad_sources") or [])
+            max_rows = int(meta.get("max_rows") or max(len(sources), 1))
+            split = classify_sources(
+                combined, target, search_radius, catalog_name=name, max_rows=max_rows,
+                row_limit=int(meta.get("row_limit") or max_rows),
+                archive_truncated=bool(meta.get("archive_truncated", meta.get("truncated", False))),
+                cone_center=_pair(meta.get("cone_center")), epoch_span=_pair(meta.get("epoch_span")),
+            )
+            meta["pad_sources"] = split.pad
+            meta["excess_sources"] = split.excess
+            meta["truncated"] = split.truncated
+            if "base_warnings" in meta:
+                meta["warnings"] = list(meta["base_warnings"]) + split.warnings
+            classified.append((name, QueryResult(split.inside, meta)))
+        successes = classified
 
         all_sources = [source for _, sources in successes for source in sources]
         matches = match_target(target, all_sources, search_radius)
@@ -619,13 +878,87 @@ class CrossmatchService:
             matches = filtered
 
         allowed = {(m.catalog, m.source.source_id) for m in matches}
-        catalog_results = {
-            name: {
-                "sources": [s for s in sources if (s.catalog, s.source_id) in allowed],
-                "status": "success",
+        catalog_results: dict[str, Any] = {}
+        catalog_stats: dict[str, dict[str, Any]] = {}
+        citations: dict[str, str] = {}
+        all_warnings: list[str] = list(adoption_warnings)
+        for name, sources in successes:
+            meta = dict(getattr(sources, "meta", {}) or {})
+            kept = [s for s in sources if (s.catalog, s.source_id) in allowed] if query else list(sources)
+            pad_sources = list(meta.get("pad_sources") or [])
+            excess_count = len(meta.get("excess_sources") or [])
+            max_rows = int(meta.get("max_rows") or max(len(pad_sources), 1))
+            warnings = list(meta.get("warnings") or [])
+            unchecked = [s for s in pad_sources if s.metadata.get("epoch_propagation") == "none"]
+            epoch_incomplete = False
+            if target.epoch is not None and unchecked:
+                if target.proper_motion is None:
+                    # These rows might be the target seen at another epoch: we cannot tell.
+                    epoch_incomplete = not sources
+                    warnings.append(
+                        f"{name}: {len(unchecked)} row(s) beyond {search_radius:g} arcsec have no proper motion and the "
+                        "target's is unknown, so they could not be epoch-checked; results may be incomplete."
+                    )
+                elif any(target.proper_motion):
+                    # (A stationary target -- pm 0 -- is where it is at every epoch.)
+                    undated = sum(1 for s in unchecked if s.epoch is None)
+                    if undated:
+                        warnings.append(
+                            f"{name}: {undated} row(s) beyond {search_radius:g} arcsec have no epoch and were compared "
+                            "at their catalog positions."
+                        )
+            all_warnings.extend(warnings)
+            stats = {
+                # 'success' = rows inside the requested radius; 'empty' = valid query, none inside.
+                "status": "success" if len(sources) else "empty",
+                "row_count": len(sources),
+                # Rows returned in 'sources' (after AdvancedQuery confidence/type filters).
+                "returned_count": len(kept),
+                "matched_count": sum(1 for m in matches if m.catalog == name),
+                "elapsed_ms": meta.get("elapsed_ms"),
+                "truncated": bool(meta.get("truncated", False)),
+                "fallback": meta.get("fallback"),
+                "raw_row_count": meta.get("raw_row_count", len(sources) + len(pad_sources)),
+                "dropped_rows": meta.get("dropped_rows", 0),
+                # Rows removed by the catalog's exclude_values (VLASS 'Redundant' duplicates).
+                "filtered_rows": meta.get("filtered_rows", 0),
+                "pad_row_count": len(pad_sources),
+                # In-radius rows beyond max_rows (checked, but not returned).
+                "excess_row_count": excess_count,
+                "query_radius_arcsec": meta.get("query_radius_arcsec", search_radius),
+                "epoch_incomplete": epoch_incomplete,
+                "warnings": warnings,
             }
-            for name, sources in successes
-        } if query else {name: {"sources": sources, "status": "success"} for name, sources in successes}
+            catalog_stats[name] = stats
+            if meta.get("citation"):
+                citations[name] = str(meta["citation"])
+            catalog_results[name] = {
+                "sources": kept,
+                **stats,
+                "query": meta.get("query"),
+                "endpoint": meta.get("endpoint"),
+                "citation": meta.get("citation"),
+                "acknowledgement": meta.get("acknowledgement"),
+            }
+            if not query:
+                # Rows fetched only because the cone was widened for proper motion (all were
+                # epoch-checked above; only the nearest max_rows are returned).
+                catalog_results[name]["pad_sources"] = pad_sources[:max_rows]
+                catalog_results[name]["pad_sources_truncated"] = len(pad_sources) > max_rows
+        for failure in failures:
+            stats = {
+                "status": "failed",
+                "row_count": 0,
+                "returned_count": 0,
+                "matched_count": 0,
+                "elapsed_ms": failure.elapsed_ms,
+                "truncated": False,
+                "fallback": failure.fallback,
+                "error_type": failure.error_type,
+                "message": failure.message,
+            }
+            catalog_stats[failure.catalog] = stats
+            catalog_results[failure.catalog] = {"sources": [], **stats}
 
         counterparts: dict[str, list[dict[str, Any]]] = {}
         for match in matches:
@@ -639,9 +972,18 @@ class CrossmatchService:
             "query_radius_arcsec": search_radius,
             "effective_radius_arcsec": effective_radius,
             "target_epoch": target.epoch,
+            "target_proper_motion": (
+                {"pm_ra_masyr": target.pm_ra_masyr, "pm_dec_masyr": target.pm_dec_masyr, **(pm_origin or {})}
+                if target.proper_motion is not None else None
+            ),
+            # Parallax used to remove the annual parallax from single-epoch positions.
+            "target_parallax": parallax_origin,
+            "warnings": all_warnings,
             "profile": profile,
             "advanced_query": query.to_dict() if query else None,
             "catalogs_planned": [p.catalog for p in plans],
+            "catalog_stats": catalog_stats,
+            "citations": citations,
             "matches": [
                 {
                     "catalog": m.catalog,
@@ -654,8 +996,10 @@ class CrossmatchService:
         }
 
         return UnifiedRecord(
-            target={"ra": target.ra, "dec": target.dec, "frame": target.frame},
-            catalogs_queried=len(catalog_results) + len(failures_list),
+            target={"ra": target.ra, "dec": target.dec, "frame": target.frame, "epoch": target.epoch,
+                    "pm_ra_masyr": target.pm_ra_masyr, "pm_dec_masyr": target.pm_dec_masyr,
+                    "parallax_mas": target.parallax_mas},
+            catalogs_queried=len(plans),
             catalog_results=catalog_results,
             counterparts=counterparts,
             failures=failures_list,
@@ -679,6 +1023,188 @@ class CrossmatchService:
                 radius_arcsec=t.get("radius_arcsec", radius_arcsec),
                 epoch=t.get("epoch", epoch),
                 profile=t.get("profile", profile),
+                pm_ra_masyr=t.get("pm_ra_masyr"),
+                pm_dec_masyr=t.get("pm_dec_masyr"),
+                parallax_mas=t.get("parallax_mas"),
             )
             for t in targets
         ]
+
+
+def _pair(value: Any) -> tuple[float, float] | None:
+    if isinstance(value, (list, tuple)) and len(value) == 2:
+        return float(value[0]), float(value[1])
+    return None
+
+
+def _is_extragalactic_row(src: CatalogSource) -> bool:
+    physical = src.metadata.get("physical") or {}
+    if is_extragalactic_type(physical.get("object_type")):
+        return True
+    redshift = physical.get("redshift")
+    try:
+        return redshift is not None and abs(float(redshift)) >= EXTRAGALACTIC_MIN_REDSHIFT
+    except (TypeError, ValueError):
+        return False
+
+
+def _pm_is_noise(src: CatalogSource) -> bool:
+    """A small proper motion of a row whose parallax is insignificant (distant/extragalactic)."""
+    try:
+        plx = src.data.get("parallax")
+        plx_err = src.data.get("parallax_error")
+        total = math.hypot(float(src.proper_motion_ra_masyr), float(src.proper_motion_dec_masyr))  # type: ignore[arg-type]
+    except (TypeError, ValueError, AttributeError):
+        return False
+    if plx_err in (None, 0) or plx is None:
+        return False
+    try:
+        snr = float(plx) / float(plx_err)
+    except (TypeError, ValueError, ZeroDivisionError):
+        return False
+    return snr < PM_ADOPTION_MIN_PARALLAX_SNR and total < PM_NOISE_MASYR
+
+
+def _pm_pair_agree(pa: tuple[float, float], pb: tuple[float, float]) -> bool:
+    tolerance = max(PM_AGREE_MASYR, PM_AGREE_FRACTION * max(math.hypot(*pa), math.hypot(*pb)))
+    return math.hypot(pa[0] - pb[0], pa[1] - pb[1]) <= tolerance
+
+
+def _motions_agree(a: CatalogSource, b: CatalogSource) -> bool:
+    """True when two rows' proper motions describe the same object (within catalog scatter)."""
+    pa = (float(a.proper_motion_ra_masyr), float(a.proper_motion_dec_masyr))  # type: ignore[arg-type]
+    pb = (float(b.proper_motion_ra_masyr), float(b.proper_motion_dec_masyr))  # type: ignore[arg-type]
+    return _pm_pair_agree(pa, pb)
+
+
+def _adopt_parallax(
+    target: Target, successes: list[tuple[str, list[CatalogSource]]], radius_arcsec: float
+) -> tuple[Target, dict[str, Any]] | None:
+    """Adopt a significant parallax for a target whose proper motion is known but whose
+    parallax is not: from the nearest row within min(radius, PM_ADOPTION_MAX_ARCSEC)
+    whose own motion agrees with the target's (the same star in Gaia or SIMBAD)."""
+    pm = target.proper_motion
+    if pm is None or target.epoch is None:
+        return None
+    limit = min(radius_arcsec, PM_ADOPTION_MAX_ARCSEC)
+    best: tuple[float, str, CatalogSource, float] | None = None
+    for name, sources in successes:
+        meta = getattr(sources, "meta", {}) or {}
+        for src in list(sources) + list(meta.get("excess_sources") or []):
+            if src.proper_motion_ra_masyr is None or src.proper_motion_dec_masyr is None or src.epoch is None:
+                continue
+            if not _pm_pair_agree(pm, (float(src.proper_motion_ra_masyr), float(src.proper_motion_dec_masyr))):
+                continue
+            plx = _significant_parallax(src)
+            if plx is None:
+                continue
+            sep, _ = epoch_separation_arcsec(target, src)
+            if sep <= limit and (best is None or sep < best[0]):
+                best = (sep, name, src, plx)
+    if best is None:
+        return None
+    sep, name, src, plx = best
+    return replace(target, parallax_mas=plx), {"parallax_mas": plx, "source": "adopted", "catalog": name,
+                                               "source_id": src.source_id, "separation_arcsec": sep}
+
+
+def _is_planet(src: CatalogSource) -> bool:
+    return str((src.metadata.get("physical") or {}).get("object_type") or "").strip().lower() in {"pl", "pl?"}
+
+
+def _significant_parallax(src: CatalogSource) -> float | None:
+    """The row's parallax (mas) when positive and at least PARALLAX_ADOPTION_MIN_SNR sigma."""
+    plx = _to_float(src.data.get("parallax") if src.data else None)
+    if plx is None:
+        plx = _to_float((src.metadata.get("physical") or {}).get("parallax"))
+    err = _to_float(src.data.get("parallax_error") if src.data else None)
+    if plx is None or plx <= 0 or plx >= 1000.0:
+        return None
+    if err is not None and err > 0 and plx / err < PARALLAX_ADOPTION_MIN_SNR:
+        return None
+    return plx
+
+
+def _adopt_proper_motion(
+    target: Target,
+    successes: list[tuple[str, list[CatalogSource]]],
+    radius_arcsec: float,
+    *,
+    warnings: list[str] | None = None,
+) -> tuple[Target, dict[str, Any]] | None:
+    """Adopt the proper motion of the nearest catalog row that has one and matches the target.
+
+    Only rows within min(radius, PM_ADOPTION_MAX_ARCSEC) of the target after their own
+    propagation qualify (in-radius rows beyond max_rows included). Returns the target
+    with that motion (and the row's parallax when significant, or that of an agreeing
+    candidate) and a provenance note.
+
+    Extragalactic targets are stationary: when the nearest identified row (one with an
+    object type or redshift, e.g. SIMBAD or NED) is extragalactic -- M87 is 'AGN' in
+    SIMBAD, which lists a Gaia proper motion of its nucleus -- pm = (0, 0) is adopted
+    instead ("source": "extragalactic"). Rows that are themselves extragalactic, or
+    whose small proper motion comes with an insignificant parallax, are never adopted.
+
+    Crowded fields: when a candidate whose motion DISAGREES with the nearest one lies
+    within 2 x (nearest separation) + PM_AMBIGUITY_MARGIN_ARCSEC, the nearest row may
+    be a chance alignment (around Sgr A* SIMBAD has ~200 objects within 2"), so nothing
+    is adopted and a warning is appended to ``warnings``. Candidates that agree (the same
+    star in Gaia, SIMBAD and the Exoplanet Archive) never block adoption.
+    """
+    limit = min(radius_arcsec, PM_ADOPTION_MAX_ARCSEC)
+    candidates: list[tuple[float, str, CatalogSource]] = []
+    identity: tuple[float, str, CatalogSource] | None = None
+    for name, sources in successes:
+        meta = getattr(sources, "meta", {}) or {}
+        for src in list(sources) + list(meta.get("excess_sources") or []):
+            sep, _ = epoch_separation_arcsec(target, src)
+            if sep > limit:
+                continue
+            physical = src.metadata.get("physical") or {}
+            if (physical.get("object_type") or physical.get("redshift") is not None) and (identity is None or sep < identity[0]):
+                identity = (sep, name, src)
+            if src.proper_motion_ra_masyr is None or src.proper_motion_dec_masyr is None or src.epoch is None:
+                continue
+            if _is_extragalactic_row(src) or _pm_is_noise(src):
+                continue
+            candidates.append((sep, name, src))
+    if identity is not None and _is_extragalactic_row(identity[2]):
+        sep, name, src = identity
+        physical = src.metadata.get("physical") or {}
+        stationary = replace(target, pm_ra_masyr=0.0, pm_dec_masyr=0.0)
+        return stationary, {"source": "extragalactic", "catalog": name, "source_id": src.source_id,
+                            "separation_arcsec": sep, "object_type": physical.get("object_type"),
+                            "redshift": physical.get("redshift")}
+    if not candidates:
+        return None
+    # Nearest first; coincident rows (SIMBAD lists a star and its planets at one position)
+    # prefer the non-planet, then a deterministic catalog/id order.
+    candidates.sort(key=lambda c: (round(c[0] / 1e-4), _is_planet(c[2]), c[1], c[2].source_id))
+    sep, name, src = candidates[0]
+    zone = 2.0 * sep + PM_AMBIGUITY_MARGIN_ARCSEC
+    rivals = [c for c in candidates[1:] if c[0] <= zone and not _motions_agree(src, c[2])]
+    if rivals:
+        if warnings is not None:
+            r_sep, r_name, r_src = rivals[0]
+            warnings.append(
+                f"Target proper motion not adopted: the nearest candidate {name} {src.source_id} ({sep:.3f} arcsec) "
+                f"and {len(rivals)} other row(s) with different motions (e.g. {r_name} {r_src.source_id} at "
+                f"{r_sep:.3f} arcsec) lie within {zone:.2f} arcsec, so the match is ambiguous; supply "
+                "pm_ra_masyr/pm_dec_masyr to follow the target."
+            )
+        return None
+    parallax: dict[str, Any] | None = None
+    for c_sep, c_name, cand in candidates:
+        if cand is src or _motions_agree(src, cand):
+            plx = _significant_parallax(cand)
+            if plx is not None:
+                parallax = {"parallax_mas": plx, "source": "adopted", "catalog": c_name,
+                            "source_id": cand.source_id, "separation_arcsec": c_sep}
+                break
+    use_parallax = target.parallax_mas is None and parallax is not None
+    adopted = replace(target, pm_ra_masyr=src.proper_motion_ra_masyr, pm_dec_masyr=src.proper_motion_dec_masyr,
+                      parallax_mas=parallax["parallax_mas"] if use_parallax else target.parallax_mas)  # type: ignore[index]
+    origin: dict[str, Any] = {"source": "adopted", "catalog": name, "source_id": src.source_id, "separation_arcsec": sep}
+    if use_parallax:
+        origin["parallax"] = parallax
+    return adopted, origin

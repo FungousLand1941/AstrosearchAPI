@@ -1,0 +1,65 @@
+\                                                                               
+\fixlen = T
+\RowsRetrieved =                 1
+\ORIGIN  = 'IPAC Infrared Science Archive (IRSA), Caltech/JPL'
+\SIMULATED_TABLE  = 'n'
+\DATETIME= '2026-09-28 02:22:51'
+\DATABASE= 'AllWISE Source Catalog (allwise_p3as_psd)'
+\EQUINOX = 'J2000'
+\SKYAREA = 'within 10.000000 arcsec of  ra=187.27792 dec=+2.05239 Eq J2000 '
+\StatusFile = '/workspace/TMP_RwTFFH_886322/Gator/irsa/886322/log.886322.html'
+\SQL     = 'WHERE (no constraints) 
+\SQL     = 'SELECT (21 column names follow in next row.)'
+\ 
+\ designation 
+\ ___ WISE source designation
+\ ra (deg) 
+\ ___ right ascension (J2000)
+\ dec (deg) 
+\ ___ declination (J2000)
+\ clon 
+\ ___ Right ascention in Sexagesimal format.
+\ clat 
+\ ___ Declination in Sexagesimal format.
+\ sigra (arcsec) 
+\ ___ uncertainty in RA
+\ sigdec (arcsec) 
+\ ___ uncertainty in DEC
+\ sigradec (arcsec) 
+\ ___ cross-term of RA and Dec uncertainties
+\ w1mpro (mag) 
+\ ___ instrumental profile-fit photometry magnitude, band 1
+\ w1sigmpro (mag) 
+\ ___ instrumental profile-fit photometry flux uncertainty in mag units, band 1
+\ w2mpro (mag) 
+\ ___ instrumental profile-fit photometry magnitude, band 2
+\ w2sigmpro (mag) 
+\ ___ instrumental profile-fit photometry flux uncertainty in mag units, band 2
+\ w3mpro (mag) 
+\ ___ instrumental profile-fit photometry magnitude, band 3
+\ w3sigmpro (mag) 
+\ ___ instrumental profile-fit photometry flux uncertainty in mag units, band 3
+\ w4mpro (mag) 
+\ ___ instrumental profile-fit photometry magnitude, band 4
+\ w4sigmpro (mag) 
+\ ___ instrumental profile-fit photometry flux uncertainty in mag units, band 4
+\ cc_flags 
+\ ___ prioritized artifacts affecting the source in each band
+\ ext_flg 
+\ ___ probability that source morphology is not consistent with single PSF
+\ ph_qual 
+\ ___ photometric quality of each band (A=highest, U=upper limit)
+\ w1mjdmean 
+\ ___ mean modified Julian Date of frame extractions, band 1
+\ tmass_key 
+\ ___ closest associated 2MASS All-Sky Release PSC key
+\ dist (arcsec) 
+\ ___ Distance between the target position and each source in arcsec.
+\ angle (deg) 
+\ ___ Position Angle in degree.
+\ 
+|          designation|          ra|         dec|          clon|          clat|    sigra|   sigdec|  sigradec|  w1mpro| w1sigmpro|  w2mpro| w2sigmpro|  w3mpro| w3sigmpro|  w4mpro| w4sigmpro| cc_flags| ext_flg| ph_qual|      w1mjdmean|  tmass_key|           dist|       angle|
+|                 char|      double|      double|          char|          char|   double|   double|    double|  double|    double|  double|    double|  double|    double|  double|    double|     char|     int|    char|         double|        int|         double|      double|
+|                     |         deg|         deg|              |              |   arcsec|   arcsec|    arcsec|     mag|       mag|     mag|       mag|     mag|       mag|     mag|       mag|         |        |        |               |           |         arcsec|         deg|
+|                 null|        null|        null|          null|          null|     null|     null|      null|    null|      null|    null|      null|    null|      null|    null|      null|     null|    null|    null|           null|       null|           null|        null|
+   J122906.69+020308.6  187.2779067    2.0523930   12h29m06.70s   02d03m08.61s    0.0288    0.0283     0.0009    8.395      0.023    7.425      0.019    5.147      0.014    2.942      0.021      0000        4     AAAA  55471.75792779   855626518        0.049081   282.719027 

@@ -1,0 +1,23 @@
+{
+  "catalog": "allwise",
+  "target": "3c273",
+  "ra": 187.2779154,
+  "dec": 2.0523883,
+  "epoch": null,
+  "pm_ra_masyr": null,
+  "pm_dec_masyr": null,
+  "radius_arcsec": 10.0,
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://irsa.ipac.caltech.edu/cgi-bin/Gator/nph-query?catalog=allwise_p3as_psd&spatial=cone&objstr=187.277915400+2.052388300&radius=10.000000&radunits=arcsec&outfmt=1&selcols=designation%2Cra%2Cdec%2Csigra%2Csigdec%2Csigradec%2Cw1mpro%2Cw1sigmpro%2Cw2mpro%2Cw2sigmpro%2Cw3mpro%2Cw3sigmpro%2Cw4mpro%2Cw4sigmpro%2Ccc_flags%2Cext_flg%2Cph_qual%2Cw1mjdmean%2Ctmass_key",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "text/plain",
+      "match": [
+        "FROM allwise_p3as_psd ",
+        "catalog=allwise_p3as_psd"
+      ]
+    }
+  ]
+}

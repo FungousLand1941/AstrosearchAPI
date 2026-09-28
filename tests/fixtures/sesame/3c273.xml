@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>3C 273</name>
+  <!-- Q8377887 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 0ms [0] -->
+    <INFO>from cache</INFO>
+    <oid>1940765</oid>
+    <otype>BLL</otype>
+    <jpos>12:29:06.69 +02:03:08.5</jpos>
+    <jradeg>187.27791594</jradeg>
+    <jdedeg>2.05238823</jdedeg>
+    <refPos>2020yCat.1350....0G</refPos>
+    <errRAmas>0.0181</errRAmas><errDEmas>0.0129</errDEmas>
+    <pm>
+      <v>0.101</v><e>0.032</e><q>A</q><r>2020yCat.1350....0G</r>
+      <pa>347</pa>
+      <pmRA>-0.023</pmRA><epmRA>0.027</epmRA>
+      <pmDE>0.098</pmDE><epmDE>0.018</epmDE>
+    </pm>
+    <z><v>0.15756751</v><e>0.0005</e><q>C</q><r>2022ApJS..261....2K</r></z>
+    <plx><v>0.0108</v><e>0.0408</e><q>A</q><r>2018yCat.1345....0G</r></plx>
+    <MType>E3</MType>
+    <oname>3C 273</oname>
+    <nrefs>6060</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ====Done (2026-Sep-28,07:18:11z)==== -->

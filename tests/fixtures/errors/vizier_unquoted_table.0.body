@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VOTABLE version="1.3" xmlns="http://www.ivoa.net/xml/VOTable/v1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+<RESOURCE type="results">
+<INFO name="QUERY_STATUS" value="ERROR">Incorrect ADQL query:  Encountered "/". Was expecting one of: &lt;EOF&gt; "." "," ";" "AS" "WHERE" "GROUP" "HAVING" "ORDER" "\"" &lt;REGULAR_IDENTIFIER_CANDIDATE&gt; "NATURAL" "INNER" "LEFT" "RIGHT" "FULL" "JOIN" </INFO>
+<INFO name="PROVIDER" value="CDS">TAPVizieR</INFO>
+<INFO  name="REQ_ID" value="S1790570456292"/>
+<INFO  name="ERROR_TYPE" value="fatal"/>
+<INFO  name="USER" value="203.0.113.1 (203.0.113.1)"/>
+<INFO  name="ACTION" value="sync"/>
+</RESOURCE>
+</VOTABLE>

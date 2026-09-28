@@ -3,3 +3,5 @@
 *.yaml text eol=lf
 *.yml text eol=lf
 *.html text eol=lf
+# Recorded archive responses are replayed byte-for-byte in tests.
+tests/fixtures/** -text

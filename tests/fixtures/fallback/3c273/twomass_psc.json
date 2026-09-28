@@ -1,0 +1,23 @@
+{
+  "catalog": "twomass_psc",
+  "target": "3c273",
+  "ra": 187.2779154,
+  "dec": 2.0523883,
+  "epoch": null,
+  "pm_ra_masyr": null,
+  "pm_dec_masyr": null,
+  "radius_arcsec": 10.0,
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://irsa.ipac.caltech.edu/cgi-bin/Gator/nph-query?catalog=fp_psc&spatial=cone&objstr=187.277915400+2.052388300&radius=10.000000&radunits=arcsec&outfmt=1&selcols=designation%2Cra%2Cdec%2Cerr_maj%2Cerr_min%2Cerr_ang%2Cj_m%2Cj_msigcom%2Ch_m%2Ch_msigcom%2Ck_m%2Ck_msigcom%2Cph_qual%2Ccc_flg%2Cext_key%2Cjdate",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "text/plain",
+      "match": [
+        "FROM fp_psc ",
+        "catalog=fp_psc"
+      ]
+    }
+  ]
+}
