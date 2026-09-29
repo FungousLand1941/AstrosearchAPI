@@ -360,7 +360,9 @@ def test_ned_unknown_technique_beats_flagged_and_unverified_values() -> None:
     assert sed.choose_redshift([simbad_e, photo_unverified, ned])["value"] == 0.003272
     best = sed.choose_redshift([simbad_e, ned])
     assert (best["source"], best["kind"], best["reliable"]) == ("ned", None, True)
-    assert sed.choose_redshift([ned, photo_reliable])["source"] == "sdss_photoz"
+    # Round-3 review (Hercules A): a vetted catalogue value outranks even a reliable photo-z (photo-z scatter ~0.02 in
+    # 1+z); this used to pin the opposite order, which reported Hercules A at its photo-z 0.134 instead of 0.155.
+    assert sed.choose_redshift([ned, photo_reliable])["source"] == "ned"
 
 
 def test_ngc4472_takes_ned_redshift(tmp_path_factory: pytest.TempPathFactory) -> None:

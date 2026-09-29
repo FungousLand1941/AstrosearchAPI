@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>Virgo Cluster</name>
+  <!-- Q8515986 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 202ms [2] -->
+    <oid>1937165</oid>
+    <otype>ClG</otype>
+    <jpos>12:30:47.78 +12:23:06.7</jpos>
+    <jradeg>187.6991</jradeg>
+    <jdedeg>12.3852</jdedeg>
+    <refPos>2022A&amp;A...661A..38P</refPos>
+    <errRAmas>5000</errRAmas><errDEmas>5000</errDEmas>
+    <z><v>0.0038</v><q>D</q><r>1998A&amp;A...338..813W</r></z>
+    <oname>NAME Virgo Cluster</oname>
+    <nrefs>7228</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ****Total of 1 crashes -->
+<!-- Configuration tested: /run/sesame.conf -->

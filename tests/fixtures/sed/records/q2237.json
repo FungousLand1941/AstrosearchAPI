@@ -5972,7 +5972,25 @@
   "query_radius_arcsec": 10.0
  },
  "resolved_object": {
-  "aliases": [],
+  "aliases": [
+   "BWSH C",
+   "KODIAQ J224030+032130",
+   "LAMOST J224030.22+032130.3",
+   "NAME Einstein Cross",
+   "NAME Huchra's Lens",
+   "QSO B2237+030",
+   "QSO B2237+0305",
+   "[HB93] 2237+030",
+   "[HVG99b] 22379+0305",
+   "[VV2000] J224030.3+032130",
+   "[VV2003] J224030.3+032130",
+   "[VV2006] J224030.3+032130",
+   "[VV2010] J224030.3+032130",
+   "[VV96] J224030.3+032130",
+   "[VV98] J224030.3+032130",
+   "[WBS99] 1",
+   "[Y88] G"
+  ],
   "canonical_name": "QSO J2240+0321",
   "dec_deg": 3.35850833,
   "epoch": 2000.0,
@@ -5984,13 +6002,36 @@
   "redshift": 1.695,
   "resolver": "cds_sesame",
   "resolver_metadata": {
-   "endpoint": "https://cds.unistra.fr/cgi-bin/nph-sesame/-oxp/SNV",
+   "endpoint": "https://cds.unistra.fr/cgi-bin/nph-sesame/-oxpI/SNV",
    "epoch_source": "SIMBAD positions are ICRS at epoch J2000",
    "extragalactic": true,
    "parallax_mas": null,
    "proper_motion_applicable": false,
    "radial_velocity_kms": null,
    "raw_fields": {
+    "alias": [
+     "QSO J2240+0321",
+     "BWSH C",
+     "KODIAQ J224030+032130",
+     "LAMOST J224030.22+032130.3",
+     "NAME Einstein Cross",
+     "NAME Huchra's Lens",
+     "QSO B2237+0305",
+     "QSO B2237+030",
+     "[HB93] 2237+030",
+     "[HVG99b] 22379+0305",
+     "[VV2000] J224030.3+032130",
+     "[VV2003] J224030.3+032130",
+     "[VV2006] J224030.3+032130",
+     "[VV2010] J224030.3+032130",
+     "[VV96] J224030.3+032130",
+     "[VV98] J224030.3+032130",
+     "[WBS99] 1",
+     "[Y88] G"
+    ],
+    "info": [
+     "from cache"
+    ],
     "jdedeg": [
      "3.35850833"
     ],

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>Cygnus A</name>
+  <!-- Q8483446 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 0ms [0] -->
+    <INFO>from cache</INFO>
+    <oid>2952489</oid>
+    <otype>Bla</otype>
+    <jpos>19:59:28.35 +40:44:02.0</jpos>
+    <jradeg>299.86815237</jradeg>
+    <jdedeg>40.7339159</jdedeg>
+    <refPos>2020A&amp;A...644A.159C</refPos>
+    <errRAmas>0.418500</errRAmas><errDEmas>0.4581</errDEmas>
+    <z><v>0.05654853</v><e>0.0005</e><q>C</q><r>2022ApJS..261....2K</r></z>
+    <MType>Sc</MType>
+    <oname>MCG+07-41-003</oname>
+    <alias>3CR 405</alias>
+    <alias>3A 1958+407</alias>
+    <alias>BWE 1957+4035</alias>
+    <alias>1C 19.01</alias>
+    <alias>3C 405</alias>
+    <alias>3C 405.0</alias>
+    <alias>4C 40.40</alias>
+    <alias>CTA 88</alias>
+    <alias>CTB 81</alias>
+    <alias>DA 500</alias>
+    <alias>DB 117</alias>
+    <alias>2E 4309</alias>
+    <alias>2E 1957.7+4035</alias>
+    <alias>1ES 1957+40.5</alias>
+    <alias>1H 1958+406</alias>
+    <alias>ICRF J195928.3+404402</alias>
+    <alias>IERS B1957+406</alias>
+    <alias>INTREF 1004</alias>
+    <alias>IRAS 19577+4035</alias>
+    <alias>KIC 5568067</alias>
+    <alias>LEDA 63932</alias>
+    <alias>1M 1957+406</alias>
+    <alias>2MASS J19592834+4044020</alias>
+    <alias>2MASX J19592833+4044022</alias>
+    <alias>MCG+07-41-003</alias>
+    <alias>Mills 19+4</alias>
+    <alias>MY 195745.2+404427.5</alias>
+    <alias>NAME Cyg A</alias>
+    <alias>NAME Cygnus A</alias>
+    <alias>NRAO 620</alias>
+    <alias>NVSS J195924+404419</alias>
+    <alias>NVSS J195932+404347</alias>
+    <alias>PBC J1959.4+4044</alias>
+    <alias>QSO B1957+405</alias>
+    <alias>1RXS J195928.7+404405</alias>
+    <alias>SRGA J195928.3+404358</alias>
+    <alias>SWIFT J1959.4+4044</alias>
+    <alias>TIC 172770364</alias>
+    <alias>2U 1957+40</alias>
+    <alias>3U 1957+40</alias>
+    <alias>4U 1957+40</alias>
+    <alias>VLSSr J195920.3+404419</alias>
+    <alias>VLSS J1959.4+4044</alias>
+    <alias>VSOP J1959+4044</alias>
+    <alias>VSOP J1959+4043</alias>
+    <alias>VV 72</alias>
+    <alias>WMAP J1959+4044</alias>
+    <alias>W 57</alias>
+    <alias>2XMM J195924.0+404418</alias>
+    <alias>[DGW65] 129</alias>
+    <alias>[HB91] 1957+405</alias>
+    <alias>[HR74] Ce</alias>
+    <alias>[HSN2016] J299.86+40.73</alias>
+    <alias>[IN88] 1957+405</alias>
+    <alias>[KRL2007b] 371</alias>
+    <alias>[OLM97] J195928.3+404402</alias>
+    <alias>[SS82] 1</alias>
+    <alias>[VV2000c] J195928.3+404402</alias>
+    <alias>[VV2003c] J195928.3+404402</alias>
+    <alias>[VV2006c] J195928.3+404402</alias>
+    <alias>[VV2010c] J195928.3+404402</alias>
+    <alias>[VV98c] J195928.3+404402</alias>
+    <nrefs>2569</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ====Done (2026-Sep-29,05:01:39z)==== -->

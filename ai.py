@@ -96,11 +96,9 @@ from dataclasses import asdict, dataclass, field
 from typing import Any, Literal, Protocol
 from urllib.parse import quote
 
-import anthropic  # imported at module load: the import costs seconds and must not block requests
 import astropy.units as u
 import httpx
 from astropy.coordinates import FK4, FK5, ICRS, Galactic, SkyCoord
-from astropy.cosmology import Planck18
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_validator
 
@@ -115,6 +113,7 @@ from models import (
     InvalidCoordinateError,
     ObjectResolutionError,
     ResolvedObject,
+    ResolverUnavailableError,
     ResponseParseError,
     Settings,
     Target,
@@ -123,11 +122,45 @@ from models import (
     haversine_arcsec,
     parse_json_table,
     parse_votable_table,
+    resolution_failure_status,
     resolved_target,
     validate_target,
     votable_query_status,
 )
 from providers import SesameResolver, service_error_detail
+
+
+# The Anthropic SDK and astropy's cosmology cost seconds to import (about 3 s and 2 s): they are
+# imported on first use, so every `astrosearch` command that never talks to Claude starts
+# without them. The API imports them at startup (api.py calls preload_heavy_dependencies),
+# so no request waits for an import on the event loop. ``ai.anthropic`` and ``ai.Planck18``
+# still work as module attributes (PEP 562 __getattr__).
+def _sdk() -> Any:
+    """The ``anthropic`` package (imported on first use)."""
+    import anthropic
+
+    return anthropic
+
+
+def _planck18() -> Any:
+    """astropy's Planck18 cosmology (imported on first use)."""
+    from astropy.cosmology import Planck18
+
+    return Planck18
+
+
+def preload_heavy_dependencies() -> None:
+    """Import the Anthropic SDK and astropy's cosmology now (blocking; call at startup)."""
+    _sdk()
+    _planck18()
+
+
+def __getattr__(name: str) -> Any:
+    if name == "anthropic":
+        return _sdk()
+    if name == "Planck18":
+        return _planck18()
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 __all__ = [
     "AIConfigurationError",
@@ -448,7 +481,7 @@ def anthropic_configured() -> bool:
     if os.getenv("ANTHROPIC_API_KEY", "").strip() or os.getenv("ANTHROPIC_AUTH_TOKEN", "").strip():
         return True
     try:
-        probe = anthropic.Anthropic(max_retries=0)
+        probe = _sdk().Anthropic(max_retries=0)
     except Exception:  # noqa: BLE001 - a broken profile file is "not configured", never a crash
         return False
     try:
@@ -468,7 +501,7 @@ def build_anthropic_client(settings: AISettings | None = None) -> Any:
     if not anthropic_configured():
         raise AINotConfiguredError(_NO_CREDENTIALS)
     try:
-        return anthropic.AsyncAnthropic(timeout=active.timeout_seconds, max_retries=2)
+        return _sdk().AsyncAnthropic(timeout=active.timeout_seconds, max_retries=2)
     except Exception as exc:
         raise AINotConfiguredError(f"{_NO_CREDENTIALS} ({exc})") from exc
 
@@ -507,6 +540,7 @@ async def _create_message(client: Any, settings: AISettings, **params: Any) -> A
     if settings.uses_fallbacks:
         request["betas"] = [FALLBACK_BETA]
         request["fallbacks"] = "default"
+    anthropic = _sdk()  # already imported: the client exists
     try:
         response = await client.beta.messages.create(**request)
     except anthropic.AuthenticationError as exc:
@@ -2638,9 +2672,9 @@ def _hubble_flow_distances(
     sigma = hubble_flow_redshift_error(z_err)
     low_z = max(z_cmb - sigma, 1e-6)
     functions: tuple[tuple[str, Callable[[float], float], str], ...] = (
-        ("luminosity_distance", lambda z: (1.0 + z_hel) * float(Planck18.comoving_transverse_distance(z).value), "Mpc"),
-        ("comoving_distance", lambda z: float(Planck18.comoving_distance(z).value), "Mpc"),
-        ("lookback_time", lambda z: float(Planck18.lookback_time(z).value), "Gyr"),
+        ("luminosity_distance", lambda z: (1.0 + z_hel) * float(_planck18().comoving_transverse_distance(z).value), "Mpc"),
+        ("comoving_distance", lambda z: float(_planck18().comoving_distance(z).value), "Mpc"),
+        ("lookback_time", lambda z: float(_planck18().lookback_time(z).value), "Gyr"),
     )
     out = []
     for quantity, func, unit in functions:
@@ -3536,8 +3570,10 @@ async def _state_http_client(state: Any) -> AsyncIterator[httpx.AsyncClient]:
 
 
 def _http_error(exc: Exception) -> HTTPException:
-    """Map module errors to HTTP: 503 no credentials, 500 misconfiguration, 404 nothing
-    catalogued, 422 bad/unanswerable input, 502 upstream (Anthropic, SIMBAD, Sesame, TAP)."""
+    """Map module errors to HTTP: 503 no credentials or name resolver unreachable, 500
+    misconfiguration, 404 nothing catalogued or an unknown object name, 422 bad/unanswerable
+    input, 502 upstream (Anthropic, SIMBAD, Sesame, TAP) -- name failures as every route
+    reports them (models.resolution_failure_status)."""
     if isinstance(exc, AINotConfiguredError):
         return HTTPException(status_code=503, detail=str(exc))
     if isinstance(exc, AIConfigurationError):
@@ -3548,12 +3584,14 @@ def _http_error(exc: Exception) -> HTTPException:
         return HTTPException(status_code=422, detail={"message": str(exc), "errors": exc.errors, "history": exc.history})
     if isinstance(exc, AIRefusalError):
         return HTTPException(status_code=422, detail=str(exc))
+    if isinstance(exc, UpstreamServiceError) and isinstance(exc.__cause__, ResolverUnavailableError):
+        return HTTPException(status_code=503, detail=str(exc), headers={"Retry-After": "30"})
     if isinstance(exc, (AIUpstreamError, UpstreamServiceError)):
         return HTTPException(status_code=502, detail=str(exc))
     if isinstance(exc, ObjectResolutionError):
-        if _is_sesame_service_failure(exc):
-            return HTTPException(status_code=502, detail=str(exc))
-        return HTTPException(status_code=422, detail=str(exc))
+        status = resolution_failure_status(exc)
+        return HTTPException(status_code=status, detail=str(exc),
+                             headers={"Retry-After": "30"} if status == 503 else None)
     if isinstance(exc, (ValueError, InvalidCoordinateError)):
         return HTTPException(status_code=422, detail=str(exc))
     if isinstance(exc, (CatalogQueryError, ResponseParseError)):

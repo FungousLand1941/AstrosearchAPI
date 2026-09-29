@@ -9,6 +9,7 @@ Record (live network; one upload/XMatch request per catalog and radius group):
     .venv/Scripts/python.exe tests/test_batch_fixtures.py record            # every case
     .venv/Scripts/python.exe tests/test_batch_fixtures.py record canary     # one case
     .venv/Scripts/python.exe tests/test_batch_fixtures.py record canary gaia_dr3   # one catalog of a case
+    .venv/Scripts/python.exe tests/test_batch_fixtures.py record j2000_tables vizier:I/322A/out
 
 Stored as ``tests/fixtures/batch/<case>/<catalog>.json`` plus ``<catalog>.<n>.body``.
 """
@@ -67,11 +68,93 @@ HD209458_OFFSETS = [
     for pa in range(0, 360, 45)
 ]
 
+# Bright high-proper-motion stars at their SIMBAD ICRS J2000 positions (sim-tap basic, 2026-09-28), matched
+# against generic VizieR tables whose meta.main positions are NOT what CDS XMatch matches on (Hipparcos
+# RAICRS/RArad are at J1991.25; XMatch matches VizieR's computed _RAJ2000/_DEJ2000 at J2000), SIMBAD and
+# 2MASS. Every star twice: as given (no epoch, the default batch input) and at epoch 2000 with its SIMBAD proper
+# motion ("@pm" ids).
+BRIGHT_STARS: dict[str, tuple[float, float, float, float]] = {
+    "Barnard": (269.4520769586187, 4.693364966576667, -801.551, 10362.394),
+    "61 Cyg A": (316.7247482895925, 38.74941731943694, 4164.209, 3249.614),
+    "Arcturus": (213.915300294925, 19.1824091615312, -1093.39, -2000.06),
+    "Sirius": (101.28715533333335, -16.71611586111111, -546.01, -1223.07),
+    "Procyon": (114.82549790798149, 5.224987557059477, -714.59, -1036.8),
+    "Altair": (297.69582729638694, 8.868321196436963, 536.23, 385.29),
+    "HD 209458": (330.79488644388, 18.88431927594, 29.766, -17.976),
+}
+HIPPARCOS_TARGETS = (
+    [{"id": name, "ra": ra, "dec": dec} for name, (ra, dec, _pa, _pd) in BRIGHT_STARS.items()]
+    + [{"id": f"{name}@pm", "ra": ra, "dec": dec, "epoch": 2000.0, "pm_ra_masyr": pa, "pm_dec_masyr": pd}
+       for name, (ra, dec, pa, pd) in BRIGHT_STARS.items()]
+)
+HIPPARCOS_CATALOGS = ["vizier:I/239/hip_main", "vizier:I/311/hip2", "vizier:I/259/tyc2", "simbad", "twomass_psc"]
+
+# The same survey requested under its registry name and as a VizieR view must get the same posterior: 3C 273,
+# HD 209458 and a star in the core of M13 (2MASS 16414162+3627415, SIMBAD M 13 centre 16 41 41.634 +36 27 40.75).
+DENSITY_TARGETS = [{"id": key, "ra": TARGETS[key][0], "dec": TARGETS[key][1]} for key in ("3c273", "hd209458")] + [
+    {"id": "M13 core", "ra": 250.423475, "dec": 36.461319}]
+DENSITY_CATALOGS = ["twomass_psc", "vizier:II/246/out", "gaia_dr3", "vizier:I/355/gaiadr3"]
+DENSITY_RADIUS = 3.0
+
+# A target whose epoch-widened cone exceeds the CDS XMatch limit (180"): 3C 286 (SIMBAD J2000
+# 13 31 08.288 +30 30 32.96) at epoch 2024 without a proper motion needs 5" + 10.5"/yr x 26.6 yr against 2MASS
+# (1997.4-2001.2) -- capped at 180". Its 2MASS counterpart is 13310829+3030331.
+WIDE_EPOCH_TARGETS = [{"id": "3C 286@2024", "ra": 202.7845329, "dec": 30.5091550, "epoch": 2024.0}]
+
+# Tycho-2 identifiers: a 170" cone on the h Persei (NGC 869) core holds several Tycho-2 stars whose Num (number
+# of observations, UCD meta.id) coincide; their identifiers are TYC1-TYC2-TYC3.
+TYCHO_FIELD_TARGETS = [{"id": "h Per", "ra": 34.7417, "dec": 57.1350}]
+
+# High-proper-motion and planet-host stars at their SIMBAD ICRS J2000 positions with SIMBAD proper motions
+# (mas/yr; sim-tap basic, 2026-09-29), for the astrometric VizieR tables whose own meta.main position is at J2000
+# (UCAC4 I/322A, URAT1 I/329, USNO-B1.0 I/284, NOMAD I/297, Gaia DR2 I/345, EDR3 I/350) and for Hipparcos /
+# Tycho-2 / Gaia DR2 with targets at epoch 2016.
+ASTROMETRIC_STARS: dict[str, tuple[float, float, float, float]] = {
+    "Barnard": (269.4520769586187, 4.693364966576667, -801.551, 10362.394),
+    "61 Cyg A": (316.7247482895925, 38.74941731943694, 4164.209, 3249.614),
+    "Kapteyn": (77.91912433145708, -45.01843381524333, 6491.223, -5708.614),
+    "Groombridge 1830": (178.2448639115646, 37.718681698090286, 4002.655, -5817.8),
+    "Lacaille 9352": (346.4668157737879, -35.85307088473306, 6765.995, 1330.285),
+    "tau Cet": (26.01701307163417, -15.93747989102139, -1721.728, 854.963),
+    "51 Peg": (344.36658535524, 20.768832511140005, 207.328, 61.164),
+    "HD 189733": (300.18213726402, 22.71085365096, -3.208, -250.323),
+    "HD 80606": (140.65657001363, 50.60373203519, 56.022, 10.331),
+    "Polaris": (37.954560670189856, 89.26410896994187, 44.48, -11.85),
+}
+# As given by a user with J2000 positions and no epoch (the default batch input).
+J2000_TABLE_TARGETS = [{"id": name, "ra": ra, "dec": dec} for name, (ra, dec, _pa, _pd) in ASTROMETRIC_STARS.items()]
+J2000_TABLE_CATALOGS = ["vizier:I/322A/out", "vizier:I/329/urat1", "vizier:I/284/out", "vizier:I/297/out",
+                        "vizier:I/345/gaia2", "vizier:I/350/gaiaedr3", "vizier:I/317/sample"]
+
+
+def _at_2016(name: str) -> dict[str, Any]:
+    from models import propagate_radec
+
+    ra, dec, pa, pd = ASTROMETRIC_STARS[name]
+    ra16, dec16 = propagate_radec(ra, dec, pa, pd, 2000.0, 2016.0)
+    return {"id": name, "ra": ra16, "dec": dec16, "epoch": 2016.0, "pm_ra_masyr": pa, "pm_dec_masyr": pd}
+
+
+# The same stars at epoch 2016.0 (SIMBAD J2000 positions moved with their proper motions) with the proper motion.
+DATED_2016_TARGETS = [_at_2016(name) for name in ASTROMETRIC_STARS]
+DATED_2016_CATALOGS = ["vizier:I/311/hip2", "vizier:I/239/hip_main", "vizier:I/259/tyc2", "vizier:I/345/gaia2"]
+# 3C 273 (SIMBAD J2000) in a 20" cone: several USNO-B1.0 / NOMAD sources whose 13-character ids XMatch declares
+# as char arraysize 12.
+USNOB_FIELD_TARGETS = [{"id": "3C 273", "ra": 187.27791594049, "dec": 2.05238823055}]
+
 CASES: dict[str, dict[str, Any]] = {
     "canary": {"targets": CANARY_TARGETS, "catalogs": UPLOAD_CATALOGS, "radius": CANARY_RADIUS},
     "vega": {"targets": [VEGA, VEGA_ADJACENT], "catalogs": VEGA_CATALOGS, "radius": 5.0},
     "generic": {"targets": GENERIC_TARGETS, "catalogs": GENERIC_CATALOGS, "radius": 5.0},
     "hd209458_offsets": {"targets": HD209458_OFFSETS, "catalogs": ["simbad"], "radius": 3.0},
+    "hipparcos": {"targets": HIPPARCOS_TARGETS, "catalogs": HIPPARCOS_CATALOGS, "radius": 5.0},
+    "density": {"targets": DENSITY_TARGETS, "catalogs": DENSITY_CATALOGS, "radius": DENSITY_RADIUS},
+    "wide_epoch": {"targets": WIDE_EPOCH_TARGETS, "catalogs": ["vizier:II/246/out", "twomass_psc"], "radius": 5.0},
+    "tycho_field": {"targets": TYCHO_FIELD_TARGETS, "catalogs": ["vizier:I/259/tyc2"], "radius": 170.0},
+    "j2000_tables": {"targets": J2000_TABLE_TARGETS, "catalogs": J2000_TABLE_CATALOGS, "radius": 5.0},
+    "dated_2016": {"targets": DATED_2016_TARGETS, "catalogs": DATED_2016_CATALOGS, "radius": 3.0},
+    "usnob_field": {"targets": USNOB_FIELD_TARGETS, "catalogs": ["vizier:I/284/out", "vizier:I/297/out"],
+                    "radius": 20.0},
 }
 
 

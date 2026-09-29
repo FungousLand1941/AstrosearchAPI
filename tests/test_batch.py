@@ -478,19 +478,35 @@ def test_upload_failure_without_fallback_is_reported():
     assert set(result.failures[0]) == {"first"}
 
 
-def test_xmatch_cone_wider_than_180_arcsec_is_not_sent_to_xmatch():
-    """Epoch 1950 without a proper motion: the Gaia cone is widened to ~305" (> XMatch's 180" limit)."""
+def test_xmatch_cone_wider_than_180_arcsec_is_capped_without_fallback():
+    """Epoch 1950 without a proper motion: the Gaia cone is widened to ~305" (> XMatch's 180" limit). Without a
+    cone fallback it is capped at 180" -- the trade-off models.plan_cone makes at EPOCH_PAD_MAX_ARCSEC -- and the
+    warning says so (it used to claim a cone search that never happened, and the target failed)."""
+    sent: list[dict[str, str]] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        sent.append(multipart_fields(request.headers["content-type"], request_body(request)))
+        return httpx.Response(200, content=b'<?xml version="1.0"?><VOTABLE version="1.3"><RESOURCE type="results">'
+                              b'<INFO name="QUERY_STATUS" value="OK"/><TABLE><FIELD name="angDist" datatype="double"/>'
+                              b'<FIELD name="t_idx" datatype="int"/><DATA><TABLEDATA></TABLEDATA></DATA></TABLE>'
+                              b"</RESOURCE></VOTABLE>", headers={"content-type": "text/xml"})
 
     async def go() -> BatchResult:
-        with respx.mock(assert_all_mocked=True):  # no route: any request would fail the test
+        with respx.mock(assert_all_mocked=True) as router:
+            router.route().mock(side_effect=handler)
             async with offline_client() as client:
                 return await BatchCrossmatcher(client=client, fallback_to_cone=False).run(
                     [{"id": "old", "ra": 10.0, "dec": 10.0, "epoch": 1950.0}], ["gaia_dr3"], radius_arcsec=5)
 
     result = asyncio.run(go())
     run = result.runs["gaia_dr3"]
-    assert run.requests == 0 and run.failed_targets == 1
-    assert "wider than the XMatch limit" in run.warnings[0]
+    assert run.requests == 1 and run.failed_targets == 0 and run.refused_targets == 0
+    assert [f["distMaxArcsec"] for f in sent] == ["180.000"]
+    assert sent[0]["cat1"].splitlines()[1] == "0,10.0,10.0"
+    assert not any("cone search" in w for w in run.warnings)
+    assert any("capped at the XMatch limit of 180 arcsec (the cone fallback is disabled)" in w for w in run.warnings)
+    assert any("epoch gap 66.0 yr needs a 698 arcsec cone" in w and "capped at the CDS XMatch limit" in w
+               for w in run.warnings), run.warnings
 
 
 # ---------------------------------------------------------------------------

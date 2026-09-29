@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>Arp 220</name>
+  <!-- Q8483502 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 0ms [0] -->
+    <INFO>from cache</INFO>
+    <oid>2812402</oid>
+    <otype>SyG</otype>
+    <jpos>15:34:57.22 +23:30:11.6</jpos>
+    <jradeg>233.73843317</jradeg>
+    <jdedeg>23.50322456</jdedeg>
+    <refPos>1992MNRAS.254..655P</refPos>
+    <errRAmas>12</errRAmas><errDEmas>12</errDEmas>
+    <z><v>0.018101</v><q>C</q><r>2016ApJS..226...11S</r></z>
+    <MType>SAd</MType>
+    <oname>IC 1127</oname>
+    <alias>IC 4553</alias>
+    <alias>AKARI-IRC-V1 J1534572+233011</alias>
+    <alias>APG 220</alias>
+    <alias>BWE 1532+2339</alias>
+    <alias>7C 153246.8+233951</alias>
+    <alias>ECO 11597</alias>
+    <alias>FASHI J153455.59+233013.2</alias>
+    <alias>FIRST J153457.2+233011</alias>
+    <alias>GB6 J1534+2330</alias>
+    <alias>GB6 B1532+2340</alias>
+    <alias>87GB 153247.1+233949</alias>
+    <alias>GLEAM J153456+233020</alias>
+    <alias>IC 1127</alias>
+    <alias>IRAS 15327+2340</alias>
+    <alias>IRAS F15327+2340</alias>
+    <alias>JCMTSE J153457.4+233013</alias>
+    <alias>JCMTSF J153457.4+233013</alias>
+    <alias>JVAS B1532+236</alias>
+    <alias>JVAS J1534+2330</alias>
+    <alias>KPG 470b</alias>
+    <alias>LEDA 55497</alias>
+    <alias>2MASX J15345727+2330104</alias>
+    <alias>MCG+04-37-005</alias>
+    <alias>MITG J153458+2330</alias>
+    <alias>NVSS J153457+233011</alias>
+    <alias>PSCz Q15327+2340</alias>
+    <alias>RFC J1534+2330</alias>
+    <alias>SDSS J153457.20+233013.2</alias>
+    <alias>TGSSADR J153457.3+233011</alias>
+    <alias>TXS 1532+236</alias>
+    <alias>UGC 9913</alias>
+    <alias>UZC J153457.4+233011</alias>
+    <alias>VV 540</alias>
+    <alias>WB 1532+2339</alias>
+    <alias>WISEA J153457.24+233011.4</alias>
+    <alias>WISE J153457.25+233011.5</alias>
+    <alias>2XMM J153457.3+233011</alias>
+    <alias>Z 136-17</alias>
+    <alias>Z 1532.8+2340</alias>
+    <alias>[A2001] Arp 220 7.3</alias>
+    <alias>[A2001] Arp 220 3</alias>
+    <alias>[CAB95] IRAS F15327+2340</alias>
+    <alias>[CHM2007] LDC 1130 J153457.27+2330104</alias>
+    <alias>[DC78] UGC 9913</alias>
+    <alias>[HSN2016] J233.73+23.50</alias>
+    <alias>[PWL2016] P1</alias>
+    <alias>[VV2000c] J153457.3+233012</alias>
+    <alias>[VV2003c] J153457.3+233012</alias>
+    <alias>[VV2006c] J153457.3+233012</alias>
+    <alias>[VV2010c] J153457.3+233012</alias>
+    <alias>[VV98c] J153457.3+233012</alias>
+    <alias>[WZX98] 15327+2340</alias>
+    <nrefs>3113</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ====Done (2026-Sep-29,05:02:05z)==== -->

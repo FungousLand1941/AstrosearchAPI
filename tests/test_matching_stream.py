@@ -23,7 +23,8 @@ from crossmatch import CrossmatchService
 from models import CatalogRegistry, CatalogSource, CatalogUnavailableError, offset_radec
 from providers import QueryResult
 
-RA, DEC = 150.0, 20.0
+# Coordinates given to 6 decimals (0.004" rounding): the target sigma stays at 0.1".
+RA, DEC = 150.123456, 20.654321
 DELAYS = {"gaia_dr3": 0.05, "twomass_psc": 0.25, "allwise": 1.2}
 
 
@@ -138,6 +139,8 @@ async def test_stream_validates_inputs_before_querying() -> None:
         await collect(service.crossmatch_stream(RA, DEC, catalogs=["nope"]))
     with pytest.raises(ValueError, match="ra and dec"):
         await collect(service.crossmatch_stream())
+    with pytest.raises(ValueError, match="catalogs"):
+        await collect(service.crossmatch_stream(RA, DEC, catalogs=[]))
     assert provider.finished == {}
 
 
@@ -274,6 +277,111 @@ def test_router_unknown_name_is_404() -> None:
     assert response.status_code == 404
 
 
+SESAME_3C273 = (Path(__file__).resolve().parent / "fixtures" / "sesame" / "3c273.xml").read_text(encoding="utf-8")
+
+
+@pytest.mark.parametrize("params", [
+    {"pm_ra_masyr": 5.0},  # pm without its other component
+    {"epoch": 3000.0},
+    {"epoch": 1700.0},
+    {"parallax_mas": 2000.0},
+    {"pm_ra_masyr": 30000.0, "pm_dec_masyr": 0.0},  # > 20"/yr
+    {"completeness": 1.5},
+    {"target_class": "planet"},
+    {"catalogs": ","},
+])
+def test_router_invalid_target_parameters_are_422(params) -> None:
+    # Coordinates path (InvalidCoordinateError used to escape as a 500) ...
+    from fastapi.testclient import TestClient
+
+    service, provider = make_fake_service()
+    with TestClient(make_app(service)) as client:
+        response = client.get("/api/v1/search/stream", params={"ra": RA, "dec": DEC, **params})
+        assert response.status_code == 422, (params, response.status_code, response.text)
+        # ... and the name path (was a 200 stream with only an 'error' event).
+        with respx.mock(assert_all_called=False) as router:
+            router.route(host="testserver").pass_through()
+            router.get(url__startswith="https://cds.unistra.fr/cgi-bin/nph-sesame").respond(200, text=SESAME_3C273)
+            response = client.get("/api/v1/search/stream", params={"name": "3C 273", **params})
+        assert response.status_code == 422, (params, response.status_code, response.text)
+        assert "event:" not in response.text
+    assert provider.finished == {}
+
+
+def test_router_name_with_coordinates_is_422() -> None:
+    from fastapi.testclient import TestClient
+
+    service, _ = make_fake_service()
+    with TestClient(make_app(service)) as client:
+        response = client.get("/api/v1/search/stream", params={"name": "3C 273", "ra": RA, "dec": DEC})
+    assert response.status_code == 422 and "not both" in response.json()["detail"]
+
+
+def test_router_sesame_outage_is_503_not_404() -> None:
+    from fastapi.testclient import TestClient
+
+    service, _ = make_fake_service()
+    with respx.mock(assert_all_called=False) as router:
+        router.route(host="testserver").pass_through()
+        router.get(url__startswith="https://cds.unistra.fr/cgi-bin/nph-sesame").respond(503, text="down")
+        with TestClient(make_app(service)) as client:
+            response = client.get("/api/v1/search/stream", params={"name": "3C 273"})
+    assert response.status_code == 503 and "unavailable" in response.json()["detail"]
+
+
+def test_router_name_with_epoch_streams_the_moved_position() -> None:
+    from fastapi.testclient import TestClient
+    from httpx_sse import connect_sse
+
+    from models import propagate_radec
+
+    barnard = (Path(__file__).resolve().parent / "fixtures" / "sesame" / "barnards_star.xml").read_text(encoding="utf-8")
+    service, _ = make_fake_service()
+    with respx.mock(assert_all_called=False) as router:
+        router.route(host="testserver").pass_through()
+        router.get(url__startswith="https://cds.unistra.fr/cgi-bin/nph-sesame").respond(200, text=barnard)
+        with TestClient(make_app(service)) as client, connect_sse(
+                client, "GET", "/api/v1/search/stream",
+                params={"name": "Barnard's star", "epoch": 2016.0, "catalogs": "gaia_dr3"}) as source:
+            events = list(source.iter_sse())
+    start = events[0].json()
+    ra16, dec16 = propagate_radec(269.45207696, 4.69336497, -801.551, 10362.394, 2000.0, 2016.0)
+    assert start["target"]["epoch"] == 2016.0 and start["target"]["pm_dec_masyr"] == pytest.approx(10362.394)
+    assert start["target"]["ra"] == pytest.approx(ra16, abs=1e-9)
+    assert start["target"]["dec"] == pytest.approx(dec16, abs=1e-9)
+
+
+async def test_error_events_carry_the_status_and_detail_the_web_ui_reads() -> None:
+    from models import CatalogUnavailableError, InvalidCoordinateError, ObjectResolutionError, ResolverUnavailableError
+
+    cases = ((RuntimeError("archive exploded"), 500), (InvalidCoordinateError("DEC must be ..."), 422),
+             (ObjectResolutionError("unknown"), 404), (ResolverUnavailableError("HTTP 503"), 502),
+             (CatalogUnavailableError("HTTP 502"), 502), (TimeoutError(), 504))
+    for exc, status in cases:
+        async def broken(exc=exc):
+            yield {"event": "start", "data": {}}
+            raise exc
+
+        chunks = [c async for c in streaming.event_stream(broken(), keepalive=5.0)]
+        payload = json.loads(chunks[-1].split("data: ", 1)[1])
+        assert chunks[-1].startswith("event: error\n")
+        assert payload["status"] == status and payload["detail"] and payload["error_type"] == type(exc).__name__
+
+
+def test_sse_frame_keeps_unicode_line_separators_inside_one_data_line() -> None:
+    from httpx_sse._decoders import SSEDecoder
+
+    data = {"note": "abc def ghi\u0085jkl", "name": "été \U0001f30c"}
+    frame = streaming.sse_frame("catalog", data, 3)
+    assert frame.count("data: ") == 1 and frame.endswith("\n\n")
+    decoder = SSEDecoder()
+    # The frame ends with "\n\n": the lines up to the terminating blank line dispatch once.
+    events = [e for line in frame.split("\n")[:-1] if (e := decoder.decode(line)) is not None]
+    assert len(events) == 1 and json.loads(events[0].data) == data
+    # str.splitlines() of the whole frame (what broke before) keeps the payload whole too.
+    assert sum(line.startswith("data: ") for line in frame.splitlines()) == 1
+
+
 async def test_client_disconnect_cancels_pending_catalogue_queries() -> None:
     """Drive the ASGI app directly: the client disconnects after the first catalogue
     event; the slow catalogue queries must be cancelled and the response must end."""
@@ -378,3 +486,46 @@ def test_cli_stream_sse_format_and_errors(capsys: pytest.CaptureFixture[str]) ->
     bad = _parse(["stream", "--ra", str(RA), "--dec", str(DEC), "--catalogs", "nope"])
     bad.service = service
     assert bad.handler(bad) == 2
+
+
+def test_cli_stream_reports_bad_input_and_unknown_names_without_a_traceback(capsys) -> None:
+    from models import ObjectResolutionError
+
+    service, provider = make_fake_service()
+    for argv in (["stream", "--ra", "10", "--dec", "95"],  # InvalidCoordinateError
+                 ["stream", "--ra", "10", "--dec", "10", "--catalogs", ","],  # names no catalogue
+                 ["stream", "--ra", "10", "--dec", "10", "--epoch", "2000", "--pm-ra", "5"],
+                 ["stream", "--name", "x", "--ra", "10"]):
+        args = _parse(argv)
+        args.service = service
+        assert args.handler(args) == 2, argv
+    out = capsys.readouterr().out
+    assert "InvalidCoordinateError" in out and "Traceback" not in out
+
+    class Unknown:
+        async def resolve(self, name):
+            raise ObjectResolutionError(f"No coordinates found for object {name!r}.")
+
+    class NamedService:
+        def crossmatch_stream(self, *a, **kw):
+            return service.crossmatch_stream(*a, **{**kw, "resolver": Unknown()})
+
+    args = _parse(["stream", "--name", "Kruger 60 A"])
+    args.service = NamedService()
+    assert args.handler(args) == 2
+    assert "ObjectResolutionError" in capsys.readouterr().out
+    assert provider.finished == {}
+
+
+def test_cli_stream_passes_epoch_motion_and_parallax(capsys) -> None:
+    service, _ = make_fake_service()
+    args = _parse(["stream", "--ra", str(RA), "--dec", str(DEC), "--epoch", "2016", "--pm-ra", "10", "--pm-dec", "-5",
+                   "--parallax", "20", "--target-pm-error", "0.5", "--catalogs", "gaia_dr3", "--record"])
+    args.service = service
+    assert args.handler(args) == 0
+    lines = [json.loads(line) for line in capsys.readouterr().out.splitlines()]
+    target = lines[0]["data"]["target"]
+    assert (target["epoch"], target["pm_ra_masyr"], target["pm_dec_masyr"], target["parallax_mas"]) == \
+        (2016.0, 10.0, -5.0, 20.0)
+    record = lines[-1]["data"]["record"]
+    assert record["provenance"]["association"]["target_pm_error_masyr"] == 0.5

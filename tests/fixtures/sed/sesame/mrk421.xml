@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>Mrk 421</name>
+  <!-- Q8483448 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 0ms [0] -->
+    <INFO>from cache</INFO>
+    <oid>21088992</oid>
+    <otype>BLL</otype>
+    <jpos>11:04:27.31 +38:12:31.7</jpos>
+    <jradeg>166.11380868</jradeg>
+    <jdedeg>38.20883292</jdedeg>
+    <refPos>2020yCat.1350....0G</refPos>
+    <errRAmas>0.0124</errRAmas><errDEmas>0.0148</errDEmas>
+    <pm>
+      <v>0.119</v><e>0.024</e><q>A</q><r>2020yCat.1350....0G</r>
+      <pa>289</pa>
+      <pmRA>-0.112</pmRA><epmRA>0.017</epmRA>
+      <pmDE>0.039</pmDE><epmDE>0.017</epmDE>
+    </pm>
+    <z><v>0.030</v><q>D</q><r>2016ApJ...818..113N</r></z>
+    <plx><v>0.0037</v><e>0.0182</e><q>A</q><r>2020yCat.1350....0G</r></plx>
+    <oname>Z 184-50</oname>
+    <alias>6C 110140+382847</alias>
+    <alias>1A 1103+38</alias>
+    <alias>2A 1102+384</alias>
+    <alias>3A 1102+385</alias>
+    <alias>1AGL J1104+3754</alias>
+    <alias>2AGL J1105+3813</alias>
+    <alias>1AGLR J1105+3818</alias>
+    <alias>ARGO J1105+3821</alias>
+    <alias>AT 1112+400</alias>
+    <alias>B2 1101+38</alias>
+    <alias>B2.3 1101+38</alias>
+    <alias>B2 1101+384</alias>
+    <alias>B3 1101+384</alias>
+    <alias>B3VLA 1101+384</alias>
+    <alias>BPS BS 16553-0057</alias>
+    <alias>BPS BS 16545-0024</alias>
+    <alias>BWE 1101+3828</alias>
+    <alias>7C 110140.70+382847.00</alias>
+    <alias>CASG 1364</alias>
+    <alias>CGRaBS J1104+3812</alias>
+    <alias>CJ1 1101+384</alias>
+    <alias>CJF B1101+384</alias>
+    <alias>CLASS J110427.3144+381231.794</alias>
+    <alias>CRATES J110428+381228</alias>
+    <alias>2E 2393</alias>
+    <alias>2E 1101.6+3828</alias>
+    <alias>2EG J1104+3812</alias>
+    <alias>3EG J1104+3809</alias>
+    <alias>EGR J1104+3813</alias>
+    <alias>1ES 1101+38.4</alias>
+    <alias>2EUVE J1104+38.2</alias>
+    <alias>EUVE J1104+38.1</alias>
+    <alias>EUVE J1104+38.2</alias>
+    <alias>FBQS J1104+3812</alias>
+    <alias>0FGL J1104.5+3811</alias>
+    <alias>1FGL J1104.4+3812</alias>
+    <alias>2FGL J1104.4+3812</alias>
+    <alias>3FGL J1104.4+3812</alias>
+    <alias>4FGL J1104.4+3812</alias>
+    <alias>1FHL J1104.4+3812</alias>
+    <alias>2FHL J1104.4+3812</alias>
+    <alias>3FHL J1104.4+3812</alias>
+    <alias>FIRST J110427.3+381231</alias>
+    <alias>FL8Y J1104.4+3812</alias>
+    <alias>1FLE J1105+3807</alias>
+    <alias>GB2 1101+384</alias>
+    <alias>GB6 J1104+3812</alias>
+    <alias>GB6 B1101+3828</alias>
+    <alias>87GB 110140.1+382841</alias>
+    <alias>GeV J1104+3809</alias>
+    <alias>1H 1104+382</alias>
+    <alias>HESS J1104+382</alias>
+    <alias>H 1105+38</alias>
+    <alias>3HSP J110427.3+381231</alias>
+    <alias>2HWC J1104+381</alias>
+    <alias>3HWC J1104+381</alias>
+    <alias>ICRF J110427.3+381231</alias>
+    <alias>IERS B1101+384</alias>
+    <alias>ILT J110427.27+381241.8</alias>
+    <alias>INTREF 438</alias>
+    <alias>IVS B1101+384</alias>
+    <alias>JVAS B1101+384</alias>
+    <alias>JVAS J1104+3812</alias>
+    <alias>JVAS J1104+382</alias>
+    <alias>KUG 1101+384A</alias>
+    <alias>LEDA 33452</alias>
+    <alias>1LHAASO J1104+3810</alias>
+    <alias>MASIV J1104+3812</alias>
+    <alias>2MASS J11042730+3812318</alias>
+    <alias>2MASX J11042732+3812320</alias>
+    <alias>2MAXI J1104+382</alias>
+    <alias>MITG J110425+3813</alias>
+    <alias>Mrk 421</alias>
+    <alias>MY 110140.9+381236.6</alias>
+    <alias>NFGS 74</alias>
+    <alias>NVSS J110427+381231</alias>
+    <alias>NVSS J110427+381232</alias>
+    <alias>OHIO M 303</alias>
+    <alias>PBC J1104.4+3813</alias>
+    <alias>PG 1101+384</alias>
+    <alias>PG 1101+385</alias>
+    <alias>PKS 1101+384</alias>
+    <alias>QSO B1101+384</alias>
+    <alias>QSO J1104+3812</alias>
+    <alias>QSO B1101+3828</alias>
+    <alias>RBPL J1104+3812</alias>
+    <alias>RBS 939</alias>
+    <alias>2RE J1104+381</alias>
+    <alias>2RE J110424+381203</alias>
+    <alias>RE J1104+381</alias>
+    <alias>RE J110423+381214</alias>
+    <alias>RFC J1104+3812</alias>
+    <alias>RGB J1104+382</alias>
+    <alias>RX J1104.4+3812</alias>
+    <alias>1RXS J110427.1+381231</alias>
+    <alias>S4 1101+384</alias>
+    <alias>S4 1101+38</alias>
+    <alias>S4 1101+364</alias>
+    <alias>SDSS J110427.31+381231.7</alias>
+    <alias>SHBL J110427.3+381231</alias>
+    <alias>SRGA J110427.9+381234</alias>
+    <alias>SWIFT J1104.5+3813</alias>
+    <alias>SWIFT J1104.5+3812</alias>
+    <alias>SWIFT J1104.4+3812</alias>
+    <alias>TeV J1104+3811</alias>
+    <alias>TeV J1104+382</alias>
+    <alias>TGSSADR J110427.3+381241</alias>
+    <alias>TIC 353970208</alias>
+    <alias>TXS 1101+384</alias>
+    <alias>UGC 6132</alias>
+    <alias>UZC J110427.3+381232</alias>
+    <alias>VIPS J11044+3812</alias>
+    <alias>VIPS 402</alias>
+    <alias>VLSSr J110427.9+381244</alias>
+    <alias>WB 1101+3828</alias>
+    <alias>WD 1101+384</alias>
+    <alias>WD 1101+385</alias>
+    <alias>2WHSP J110427.3+381230</alias>
+    <alias>WISEA J110427.30+381231.7</alias>
+    <alias>WISE J110427.32+381231.9</alias>
+    <alias>WN B1101.6+3828</alias>
+    <alias>WN B1101.6+3828A</alias>
+    <alias>2XMM J110427.3+381231</alias>
+    <alias>XMMSL1 J110427.8+381230</alias>
+    <alias>XSS J11045+3808</alias>
+    <alias>9Y-MST J1104+3812</alias>
+    <alias>Z 184-50</alias>
+    <alias>Z 1101.7+3828</alias>
+    <alias>[BAG2012] 166.1311+38.2082</alias>
+    <alias>[BDW2002] q1101+3828</alias>
+    <alias>[CHM2007] LDC 773 J110427.32+3812320</alias>
+    <alias>[CHM2007] HDC 625 J110427.32+3812320</alias>
+    <alias>[DGT2001] B1101+384</alias>
+    <alias>[FS2003] 0578</alias>
+    <alias>[HB93] 1101+384</alias>
+    <alias>[HSN2016] J166.11+38.20</alias>
+    <alias>[IN88] 1101+384</alias>
+    <alias>[LBC2010] B1101+384</alias>
+    <alias>[MGL2009] BZB J1104+3812</alias>
+    <alias>[MML2015] 5BZB J1104+3812</alias>
+    <alias>[U78] 1101+38 1</alias>
+    <alias>[VV2000b] J110427.2+381232</alias>
+    <alias>[VV2003b] J110427.2+381232</alias>
+    <alias>[VV2006b] J110427.2+381232</alias>
+    <alias>[VV2010b] J110427.2+381232</alias>
+    <alias>[VV98b] J110427.2+381232</alias>
+    <alias>[ZEH2003] RX J1104.4+3812 1</alias>
+    <alias>AAVSO 1058+38</alias>
+    <alias>Gaia DR3 763335402123160576</alias>
+    <alias>Gaia DR1 763335397827754112</alias>
+    <alias>Gaia DR2 763335402123160576</alias>
+    <nrefs>2870</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ====Done (2026-Sep-29,05:01:40z)==== -->

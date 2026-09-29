@@ -12,6 +12,14 @@
     {
       "method": "POST",
       "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+100+table_name%2C+description%2C+nrows+FROM+TAP_SCHEMA.tables+WHERE+%28description+LIKE+%27%25galaxy%25%27+OR+description+LIKE+%27%25Galaxy%25%27+OR+description+LIKE+%27%25GALAXY%25%27%29+AND+%28description+LIKE+%27%25redshift%25%27+OR+description+LIKE+%27%25Redshift%25%27+OR+description+LIKE+%27%25REDSHIFT%25%27%29+ORDER+BY+nrows+DESC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
       "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+table_name%2C+description%2C+nrows+FROM+TAP_SCHEMA.tables+WHERE+table_name+LIKE+%27%22V%2F159%2F%25%27+OR+table_name+LIKE+%27%22VII%2F213%2F%25%27+OR+table_name+LIKE+%27%22VII%2F287%2F%25%27+OR+table_name+LIKE+%27%22VII%2F299%2F%25%27+OR+table_name+LIKE+%27%22IX%2F52%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F684%2F136%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F684%2F1026%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F685%2F235%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F685%2F904%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F690%2F670%2F%25%27&FORMAT=json",
       "status_code": 200,
       "content_type": "application/json;charset=UTF-8",

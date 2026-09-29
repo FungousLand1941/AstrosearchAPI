@@ -1,0 +1,713 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-29T03:46:25 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-29T03:46:25">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-source=V%2F160+II%2F374+J%2FA%2BA%2F677%2FA137+J%2FA%2BA%2F687%2FA177+J%2FA%2BA%2F673%2FA155+J%2FA%2BA%2F712%2FA171+J%2FA%2BA%2F704%2FA344+J%2FA%2BA%2F666%2FA64+J%2FMNRAS%2F510%2F4308+III%2F283+J%2FA%2BA%2F701%2FA263+J%2FAJ%2F168%2F25+J%2FMNRAS%2F521%2F208+J%2Fother%2FNat%2F603.599+J%2FApJS%2F267%2F34+J%2FAJ%2F166%2F218+J%2FA%2BA%2F696%2FA243+J%2FA%2BA%2F670%2FL2+J%2FA%2BA%2F664%2FA175+J%2FA%2BA%2F699%2FA145+J%2FApJS%2F262%2F7+J%2FA%2BA%2F709%2FA69+J%2FApJS%2F254%2F42+J%2FA%2BA%2F674%2FA33+J%2FA%2BA%2F682%2FA5+J%2FA%2BA%2F662%2FA40+J%2FApJS%2F264%2F8+J%2FApJS%2F257%2F22+J%2FMNRAS%2F503%2F236+J%2FMNRAS%2F518%2F5106+J%2FAJ%2F167%2F139&amp;-meta=">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+
+<RESOURCE ID="yCat_2374" name="II/374" type="meta">
+  <DESCRIPTION>RGB photometric calibration of 213 million Gaia stars (Carrasco+, 2023)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/ii/374">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/ii/374">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Carrasco J.M.">    First author or institution  </INFO>
+  <INFO name="cites" value="https://doi.org/10.">    Article or Data origin sources  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/II/374">    Dataset landing page  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.787565">popularity index</INFO>
+  <INFO name="cpopu" value="426249">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Astronomy" value="Photometry"/>
+  <INFO name="-kw.Astronomy" value="Stars"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=II/374"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_3283" name="III/283" type="meta">
+  <DESCRIPTION>RAVE 6th data release (Steinmetz+, 2020)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/iii/283">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/iii/283">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Steinmetz M.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2020yCat.3283....0S">    Bibcode of the dataset  </INFO>
+  <INFO name="journal" value="yCat">    Journal name  </INFO>
+  <INFO name="original_date" value="2020">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/III/283">    Dataset landing page  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.744129">popularity index</INFO>
+  <INFO name="cpopu" value="208533">number of calls</INFO>
+  <INFO name="-kw.Astronomy" value="Photometry"/>
+  <INFO name="-kw.Astronomy" value="Stars"/>
+  <INFO name="-kw.Astronomy" value="Spectroscopy"/>
+  <INFO name="-kw.Astronomy" value="Velocities"/>
+<INFO name="media" value="spectrum"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=III/283"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_5160" name="V/160" type="meta">
+  <DESCRIPTION>SHBoost 2024 (Khalatyan+, 2024)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/v/160">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/v/160">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Khalatyan A.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2024A&amp;A...691A..98K">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="A&amp;A">    Journal name  </INFO>
+  <INFO name="original_date" value="2024">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/V/160">    Dataset landing page  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.823002">popularity index</INFO>
+  <INFO name="cpopu" value="763791">number of calls</INFO>
+  <INFO name="-kw.Astronomy" value="Abundances"/>
+  <INFO name="-kw.Astronomy" value="Stars"/>
+  <INFO name="-kw.Astronomy" value="Velocities"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=V/160"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_22540042" name="J/ApJS/254/42" type="meta">
+  <DESCRIPTION>Hipparcos-Gaia (EDR3) Catalog of Accelerations (Brandt, 2021)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apjs/254/42">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apjs/254/42">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Brandt T.D.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2021ApJS..254...42B">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJS">    Journal name  </INFO>
+  <INFO name="original_date" value="2021">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJS/254/42">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.22540042">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.697131">popularity index</INFO>
+  <INFO name="cpopu" value="96210">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Astronomy" value="Positional_Data"/>
+  <INFO name="-kw.Astronomy" value="Multiple_Stars"/>
+  <INFO name="-kw.Astronomy" value="Parallaxes"/>
+  <INFO name="-kw.Astronomy" value="Proper_Motions"/>
+  <INFO name="-kw.Astronomy" value="Velocities"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJS/254/42"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_22570022" name="J/ApJS/257/22" type="meta">
+  <DESCRIPTION>Early-type star stellar rotations in LAMOST MRS. I. (Sun+, 2021)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apjs/257/22">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apjs/257/22">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Sun W.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2021ApJS..257...22S">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJS">    Journal name  </INFO>
+  <INFO name="original_date" value="2021">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJS/257/22">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.22570022">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.573488">popularity index</INFO>
+  <INFO name="cpopu" value="12571">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Astronomy" value="Abundances"/>
+  <INFO name="-kw.Astronomy" value="Stars"/>
+  <INFO name="-kw.Astronomy" value="Spectroscopy"/>
+  <INFO name="-kw.Astronomy" value="Velocities"/>
+  <INFO name="-kw.Astronomy" value="Rotational_Velocities"/>
+  <INFO name="-kw.Astronomy" value="Stars:early-type"/>
+  <INFO name="-kw.Astronomy" value="Masses"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJS/257/22"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_22620007" name="J/ApJS/262/7" type="meta">
+  <DESCRIPTION>886 nearby star clusters (He+, 2022)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apjs/262/7">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apjs/262/7">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="He Z.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2022ApJS..262....7H">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJS">    Journal name  </INFO>
+  <INFO name="original_date" value="2022">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJS/262/7">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.22620007">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.710628">popularity index</INFO>
+  <INFO name="cpopu" value="120144">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Astronomy" value="Open_Clusters"/>
+  <INFO name="-kw.Astronomy" value="Parallaxes"/>
+  <INFO name="-kw.Astronomy" value="Proper_Motions"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJS/262/7"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_22640008" name="J/ApJS/264/8" type="meta">
+  <DESCRIPTION>1656 new CWNU star clusters (He+, 2023)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apjs/264/8">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apjs/264/8">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="He Z.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2023ApJS..264....8H">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJS">    Journal name  </INFO>
+  <INFO name="original_date" value="2023">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJS/264/8">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.22640008">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.489802">popularity index</INFO>
+  <INFO name="cpopu" value="3170">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Astronomy" value="Open_Clusters"/>
+  <INFO name="-kw.Astronomy" value="Parallaxes"/>
+  <INFO name="-kw.Astronomy" value="Proper_Motions"/>
+  <INFO name="-kw.Astronomy" value="Velocities"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJS/264/8"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_22670034" name="J/ApJS/267/34" type="meta">
+  <DESCRIPTION>Distant Galactic star clusters from Gaia DR3 (He+, 2023)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apjs/267/34">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apjs/267/34">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="He Z.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2023ApJS..267...34H">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJS">    Journal name  </INFO>
+  <INFO name="original_date" value="2023">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJS/267/34">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.22670034">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.656790">popularity index</INFO>
+  <INFO name="cpopu" value="49528">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Astronomy" value="Globular_Clusters"/>
+  <INFO name="-kw.Astronomy" value="Open_Clusters"/>
+  <INFO name="-kw.Astronomy" value="Photometry"/>
+  <INFO name="-kw.Astronomy" value="Proper_Motions"/>
+  <INFO name="-kw.Astronomy" value="Velocities"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJS/267/34"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_36620040" name="J/A+A/662/A40" type="meta">
+  <DESCRIPTION>Hot subdwarf stars studied with Gaia (Culpan+, 2022)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/a+a/662/a40">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/a+a/662/a40">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Culpan R.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2022A&amp;A...662A..40C">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="A&amp;A">    Journal name  </INFO>
+  <INFO name="original_date" value="2022">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/A+A/662/A40">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.36620040">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.667744">popularity index</INFO>
+  <INFO name="cpopu" value="59314">number of calls</INFO>
+  <INFO name="-kw.Astronomy" value="Photometry"/>
+  <INFO name="-kw.Astronomy" value="Stars"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/A+A/662/A40"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_36640175" name="J/A+A/664/A175" type="meta">
+  <DESCRIPTION>Milky Way low mass young stars from Gaia EDR3 (Prisinzano+, 2022)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/a+a/664/a175">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/a+a/664/a175">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Prisinzano L.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2022A&amp;A...664A.175P">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="A&amp;A">    Journal name  </INFO>
+  <INFO name="original_date" value="2022">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/A+A/664/A175">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.36640175">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.561454">popularity index</INFO>
+  <INFO name="cpopu" value="10312">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Astronomy" value="Open_Clusters"/>
+  <INFO name="-kw.Astronomy" value="Stars"/>
+  <INFO name="-kw.Astronomy" value="YSOs"/>
+  <INFO name="-kw.Astronomy" value="Stars:variable"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/A+A/664/A175"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_36660064" name="J/A+A/666/A64" type="meta">
+  <DESCRIPTION>Sagittarius stream with eDR3 (Ramos+, 2022)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/a+a/666/a64">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/a+a/666/a64">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Ramos P.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2022A&amp;A...666A..64R">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="A&amp;A">    Journal name  </INFO>
+  <INFO name="original_date" value="2022">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/A+A/666/A64">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.36660064">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.537143">popularity index</INFO>
+  <INFO name="cpopu" value="6911">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Astronomy" value="Galaxies"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/A+A/666/A64"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_36709002" name="J/A+A/670/L2" type="meta">
+  <DESCRIPTION>Gaia DR3 of substructure in the stellar halo (Dodd+, 2023)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/a+a/670/l2">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/a+a/670/l2">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Dodd E.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2023A&amp;A...670L...2D">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="A&amp;A">    Journal name  </INFO>
+  <INFO name="original_date" value="2023">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/A+A/670/L2">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.36709002">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.576168">popularity index</INFO>
+  <INFO name="cpopu" value="13138">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Astronomy" value="Stars"/>
+  <INFO name="-kw.Astronomy" value="Velocities"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/A+A/670/L2"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_36730155" name="J/A+A/673/A155" type="meta">
+  <DESCRIPTION>StarHorse data for 8 spectroscopic surveys (Queiroz+, 2023)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/a+a/673/a155">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/a+a/673/a155">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Queiroz A.B.A.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2023A&amp;A...673A.155Q">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="A&amp;A">    Journal name  </INFO>
+  <INFO name="original_date" value="2023">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/A+A/673/A155">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.36730155">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.713870">popularity index</INFO>
+  <INFO name="cpopu" value="126730">number of calls</INFO>
+  <INFO name="-kw.Astronomy" value="Abundances"/>
+  <INFO name="-kw.Astronomy" value="Stars"/>
+  <INFO name="-kw.Astronomy" value="Ages"/>
+  <INFO name="-kw.Astronomy" value="Masses"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/A+A/673/A155"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_36740033" name="J/A+A/674/A33" type="meta">
+  <DESCRIPTION>Gaia synthetic phot. cat. of white dwarfs (Gaia Coll., 2023)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/a+a/674/a33">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/a+a/674/a33">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Gaia Collaboration">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2023A&amp;A...674A..33G">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="A&amp;A">    Journal name  </INFO>
+  <INFO name="original_date" value="2023">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/A+A/674/A33">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.36740033">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.710086">popularity index</INFO>
+  <INFO name="cpopu" value="119077">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Wavelength" value="IR"/>
+  <INFO name="-kw.Astronomy" value="Photometry:wide-band"/>
+  <INFO name="-kw.Astronomy" value="Stars:white_dwarf"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/A+A/674/A33"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_36770137" name="J/A+A/677/A137" type="meta">
+  <DESCRIPTION>Stellar variability in Gaia DR3 (Maiz Apellaniz+, 2023)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/a+a/677/a137">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/a+a/677/a137">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Maiz Apellaniz J.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2023A&amp;A...677A.137M">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="A&amp;A">    Journal name  </INFO>
+  <INFO name="original_date" value="2023">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/A+A/677/A137">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.36770137">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.852317">popularity index</INFO>
+  <INFO name="cpopu" value="1237437">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Astronomy" value="Photometry"/>
+  <INFO name="-kw.Astronomy" value="Stars:variable"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/A+A/677/A137"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_36820005" name="J/A+A/682/A5" type="meta">
+  <DESCRIPTION>Gaia white dwarfs Classification (Vincent+, 2024)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/a+a/682/a5">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/a+a/682/a5">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Vincent D.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2024A&amp;A...682A...5V">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="A&amp;A">    Journal name  </INFO>
+  <INFO name="original_date" value="2024">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/A+A/682/A5">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.36820005">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.705082">popularity index</INFO>
+  <INFO name="cpopu" value="109662">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Astronomy" value="Stars"/>
+  <INFO name="-kw.Astronomy" value="Photometry:wide-band"/>
+  <INFO name="-kw.Astronomy" value="Masses"/>
+  <INFO name="-kw.Astronomy" value="Stars:white_dwarf"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/A+A/682/A5"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_36870177" name="J/A+A/687/A177" type="meta">
+  <DESCRIPTION>Metallicities for 10861062 stars (Xylakis-Dornbusch+, 2024)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/a+a/687/a177">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/a+a/687/a177">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Xylakis-Dornbusch T.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2024A&amp;A...687A.177X">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="A&amp;A">    Journal name  </INFO>
+  <INFO name="original_date" value="2024">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/A+A/687/A177">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.36870177">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.760338">popularity index</INFO>
+  <INFO name="cpopu" value="272295">number of calls</INFO>
+  <INFO name="-kw.Astronomy" value="Abundances"/>
+  <INFO name="-kw.Astronomy" value="Stars"/>
+  <INFO name="-kw.Astronomy" value="Stars:peculiar"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/A+A/687/A177"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_36960243" name="J/A+A/696/A243" type="meta">
+  <DESCRIPTION>Kepler Field with Gaia DR3 (Godoy-Rivera+, 2025)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/a+a/696/a243">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/a+a/696/a243">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Godoy-Rivera D.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2025A&amp;A...696A.243G">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="A&amp;A">    Journal name  </INFO>
+  <INFO name="original_date" value="2025">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/A+A/696/A243">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.36960243">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.571971">popularity index</INFO>
+  <INFO name="cpopu" value="12261">number of calls</INFO>
+  <INFO name="-kw.Astronomy" value="Binaries:eclipsing"/>
+  <INFO name="-kw.Astronomy" value="Binaries:spectroscopic"/>
+  <INFO name="-kw.Astronomy" value="Multiple_Stars"/>
+  <INFO name="-kw.Astronomy" value="Stars"/>
+  <INFO name="-kw.Astronomy" value="Stars:variable"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/A+A/696/A243"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_36990145" name="J/A+A/699/A145" type="meta">
+  <DESCRIPTION>Accretion properties of YSOs within 500pc (Delfini+, 2025)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/a+a/699/a145">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/a+a/699/a145">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Delfini L.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2025A&amp;A...699A.145D">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="A&amp;A">    Journal name  </INFO>
+  <INFO name="original_date" value="2025">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/A+A/699/A145">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier/bc-nv/lbef">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.686166">popularity index</INFO>
+  <INFO name="cpopu" value="80323">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Astronomy" value="Stars:Emission"/>
+  <INFO name="-kw.Astronomy" value="Stars:variable"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/A+A/699/A145"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_37010263" name="J/A+A/701/A263" type="meta">
+  <DESCRIPTION>Gaia and K2 rotation of young solar-type stars (Breton+, 2025)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/a+a/701/a263">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/a+a/701/a263">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Breton S.N.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2025A&amp;A...701A.263B">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="A&amp;A">    Journal name  </INFO>
+  <INFO name="original_date" value="2025">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/A+A/701/A263">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier/bc-nx/lcgd">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.629228">popularity index</INFO>
+  <INFO name="cpopu" value="31465">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Astronomy" value="Stars"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/A+A/701/A263"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_37040344" name="J/A+A/704/A344" type="meta">
+  <DESCRIPTION>eRASS1 counterparts and classification (Salvato+, 2025)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/a+a/704/a344">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/a+a/704/a344">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Salvato M.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2025A&amp;A...704A.344S">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="A&amp;A">    Journal name  </INFO>
+  <INFO name="original_date" value="2025">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/A+A/704/A344">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier/bc-p0/ldee">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.726089">popularity index</INFO>
+  <INFO name="cpopu" value="154961">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="X-ray"/>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Wavelength" value="IR"/>
+  <INFO name="-kw.Astronomy" value="Galaxies"/>
+  <INFO name="-kw.Astronomy" value="QSOs"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/A+A/704/A344"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_37090069" name="J/A+A/709/A69" type="meta">
+  <DESCRIPTION>GALAH DR4 halo substructures catalog (Kushniruk+, 2026)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/a+a/709/a69">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/a+a/709/a69">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Kushniruk I.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2026A&amp;A...709A..69K">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="A&amp;A">    Journal name  </INFO>
+  <INFO name="original_date" value="2026">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/A+A/709/A69">    Dataset landing page  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.373165">popularity index</INFO>
+  <INFO name="cpopu" value="464">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Astronomy" value="Stars"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/A+A/709/A69"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_37120171" name="J/A+A/712/A171" type="meta">
+  <DESCRIPTION>SRG/eROSITA All-Sky Survey DR2 (Ramos-Ceja+, 2026)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/a+a/712/a171">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/a+a/712/a171">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Ramos-Ceja M.E.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2026A&amp;A...712A.171R">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="A&amp;A">    Journal name  </INFO>
+  <INFO name="original_date" value="2026">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/A+A/712/A171">    Dataset landing page  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.758173">popularity index</INFO>
+  <INFO name="cpopu" value="262765">number of calls</INFO>
+  <INFO name="-kw.Mission" value="eROSITA"/>
+  <INFO name="-kw.Wavelength" value="X-ray"/>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Wavelength" value="IR"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/A+A/712/A171"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_51660218" name="J/AJ/166/218" type="meta">
+  <DESCRIPTION>New Gaia EDR3 binary candidates within 200pc of Sun (Medan+, 2023)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/aj/166/218">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/aj/166/218">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Medan I.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2023AJ....166..218M">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="AJ">    Journal name  </INFO>
+  <INFO name="original_date" value="2023">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/AJ/166/218">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.51660218">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.727977">popularity index</INFO>
+  <INFO name="cpopu" value="159853">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Wavelength" value="IR"/>
+  <INFO name="-kw.Astronomy" value="Positional_Data"/>
+  <INFO name="-kw.Astronomy" value="Multiple_Stars"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/AJ/166/218"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_51670139" name="J/AJ/167/139" type="meta">
+  <DESCRIPTION>HPIC catalog and potential contaminants from Gaia (Tuchow+, 2024)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/aj/167/139">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/aj/167/139">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Tuchow N.W.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2024AJ....167..139T">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="AJ">    Journal name  </INFO>
+  <INFO name="original_date" value="2024">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/AJ/167/139">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier/be-57-4b">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.628613">popularity index</INFO>
+  <INFO name="cpopu" value="31148">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Wavelength" value="IR"/>
+  <INFO name="-kw.Astronomy" value="Multiple_Stars"/>
+  <INFO name="-kw.Astronomy" value="Photometry"/>
+  <INFO name="-kw.Astronomy" value="Exoplanets"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/AJ/167/139"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_51680025" name="J/AJ/168/25" type="meta">
+  <DESCRIPTION>Spectral types of OB stars &lt;200Myr from Gaia DR3 (Ge+, 2024)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/aj/168/25">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/aj/168/25">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Ge Q.A.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2024AJ....168...25G">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="AJ">    Journal name  </INFO>
+  <INFO name="original_date" value="2024">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/AJ/168/25">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.51680025">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.627703">popularity index</INFO>
+  <INFO name="cpopu" value="30685">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Astronomy" value="Stars"/>
+  <INFO name="-kw.Astronomy" value="Spectral_Classification"/>
+  <INFO name="-kw.Astronomy" value="Parallaxes"/>
+  <INFO name="-kw.Astronomy" value="Stars:early-type"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/AJ/168/25"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_75030236" name="J/MNRAS/503/236" type="meta">
+  <DESCRIPTION>UVIT catalog and membership of 6 open clusters (Jadhav+, 2021)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/mnras/503/236">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/mnras/503/236">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Jadhav V.V.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2021MNRAS.503..236J">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="MNRA">    Journal name  </INFO>
+  <INFO name="original_date" value="2021">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/MNRAS/503/236">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.75030236">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.512601">popularity index</INFO>
+  <INFO name="cpopu" value="4614">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="UV"/>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Astronomy" value="Open_Clusters"/>
+  <INFO name="-kw.Astronomy" value="Photometry"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/MNRAS/503/236"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_75104308" name="J/MNRAS/510/4308" type="meta">
+  <DESCRIPTION>Local main-sequence stars with phot. metallicities (Kim+, 2022)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/mnras/510/4308">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/mnras/510/4308">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Kim B.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2022MNRAS.510.4308K">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="MNRA">    Journal name  </INFO>
+  <INFO name="original_date" value="2022">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/MNRAS/510/4308">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.75104308">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.650170">popularity index</INFO>
+  <INFO name="cpopu" value="44415">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Astronomy" value="Abundances"/>
+  <INFO name="-kw.Astronomy" value="Stars"/>
+  <INFO name="-kw.Astronomy" value="Stars:late-type"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/MNRAS/510/4308"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_75185106" name="J/MNRAS/518/5106" type="meta">
+  <DESCRIPTION>Classification of the 100pc WDs (Jimenez-Esteban+, 2023)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/mnras/518/5106">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/mnras/518/5106">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Jimenez-Esteban F.M.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2023MNRAS.518.5106J">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="MNRA">    Journal name  </INFO>
+  <INFO name="original_date" value="2023">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/MNRAS/518/5106">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.75185106">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.502855">popularity index</INFO>
+  <INFO name="cpopu" value="3930">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Astronomy" value="Photometry"/>
+  <INFO name="-kw.Astronomy" value="Stars"/>
+  <INFO name="-kw.Astronomy" value="Spectral_Classification"/>
+  <INFO name="-kw.Astronomy" value="Masses"/>
+  <INFO name="-kw.Astronomy" value="Stars:white_dwarf"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/MNRAS/518/5106"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_75210208" name="J/MNRAS/521/208" type="meta">
+  <DESCRIPTION>[M/H] of K/M dwarfs in SN kinematic structures (Medan+, 2023)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/mnras/521/208">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/mnras/521/208">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Medan I.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2023MNRAS.521..208M">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="MNRA">    Journal name  </INFO>
+  <INFO name="original_date" value="2023">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/MNRAS/521/208">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier/bg-g9-6g">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.541477">popularity index</INFO>
+  <INFO name="cpopu" value="7422">number of calls</INFO>
+  <INFO name="-kw.Astronomy" value="Abundances"/>
+  <INFO name="-kw.Astronomy" value="Associations"/>
+  <INFO name="-kw.Astronomy" value="Positional_Data"/>
+  <INFO name="-kw.Astronomy" value="Stars"/>
+  <INFO name="-kw.Astronomy" value="Velocities"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/MNRAS/521/208"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_1038060301" name="J/other/Nat/603.599" type="meta">
+  <DESCRIPTION>247014 subgiant stars data (Xiang+, 2022)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/other/nat/603.599">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/other/nat/603.599">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Xiang M.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2022Natur.603..599X">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="Natu">    Journal name  </INFO>
+  <INFO name="original_date" value="2022">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/other/Nat/603.599">    Dataset landing page  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.559363">popularity index</INFO>
+  <INFO name="cpopu" value="9963">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Astronomy" value="Stars"/>
+  <INFO name="-kw.Astronomy" value="Ages"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/other/Nat/603.599"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+<INFO name="matches" value="62">matching records</INFO>
+</VOTABLE>

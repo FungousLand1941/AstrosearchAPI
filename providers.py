@@ -36,6 +36,7 @@ from models import (
     QueryTimeoutError,
     RateLimitedError,
     ResolvedObject,
+    ResolverUnavailableError,
     ResponseParseError,
     Target,
     angle_to_arcsec,
@@ -201,6 +202,11 @@ class CacheManager:
     (PROVIDER_CACHE_MAX_ENTRIES, default 512) and ``max_bytes`` of estimated payload
     (PROVIDER_CACHE_MAX_BYTES, default 64 MB); expired entries are swept on every write,
     so a long-running process with many distinct cones cannot grow without bound.
+
+    The Redis layer (REDIS_URL) uses the blocking redis-py client. In async code, read with
+    :meth:`aget` (the Redis round trip runs in a worker thread); :meth:`set` called while an
+    event loop runs writes to Redis in a worker thread too (serialisation included), so no
+    Redis latency or outage ever stalls the event loop.
     """
 
     def __init__(self, redis_url: str | None = None, *, max_entries: int | None = None, max_bytes: int | None = None) -> None:
@@ -210,6 +216,7 @@ class CacheManager:
         self.max_entries = max(1, int(max_entries if max_entries is not None else os.getenv("PROVIDER_CACHE_MAX_ENTRIES", "512")))
         self.max_bytes = max(1, int(max_bytes if max_bytes is not None else os.getenv("PROVIDER_CACHE_MAX_BYTES", str(64 * 1024 * 1024))))
         self._redis = None
+        self._pending_writes: set[asyncio.Future[None]] = set()  # Redis writes running in worker threads
         if redis_url:
             try:
                 import redis
@@ -218,14 +225,42 @@ class CacheManager:
                 self._redis = None
 
     def get(self, key: str) -> Any | None:
-        """Retrieve cached value from Redis or local memory cache."""
+        """Retrieve cached value from Redis or local memory cache (blocking; see :meth:`aget`)."""
+        remote = self._redis_get(key)
+        if remote is not None:
+            return remote
+        return self._local_get(key)
+
+    async def aget(self, key: str) -> Any | None:
+        """:meth:`get` for async code: the Redis round trip runs in a worker thread."""
         if self._redis:
-            try:
-                val = self._redis.get(key)
-                if val:
-                    return json.loads(val)
-            except Exception:
-                pass
+            remote = await asyncio.to_thread(self._redis_get, key)
+            if remote is not None:
+                return remote
+        return self._local_get(key)
+
+    async def aset(self, key: str, value: Any, ttl: int = 3600) -> None:
+        """:meth:`set` for async code (the Redis write never blocks the event loop)."""
+        self.set(key, value, ttl=ttl)
+
+    def _redis_get(self, key: str) -> Any | None:
+        if not self._redis:
+            return None
+        try:
+            val = self._redis.get(key)
+            if val:
+                return json.loads(val)
+        except Exception:
+            pass
+        return None
+
+    def _redis_store(self, key: str, value: Any, ttl: int) -> None:
+        try:
+            self._redis.setex(key, ttl, json.dumps(value, default=str))
+        except Exception:
+            pass
+
+    def _local_get(self, key: str) -> Any | None:
         entry = self._local_cache.get(key)
         if entry and entry[0] > time.monotonic():
             self._local_cache.move_to_end(key)
@@ -257,9 +292,13 @@ class CacheManager:
         self._sweep()
         if self._redis:
             try:
-                self._redis.setex(key, ttl, json.dumps(value, default=str))
-            except Exception:
-                pass
+                loop = asyncio.get_running_loop()
+            except RuntimeError:  # synchronous caller: write now
+                self._redis_store(key, value, ttl)
+            else:  # never block the event loop on Redis (or on serialising a large value)
+                pending = loop.run_in_executor(None, self._redis_store, key, value, ttl)
+                self._pending_writes.add(pending)
+                pending.add_done_callback(self._pending_writes.discard)
 
     @property
     def entry_count(self) -> int:
@@ -603,7 +642,8 @@ class _HTTPProvider(CatalogProvider):
         can never be left dangling.
         """
         cache_key = self.cache.make_key("provider", method.upper(), endpoint, params, data)
-        cached = self.cache.get(cache_key)
+        reader = getattr(self.cache, "aget", None)
+        cached = await reader(cache_key) if reader is not None else self.cache.get(cache_key)
         if cached is not None:
             request = httpx.Request(method.upper(), endpoint, params=params, data=data)
             response = httpx.Response(
@@ -1378,13 +1418,68 @@ class SesameResolver:
         try:
             response = await self.client.get(url, headers={"Accept": "application/xml, text/xml"})
         except httpx.HTTPError as exc:
-            raise ObjectResolutionError(f"Sesame request failed: {exc}") from exc
+            # The resolver could not be reached: not evidence that the name is unknown.
+            raise ResolverUnavailableError(f"Sesame request failed: {exc}") from exc
+        if response.status_code >= 500 or response.status_code == 429:
+            raise ResolverUnavailableError(f"Sesame request failed: HTTP {response.status_code}")
         if response.status_code >= 400:
             raise ObjectResolutionError(f"Sesame request failed: HTTP {response.status_code}")
         try:
-            return self.parse_response(clean_query, response.text, endpoint=self.endpoint)
+            answer = self.parse_response(clean_query, response.text, endpoint=self.endpoint)
         except (ElementTree.ParseError, ValueError, TypeError) as exc:
             raise ObjectResolutionError(f"Sesame response could not be parsed: {exc}") from exc
+        return await self._retry_simbad(clean_query, answer)
+
+    async def _retry_simbad(self, query: str, answer: ResolvedObject) -> ResolvedObject:
+        """Sesame's -oxp/SNV returns the first sub-resolver that answers: when SIMBAD did not
+        (an outage or a slow answer) a name SIMBAD knows can come back from VizieR -- an
+        undated catalogue position without errors or motion, possibly one of several
+        answers ('GJ 860 A' -> '{Name} Gl 860', 50" from Kruger 60 A). Such an answer is
+        checked once more against SIMBAD alone (-oxp/S): its answer replaces the fallback,
+        which is otherwise kept (``resolver_metadata['simbad_retry']`` records the attempt)."""
+        meta = answer.resolver_metadata
+        kind = self.answer_kind(meta)
+        match = re.search(r"/-ox?p?/([A-Za-z]+)$", self.endpoint.rstrip("/"))
+        if kind in ("simbad", "ned") or match is None or "S" not in match.group(1).upper() \
+                or match.group(1).upper() == "S":
+            return answer
+        endpoint = self.endpoint.rstrip("/")[: match.start(1)] + "S"
+        try:
+            response = await self.client.get(f"{endpoint}?{quote(query, safe='')}",
+                                             headers={"Accept": "application/xml, text/xml"})
+            retried = self.parse_response(query, response.text, endpoint=endpoint) if response.status_code < 400 else None
+        except Exception as exc:  # noqa: BLE001 - the fallback answer stands; the attempt is recorded
+            meta["simbad_retry"] = {"endpoint": endpoint, "error": f"{exc.__class__.__name__}: {exc}"}
+            return answer
+        if retried is None or self.answer_kind(retried.resolver_metadata) != "simbad":
+            meta["simbad_retry"] = {"endpoint": endpoint, "error": f"HTTP {response.status_code}" if retried is None
+                                    else "no SIMBAD answer"}
+            return answer
+        retried.resolver_metadata["simbad_retry"] = {"endpoint": endpoint, "replaced": meta.get("resolver_name")}
+        return retried
+
+    @staticmethod
+    def answer_kind(resolver_metadata: dict[str, Any] | None) -> str | None:
+        """Which Sesame sub-resolver answered: 'simbad', 'ned', 'vizier' (an undated catalogue
+        position without errors or motion), another name, or None when unknown."""
+        name = str((resolver_metadata or {}).get("resolver_name") or "").lower()
+        if not name:
+            return None
+        for kind in ("simbad", "ned", "vizier"):
+            if kind in name:
+                return kind
+        return name.split("=")[-1].split()[0] if name.split("=")[-1].split() else None
+
+    @staticmethod
+    def multiple_answers(resolver_metadata: dict[str, Any] | None) -> int | None:
+        """Number of objects Sesame found for the name ('++++Multiple (2) answers++++' in its
+        INFO, kept in ``raw_fields['info']``; the first was returned), or None."""
+        info = ((resolver_metadata or {}).get("raw_fields") or {}).get("info") or []
+        for text in info if isinstance(info, list) else [info]:
+            match = re.search(r"Multiple\s*\((\d+)\)", str(text), re.IGNORECASE)
+            if match:
+                return int(match.group(1))
+        return None
 
     # SIMBAD object types that are extragalactic (proper motions of these are noise).
     EXTRAGALACTIC_TYPES = EXTRAGALACTIC_OTYPES
@@ -1421,7 +1516,8 @@ class SesameResolver:
 
             aliases = cls._all_values(values, "alias", "aliases")
             canonical = cls._first(values, "oname", "name", "canonical_name") or (aliases[0] if aliases else query)
-            canonical = " ".join(canonical.split())
+            # VizieR answers carry the name template of the catalogue column: '{Name} Gl 860'.
+            canonical = " ".join(re.sub(r"^\s*\{[^}]*\}\s*", "", canonical).split()) or query
             resolver_name = str(record.get("name") or "")
             object_type = cls._first(values, "otype", "otyp", "object_type")
             redshift = cls._number(values, "z.v", "z_value", "redshift", "z")

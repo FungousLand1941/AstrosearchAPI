@@ -144,10 +144,15 @@ async def test_sdss_quasar_with_a_ned_star_row_is_a_quasar(tmp_path: Path) -> No
     # SDSS DR18 quasar z = 2.38; NED lists WISEA J100058.51+030252.7 there with type '*' and z = 2.374.
     result = await build(tmp_path, ra=150.24369, dec=3.04813, radius_arcsec=3.0)
     require_catalogs(result, ["ned"])
-    ned = used(result, "ned")
-    if ned is not None and "prefphytype '*'" in evidence(result).replace('"', "'"):
-        pass
     text = evidence(result)
     assert "NED preferred type '*' -> star" not in text
+    ned_lines = [t for t in result["classification"]["evidence"] if t.startswith("NED preferred type")]
+    assert not any(t.endswith("-> star") for t in ned_lines), ned_lines
+    ned = used(result, "ned")
+    for line in ned_lines:
+        if line.startswith("NED preferred type '*'"):
+            # NED still types the row '*' with a quasar redshift: the stellar type is reported as ignored, not counted.
+            assert ned is not None and f"ignored: the same NED row ({ned['source_id']})" in line, line
+            assert "internally inconsistent NED entry" in line
     assert result["classification"]["label"] == "qso", result["classification"]
     assert result["redshift"]["value"] == pytest.approx(2.37, abs=0.02)

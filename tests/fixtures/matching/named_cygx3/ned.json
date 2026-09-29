@@ -1,0 +1,19 @@
+{
+  "catalog": "ned",
+  "target": "named_cygx3",
+  "search": {
+    "name": "Cyg X-3",
+    "sesame": "cygx3",
+    "radius_arcsec": 5.0
+  },
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://ned.ipac.caltech.edu/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+2001+prefname%2C+ra%2C+dec%2C+uncmaja%2C+uncmina%2C+uncposa%2C+pos_bibcode%2C+prefphytype%2C+z%2C+zunc%2C+zflag%2C+n_gphot%2C+DISTANCE%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+POINT%28%27ICRS%27%2C+308.107416670%2C+40.957750000%29%29+AS+match_dist+FROM+NEDTAP.objdir+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+308.107416670%2C+40.957750000%2C+0.0480555556%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    }
+  ]
+}

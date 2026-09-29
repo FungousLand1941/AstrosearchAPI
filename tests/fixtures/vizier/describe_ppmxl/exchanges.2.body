@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-29T05:43:04 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-29T05:43:04">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-source=I%2F317%2Fsample&amp;-meta.all=">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+
+<RESOURCE ID="yCat_1317_1" name="I/317/sample" type="meta">
+  <INFO name="nrows" value="910469430">Number of rows of the table</INFO>
+  <DESCRIPTION>
+    The PPMXL Catalog (Roeser+ 2010)
+    Example of formatted output
+  </DESCRIPTION>
+
+<!-- PPMXL catalog of positions and proper motions on the ICRS -->
+  <PARAM name="-c" datatype="char" arraysize="32*" value="">
+    <DESCRIPTION>Query from a celestial position according to ASU syntax:
+      {RA{+|-}Dec|object_name}[,eq=equinox][,ep=epoch][,rm=[min/]max]
+      (see http://vizier.cds.unistra.fr/doc/asu.html)
+    </DESCRIPTION>
+  </PARAM>
+  <LINK content-role="query" action="votable?-source=I/317/sample&amp;">
+    Action to Query the current RESOURCE, to be completed by PARAMs and FIELDs contents
+  </LINK>
+
+  <TABLE name="I/317/sample" nrows="910469430">
+    <COOSYS ID="J2000_2000.000" system="eq_FK5" equinox="J2000" epoch="2000.000"/>
+    <!-- Definitions of GROUPs and FIELDs -->
+
+<!-- +++No column could be found to attach a LINK in table: I/317/sample -->
+    <FIELD name="PPMXL" ucd="meta.id;meta.main" display="0" datatype="long" width="19"><!-- ucd="ID_MAIN" -->
+      <DESCRIPTION>Identifier (5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RAJ2000" ucd="pos.eq.ra;meta.main" ref="J2000_2000.000" display="1" datatype="double" width="10" precision="6" unit="deg"><!-- ucd="POS_EQ_RA_MAIN" -->
+      <DESCRIPTION>Right Ascension J2000.0, epoch 2000.0</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DEJ2000" ucd="pos.eq.dec;meta.main" ref="J2000_2000.000" display="1" datatype="double" width="10" precision="6" unit="deg"><!-- ucd="POS_EQ_DEC_MAIN" -->
+      <DESCRIPTION>Declination J2000.0, epoch 2000.0</DESCRIPTION>
+    </FIELD>
+    <FIELD name="pmRA" ucd="pos.pm;pos.eq.ra" ref="J2000_2000.000" display="1" datatype="double" width="7" precision="1" unit="mas/yr"><!-- ucd="POS_EQ_PMRA" -->
+      <DESCRIPTION>Proper Motion in RA*cos(DEdeg)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="pmDE" ucd="pos.pm;pos.eq.dec" ref="J2000_2000.000" display="1" datatype="double" width="7" precision="1" unit="mas/yr"><!-- ucd="POS_EQ_PMDEC" -->
+      <DESCRIPTION>Proper Motion in Dec</DESCRIPTION>
+    </FIELD>
+    <FIELD name="epRA" ucd="time.epoch" display="0" datatype="double" width="7" precision="2" unit="yr"><!-- ucd="TIME_EPOCH" -->
+      <DESCRIPTION>Mean Epoch (RA)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="epDE" ucd="time.epoch" display="0" datatype="double" width="7" precision="2" unit="yr"><!-- ucd="TIME_EPOCH" -->
+      <DESCRIPTION>Mean Epoch (Dec)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_RAJ2000" ucd="stat.error;pos.eq.ra" display="0" datatype="short" width="3" unit="mas"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Mean error in RA*cos(DEdeg) at mean epoch (6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_DEJ2000" ucd="stat.error;pos.eq.dec" display="0" datatype="short" width="3" unit="mas"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Mean error in Dec at mean epoch (6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_pmRA" ucd="stat.error;pos.pm;pos.eq.ra" display="0" datatype="float" width="4" precision="1" unit="mas/yr"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Mean error in pmRA*cos(DEdeg)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_pmDE" ucd="stat.error;pos.pm;pos.eq.dec" display="0" datatype="float" width="4" precision="1" unit="mas/yr"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Mean error in pmDec</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Jmag" ucd="phot.mag;em.IR.J" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_JHN_J" -->
+      <DESCRIPTION>? J magnitude from 2MASS (Cat. II/246)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Jmag" ucd="stat.error;phot.mag" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? J total magnitude uncertainty</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Hmag" ucd="phot.mag;em.IR.H" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_JHN_H" -->
+      <DESCRIPTION>? H magnitude from 2MASS (Cat. II/246)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Hmag" ucd="stat.error;phot.mag" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? H total magnitude uncertainty</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Kmag" ucd="phot.mag;em.IR.K" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_JHN_K" -->
+      <DESCRIPTION>? Ks magnitude from 2MASS (Cat. II/246)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Kmag" ucd="stat.error;phot.mag" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Ks total magnitude uncertainty</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b1mag" ucd="phot.mag;em.opt.B" display="1" datatype="float" width="5" precision="2" unit="mag"><!-- ucd="PHOT_PHG_B" -->
+      <DESCRIPTION>? B mag from USNO-B, first epoch (1)</DESCRIPTION>
+<!-- ? B mag from USNO-B, first epoch (1) \ifnum\Vphase&gt;3{\em(in color when the magnitude has a special meaning, see flags)}\fi -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b2mag" ucd="phot.mag;em.opt.B" display="1" datatype="float" width="5" precision="2" unit="mag"><!-- ucd="PHOT_PHG_B" -->
+      <DESCRIPTION>? B mag from USNO-B, second epoch (1)</DESCRIPTION>
+<!-- ? B mag from USNO-B, second epoch (1) \ifnum\Vphase&gt;3{\em(in color when the magnitude has a special meaning, see flags)}\fi -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="r1mag" ucd="phot.mag;em.opt.R" display="1" datatype="float" width="5" precision="2" unit="mag"><!-- ucd="PHOT_PHG_R" -->
+      <DESCRIPTION>? R mag from USNO-B, first epoch (1)</DESCRIPTION>
+<!-- ? R mag from USNO-B, first epoch (1) \ifnum\Vphase&gt;3{\em(in color when the magnitude has a special meaning, see flags)}\fi -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="r2mag" ucd="phot.mag;em.opt.R" display="1" datatype="float" width="5" precision="2" unit="mag"><!-- ucd="PHOT_PHG_R" -->
+      <DESCRIPTION>? R mag from USNO-B, second epoch (1)</DESCRIPTION>
+<!-- ? R mag from USNO-B, second epoch (1) \ifnum\Vphase&gt;3{\em(in color when the magnitude has a special meaning, see flags)}\fi -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="imag" ucd="phot.mag;em.opt.I" display="1" datatype="float" width="5" precision="2" unit="mag"><!-- ucd="PHOT_PHG_I" -->
+      <DESCRIPTION>? I mag from USNO-B (1)</DESCRIPTION>
+<!-- ? I mag from USNO-B (1) \ifnum\Vphase&gt;3{\em(in color when the magnitude has a special meaning, see flags)}\fi -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Smags" ucd="meta.id" display="0" datatype="char" arraysize="5*"><!-- ucd="ID_SURVEY" -->
+      <DESCRIPTION>[0-8 -] Surveys used for USNO-B magnitudes (2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="No" ucd="meta.number" display="1" datatype="short" width="2"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Number of observations used (4)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="fl" ucd="meta.note" display="1" datatype="short" width="2"><!-- ucd="NOTE" -->
+      <DESCRIPTION>Flags (3)</DESCRIPTION>
+
+<!-- No link in: \showFlag{${$cat}/ppmxl_fl}{${}} -->
+    </FIELD>
+    <FIELD name="2M" ucd="meta.ref.url" display="0" datatype="char" arraysize="2"><!-- ucd="DATA_LINK" -->
+      <DESCRIPTION>Display the 2MASS data (Cutri et al. 2003, Cat. II/246)</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-4?-info=XML&amp;-out.add=.&amp;-source=2246&amp;-c=${+RAJ2000}${+DEJ2000}&amp;-c.eq=J2000.000,rs=3"/>
+    </FIELD>
+    <FIELD name="NOMAD" ucd="meta.ref.url" display="0" datatype="char" arraysize="5*"><!-- ucd="DATA_LINK" -->
+      <DESCRIPTION>Display the NOMAD data (Zacharias et al. 2005, Cat. I/297)</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-4?-info=XML&amp;-out.add=.&amp;-source=1297&amp;-c=${+RAJ2000}${+DEJ2000}&amp;-c.eq=J2000.000,rs=3"/>
+    </FIELD>
+  </TABLE>
+<INFO name="matches" value="2">matching records</INFO>
+</RESOURCE>
+</VOTABLE>

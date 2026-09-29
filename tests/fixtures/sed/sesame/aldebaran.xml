@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>Aldebaran</name>
+  <!-- Q8483469 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 0ms [0] -->
+    <INFO>from cache</INFO>
+    <oid>719377</oid>
+    <otype>LP?</otype>
+    <jpos>04:35:55.23 +16:30:33.4</jpos>
+    <jradeg>68.98016279</jradeg>
+    <jdedeg>16.50930235</jdedeg>
+    <refPos>2007A&amp;A...474..653V</refPos>
+    <errRAmas>7.38</errRAmas><errDEmas>5.70</errDEmas>
+    <pm>
+      <v>199.31</v><e>1.06</e><q>A</q><r>2007A&amp;A...474..653V</r>
+      <pa>161.4</pa>
+      <pmRA>63.45</pmRA><epmRA>0.65</epmRA>
+      <pmDE>-188.94</pmDE><epmDE>0.84</epmDE>
+    </pm>
+    <Vel><v>54.398</v><e>0.0008</e><q>A</q><r>2018A&amp;A...616A...7S</r></Vel>
+    <plx><v>48.94</v><e>0.77</e><q>A</q><r>2007A&amp;A...474..653V</r></plx>
+    <spType>K5+III</spType><spNum>0.00022600.0000.0000000000100000</spNum>
+    <oname>* alf Tau</oname>
+    <alias>* alf Tau</alias>
+    <alias>* 87 Tau</alias>
+    <alias>** BU 550A</alias>
+    <alias>** BU 1031A</alias>
+    <alias>** STF 4002A</alias>
+    <alias>ADS 3321 A</alias>
+    <alias>AG+16 400</alias>
+    <alias>AP J04355524+1630331</alias>
+    <alias>ASCC 838711</alias>
+    <alias>BD+16 629</alias>
+    <alias>CCDM J04359+1631A</alias>
+    <alias>CEL 436</alias>
+    <alias>CNS5 1142</alias>
+    <alias>CSI+16 629 1</alias>
+    <alias>CSV 6116</alias>
+    <alias>FK5 168</alias>
+    <alias>GALAH 141102003801353</alias>
+    <alias>GAT 1331</alias>
+    <alias>GC 5605</alias>
+    <alias>GCRV 2689</alias>
+    <alias>GEN# +1.00029139</alias>
+    <alias>GES J04355530+1630309</alias>
+    <alias>GJ 171.1 A</alias>
+    <alias>GJ 9159 A</alias>
+    <alias>GSC 01266-01416</alias>
+    <alias>HD 29139</alias>
+    <alias>HIC 21421</alias>
+    <alias>HIP 21421</alias>
+    <alias>HR 1457</alias>
+    <alias>IDS 04302+1619 A</alias>
+    <alias>IRAS 04330+1624</alias>
+    <alias>IRC +20087</alias>
+    <alias>JP11 898</alias>
+    <alias>LSPM J0435+1630</alias>
+    <alias>LTT 11462</alias>
+    <alias>2MASS J04355524+1630331</alias>
+    <alias>N30 962</alias>
+    <alias>NAME Aldebaran</alias>
+    <alias>NLTT 13584</alias>
+    <alias>PLX 1014</alias>
+    <alias>PMC 90-93 119</alias>
+    <alias>PPM 120061</alias>
+    <alias>RAFGL 601</alias>
+    <alias>ROT 655</alias>
+    <alias>SAO 94027</alias>
+    <alias>SKY# 7128</alias>
+    <alias>SRS 30168</alias>
+    <alias>TD1 3349</alias>
+    <alias>TIC 245873777</alias>
+    <alias>TIC 471011442</alias>
+    <alias>TYC 1266-1416-1</alias>
+    <alias>UBV 4426</alias>
+    <alias>UBV M 10223</alias>
+    <alias>USNO-B1.0 1065-00048822</alias>
+    <alias>uvby98 100029139</alias>
+    <alias>V* alf Tau</alias>
+    <alias>WDS J04359+1631A</alias>
+    <alias>WEB 4111</alias>
+    <alias>YZ 16 1233</alias>
+    <alias>[B10] 1077</alias>
+    <nrefs>1307</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ====Done (2026-Sep-29,05:01:51z)==== -->

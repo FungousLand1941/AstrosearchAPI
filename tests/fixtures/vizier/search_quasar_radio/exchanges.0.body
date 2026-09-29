@@ -4,13 +4,13 @@
   xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
  <DESCRIPTION>
    VizieR Astronomical Server vizier.cds.unistra.fr
-    Date: 2026-09-28T11:38:01 [V7.6]
+    Date: 2026-09-29T03:46:40 [V7.6]
    Explanations and Statistics of UCDs:			See LINK below
    In case of problem, please report to:	cds-question@unistra.fr
  </DESCRIPTION>
 <!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
 <INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
-<INFO name="request_date" value="2026-09-28T11:38:01">  Query execution date</INFO>
+<INFO name="request_date" value="2026-09-29T03:46:40">  Query execution date</INFO>
 <INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-meta=&amp;-meta.max=20&amp;-words=quasar+Radio">  Full request URL</INFO>
 <INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
 <INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
@@ -29,8 +29,8 @@
   <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/427/125">    Dataset landing page  </INFO>
   <INFO name="citation" value="doi:10.26093/cds/vizier.14270125">    Dataset identifier that can be used for citation  </INFO>
   <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
-  <INFO name="ipopu" value="0.402357">popularity index</INFO>
-  <INFO name="cpopu" value="751">number of calls</INFO>
+  <INFO name="ipopu" value="0.402451">popularity index</INFO>
+  <INFO name="cpopu" value="752">number of calls</INFO>
   <INFO name="-kw.Wavelength" value="Radio"/>
   <INFO name="-kw.Astronomy" value="Galaxies"/>
   <INFO name="-kw.Astronomy" value="QSOs"/>
@@ -50,7 +50,7 @@
   <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/445/62">    Dataset landing page  </INFO>
   <INFO name="citation" value="doi:10.26093/cds/vizier.14450062">    Dataset identifier that can be used for citation  </INFO>
   <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
-  <INFO name="ipopu" value="0.362933">popularity index</INFO>
+  <INFO name="ipopu" value="0.362944">popularity index</INFO>
   <INFO name="cpopu" value="392">number of calls</INFO>
   <INFO name="-kw.Wavelength" value="Radio"/>
   <INFO name="-kw.Astronomy" value="QSOs"/>
@@ -71,8 +71,8 @@
   <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/511/612">    Dataset landing page  </INFO>
   <INFO name="citation" value="doi:10.26093/cds/vizier.15110612">    Dataset identifier that can be used for citation  </INFO>
   <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
-  <INFO name="ipopu" value="0.454705">popularity index</INFO>
-  <INFO name="cpopu" value="1779">number of calls</INFO>
+  <INFO name="ipopu" value="0.454685">popularity index</INFO>
+  <INFO name="cpopu" value="1778">number of calls</INFO>
   <INFO name="-kw.Wavelength" value="Radio"/>
   <INFO name="-kw.Astronomy" value="Galaxies"/>
   <INFO name="-kw.Astronomy" value="QSOs"/>
@@ -93,8 +93,8 @@
   <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/609/539">    Dataset landing page  </INFO>
   <INFO name="citation" value="doi:10.26093/cds/vizier.16090539">    Dataset identifier that can be used for citation  </INFO>
   <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
-  <INFO name="ipopu" value="0.523881">popularity index</INFO>
-  <INFO name="cpopu" value="5557">number of calls</INFO>
+  <INFO name="ipopu" value="0.523908">popularity index</INFO>
+  <INFO name="cpopu" value="5558">number of calls</INFO>
   <INFO name="-kw.Wavelength" value="Radio"/>
   <INFO name="-kw.Astronomy" value="AGN"/>
   <INFO name="-kw.Astronomy" value="QSOs"/>
@@ -114,7 +114,7 @@
   <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/645/856">    Dataset landing page  </INFO>
   <INFO name="citation" value="doi:10.26093/cds/vizier.16450856">    Dataset identifier that can be used for citation  </INFO>
   <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
-  <INFO name="ipopu" value="0.463816">popularity index</INFO>
+  <INFO name="ipopu" value="0.463831">popularity index</INFO>
   <INFO name="cpopu" value="2067">number of calls</INFO>
   <INFO name="-kw.Wavelength" value="Radio"/>
   <INFO name="-kw.Astronomy" value="QSOs"/>
@@ -135,8 +135,8 @@
   <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/657/116">    Dataset landing page  </INFO>
   <INFO name="citation" value="doi:10.26093/cds/vizier.16570116">    Dataset identifier that can be used for citation  </INFO>
   <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
-  <INFO name="ipopu" value="0.481922">popularity index</INFO>
-  <INFO name="cpopu" value="2785">number of calls</INFO>
+  <INFO name="ipopu" value="0.481916">popularity index</INFO>
+  <INFO name="cpopu" value="2784">number of calls</INFO>
   <INFO name="-kw.Wavelength" value="X-ray"/>
   <INFO name="-kw.Wavelength" value="optical"/>
   <INFO name="-kw.Astronomy" value="QSOs"/>
@@ -157,8 +157,8 @@
   <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/709/1407">    Dataset landing page  </INFO>
   <INFO name="citation" value="doi:10.26093/cds/vizier.17091407">    Dataset identifier that can be used for citation  </INFO>
   <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
-  <INFO name="ipopu" value="0.516683">popularity index</INFO>
-  <INFO name="cpopu" value="4936">number of calls</INFO>
+  <INFO name="ipopu" value="0.516687">popularity index</INFO>
+  <INFO name="cpopu" value="4935">number of calls</INFO>
   <INFO name="-kw.Wavelength" value="Gamma-ray"/>
   <INFO name="-kw.Wavelength" value="X-ray"/>
   <INFO name="-kw.Astronomy" value="AGN"/>
@@ -180,8 +180,8 @@
   <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/726/20">    Dataset landing page  </INFO>
   <INFO name="citation" value="doi:10.26093/cds/vizier.17260020">    Dataset identifier that can be used for citation  </INFO>
   <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
-  <INFO name="ipopu" value="0.562454">popularity index</INFO>
-  <INFO name="cpopu" value="10486">number of calls</INFO>
+  <INFO name="ipopu" value="0.562459">popularity index</INFO>
+  <INFO name="cpopu" value="10484">number of calls</INFO>
   <INFO name="-kw.Wavelength" value="X-ray"/>
   <INFO name="-kw.Wavelength" value="optical"/>
   <INFO name="-kw.Wavelength" value="Radio"/>
@@ -204,8 +204,8 @@
   <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/754/38">    Dataset landing page  </INFO>
   <INFO name="citation" value="doi:10.26093/cds/vizier.17540038">    Dataset identifier that can be used for citation  </INFO>
   <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
-  <INFO name="ipopu" value="0.490925">popularity index</INFO>
-  <INFO name="cpopu" value="3230">number of calls</INFO>
+  <INFO name="ipopu" value="0.490922">popularity index</INFO>
+  <INFO name="cpopu" value="3229">number of calls</INFO>
   <INFO name="-kw.Wavelength" value="optical"/>
   <INFO name="-kw.Wavelength" value="Radio"/>
   <INFO name="-kw.Astronomy" value="Equivalent_widths"/>
@@ -229,7 +229,7 @@
   <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/766/37">    Dataset landing page  </INFO>
   <INFO name="citation" value="doi:10.26093/cds/vizier.17660037">    Dataset identifier that can be used for citation  </INFO>
   <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
-  <INFO name="ipopu" value="0.479656">popularity index</INFO>
+  <INFO name="ipopu" value="0.479671">popularity index</INFO>
   <INFO name="cpopu" value="2683">number of calls</INFO>
   <INFO name="-kw.Wavelength" value="optical"/>
   <INFO name="-kw.Wavelength" value="Radio"/>
@@ -253,7 +253,7 @@
   <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/768/37">    Dataset landing page  </INFO>
   <INFO name="citation" value="doi:10.26093/cds/vizier.17680037">    Dataset identifier that can be used for citation  </INFO>
   <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
-  <INFO name="ipopu" value="0.523947">popularity index</INFO>
+  <INFO name="ipopu" value="0.523963">popularity index</INFO>
   <INFO name="cpopu" value="5563">number of calls</INFO>
   <INFO name="-kw.Wavelength" value="Radio"/>
   <INFO name="-kw.Astronomy" value="QSOs"/>
@@ -274,8 +274,8 @@
   <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/813/45">    Dataset landing page  </INFO>
   <INFO name="citation" value="doi:10.26093/cds/vizier.18130045">    Dataset identifier that can be used for citation  </INFO>
   <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
-  <INFO name="ipopu" value="0.460247">popularity index</INFO>
-  <INFO name="cpopu" value="1949">number of calls</INFO>
+  <INFO name="ipopu" value="0.460323">popularity index</INFO>
+  <INFO name="cpopu" value="1951">number of calls</INFO>
   <INFO name="-kw.Wavelength" value="Radio"/>
   <INFO name="-kw.Astronomy" value="Photometry"/>
   <INFO name="-kw.Astronomy" value="QSOs"/>
@@ -297,8 +297,8 @@
   <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/842/87">    Dataset landing page  </INFO>
   <INFO name="citation" value="doi:10.26093/cds/vizier.18420087">    Dataset identifier that can be used for citation  </INFO>
   <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
-  <INFO name="ipopu" value="0.510754">popularity index</INFO>
-  <INFO name="cpopu" value="4477">number of calls</INFO>
+  <INFO name="ipopu" value="0.510743">popularity index</INFO>
+  <INFO name="cpopu" value="4475">number of calls</INFO>
   <INFO name="-kw.Wavelength" value="optical"/>
   <INFO name="-kw.Wavelength" value="Radio"/>
   <INFO name="-kw.Astronomy" value="Spectroscopy"/>
@@ -321,8 +321,8 @@
   <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/873/132">    Dataset landing page  </INFO>
   <INFO name="citation" value="doi:10.26093/cds/vizier.18730132">    Dataset identifier that can be used for citation  </INFO>
   <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
-  <INFO name="ipopu" value="0.575266">popularity index</INFO>
-  <INFO name="cpopu" value="12948">number of calls</INFO>
+  <INFO name="ipopu" value="0.575260">popularity index</INFO>
+  <INFO name="cpopu" value="12943">number of calls</INFO>
   <INFO name="-kw.Wavelength" value="optical"/>
   <INFO name="-kw.Wavelength" value="Radio"/>
   <INFO name="-kw.Astronomy" value="Positional_Data"/>
@@ -346,7 +346,7 @@
   <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/881/125">    Dataset landing page  </INFO>
   <INFO name="citation" value="doi:10.26093/cds/vizier.18810125">    Dataset identifier that can be used for citation  </INFO>
   <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
-  <INFO name="ipopu" value="0.393595">popularity index</INFO>
+  <INFO name="ipopu" value="0.393607">popularity index</INFO>
   <INFO name="cpopu" value="650">number of calls</INFO>
   <INFO name="-kw.Wavelength" value="Gamma-ray"/>
   <INFO name="-kw.Wavelength" value="X-ray"/>
@@ -373,8 +373,8 @@
   <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/896/18">    Dataset landing page  </INFO>
   <INFO name="citation" value="doi:10.26093/cds/vizier.18960018">    Dataset identifier that can be used for citation  </INFO>
   <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
-  <INFO name="ipopu" value="0.461663">popularity index</INFO>
-  <INFO name="cpopu" value="1995">number of calls</INFO>
+  <INFO name="ipopu" value="0.461799">popularity index</INFO>
+  <INFO name="cpopu" value="1999">number of calls</INFO>
   <INFO name="-kw.Wavelength" value="IR"/>
   <INFO name="-kw.Wavelength" value="Radio"/>
   <INFO name="-kw.Astronomy" value="QSOs"/>
@@ -394,7 +394,7 @@
   <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/897/18">    Dataset landing page  </INFO>
   <INFO name="citation" value="doi:10.26093/cds/vizier.18970018">    Dataset identifier that can be used for citation  </INFO>
   <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
-  <INFO name="ipopu" value="0.355719">popularity index</INFO>
+  <INFO name="ipopu" value="0.355730">popularity index</INFO>
   <INFO name="cpopu" value="348">number of calls</INFO>
   <INFO name="-kw.Wavelength" value="UV"/>
   <INFO name="-kw.Wavelength" value="optical"/>
@@ -419,7 +419,7 @@
   <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/904/179">    Dataset landing page  </INFO>
   <INFO name="citation" value="doi:10.26093/cds/vizier.19040179">    Dataset identifier that can be used for citation  </INFO>
   <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
-  <INFO name="ipopu" value="0.445351">popularity index</INFO>
+  <INFO name="ipopu" value="0.445365">popularity index</INFO>
   <INFO name="cpopu" value="1525">number of calls</INFO>
   <INFO name="-kw.Wavelength" value="Millimeter"/>
   <INFO name="-kw.Wavelength" value="Radio"/>
@@ -444,8 +444,8 @@
   <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/922/202">    Dataset landing page  </INFO>
   <INFO name="citation" value="doi:10.26093/cds/vizier.19220202">    Dataset identifier that can be used for citation  </INFO>
   <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
-  <INFO name="ipopu" value="0.511844">popularity index</INFO>
-  <INFO name="cpopu" value="4558">number of calls</INFO>
+  <INFO name="ipopu" value="0.511779">popularity index</INFO>
+  <INFO name="cpopu" value="4552">number of calls</INFO>
   <INFO name="-kw.Wavelength" value="optical"/>
   <INFO name="-kw.Wavelength" value="Radio"/>
   <INFO name="-kw.Astronomy" value="AGN"/>
@@ -469,8 +469,8 @@
   <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/934/26">    Dataset landing page  </INFO>
   <INFO name="citation" value="doi:10.26093/cds/vizier.19340026">    Dataset identifier that can be used for citation  </INFO>
   <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
-  <INFO name="ipopu" value="0.418508">popularity index</INFO>
-  <INFO name="cpopu" value="980">number of calls</INFO>
+  <INFO name="ipopu" value="0.418459">popularity index</INFO>
+  <INFO name="cpopu" value="979">number of calls</INFO>
   <INFO name="-kw.Wavelength" value="IR"/>
   <INFO name="-kw.Wavelength" value="Radio"/>
   <INFO name="-kw.Astronomy" value="Spectroscopy"/>

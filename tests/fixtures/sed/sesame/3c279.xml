@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>3C 279</name>
+  <!-- Q8483461 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 0ms [0] -->
+    <INFO>from cache</INFO>
+    <oid>1999444</oid>
+    <otype>Bla</otype>
+    <jpos>12:56:11.16 -05:47:21.5</jpos>
+    <jradeg>194.04652741</jradeg>
+    <jdedeg>-5.78931254</jdedeg>
+    <refPos>2020A&amp;A...644A.159C</refPos>
+    <errRAmas>0.038800</errRAmas><errDEmas>0.0325</errDEmas>
+    <pm>
+      <v>0.245</v><e>0.080</e><q>A</q><r>2020yCat.1350....0G</r>
+      <pa>40</pa>
+      <pmRA>0.158</pmRA><epmRA>0.066</epmRA>
+      <pmDE>0.187</pmDE><epmDE>0.046</epmDE>
+    </pm>
+    <z><v>0.53541840</v><e>0.0005</e><q>C</q><r>2022ApJS..261....2K</r></z>
+    <plx><v>0.0214</v><e>0.0558</e><q>A</q><r>2020yCat.1350....0G</r></plx>
+    <oname>3C 279</oname>
+    <alias>3C 279</alias>
+    <alias>1AGL J1256-0549</alias>
+    <alias>2AGL J1255-0543</alias>
+    <alias>AT20G J125611-054721</alias>
+    <alias>1AXG J125611-0547</alias>
+    <alias>4C -05.55</alias>
+    <alias>CGRaBS J1256-0547</alias>
+    <alias>CTA 56</alias>
+    <alias>Cul 1253-055</alias>
+    <alias>1E 1253.5-0531</alias>
+    <alias>2E 2900</alias>
+    <alias>2E 1253.5-0531</alias>
+    <alias>2EG J1256-0546</alias>
+    <alias>3EG J1255-0549</alias>
+    <alias>EGR J1256-0552</alias>
+    <alias>1ES 1253-05.5</alias>
+    <alias>0FGL J1256.1-0547</alias>
+    <alias>1FGL J1256.2-0547</alias>
+    <alias>2FGL J1256.1-0547</alias>
+    <alias>3FGL J1256.1-0547</alias>
+    <alias>4FGL J1256.1-0547</alias>
+    <alias>1FHL J1256.1-0547</alias>
+    <alias>2FHL J1256.2-0548</alias>
+    <alias>3FHL J1256.1-0547</alias>
+    <alias>FIRST J125611.1-054721</alias>
+    <alias>FL8Y J1256.1-0547</alias>
+    <alias>1FLE J1256-0545</alias>
+    <alias>G4Jy 1038</alias>
+    <alias>GeV J1256-0546</alias>
+    <alias>GLEAM J125611-054719</alias>
+    <alias>GRA B1254-05</alias>
+    <alias>HE 1253-0531</alias>
+    <alias>ICRF J125611.1-054721</alias>
+    <alias>IERS B1253-055</alias>
+    <alias>IGR J12562-0547</alias>
+    <alias>INTREF 530</alias>
+    <alias>IRAS F12535-0530</alias>
+    <alias>IVS B1253-055</alias>
+    <alias>JCMTSE J125611.1-054720</alias>
+    <alias>JCMTSF J125611.1-054720</alias>
+    <alias>1Jy 1253-055</alias>
+    <alias>1Jy 1253-05</alias>
+    <alias>LEDA 2817645</alias>
+    <alias>2MASS J12561117-0547215</alias>
+    <alias>2MASSI J1256111-054721</alias>
+    <alias>MRC 1253-055</alias>
+    <alias>MSH 12-0-02</alias>
+    <alias>NRAO 413</alias>
+    <alias>NVSS J125611-054720</alias>
+    <alias>OHIO N -089</alias>
+    <alias>PBC J1256.1-0547</alias>
+    <alias>PCCS2 143 G305.09+57.06</alias>
+    <alias>PKS 1253-05</alias>
+    <alias>PKS 1253-055</alias>
+    <alias>PKS J1256-0547</alias>
+    <alias>PLCKERC -857 G305.11+57.05</alias>
+    <alias>PMN J1256-0547</alias>
+    <alias>QSO B1253-055E</alias>
+    <alias>QSO B1253-055</alias>
+    <alias>QSO B1253-05</alias>
+    <alias>QSO J1256-0547</alias>
+    <alias>RBPL J1256-0547</alias>
+    <alias>RBS 1184</alias>
+    <alias>RORF 1253-055</alias>
+    <alias>RX J1256.1-0547</alias>
+    <alias>1RXS J125611.2-054719</alias>
+    <alias>SPASS J125610-054734</alias>
+    <alias>SRGA J125611.4-054714</alias>
+    <alias>SWIFT J1256.2-0551</alias>
+    <alias>SWIFT J1256.1-0547</alias>
+    <alias>TeV J1256-057</alias>
+    <alias>TGSSADR J125611.0-054720</alias>
+    <alias>TIC 175710789</alias>
+    <alias>TXS 1253-055</alias>
+    <alias>UT 1253-055</alias>
+    <alias>VCS1 J1256-0547</alias>
+    <alias>VLSSr J125611.1-054723</alias>
+    <alias>VLSS J1256.1-0547</alias>
+    <alias>VSOP J1256-0547</alias>
+    <alias>WB 1253-0531</alias>
+    <alias>WISEA J125611.15-054721.7</alias>
+    <alias>WISE J125611.17-054721.5</alias>
+    <alias>WISE J125611.15-054721.7</alias>
+    <alias>WMAP 181</alias>
+    <alias>WMAP J1256-0547</alias>
+    <alias>WMAP J1256-0546</alias>
+    <alias>XMMSL1 J125611.0-054720</alias>
+    <alias>XSS J12565-0537</alias>
+    <alias>9Y-MST J1256-0546</alias>
+    <alias>[BAG2012] 194.0513-05.7909</alias>
+    <alias>[BDW2002] q1253-0531</alias>
+    <alias>[CAB95] IRAS F12535-0530</alias>
+    <alias>[CGL99] 12</alias>
+    <alias>[CMG2008] 194.20-5.66</alias>
+    <alias>[DGT2001] B1253-055</alias>
+    <alias>[GGR94] 1253-055</alias>
+    <alias>[GR92] 1253-055</alias>
+    <alias>[GW2008] CoNFIG 151</alias>
+    <alias>[HB93] 1253-055</alias>
+    <alias>[HSN2016] J194.04-05.78</alias>
+    <alias>[IN88] 1253-055</alias>
+    <alias>[KRL2007b] 126</alias>
+    <alias>[MGL2009] BZQ J1256-0547</alias>
+    <alias>[MML2015] 5BZQ J1256-0547</alias>
+    <alias>[P82] 1253-055</alias>
+    <alias>[S77] 221</alias>
+    <alias>[VV2000] J125611.1-054721</alias>
+    <alias>[VV2003] J125611.1-054721</alias>
+    <alias>[VV2006] J125611.1-054721</alias>
+    <alias>[VV2010] J125611.1-054721</alias>
+    <alias>[VV96] J125611.1-054721</alias>
+    <alias>[VV98] J125611.1-054721</alias>
+    <alias>[VYP98] 1253-055</alias>
+    <alias>[WCO2009] J125612-054728</alias>
+    <alias>[WPW2003] J1256-0547</alias>
+    <alias>[WTW94] 1253-055</alias>
+    <alias>AAVSO 1251-05</alias>
+    <alias>Gaia DR3 3677618218816419456</alias>
+    <alias>Gaia DR1 3677618214520515968</alias>
+    <alias>Gaia DR2 3677618218816419456</alias>
+    <nrefs>3239</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ====Done (2026-Sep-29,05:01:48z)==== -->

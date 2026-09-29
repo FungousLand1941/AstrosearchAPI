@@ -22,6 +22,7 @@ from fixture_io import (
     target_radius,
 )
 from helpers import make_service, offline_client, run_catalog
+from test_matching_fixtures import assert_replayed_exactly
 
 from crossmatch import AdvancedQuery, CrossmatchService, _adopt_proper_motion, match_target
 from models import (
@@ -63,9 +64,11 @@ async def crossmatch_fixture(key: str, **kwargs):
     with respx.mock(assert_all_called=False) as router:
         router.route().mock(side_effect=replay_side_effect(load_exchanges(key)))
         async with offline_client() as client:
-            return await make_service(client, epoch_registry(key)).crossmatch(
+            record = await make_service(client, epoch_registry(key)).crossmatch(
                 target.ra, target.dec, radius_arcsec=target_radius(key), epoch=target.epoch,
                 pm_ra_masyr=target.pm_ra_masyr, pm_dec_masyr=target.pm_dec_masyr, **kwargs)
+    assert_replayed_exactly(record)
+    return record
 
 
 # ---------------------------------------------------------------------------
@@ -286,20 +289,37 @@ async def test_barnard_found_in_every_catalog_that_observed_it(key: str) -> None
     secure = {"gaia_dr3", "simbad", "twomass_psc", "allwise", "exoplanet_archive", "chandra", "rosat"}
     assert secure <= set(target_group["catalogs"])
     for member in independent:
-        assert member["source_id"] in BARNARD_HITS[member["catalog"]], member["source_id"]
+        # A representative stands for the rows listed with it: Pan-STARRS split the fast mover
+        # into six objects along its track (0.5-1.5" from it at the target epoch), which are
+        # one listing of the star now -- the known hit among them.
+        listed = {member["source_id"]} | {m["source_id"] for m in target_group["members"]
+                                          if m["coincident_with"] == member["source_id"]}
+        assert listed & BARNARD_HITS[member["catalog"]], member["source_id"]
+        # (SIMBAD and the Exoplanet Archive list the planets at the star's position.)
+        assert len(listed) == 1 or member["catalog"] in ("panstarrs_dr2", "ned", "simbad", "exoplanet_archive"), listed
         if member["catalog"] in secure:
             assert member["match_probability"] > 0.99 and member["confidence"] > 0.99, member["catalog"]
-    # Genuinely ambiguous rows share the probability: NED lists the star twice (its WISEA
-    # and 2MASS entries) and Pan-STARRS split the fast mover into several objects along
-    # its track -- one of each joins the target group, the other(s) form their own group.
+    ps1 = [m for m in target_group["members"] if m["catalog"] == "panstarrs_dr2"]
+    assert len(ps1) == 6 and len({m["target_probability"] for m in ps1}) == 1  # was one of them, the rest apart
+    # NED lists the star twice (its WISEA and 2MASS entries, measured ~10 years and 110"
+    # apart on its track): both are the star, one listing of the other -- they no longer
+    # split the posterior (was 0.5 each, one of them outside the target group). NED gives
+    # only the survey spans as their epochs (1997.4-2001.2: 40" of Barnard's track), so the
+    # likelihood is marginalised over the span and the posterior stays below a dated row's.
     ned = [m for g in record.crossmatch_groups for m in g["members"] if m["catalog"] == "ned"
            and m["source_id"] in BARNARD_HITS["ned"]]
-    assert len(ned) == 2 and sum(m["target_probability"] for m in ned) == pytest.approx(1.0, abs=0.02)
+    assert len(ned) == 2 and all(m["target_probability"] > 0.75 for m in ned), ned
+    assert ned[0]["target_probability"] == ned[1]["target_probability"]
+    assert {m["coincident_with"] for m in ned} - {None} <= BARNARD_HITS["ned"]
+    assert sum(m["coincident_with"] is not None for m in ned) == 1
+    assert all(m in target_group["members"] for m in ned)
     # SDSS saw the star saturated (r = 11.1, clean = 0): its centroid lies 0.51" off the
-    # track with a quoted 0.079" error, so it is not identified with the target.
+    # track, 6 sigma of its quoted 0.079" error. It IS Barnard's star (BARNARD_HITS): the
+    # heavy-tailed error model (6% of positions 5x off, measured on Gaia-CRF3 quasars)
+    # identifies it -- a Gaussian model gave P < 0.01 -- but below a well-measured row.
     sdss = next(m for g in record.crossmatch_groups for m in g["members"]
                 if m["catalog"] == "sdss" and m["source_id"] in BARNARD_HITS["sdss"])
-    assert sdss["target_probability"] < 0.01 and sdss["data"]["psfMag_r"] < 14.0
+    assert 0.5 < sdss["target_probability"] < 0.99 and sdss["data"]["psfMag_r"] < 14.0
 
 
 async def test_barnard_results_do_not_depend_on_whether_the_motion_was_given_or_adopted() -> None:

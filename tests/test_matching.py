@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import itertools
 import json
 import math
 import time
@@ -21,6 +22,7 @@ import pytest
 import respx
 from fixture_io import load_exchanges, replay_side_effect, target_for, target_radius
 from helpers import make_service, offline_client
+from test_matching_fixtures import assert_replayed_exactly
 
 import astrometry
 from astrometry import (
@@ -133,9 +135,11 @@ def test_gamma_poisson_density_tends_to_sky_mean_in_tiny_cones_and_local_count_i
     a = 1.0
     value, _ = estimate_density_deg2(7, 0.01, catalog="gaia_dr3")
     assert value == pytest.approx((a + 7) / (a / mean + 0.01))
-    # Without an all-sky density: NWAY's (n + 1) / area.
+    # Without an all-sky density: the same Gamma-Poisson update of a generic prior mean
+    # (not NWAY's (n + 1) / area, which made the prior depend on the cone size).
+    generic = astrometry.GENERIC_SKY_DENSITY_DEG2
     other, info = estimate_density_deg2(3, 0.02, catalog="not_a_catalogue")
-    assert other == pytest.approx(4 / 0.02) and info["method"] == "nway_plus_one"
+    assert other == pytest.approx((a + 3) / (a / generic + 0.02)) and info["method"] == "gamma_poisson_generic"
     theta = math.radians(1.0)
     assert cone_area_deg2(3600.0) == pytest.approx(2 * math.pi * (1 - math.cos(theta)) * (180 / math.pi) ** 2, rel=1e-12)
     assert cone_area_deg2(3600.0) == pytest.approx(math.pi, rel=1e-4)
@@ -156,18 +160,51 @@ SCENARIOS = {
 
 @pytest.mark.parametrize("scenario", sorted(SCENARIOS))
 def test_monte_carlo_completeness_purity_and_calibration(scenario: str) -> None:
-    report = calibration_run(SCENARIOS[scenario], fields=600, seed=20260928 + len(scenario), threshold=0.9)
-    assert report["true_target_detections"] > 500
+    # Realistic synthetic sky (astrometry.simulate_field): field objects seen by several
+    # catalogues at once, 6% of positions 5x off (the engine's error model), the searched
+    # cone given to the engine.
+    cats = SCENARIOS[scenario]
+    cfg = AssociationConfig(completeness={c.name: c.target_completeness for c in cats})
+    rng = np.random.default_rng(20260928 + len(scenario))
+    densities = {c.name: c.density_arcmin2 * 3600.0 for c in cats}
+    probs, truth = [], []
+    for _ in range(600):
+        dets, true, target = astrometry.simulate_field(rng, cats)
+        result = associate(dets, densities, target=target, config=cfg, cone=(150.0, 20.0, 30.0))
+        probs.extend(result.target_probability.tolist())
+        truth.extend(t == 0 for t in true)
+    p, t = np.asarray(probs), np.asarray(truth)
+    assert t.sum() > 500
     # At P > 0.9: almost every selected association is true, and most true ones are selected.
-    assert report["purity"] > 0.97, report
-    assert report["completeness"] > (0.95 if scenario == "sparse" else 0.85), report
-    # Calibration: in every posterior bin the observed fraction of true associations
-    # matches the mean posterior within binomial noise (3 sigma) + 0.05.
-    for row in report["reliability"]:
-        p, n = row["mean_probability"], row["count"]
-        sigma = math.sqrt(max(p * (1 - p), 0.01) / n)
-        assert abs(row["true_fraction"] - p) <= 3.0 * sigma + 0.05, (scenario, row)
-    # The object partition of the other detections is pure (members = one true object).
+    selected = p > 0.9
+    assert (selected & t).sum() / selected.sum() > 0.97
+    assert (selected & t).sum() / t.sum() > (0.95 if scenario == "sparse" else 0.85)
+    # Calibration without slack: in every posterior bin (sextiles of P > 0.02, >= 100 rows)
+    # the observed fraction of true associations matches the mean posterior within 3
+    # binomial sigma; the posteriors sum to the number of true associations.
+    edges = np.quantile(p[p > 0.02], np.linspace(0.0, 1.0, 7))
+    checked = 0
+    for lo, hi in itertools.pairwise(edges):
+        in_bin = (p >= lo) & (p <= hi)
+        if in_bin.sum() < 100:
+            continue
+        mean, true_fraction = float(p[in_bin].mean()), float(t[in_bin].mean())
+        sigma = math.sqrt(mean * (1.0 - mean) / in_bin.sum())
+        assert abs(true_fraction - mean) <= 3.0 * sigma, (scenario, lo, hi, mean, true_fraction, int(in_bin.sum()))
+        checked += 1
+    assert checked >= 4
+    assert p.sum() == pytest.approx(t.sum(), rel=0.03)
+
+
+@pytest.mark.parametrize("scenario", sorted(SCENARIOS))
+def test_monte_carlo_field_partition_is_pure(scenario: str) -> None:
+    # The object partition of the other detections (B&S agglomeration of Gaussian errors):
+    # multi-member groups are one true object. Gaussian positions and the densest
+    # catalogue seeing every object, as in B&S's prior.
+    cats = SCENARIOS[scenario]
+    cfg = AssociationConfig(completeness={c.name: c.target_completeness for c in cats}, outlier_fraction=0.0)
+    report = calibration_run(cats, fields=600, seed=20260928 + len(scenario), threshold=0.9, config=cfg,
+                             object_density_arcmin2=max(c.density_arcmin2 for c in cats))
     assert report["field_group_purity"] > 0.95, report
 
 
@@ -180,10 +217,10 @@ def test_monte_carlo_expected_number_of_true_associations() -> None:
     total_p = total_true = 0.0
     for _ in range(300):
         dets, truth, target = astrometry.simulate_field(rng, cats)
-        result = associate(dets, densities, target=target, config=cfg)
+        result = associate(dets, densities, target=target, config=cfg, cone=(150.0, 20.0, 30.0))
         total_p += float(result.target_probability.sum())
         total_true += sum(1 for t in truth if t == 0)
-    assert total_p == pytest.approx(total_true, rel=0.05)
+    assert total_p == pytest.approx(total_true, rel=0.03)
 
 
 def test_each_catalogue_contributes_at_most_one_source_per_object() -> None:
@@ -261,12 +298,17 @@ def test_proper_motion_uncertainty_grows_with_the_epoch_difference() -> None:
     twomass = _row("twomass_psc", 10.0, 20.0 + 0.5 / 3600, 0.07, epoch=2001.0)
     _, info2 = source_detection(twomass, target, target_pm_sigma_masyr=2.0)
     assert info2["propagation"] == "target_pm" and info2["pm_growth_arcsec"] == pytest.approx(0.002)
+    # A pm-less row of a pm catalogue: a stationary field star where it was measured, or
+    # the target moving with the target's motion (both hypotheses are weighed).
     field = _row("gaia_dr3", 10.01, 20.0, 0.001, epoch=2016.0, metadata={"catalog_has_proper_motions": True})
-    _, info3 = source_detection(field, target)
-    assert info3["propagation"] == "stationary"
-    assert info3["pm_growth_arcsec"] == pytest.approx(astrometry.UNKNOWN_PM_SIGMA_MASYR * 16.0 / 1000.0)
-    expected = 0.001**2 + ASTROMETRIC_FLOOR_ARCSEC**2 + (astrometry.UNKNOWN_PM_SIGMA_MASYR * 0.016) ** 2
+    det3, info3 = source_detection(field, target, target_pm_sigma_masyr=2.0)
+    assert info3["propagation"] == "target_pm" and info3["field_propagation"] == "stationary"
+    assert info3["pm_growth_arcsec"] == pytest.approx(2.0 * 16.0 / 1000.0)
+    expected = 0.001**2 + ASTROMETRIC_FLOOR_ARCSEC**2 + (2.0 * 0.016) ** 2
     assert info3["sigma_arcsec"] == pytest.approx(math.sqrt(expected))
+    field_expected = 0.001**2 + ASTROMETRIC_FLOOR_ARCSEC**2 + (astrometry.UNKNOWN_PM_SIGMA_MASYR * 0.016) ** 2
+    assert (det3.cov[0] + det3.cov[2]) / 2 == pytest.approx(field_expected)
+    assert (det3.ra, det3.dec) == (10.01, 20.0)
 
 
 def test_catalogue_ellipse_and_gaia_correlation_become_covariances() -> None:
@@ -286,11 +328,18 @@ def test_catalogue_ellipse_and_gaia_correlation_become_covariances() -> None:
 
 
 def test_resolved_radio_source_gets_its_structure_as_host_offset_scatter() -> None:
-    # NVSS J122906+020305 (3C 273): deconvolved 21.5" x 15.9" at PA 44.3 deg.
+    # NVSS J122906+020305 (3C 273): deconvolved 21.5" x 15.9" at PA 44.3 deg. A position
+    # angle means a resolved major axis; the minor axis may be an upper limit (its flag is
+    # not fetched), so only the major axis counts, along the position angle.
     nvss = _row("nvss", 187.2767, 2.0514, 0.53, data={"major_axis": 21.5, "minor_axis": 15.9, "position_angle": 44.3})
     cov = structure_covariance(nvss)
     sig = 1.0 / (2.0 * math.sqrt(2.0 * math.log(2.0)))
-    assert (cov[0] + cov[2]) == pytest.approx((21.5 * sig) ** 2 + (15.9 * sig) ** 2)
+    assert (cov[0] + cov[2]) == pytest.approx((21.5 * sig) ** 2)
+    t = math.radians(44.3)
+    assert cov[0] == pytest.approx((21.5 * sig * math.sin(t)) ** 2) and cov[2] == pytest.approx((21.5 * sig * math.cos(t)) ** 2)
+    # Unresolved (no position angle): the listed size is an upper limit, not structure.
+    assert structure_covariance(_row("nvss", 1.0, 1.0, 5.8, data={"major_axis": 55.7, "minor_axis": 52.8,
+                                                                   "position_angle": None})) is None
     # FIRST sizes are beam-convolved: a source as large as the 5.4" beam has no structure.
     first = _row("first", 1.0, 1.0, 0.2, data={"fit_major_axis": 5.4, "fit_minor_axis": 5.4})
     assert structure_covariance(first) is None
@@ -315,9 +364,11 @@ async def _recorded(key: str, *, catalogs=None, **kwargs):
         async with offline_client() as client:
             service = make_service(client)
             t = target_for(key)
-            return await service.crossmatch(t.ra, t.dec, radius_arcsec=target_radius(key), epoch=t.epoch,
-                                            pm_ra_masyr=t.pm_ra_masyr, pm_dec_masyr=t.pm_dec_masyr,
-                                            catalogs=catalogs, **kwargs)
+            record = await service.crossmatch(t.ra, t.dec, radius_arcsec=target_radius(key), epoch=t.epoch,
+                                              pm_ra_masyr=t.pm_ra_masyr, pm_dec_masyr=t.pm_dec_masyr,
+                                              catalogs=catalogs, **kwargs)
+    assert_replayed_exactly(record)
+    return record
 
 
 async def test_3c273_recorded_one_group_across_the_spectrum() -> None:
@@ -373,6 +424,24 @@ async def test_target_uncertainty_parameter_changes_the_posterior() -> None:
     assert tight.provenance["association"]["target_sigma_arcsec"] == 0.01
     assert loose.provenance["association"]["target_sigma_arcsec"] == 1.0
     assert tight.provenance["association"]["config"]["target_sigma_arcsec"] == 0.01
+    # FIRST J122906.7+020308 lies 0.64" from 3C 273, well inside its error (0.18") plus the
+    # host-offset scatter of the resolved source: the offset is consistent either way, so a
+    # sharper target position gives the larger Bayes factor (B ~ 1 / (s_target^2 + s_row^2)).
+    first_tight, first_loose = tight.provenance["matches"][0], loose.provenance["matches"][0]
+    assert first_tight["source_id"] == first_loose["source_id"] == "FIRST J122906.7+020308"
+    assert first_tight["confidence"] > first_loose["confidence"] > 0.99
+    # ... and for a row far outside its error the looser target is the more forgiving one.
+    # (A row measured at the target's epoch: no epoch-difference growth. A row without any
+    # epoch would get the growth of an unknown epoch, UNKNOWN_EPOCH_RANGE.)
+    target = validate_target(150.0, 20.0, epoch=2016.0)
+    far = _row("gaia_dr3", *offset_radec(150.0, 20.0, 2.5, 0.0), 0.07, source_id="t", epoch=2016.0,
+               proper_motion_ra_masyr=0.0, proper_motion_dec_masyr=0.0, metadata={"wavelength": "optical"})
+    p = {}
+    for sigma in (0.01, 1.0):
+        cfg = AssociationConfig(target_sigma_arcsec=sigma)
+        result, _, _ = __import__("crossmatch").associate_matches(match_target(target, [far], 5.0), target, config=cfg)
+        p[sigma] = float(result.target_probability[0])
+    assert p[1.0] > 0.3 and p[0.01] < 0.01
     with pytest.raises(ValueError, match="target_uncertainty_arcsec"):
         await _recorded("3c273", catalogs=["first"], target_uncertainty_arcsec=-1.0)
     with pytest.raises(ValueError, match="Unknown catalog"):
@@ -472,7 +541,10 @@ def test_benchmark_grouping_5000_sources_under_one_second() -> None:
     assert elapsed < 1.0
     assert sum(len(g["members"]) for g in groups) == 5000
     for g in groups:
-        assert len(g["catalogs"]) == len(g["members"])  # one row per catalogue per object
+        # One row per catalogue per object (random rows of one survey closer than a quarter
+        # of its resolution and consistent within errors are one duplicated detection).
+        independent = [m for m in g["members"] if m["coincident_with"] is None]
+        assert len(g["catalogs"]) == len(independent)
     # Most multi-catalogue stars are recovered whole.
     assert sum(1 for g in groups if len(g["members"]) >= 3) > 300
 

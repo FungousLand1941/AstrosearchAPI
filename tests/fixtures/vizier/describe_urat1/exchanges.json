@@ -1,0 +1,429 @@
+{
+  "case": "describe_urat1",
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+1001+table_name%2C+description%2C+nrows+FROM+TAP_SCHEMA.tables+WHERE+table_name+%3D+%27%22I%2F329%2Furat1%22%27+OR+table_name+LIKE+%27%22I%2F329%2Furat1%2F%25%27&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+column_name%2C+description%2C+unit%2C+ucd%2C+datatype%2C+principal%2C+indexed+FROM+TAP_SCHEMA.columns+WHERE+table_name+%3D+%27%22I%2F329%2Furat1%22%27&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://vizier.cds.unistra.fr/viz-bin/votable?-source=I%2F329&-meta=",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/x-votable+xml",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://vizier.cds.unistra.fr/viz-bin/votable?-source=I%2F329%2Furat1&-meta.all=",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/x-votable+xml",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "http://reg.g-vo.org/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+ivoid%2C+res_title%2C+source_format%2C+source_value%2C+creator_seq%2C+waveband+FROM+rr.resource+WHERE+ivoid+%3D+%27ivo%3A%2F%2Fcds.vizier%2Fi%2F329%27",
+      "status_code": 200,
+      "content_type": "application/x-votable+xml",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+0.0000%2C+-75.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+45.0000%2C+-75.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+90.0000%2C+-75.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+135.0000%2C+-75.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+180.0000%2C+-75.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+225.0000%2C+-75.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+270.0000%2C+-75.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+315.0000%2C+-75.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+22.5000%2C+-45.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+67.5000%2C+-45.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+112.5000%2C+-45.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+157.5000%2C+-45.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+202.5000%2C+-45.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+247.5000%2C+-45.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+292.5000%2C+-45.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+337.5000%2C+-45.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+0.0000%2C+-15.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+45.0000%2C+-15.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+90.0000%2C+-15.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+135.0000%2C+-15.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+180.0000%2C+-15.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+225.0000%2C+-15.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+270.0000%2C+-15.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+315.0000%2C+-15.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+22.5000%2C+15.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+67.5000%2C+15.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+112.5000%2C+15.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+202.5000%2C+15.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+157.5000%2C+15.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+247.5000%2C+15.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+337.5000%2C+15.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+0.0000%2C+45.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+45.0000%2C+45.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+292.5000%2C+15.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+135.0000%2C+45.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+90.0000%2C+45.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+180.0000%2C+45.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+225.0000%2C+45.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+270.0000%2C+45.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+22.5000%2C+75.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+67.5000%2C+75.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+315.0000%2C+45.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+112.5000%2C+75.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+202.5000%2C+75.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+157.5000%2C+75.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+247.5000%2C+75.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+337.5000%2C+75.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22Epoch%22%29+AS+lo0%2C+MAX%28%22Epoch%22%29+AS+hi0+FROM+%22I%2F329%2Furat1%22+WHERE+%28%22Epoch%22+BETWEEN+1800+AND+2200%29+AND+%281+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAICRS%22%2C+%22DEICRS%22%29%2C+CIRCLE%28%27ICRS%27%2C+292.5000%2C+75.0000%2C+0.1%29%29%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    }
+  ]
+}

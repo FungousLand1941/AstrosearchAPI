@@ -4,7 +4,7 @@
     {
       "method": "POST",
       "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
-      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+table_name%2C+description%2C+nrows+FROM+TAP_SCHEMA.tables+WHERE+table_name+%3D+%27%22VII%2F250%2F2dfgrs%22%27+OR+table_name+LIKE+%27%22VII%2F250%2F2dfgrs%2F%25%27&FORMAT=json",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+1001+table_name%2C+description%2C+nrows+FROM+TAP_SCHEMA.tables+WHERE+table_name+%3D+%27%22VII%2F250%2F2dfgrs%22%27+OR+table_name+LIKE+%27%22VII%2F250%2F2dfgrs%2F%25%27&FORMAT=json",
       "status_code": 200,
       "content_type": "application/json;charset=UTF-8",
       "match": []
@@ -19,7 +19,7 @@
     },
     {
       "method": "GET",
-      "url": "https://vizier.cds.unistra.fr/viz-bin/votable?-source=VII%2F250%2F2dfgrs&-meta.all=",
+      "url": "https://vizier.cds.unistra.fr/viz-bin/votable?-source=VII%2F250&-meta=",
       "request_body": "",
       "status_code": 200,
       "content_type": "application/x-votable+xml",
@@ -27,7 +27,7 @@
     },
     {
       "method": "GET",
-      "url": "https://vizier.cds.unistra.fr/viz-bin/votable?-source=VII%2F250&-meta=",
+      "url": "https://vizier.cds.unistra.fr/viz-bin/votable?-source=VII%2F250%2F2dfgrs&-meta.all=",
       "request_body": "",
       "status_code": 200,
       "content_type": "application/x-votable+xml",

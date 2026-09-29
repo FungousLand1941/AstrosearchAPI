@@ -15,6 +15,7 @@ The remaining tests use small synthetic inputs and say so.
 
 from __future__ import annotations
 
+import argparse
 import asyncio
 import json
 import math
@@ -50,6 +51,7 @@ from alerts import (
     AlertEnrichment,
     AlertService,
     AlertStore,
+    FetchResult,
     FinkLSSTBroker,
     FinkZTFBroker,
     fetch_alerts,
@@ -242,7 +244,7 @@ def test_host_distance_group_and_cmb_frame() -> None:
 
     assert far["velocity_frame"] == "cmb_group" and far["redshift_cmb"] == pytest.approx(7194.0 / 299792.458)
     assert far["angular_diameter_mpc"] == pytest.approx(
-        Planck18.comoving_transverse_distance(7194.0 / 299792.458).value / 1.0231, rel=1e-9)
+        Planck18.clone(H0=74.6).comoving_transverse_distance(7194.0 / 299792.458).value / 1.0231, rel=1e-9)
     assert far["fractional_uncertainty"] == pytest.approx(300.0 / 7194.0)
     # ... else the galaxy's own redshift in the CMB frame, with the group's dispersion as its uncertainty.
     member = alerts.host_distance(0.0231, None, ra=194.95, dec=27.98, group={"dm": None, "sigma_v_kms": 1000.0})
@@ -257,6 +259,24 @@ def test_host_distance_group_and_cmb_frame() -> None:
     assert alerts.host_distance(0.05)["velocity_frame"] == "heliocentric"
 
 
+def test_hubble_flow_distances_are_on_the_cosmicflows4_scale() -> None:
+    """Regression: CF4 distances (H0 = 74.6 zero point) were used below z = 0.01 and Planck 2018 (H0 = 67.66)
+    above it, so a host's distance and offset jumped by ~10% where the method changed."""
+    # A galaxy on the Hubble flow at cz_CMB = 2990 km/s: its CF4 distance is ~cz / 74.6 = 40.1 Mpc.
+    z = 0.00997
+    dm_cf4 = 5 * math.log10(299792.458 * z / 74.6 * 1e5)
+    below = alerts.host_distance(z, (dm_cf4, 0.05))
+    above = alerts.host_distance(z + 0.00006)  # just above z = 0.01: the Hubble flow (heliocentric, no position)
+    assert below["method"] == "cosmicflows4" and above["method"] == "hubble_flow"
+    assert above["hubble_constant_kms_mpc"] == pytest.approx(74.6)
+    # Continuous to the redshift step and the (1+z) terms (< 1.5%), not the 10% H0 jump.
+    assert above["angular_diameter_mpc"] / below["angular_diameter_mpc"] == pytest.approx(1.0, abs=0.015)
+    from astropy.cosmology import Planck18
+
+    planck = Planck18.angular_diameter_distance(z + 0.00006).value
+    assert planck / above["angular_diameter_mpc"] == pytest.approx(74.6 / 67.66, rel=0.002)
+
+
 # ---------------------------------------------------------------------------
 # AGN / blazars (recorded + synthetic)
 # ---------------------------------------------------------------------------
@@ -267,6 +287,11 @@ def test_blazar_is_a_known_variable_and_agn(famous: dict[str, AlertEnrichment]) 
     res = famous["3C273"]
     assert res.known_variable is True and res.known_agn is True and res.known_star is False
     assert any("a blazar, variable by definition" in e for e in res.evidence)
+    # Review round 3: its host is 3C 273 itself (z = 0.158), not the z = 0.0053 dwarf 10.8" away.
+    host = res.host
+    assert host is not None and host["name"] == "3C 273" and host["method"] == "agn_nucleus"
+    assert host["redshift"] == pytest.approx(0.1576, abs=1e-4) and host["distance_mpc"] > 400
+    assert res.transient_redshift == host["redshift"]
 
 
 def test_seyfert_is_flagged_as_agn(famous: dict[str, AlertEnrichment]) -> None:
@@ -311,16 +336,34 @@ async def _inside_galaxy(data: dict[str, Any], extra_sources: list[dict[str, Any
     return await enricher_with(answer, d25, cf4={1: (25.0, 0.05)}).enrich(ALERT)
 
 
-@pytest.mark.parametrize(("change", "expected", "why"), [
-    ({}, True, "-> Galactic star"),  # a well-behaved point source: 5 mas/yr at 35 sigma is Galactic
-    ({"ruwe": 2.0}, False, "not a well-behaved point source (RUWE 2.00)"),
-    ({"astrometric_excess_noise_sig": 5.0}, False, "excess-noise significance 5.0"),
-    ({"in_galaxy_candidates": True}, False, "a Gaia DR3 galaxy candidate"),
-    ({"classprob_dsc_combmod_star": 0.1, "classprob_dsc_combmod_galaxy": 0.9}, False, "Gaia DSC P(galaxy) + P(quasar)"),
-    ({"parallax": -0.4}, False, "parallax -4.0 sigma: negative"),
+# The same 5 mas/yr proper motion measured at 10 sigma: significant, but not decisive (< PM_SNR_DECISIVE).
+MARGINAL = {**POINT, "pmra_error": 0.4, "pmdec_error": 0.6}
+DSC_GALAXY = {"classprob_dsc_combmod_star": 0.1, "classprob_dsc_combmod_galaxy": 0.9}
+
+
+@pytest.mark.parametrize(("data", "expected", "why"), [
+    (POINT, True, "-> Galactic star"),  # a well-behaved point source: 5 mas/yr at 50 sigma is Galactic
+    (MARGINAL, True, "-> Galactic star"),  # ... and at 10 sigma
+    # A poor single-star fit (a nucleus, a cluster -- or a binary): a < 20 sigma proper motion is not used ...
+    ({**MARGINAL, "ruwe": 2.0}, False, "not a well-behaved point source (RUWE 2.00)"),
+    ({**MARGINAL, "astrometric_excess_noise_sig": 5.0}, False, "excess-noise significance 5.0"),
+    # ... a >= 20 sigma one is real (a binary's; the spurious ones of nuclei and clusters stay < 18 sigma).
+    ({**POINT, "ruwe": 2.0}, True, "real although the single-star model fits it poorly (RUWE 2.00; a binary)"),
+    # Gaia's extragalactic classification vetoes marginal astrometry ...
+    ({**MARGINAL, "in_galaxy_candidates": True}, False, "a Gaia DR3 galaxy candidate"),
+    ({**MARGINAL, **DSC_GALAXY}, False, "Gaia DSC P(galaxy) + P(quasar)"),
+    # ... and that of a poorly fitted source, however significant ...
+    ({**POINT, **DSC_GALAXY, "ruwe": 2.0}, False, "Gaia DSC P(galaxy) + P(quasar) = 0.905"),
+    # ... but not the decisive astrometry of a well-fitted point source (DSC's classes have a low purity).
+    ({**POINT, "in_galaxy_candidates": True}, True, "decisive astrometry (DSC's galaxy/quasar classes have a low purity"),
+    ({**POINT, **DSC_GALAXY}, True, "-> Galactic star"),
+    ({**POINT, "parallax": -0.4}, False, "parallax -4.0 sigma: negative"),
 ])
-async def test_proper_motion_needs_a_point_source(change: dict[str, Any], expected: bool, why: str) -> None:
-    res = await _inside_galaxy({**POINT, **change})
+async def test_proper_motion_needs_a_point_source_or_decisive_significance(data: dict[str, Any], expected: bool,
+                                                                          why: str) -> None:
+    """Synthetic: inside a galaxy at 1 Mpc (proper-motion limit 0.16 mas/yr)."""
+    res = await _inside_galaxy(data)
+    assert res.status == "done"
     assert res.known_star is expected
     assert any(why in e for e in res.evidence), res.evidence
     assert (res.host is None) is expected
@@ -371,7 +414,7 @@ def _outer_galaxy(d_dlr: float, a: float = 60.0) -> dict[str, Any]:
 
 
 async def test_outer_dlr_host_is_blocked_by_a_nearer_unsized_galaxy() -> None:
-    outer = _outer_galaxy(2.0)
+    outer = _outer_galaxy(1.8)
     small = {"source_id": "WISEA J100000.00+020003.0", "ra": ALERT.ra, "dec": ALERT.dec - 3 / 3600,
              "separation_arcsec": 3.0, "data": {"prefphytype": "G", "z": 0.05}}
 
@@ -379,8 +422,8 @@ async def test_outer_dlr_host_is_blocked_by_a_nearer_unsized_galaxy() -> None:
         return lambda ra, dec, cats: record_of(ra, dec, cats, sources={} if "gaia_dr3" in cats else {"ned": rows})
 
     alone = await enricher_with(answer_with([]), ([outer], None, False)).enrich(ALERT)
-    assert alone.host is not None and alone.host["method"] == "dlr_outside_d25" and alone.host["pgc"] == 1
-    assert alone.host["d_dlr"] == pytest.approx(2.0, rel=1e-3)
+    assert alone.status == "done" and alone.host is not None and alone.host["method"] == "dlr_outside_d25"
+    assert alone.host["pgc"] == 1 and alone.host["d_dlr"] == pytest.approx(1.8, rel=1e-3)
     # A galaxy without a D25 size 3" away (nearer than NGC 1's light radius, 60") may be the host.
     blocked = await enricher_with(answer_with([small]), ([outer], None, False)).enrich(ALERT)
     assert blocked.host is not None and blocked.host["name"] == small["source_id"] and blocked.host["method"] == "nearest"
@@ -389,9 +432,13 @@ async def test_outer_dlr_host_is_blocked_by_a_nearer_unsized_galaxy() -> None:
     part = {**small, "source_id": "NGC 1:[X] 7", "ra": ALERT.ra, "dec": ALERT.dec + 100 / 3600, "separation_arcsec": 100.0}
     far = await enricher_with(answer_with([part]), ([_outer_galaxy(1.5, 80.0)], None, False)).enrich(ALERT)
     assert far.host is not None and far.host["method"] == "dlr_outside_d25"
-    # Beyond d_DLR = 4 no D25 association is made.
+    # Beyond d_DLR = 2 (Gupta et al.'s 4 second-moment radii) no D25 association is made: up to 4 D25 radii the
+    # galaxy is reported as a possible association ('unassociated'), beyond that not at all.
+    possible = await enricher_with(answer_with([]), ([_outer_galaxy(3.0)], None, False)).enrich(ALERT)
+    assert possible.status == "done" and possible.host is None and possible.host_status == "unassociated"
+    assert any("possible association, not adopted: PGC 1" in e and "d_DLR = 3.00" in e for e in possible.evidence)
     none = await enricher_with(answer_with([]), ([_outer_galaxy(4.5)], None, False)).enrich(ALERT)
-    assert none.host is None and none.host_status == "none_within_radius"
+    assert none.status == "done" and none.host is None and none.host_status == "none_within_radius"
 
 
 async def test_stellar_counterpart_near_a_nearby_galaxy_is_unknown_not_galactic() -> None:
@@ -405,8 +452,12 @@ async def test_stellar_counterpart_near_a_nearby_galaxy_is_unknown_not_galactic(
     local = {"source_id": "NGC 2", "ra": ALERT.ra + 40 / 3600, "dec": ALERT.dec, "separation_arcsec": 40.0,
              "data": {"otype": "G", "rvz_redshift": 0.006}}
     near_local = await enricher_with(answer_with([local])).enrich(ALERT)  # in the host cone, |z| < 0.01
-    assert near_local.known_star is None and near_local.host is not None
+    assert near_local.status == "done" and near_local.known_star is None
     assert any("Galactic nature not established" in e for e in near_local.evidence)
+    # NGC 2 (no D25 size) 40" away is not adopted as host (review round 3): it lies within a typical 8 kpc light
+    # radius at z = 0.006, but its chance-coincidence probability is 0.36.
+    assert near_local.host is None and near_local.host_status == "unassociated"
+    assert any("NGC 2" in e and "does not make it the host" in e for e in near_local.evidence)
     distant = {**local, "data": {"otype": "G", "rvz_redshift": 0.08}}
     assert (await enricher_with(answer_with([distant])).enrich(ALERT)).known_star is True
     assert (await enricher_with(answer_with([])).enrich(ALERT)).known_star is True
@@ -430,36 +481,229 @@ def test_fink_sn_candidate_probability_is_sn_vs_all() -> None:
 
 
 async def test_alerce_rows_repeated_per_classifier_version_are_deduplicated(store: AlertStore) -> None:
-    """Recorded lc_classifier AGN answer: 16 rows but 11 objects on the first page."""
+    """Recorded lc_classifier AGN answer: 16 rows but 11 objects on the first page; every kept object is
+    classified by its newest classifier version (/probabilities)."""
     p = params("alerce_duplicates")
     first_page = body("alerce_duplicates", 0)["items"]
     assert len(first_page) == p["limit"] + 1 > len({i["oid"] for i in first_page})
+    # Two objects of the window are AGN only in a superseded version (one /objects/ row each): the newest,
+    # lc_classifier_1.1.13, ranks CV/Nova and Blazar first. They are dropped, with a warning.
+    dropped = {"ZTF18acusetg": "CV/Nova", "ZTF21aaqvvvt": "Blazar"}
+    assert all(sum(i["oid"] == oid for i in first_page) == 1 for oid in dropped)
     with Replay("alerce_duplicates") as replay:
         async with offline_client() as client:
             result = await fetch_alerts(client, "alerce", since_mjd=p["since_mjd"], until_mjd=p["until_mjd"],
                                         limit=p["limit"], options=p["options"])
             n_fetch = len(replay.calls)
             ids = [a.object_id for a in result.alerts]
-            assert len(ids) == len(set(ids)) == p["limit"] and ids == p["alert_ids"] and result.warnings == []
-            # Another page was read to find limit + 1 distinct objects.
-            assert sum("/objects/?" in str(c.url) for c in replay.calls) == 2 and result.truncated
+            assert len(ids) == len(set(ids)) == p["limit"] - len(dropped) and ids == p["alert_ids"]
+            assert not set(dropped) & set(ids)
+            (warning,) = result.warnings
+            assert "2 object(s) dropped" in warning and all(f"{oid} ({cls} " in warning for oid, cls in dropped.items())
+            # Another page was read to find limit + 1 distinct objects, by keyset: it ends at the exact MJD of
+            # the first page's last row (rows of one exposure come in a different order on every request).
+            pages = [c for c in replay.calls if "/objects/?" in str(c.url)]
+            assert len(pages) == 2 and result.truncated
+            assert pages[1].url.params.get_list("lastmjd")[1] == repr(min(i["lastmjd"] for i in first_page))
+            assert "page" not in pages[1].url.params
+            # One /probabilities request per kept object (dropped ones included), one /detections per stored one.
+            probability_calls = [c for c in replay.calls if c.url.path.endswith("/probabilities")]
+            assert len(probability_calls) == p["limit"] and result.requests == 2 + p["limit"] + len(ids)
+            assert {a.object_id: a.probability for a in result.alerts} == p["probabilities"]
+            assert all(a.extra["classifier_choice"] == "newest_version" for a in result.alerts)
+            assert all(a.extra["classifier_version"] == "lc_classifier_1.1.13" for a in result.alerts)
             repeated = {a.object_id: a for a in result.alerts if len(a.extra.get("classifier_rows") or []) > 1}
             assert set(repeated) == set(p["repeated"]) and repeated
             actadei = repeated["ZTF18actadei"]
             # Its two lc_classifier versions: hierarchical_rf_1.1.0 (0.84372) and lc_classifier_1.1.13 (0.497556).
             assert actadei.extra["classifier_versions"] == {"hierarchical_rf_1.1.0": 0.84372,
                                                             "lc_classifier_1.1.13": 0.497556}
-            assert actadei.extra["classifier_version"] == "lc_classifier_1.1.13"
-            assert actadei.probability == 0.497556 and actadei.extra["classifier_choice"] == "newest_version"
+            assert actadei.probability == 0.497556
             svc = AlertService(store, client, None, clock=lambda: p["until_mjd"])
             polls = [await svc.poll("alerce", since_mjd=p["since_mjd"], until_mjd=p["until_mjd"], limit=p["limit"],
                                     crossmatch=False, options=p["options"]) for _ in range(3)]
             assert len(replay.calls) == 4 * n_fetch
-    assert (polls[0].fetched, polls[0].inserted, polls[0].updated) == (p["limit"], p["limit"], 0)
+    n = len(ids)
+    assert (polls[0].fetched, polls[0].inserted, polls[0].updated) == (n, n, 0)
     for later in polls[1:]:  # idempotent: nothing is 'reclassified' by another version's row
-        assert (later.inserted, later.updated, later.unchanged) == (0, 0, p["limit"])
+        assert (later.inserted, later.updated, later.unchanged) == (0, 0, n)
     assert len(polls[0].alert_ids) == len(set(polls[0].alert_ids))
     assert all(r["n_updates"] == 0 for r in store.list(limit=100))
+
+
+class ShufflingAlerce:
+    """Synthetic ALeRCE /objects/ server: rows sorted by lastmjd DESC, rows of one MJD (one exposure) in a
+    new random order on every request -- as the live API does (ZTF18abnrdci's two version rows were read
+    on one poll and split by a page offset on the next, flipping its stored probability).
+
+    ``objects``: oid -> (lastmjd, probabilities of the versions ranking AGN first, oldest version first);
+    ``newest_class``: oid -> (class, probability) ranked first by the newest version instead (the object's
+    AGN row then comes from the older version only); ``probability_status``: HTTP status of /probabilities.
+    """
+
+    VERSIONS = ("hierarchical_rf_1.1.0", "lc_classifier_1.1.13")
+
+    def __init__(self, objects: dict[str, tuple[float, tuple[float, ...]]], seed: int = 1,
+                 newest_class: dict[str, tuple[str, float]] | None = None) -> None:
+        self.objects = objects
+        self.newest_class = newest_class or {}
+        self.random = __import__("random").Random(seed)
+        self.pages: list[httpx.URL] = []
+        self.probability_calls: list[str] = []
+        self.probability_status = 200
+
+    def rows(self) -> list[dict[str, Any]]:
+        return [{"oid": oid, "meanra": 10.0 + i, "meandec": 5.0, "firstmjd": mjd - 30.0, "lastmjd": mjd, "class": "AGN",
+                 "probability": prob, "classifier": "lc_classifier"}
+                for i, (oid, (mjd, probs)) in enumerate(self.objects.items()) for prob in probs]
+
+    def objects_page(self, request: httpx.Request) -> httpx.Response:
+        self.pages.append(request.url)
+        lo, hi = (float(v) for v in request.url.params.get_list("lastmjd"))
+        size, page = int(request.url.params["page_size"]), int(request.url.params.get("page", "1"))
+        rows = [r for r in self.rows() if lo <= r["lastmjd"] <= hi]
+        self.random.shuffle(rows)
+        rows.sort(key=lambda r: -r["lastmjd"])  # stable: ties keep the shuffled order
+        return httpx.Response(200, json={"items": rows[(page - 1) * size:page * size]})
+
+    def probabilities(self, request: httpx.Request) -> httpx.Response:
+        oid = request.url.path.split("/")[-2]
+        self.probability_calls.append(oid)
+        if self.probability_status != 200:
+            return httpx.Response(self.probability_status, text="Service Unavailable")
+        _, probs = self.objects[oid]
+        if oid in self.newest_class:
+            cls, prob = self.newest_class[oid]
+            rows = [{"classifier_name": "lc_classifier", "classifier_version": self.VERSIONS[0], "class_name": "AGN",
+                     "probability": probs[0], "ranking": 1},
+                    {"classifier_name": "lc_classifier", "classifier_version": self.VERSIONS[1], "class_name": cls,
+                     "probability": prob, "ranking": 1},
+                    {"classifier_name": "lc_classifier", "classifier_version": self.VERSIONS[1], "class_name": "AGN",
+                     "probability": 0.1, "ranking": 2}]
+            return httpx.Response(200, json=rows)
+        versions = self.VERSIONS[-len(probs):] if len(probs) < len(self.VERSIONS) else self.VERSIONS
+        return httpx.Response(200, json=[{"classifier_name": "lc_classifier", "classifier_version": v, "class_name": "AGN",
+                                          "probability": p, "ranking": 1} for v, p in zip(versions, probs, strict=True)])
+
+    def mount(self, mock: respx.MockRouter) -> None:
+        base = "https://api.alerce.online/ztf/v1/objects/"
+        mock.get(url__startswith=base + "?").mock(side_effect=self.objects_page)
+        mock.get(url__regex=r".*/objects/[^/]+/probabilities.*").mock(side_effect=self.probabilities)
+        mock.get(url__regex=r".*/objects/[^/]+/detections$").mock(return_value=httpx.Response(200, json=[]))
+
+
+AGN_OPTIONS = {"classifier": "lc_classifier", "class_name": "AGN", "mjd_field": "lastmjd"}
+
+
+async def test_alerce_probabilities_do_not_depend_on_the_order_of_tied_rows(store: AlertStore) -> None:
+    """Synthetic: an exposure's rows (MJD 61311.5) straddle the first page; with page offsets an object's
+    second version row was sometimes skipped or read twice, so its probability flipped between the two
+    versions from poll to poll ('updated' without a new detection). Keyset paging reads the tie again."""
+    server = ShufflingAlerce({
+        "ZTF26aaaaaaa": (61311.9, (0.7,)),
+        "ZTF26aaaaaab": (61311.5, (0.9, 0.3)),  # versions: hierarchical_rf 0.9, lc_classifier (newest) 0.3
+        "ZTF26aaaaaac": (61311.5, (0.6,)),
+        "ZTF26aaaaaad": (61311.5, (0.8, 0.4)),
+        "ZTF26aaaaaae": (61311.5, (0.55,)),
+        "ZTF26aaaaaaf": (61311.2, (0.95, 0.35)),
+        "ZTF26aaaaaag": (61311.1, (0.5,)),
+        "ZTF26aaaaaah": (61311.0, (0.5,)),
+    })
+    window = {"since_mjd": 61310.0, "until_mjd": 61312.0, "limit": 5, "options": AGN_OPTIONS, "crossmatch": False}
+    newest = {"ZTF26aaaaaaa": 0.7, "ZTF26aaaaaab": 0.3, "ZTF26aaaaaac": 0.6, "ZTF26aaaaaad": 0.4, "ZTF26aaaaaae": 0.55}
+    with respx.mock(assert_all_mocked=True) as mock:
+        server.mount(mock)
+        async with offline_client() as client:
+            svc = AlertService(store, client, None, clock=lambda: 61312.0)
+            polls = [await svc.poll("alerce", **window) for _ in range(8)]
+    assert all(sorted(p.alert_ids) == sorted(f"alerce:{oid}" for oid in newest) for p in polls)
+    assert all(p.truncated and p.warnings[1:] == [] for p in polls)
+    assert (polls[0].inserted, polls[0].updated) == (5, 0)
+    for later in polls[1:]:
+        assert (later.inserted, later.updated, later.unchanged) == (0, 0, 5)
+    rows = {r["object_id"]: r for r in store.list(limit=10)}
+    assert {oid: r["probability"] for oid, r in rows.items()} == newest
+    assert all(r["n_updates"] == 0 for r in rows.values())
+    assert rows["ZTF26aaaaaab"]["extra"]["classifier_version"] == "lc_classifier_1.1.13"
+    # The pages after the first end at the exact MJD of the previous page's last row, not at a page offset
+    # (the second request re-reads the exposure at 61311.5; the third steps through it by offset).
+    uppers = [url.params.get_list("lastmjd")[1] for url in server.pages[:3]]
+    assert uppers == ["61312.000000", "61311.5", "61311.5"]
+    assert [url.params.get("page") for url in server.pages[:3]] == [None, None, "2"]
+
+
+async def test_alerce_keyset_pages_through_a_tie_larger_than_a_page(store: AlertStore) -> None:
+    """Synthetic: 4 objects with 2 version rows each share one MJD (8 rows, more than a page of limit + 1 = 6):
+    a page of the tie holds at most 4 < 6 distinct objects, so the walk must step through the tie by page
+    offsets to reach the older objects. Regression: the former test's single-row objects filled the first
+    page with distinct objects, so the offset path never ran."""
+    tied = {f"ZTF26aaaab{c}a": (61311.5, (0.9, 0.3)) for c in "abcd"}
+    server = ShufflingAlerce(tied | {"ZTF26aaaacaa": (61311.4, (0.8,)), "ZTF26aaaadaa": (61311.3, (0.7,))}, seed=3)
+    with respx.mock(assert_all_mocked=True) as mock:
+        server.mount(mock)
+        async with offline_client() as client:
+            result = await fetch_alerts(client, "alerce", since_mjd=61310.0, until_mjd=61312.0, limit=5, options=AGN_OPTIONS)
+    requests = [(url.params.get_list("lastmjd")[1], url.params.get("page")) for url in server.pages]
+    assert requests == [("61312.000000", None), ("61311.5", None), ("61311.5", "2")]
+    ids = [a.object_id for a in result.alerts]
+    assert len(ids) == len(set(ids)) == 5 and set(tied) <= set(ids) and "ZTF26aaaacaa" in ids
+    assert result.truncated and result.boundary_mjd == 61311.4 and result.warnings == []
+    # Every tied object was seen with both version rows and took its newest version's probability.
+    for oid in tied:
+        alert = next(a for a in result.alerts if a.object_id == oid)
+        assert alert.probability == 0.3 and alert.extra["classifier_versions"] == {"hierarchical_rf_1.1.0": 0.9,
+                                                                                   "lc_classifier_1.1.13": 0.3}
+
+
+async def test_alerce_object_whose_newest_version_ranks_another_class_is_dropped(store: AlertStore) -> None:
+    """Synthetic: ZTF26aaaaaab's only AGN row comes from hierarchical_rf_1.1.0; the newest version ranks Blazar
+    first. Regression: such single-row objects were stored as 'AGN' with the obsolete probability, silently
+    (live: 8 of 30 lc_classifier SNIa objects of a lastmjd window, e.g. ZTF18abvvwjv, an LPV at 0.659)."""
+    server = ShufflingAlerce({"ZTF26aaaaaaa": (61311.9, (0.7,)), "ZTF26aaaaaab": (61311.8, (0.85,)),
+                              "ZTF26aaaaaac": (61311.7, (0.6, 0.5))}, newest_class={"ZTF26aaaaaab": ("Blazar", 0.62)})
+    with respx.mock(assert_all_mocked=True) as mock:
+        server.mount(mock)
+        async with offline_client() as client:
+            result = await fetch_alerts(client, "alerce", since_mjd=61310.0, until_mjd=61312.0, limit=5, options=AGN_OPTIONS)
+            svc = AlertService(store, client, None, clock=lambda: 61312.0)
+            poll = await svc.poll("alerce", since_mjd=61310.0, until_mjd=61312.0, limit=5, options=AGN_OPTIONS,
+                                  crossmatch=False)
+    assert [a.object_id for a in result.alerts] == ["ZTF26aaaaaaa", "ZTF26aaaaaac"]
+    assert sorted(server.probability_calls[:3]) == ["ZTF26aaaaaaa", "ZTF26aaaaaab", "ZTF26aaaaaac"]  # all resolved
+    (warning,) = result.warnings
+    assert "1 object(s) dropped" in warning and "ZTF26aaaaaab (Blazar 0.62 in lc_classifier_1.1.13)" in warning
+    assert poll.inserted == 2 and store.get("alerce:ZTF26aaaaaab") is None
+    single = store.get("alerce:ZTF26aaaaaaa")  # a single row, resolved too
+    assert single["extra"]["classifier_choice"] == "newest_version" and single["extra"]["classifier_version"] == \
+        "lc_classifier_1.1.13"
+
+
+async def test_alerce_failed_version_lookup_on_a_repoll_keeps_the_stored_probability(store: AlertStore) -> None:
+    """Synthetic: /probabilities answers 200, then 503, then 200 on three polls of the same detections.
+    Regression: the 503 poll stored the highest (obsolete) row probability as a reclassification and the next
+    poll flipped it back (2 'updates' without a new detection)."""
+    server = ShufflingAlerce({"ZTF26aaaaaab": (61311.5, (0.9, 0.3)), "ZTF26aaaaaac": (61311.4, (0.6,))})
+    window = {"since_mjd": 61310.0, "until_mjd": 61312.0, "limit": 5, "options": AGN_OPTIONS, "crossmatch": False}
+    with respx.mock(assert_all_mocked=True) as mock:
+        server.mount(mock)
+        async with offline_client() as client:
+            svc = AlertService(store, client, None, clock=lambda: 61312.0)
+            first = await svc.poll("alerce", **window)
+            server.probability_status = 503
+            outage = await svc.poll("alerce", **window)
+            server.probability_status = 200
+            after = await svc.poll("alerce", **window)
+    assert first.inserted == 2 and first.warnings == []
+    assert (outage.updated, outage.unchanged) == (0, 2)
+    assert sum("classifier versions unavailable" in w for w in outage.warnings) == 2
+    assert (after.updated, after.unchanged) == (0, 2)
+    row = store.get("alerce:ZTF26aaaaaab")
+    assert row["probability"] == 0.3 and row["n_updates"] == 0
+    assert row["extra"]["classifier_choice"] == "newest_version" and row["extra"]["classifier_version"] == "lc_classifier_1.1.13"
+    # A newer detection whose lookup fails is stored as it came (the stored version belongs to an older detection).
+    newer = Alert.from_dict({**Alert.from_dict(row).as_dict(), "mjd": 61311.6, "probability": 0.9,
+                             "extra": {"classifier_choice": "unresolved"}})
+    assert store.upsert(newer) == "updated" and store.get("alerce:ZTF26aaaaaab")["probability"] == 0.9
 
 
 def test_alerce_version_key_orders_numeric_versions() -> None:
@@ -473,12 +717,22 @@ def test_alerce_version_key_orders_numeric_versions() -> None:
     assert len(rows) == 1 and rows[0].probability == 0.7 and rows[0].extra["classifier_choice"] == "max_probability"
 
 
+def stamp_probabilities(mock: respx.MockRouter, probability: float = 0.9) -> None:
+    """Every object's /probabilities: stamp_classifier_1.0.4 ranks SN first."""
+    mock.get(url__regex=r".*/objects/[^/]+/probabilities.*").mock(return_value=httpx.Response(200, json=[
+        {"classifier_name": "stamp_classifier", "classifier_version": "stamp_classifier_1.0.4", "class_name": "SN",
+         "probability": probability, "ranking": 1},
+        {"classifier_name": "stamp_classifier", "classifier_version": "stamp_classifier_1.0.4", "class_name": "AGN",
+         "probability": 0.05, "ranking": 2}]))
+
+
 def _alerce_mock(mock: respx.MockRouter, detections: list[httpx.Response]) -> None:
     item = {"oid": "ZTF26aaaaaab", "meanra": 150.0, "meandec": 2.0, "firstmjd": 61305.0, "lastmjd": 61306.3,
             "class": "SN", "probability": 0.9, "classifier": "stamp_classifier"}
     mock.get(url__startswith="https://api.alerce.online/ztf/v1/objects/?").mock(
         return_value=httpx.Response(200, json={"items": [item]}))
     mock.get("https://api.alerce.online/ztf/v1/objects/ZTF26aaaaaab/detections").mock(side_effect=detections)
+    stamp_probabilities(mock)
 
 
 DETECTION = [{"mjd": 61306.3, "magpsf": 19.1, "sigmapsf": 0.1, "fid": 2, "isdiffpos": "t", "candid": 123}]
@@ -538,6 +792,7 @@ def test_router_survives_malformed_upstream_values(store: AlertStore) -> None:
                                         headers={"content-type": "application/json"}))
         mock.get("https://api.alerce.online/ztf/v1/objects/ZTF26aaaaaag/detections").mock(
             return_value=httpx.Response(200, json=DETECTION))
+        stamp_probabilities(mock)
         fink = api.post("/api/v1/alerts/poll", json={"broker": "fink", "since_mjd": 61306.0, "until_mjd": 61307.0,
                                                      "crossmatch": False})
         assert fink.status_code == 200, fink.text
@@ -700,3 +955,516 @@ async def test_known_agn_is_stored_and_listed(store: AlertStore) -> None:
     row = store.get(ALERT.alert_id)
     assert row["known_agn"] is True and row["enrichment"]["known_agn"] is True
     assert json.loads(json.dumps(row, default=str))["known_agn"] is True
+
+
+# ---------------------------------------------------------------------------
+# Review round 2 (recorded: xmatch_review) -- Galactic-star verdicts
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture(scope="module")
+def review() -> dict[str, AlertEnrichment]:
+    return asyncio.run(enrich_recorded("xmatch_review"))
+
+
+@pytest.mark.parametrize(("name", "criterion"), [
+    ("WD1647493723250083584", "parallax 9.186 +/- 0.092 mas (99.8 sigma"),  # WDJ153053.31+690231.98, DSC ext 0.985
+    ("UV_Per", "proper motion 33.65 mas/yr (446 sigma)"),  # the dwarf nova, DSC ext 0.954
+    ("M31_LF82d", "12.9 sigma"),  # [LF82] d on M31: a Gaia galaxy candidate, DSC ext 0.71
+    ("M31GC_J004237", "proper motion 14.68 mas/yr (208 sigma)"),  # a Gaia galaxy candidate on M31
+])
+def test_decisive_astrometry_outweighs_gaia_extragalactic_classification(review: dict[str, AlertEnrichment], name: str,
+                                                                        criterion: str) -> None:
+    """Regression: Gaia DSC P(galaxy) + P(quasar) > 0.5 or galaxy-candidate membership discarded the 100-sigma
+    parallax of a white dwarf (and the astrometry of 32% of SIMBAD's CVs): known_star False."""
+    res = review[name]
+    gaia = min((c for c in res.counterparts if c["catalog"] == "gaia_dr3"), key=lambda c: c["separation_arcsec"])
+    # The regression's condition: Gaia classifies the source as extragalactic, yet it is a well-fitted point source.
+    assert gaia["dsc_p_extragalactic"] > 0.5 or gaia["in_galaxy_candidates"] is True
+    assert gaia["ruwe"] < 1.4 and gaia["astrometric_excess_noise_sig"] <= 2.0
+    assert gaia["pm_over_error"] >= alerts.PM_SNR_DECISIVE or gaia["parallax_over_error"] >= alerts.PARALLAX_SNR_SECURE
+    assert res.status == "done" and res.known_star is True
+    assert res.host is None and res.host_status == "not_applicable_star"
+    assert any(criterion in e and "-> Galactic star" in e for e in res.evidence), res.evidence
+    assert any("decisive astrometry" in e for e in res.evidence)
+    assert not any("looks like a galaxy nucleus" in e or "is not a star's" in e for e in res.evidence), res.evidence
+
+
+@pytest.mark.parametrize(("name", "simbad_id", "m_g"), [
+    ("M31_WWV2004_LPV", "[WWV2004] J0043124+404639", -13.3),  # LP*, G = 11.04
+    ("M31_GSC02805-02180", "GSC 02805-02180", -11.4),
+    ("M31_MLV92_187476", "[MLV92] 187476", -10.7),
+    ("M31_GPM11.17+41.19", "GPM 11.174412+41.194938", -10.5),
+])
+def test_bright_catalogued_stars_on_m31_are_foreground_whatever_their_excess_noise(
+        review: dict[str, AlertEnrichment], name: str, simbad_id: str, m_g: float) -> None:
+    """Regression: the M_G < -10 test required a well-behaved point source, and bright stars on M31's disc have
+    huge Gaia excess noise: 4 of 4 were 'extragalactic stars' in M31."""
+    res = review[name]
+    gaia = min((c for c in res.counterparts if c["catalog"] == "gaia_dr3"), key=lambda c: c["separation_arcsec"])
+    assert gaia["astrometric_excess_noise_sig"] > 100  # not a well-behaved point source
+    assert res.status == "done" and res.known_star is True and res.stellar_counterpart is True
+    assert res.host is None and res.host_status == "not_applicable_star"
+    assert any(f"= SIMBAD {simbad_id}" in e and f"M_G = {m_g}" in e and "-> Galactic foreground star" in e
+               for e in res.evidence), res.evidence
+    assert not any("an extragalactic star" in e for e in res.evidence)
+
+
+def test_binary_near_ngc5078_is_galactic_and_ngc5078_has_its_current_size(review: dict[str, AlertEnrichment]) -> None:
+    """Regression: HyperLEDA 2003 gave NGC 5078 logD25 2.71 (51'; RC3 1.60, current HyperLEDA 1.409), so the
+    eclipsing binary Gaia DR3 6189441739218449664, 5.9' away, was 'an extragalactic star in NGC 5078'."""
+    res = review["EB_6189441739218449664"]
+    ngc5078 = next(g for g in res.d25_galaxies if g["pgc"] == 46490)
+    assert ngc5078["log_d25_2003"] == pytest.approx(2.71) and ngc5078["log_d25"] == pytest.approx(1.409)
+    assert ngc5078["semi_major_arcsec"] == pytest.approx(3.0 * 10 ** 1.409) and ngc5078["d_dlr"] > alerts.DLR_SEARCH_MAX
+    assert res.known_star is True and res.host is None and res.host_status == "not_applicable_star"
+    # RUWE 5.1 (a binary), yet an 11 mas/yr proper motion at 31 sigma is real.
+    assert any("proper motion 11.12 mas/yr (31 sigma)" in e and "real although the single-star model fits it poorly" in e
+               for e in res.evidence), res.evidence
+    far = review["NGC5078_40arcmin"]
+    assert far.host is None and all(g["d_dlr"] > alerts.DLR_SEARCH_MAX for g in far.d25_galaxies if g["pgc"] == 46490)
+    assert alerts.HYPERLEDA_D25_CORRECTIONS[46490] == (1.409, 0.62) and alerts.HYPERLEDA_D25_CORRECTIONS[29220][0] == 0.992
+
+
+@pytest.mark.parametrize("name", ["SN2002gn", "SN2018aks"])
+def test_ned_point_source_without_gaia_does_not_make_a_supernova_galactic(review: dict[str, AlertEnrichment],
+                                                                         name: str) -> None:
+    """Regression: a NED '*' ("star or point source") entry at the SN inside a z >= 0.01 galaxy made it a
+    'Galactic foreground star' and dropped its host; there is no Gaia source (it is the SN's own old SDSS
+    detection, or a compact knot)."""
+    res = review[name]
+    assert any(c["catalog"] == "ned" and c["object_type"] == "*" for c in res.counterparts)
+    assert not any(c["catalog"] == "gaia_dr3" for c in res.counterparts)
+    assert res.known_star is None and res.stellar_counterpart is True
+    assert res.host is not None and res.host_status == "found" and res.host["method"] == "d25_ellipse"
+    assert res.host["redshift"] == pytest.approx(res.transient_redshift, abs=0.01)
+    assert any("NED type '*' (star or point source)" in e and "no Gaia DR3 point source" in e for e in res.evidence)
+
+
+async def test_ned_point_source_with_a_gaia_point_source_is_a_foreground_star() -> None:
+    """Synthetic: the same NED '*' entry inside a z = 0.05 galaxy, with (or without) a Gaia source at its position."""
+    point = {"source_id": "SDSS J100000.00+020000.0", "ra": ALERT.ra, "dec": ALERT.dec, "separation_arcsec": 0.1,
+             "data": {"prefphytype": "*"}}
+    gaia = {"source_id": "9", "ra": ALERT.ra, "dec": ALERT.dec + 0.1 / 3600, "separation_arcsec": 0.1,
+            "data": {"phot_g_mean_mag": 20.5, "ruwe": 1.0, "astrometric_excess_noise_sig": 0.0,
+                     "classprob_dsc_combmod_star": 0.99, "classprob_dsc_combmod_galaxy": 0.005,
+                     "classprob_dsc_combmod_quasar": 0.005}}
+    galaxy = {"source_id": "NGC 1", "ra": ALERT.ra + 10 / 3600, "dec": ALERT.dec, "separation_arcsec": 10.0,
+              "data": {"otype": "G", "rvz_redshift": 0.05}}
+    d25 = ([_d25_galaxy(galaxy["ra"], galaxy["dec"], ALERT, 30.0)], None, False)
+
+    def answer_with(rows):
+        return lambda ra, dec, cats: record_of(ra, dec, cats, sources=rows if "gaia_dr3" in cats else {"simbad": [galaxy]})
+
+    bare = await enricher_with(answer_with({"ned": [point]}), d25).enrich(ALERT)
+    assert bare.status == "done" and bare.known_star is None and bare.host is not None
+    with_gaia = await enricher_with(answer_with({"ned": [point], "gaia_dr3": [gaia]}), d25).enrich(ALERT)
+    assert with_gaia.status == "done" and with_gaia.known_star is True and with_gaia.host is None
+    # G = 20.5 at the galaxy's distance modulus (36.4) would be M_G = -15.9: the persistent point source is a star.
+    assert any("= NED SDSS J100000.00+020000.0 (type *)" in e and "Galactic foreground star" in e for e in with_gaia.evidence)
+
+
+# ---------------------------------------------------------------------------
+# Review round 2 (recorded) -- host association
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(("name", "host_name", "foreground_pgc", "z"), [
+    ("PTF11dws", "PS1-11acn HOST", 39600, 0.15),  # on M106, 0.8" from its z = 0.15 host
+    ("PTF10hv", "WISEA J140356.54+542726.5", 50063, 0.0518),  # on M101
+    ("SN2008hz", "WISEA J004319.36+421017.7", 2557, 0.072),  # on M31; a nearer galaxy of unknown z is 6.9" away
+])
+def test_background_supernovae_are_not_hosted_by_the_foreground_giant(review: dict[str, AlertEnrichment], name: str,
+                                                                     host_name: str, foreground_pgc: int,
+                                                                     z: float) -> None:
+    """Regression: inside M106/M101/M31's D25 ellipse the giant won over a catalogued galaxy at the SN's own
+    redshift 0.8-9" away: the host distance (and any luminosity) was wrong by a factor 40-400."""
+    res = review[name]
+    assert res.status == "done" and res.host_status == "found" and res.known_star is False
+    host = res.host
+    assert host is not None and host["name"] == host_name and host["method"] == "nearest"
+    assert host["redshift"] == pytest.approx(z, abs=0.001) and host["distance_method"] == "hubble_flow"
+    assert host["distance_mpc"] > 150 and host["projected_offset_kpc"] < 15
+    # The giant is recorded as a foreground projection, not the host.
+    giant = next(g for g in res.d25_galaxies if g["pgc"] == foreground_pgc)
+    assert giant["d_dlr"] <= 1.0 and res.transient_redshift is not None
+    assert any(f"PGC {foreground_pgc}" in e and "foreground/background projection" in e for e in res.evidence)
+
+
+@pytest.mark.parametrize("name", ["iPTF15dql", "PTF11paw", "iPTF15dhn", "PTF12gix"])
+def test_background_supernovae_near_m31_do_not_get_m31(review: dict[str, AlertEnrichment], name: str) -> None:
+    """Regression: SNe at z = 0.11-0.19 up to 3.3 D25 radii from M31 got M31 (0.75 Mpc) as host."""
+    res = review[name]
+    assert res.status == "done" and res.transient_redshift > 0.1
+    assert res.host is None or res.host["pgc"] != 2557
+    assert not any("[dlr_outside_d25]" in e or ("PGC 2557" in e and "inside the D25" in e) for e in res.evidence)
+    if name == "iPTF15dql":  # 3.26 D25 radii: beyond the association limit (Gupta's 4 second-moment radii ~ 2 D25)
+        assert res.host_status == "unassociated"
+        assert any("possible association, not adopted: PGC 2557" in e and "d_DLR = 3.26" in e for e in res.evidence)
+    if name in {"PTF11paw", "iPTF15dhn"}:  # within 2 D25 radii, but at the SN's redshift M31 is a foreground galaxy
+        assert res.host_status == "unassociated"
+        assert any("PGC 2557" in e and "foreground/background projection" in e for e in res.evidence)
+
+
+def test_sn2016bam_keeps_ngc2445_not_a_quasar(review: dict[str, AlertEnrichment]) -> None:
+    """Regression: a z = 2.06 QSO 15.5" away blocked NGC 2445 (d_DLR 1.03) and became the host (1.6 Gpc, 120 kpc)."""
+    res = review["SN2016bam"]
+    host = res.host
+    assert host is not None and host["name"] == "NGC 2445" and host["method"] == "dlr_outside_d25"
+    assert host["d_dlr"] == pytest.approx(1.03, abs=0.01) and host["redshift"] == pytest.approx(0.01335, abs=1e-4)
+    assert res.transient_redshift == pytest.approx(0.0135, abs=1e-4) and host["projected_offset_kpc"] < 15
+    qso = next(g for g in res.host_candidates if g["object_type"] == "QSO")
+    assert qso["redshift"] > 2 and qso["d_dlr_estimated"] > alerts.DLR_HOST_MAX
+    # The Tully (2015) group entry (a pair, 16" away) is not a host candidate either.
+    assert any("[T2015] nest 102796 (type PaG" in e and "not a host candidate" in e for e in res.evidence)
+
+
+def test_ptf12lz_gets_no_distant_galaxy_or_quasar_as_host(review: dict[str, AlertEnrichment]) -> None:
+    """Regression: M33 (d_DLR 3.04) was blocked by a z = 0.336 galaxy 48" away, which became the host at 216 kpc."""
+    res = review["PTF12lz"]
+    assert res.host is None and res.host_status == "unassociated" and res.host_search_complete is True
+    assert any("WISEA J013717.15+300802.3 at 48.2\" not adopted" in e for e in res.evidence)
+    assert any("WISEA J013713.14+300734.5 (type QSO" in e and "not a host candidate" in e for e in res.evidence)
+    assert any("possible association, not adopted: PGC 5818" in e for e in res.evidence)
+
+
+def test_random_blank_positions_rarely_get_a_host(review: dict[str, AlertEnrichment]) -> None:
+    """Regression: 12 of 20 random positions at |b| > 30 deg got host_status 'found' (the nearest catalogued galaxy
+    up to 52.8" away), one the Ursa Minor dwarf 33' away."""
+    rand = {k: v for k, v in review.items() if k.startswith("rand")}
+    assert len(rand) == 20 and all(r.status == "done" and r.host_search_complete for r in rand.values())
+    found = {k: r for k, r in rand.items() if r.host is not None}
+    assert 0 < len(found) <= 3
+    for r in found.values():
+        host = r.host
+        assert host["method"] == "nearest" and host["separation_arcsec"] < 15.0
+        assert host["p_chance"] <= alerts.P_CHANCE_MAX
+    # Galaxies within 60" were rejected as likely chance alignments, not ignored.
+    assert sum(r.host_status == "unassociated" for r in rand.values()) >= 5
+    ursa_minor = next(g for g in rand["rand6"].d25_galaxies if g["pgc"] == 54074)
+    assert ursa_minor["log_d25_2003"] == pytest.approx(2.54) and ursa_minor["d_dlr"] > 100
+    assert rand["rand6"].host is None
+
+
+# ---------------------------------------------------------------------------
+# Host association rules (synthetic)
+# ---------------------------------------------------------------------------
+
+
+def _foreground_giant(z_giant: float = 0.0015) -> tuple[dict[str, Any], dict[str, Any]]:
+    """A HyperLEDA giant (a = 600") whose centre is 200" north of ALERT, and its NED identity."""
+    giant = _d25_galaxy(ALERT.ra, ALERT.dec + 200 / 3600, ALERT, 600.0)
+    identity = {"source_id": "NGC 1", "ra": giant["ra"], "dec": giant["dec"], "separation_arcsec": 200.0,
+                "data": {"prefphytype": "G", "z": z_giant}}
+    return giant, identity
+
+
+async def test_background_galaxy_on_a_giant_wins_without_the_transient_redshift() -> None:
+    """Synthetic (a live alert: no catalogued redshift): 0.8" from a z = 0.15 galaxy on a nearby giant's disc
+    (d_DLR 0.33). The alert lies within the background galaxy's light (~0.3 typical light radii): its host."""
+    giant, identity = _foreground_giant()
+    background = {"source_id": "SDSS J100000.00+020000.8", "ra": ALERT.ra, "dec": ALERT.dec + 0.8 / 3600,
+                  "separation_arcsec": 0.8, "data": {"prefphytype": "G", "z": 0.15}}
+
+    def answer_with(rows):
+        return lambda ra, dec, cats: record_of(ra, dec, cats, sources={} if "gaia_dr3" in cats else {"ned": rows})
+
+    res = await enricher_with(answer_with([background, identity]), ([giant], None, False)).enrich(ALERT)
+    assert res.status == "done" and res.transient_redshift is None
+    assert res.host is not None and res.host["name"] == background["source_id"] and res.host["method"] == "nearest"
+    assert res.host["d_dlr_estimated"] == pytest.approx(0.8 / alerts.typical_light_radius_arcsec(0.15, ALERT.ra, ALERT.dec))
+    assert any("PGC 1" in e and "different redshift" in e and "may be the host" in e for e in res.evidence)
+    # 20" away the background galaxy is ~5 typical radii off: the giant keeps the alert.
+    far = {**background, "dec": ALERT.dec + 20 / 3600, "separation_arcsec": 20.0}
+    kept = await enricher_with(answer_with([far, identity]), ([giant], None, False)).enrich(ALERT)
+    assert kept.host is not None and kept.host["pgc"] == 1 and kept.host["method"] == "d25_ellipse"
+
+
+async def test_transient_redshift_from_the_broker_rejects_a_foreground_host() -> None:
+    """Synthetic: Fink/LSST's TNS redshift (f:xm_tns_redshift) of the alert is 0.1: the z = 0.0015 giant it is
+    projected on is not its host; without that redshift it is."""
+    giant, identity = _foreground_giant()
+
+    def answer(ra, dec, cats):
+        return record_of(ra, dec, cats, sources={} if "gaia_dr3" in cats else {"ned": [identity]})
+
+    lsst = Alert.from_dict({**ALERT.as_dict(), "broker": "fink_lsst", "extra": {"tns": "SN 2026abc", "tns_redshift": 0.1}})
+    res = await enricher_with(answer, ([giant], None, False)).enrich(lsst)
+    assert res.transient_redshift == 0.1 and "TNS" in res.transient_redshift_source
+    assert res.host is None and res.host_status == "unassociated"
+    assert any("foreground/background projection" in e for e in res.evidence)
+    plain = await enricher_with(answer, ([giant], None, False)).enrich(ALERT)
+    assert plain.host is not None and plain.host["pgc"] == 1
+
+
+def test_same_redshift_and_host_types() -> None:
+    assert alerts._same_redshift(0.0795, 0.072)  # SN 2008hz and its host: 2250 km/s < 3000 x 1.08
+    assert not alerts._same_redshift(0.0518, 0.000811)  # PTF 10hv vs M101
+    assert not alerts._is_host_type("simbad", "QSO") and not alerts._is_host_type("ned", "QSO")
+    assert not alerts._is_host_type("simbad", "PaG") and not alerts._is_host_type("ned", "GPair")
+    assert alerts._is_host_type("simbad", "Sy1") and alerts._is_host_type("ned", "G")
+    # A group is plausible when one of its entries is a single galaxy (NED 'G' + SIMBAD 'QSO' of one object).
+    assert alerts._is_plausible_host({"member_types": [("simbad", "QSO"), ("ned", "G")]})
+    assert not alerts._is_plausible_host({"member_types": [("simbad", "QSO"), ("ned", "QSO")]})
+
+
+# ---------------------------------------------------------------------------
+# Review round 2 -- service: moved alerts, priority re-crossmatch, shared concurrency, watch memory
+# ---------------------------------------------------------------------------
+
+
+class GatedEnricher:
+    """Synthetic enricher: records the positions it enriches; enrichments wait for ``gate`` when ``slow``."""
+
+    match_radius_arcsec, host_radius_arcsec, catalogs = 2.0, 60.0, ["gaia_dr3"]
+
+    def __init__(self, *, slow: bool = True, delay: float = 0.0) -> None:
+        self.positions: list[tuple[str, float]] = []
+        self.gate = asyncio.Event()
+        self.slow = slow
+        self.delay = delay
+        self.active = 0
+        self.peak = 0
+
+    async def enrich(self, alert: Alert) -> AlertEnrichment:
+        self.positions.append((alert.alert_id, alert.dec))
+        self.active += 1
+        self.peak = max(self.peak, self.active)
+        try:
+            if self.slow and len(self.positions) == 1:
+                await self.gate.wait()
+            await asyncio.sleep(self.delay)
+        finally:
+            self.active -= 1
+        return AlertEnrichment(status="done", match_radius_arcsec=2.0, host_radius_arcsec=60.0, catalogs=["gaia_dr3"],
+                               is_new=True, ra=alert.ra, dec=alert.dec, evidence=[f"computed at dec={alert.dec:.6f}"])
+
+
+async def test_moved_alert_is_crossmatched_again_after_a_stale_in_flight_enrichment(
+        store: AlertStore, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Regression: poll 2 moved the alert by 3" while poll 1's background enrichment (of the old position) was
+    running; that enrichment then stored 'done' and the new position was never crossmatched."""
+    old = Alert("fink", "ZTF26race", 150.0, 2.0, 61306.30, 19.0, "r", "SN candidate", 0.9, "")
+    new = Alert("fink", "ZTF26race", 150.0, 2.0 + 3.0 / 3600, 61306.35, 18.9, "r", "SN candidate", 0.9, "")
+    answers = [FetchResult([old]), FetchResult([new]), FetchResult([new]), FetchResult([new])]
+
+    async def fake_fetch(client, broker, *, since_mjd, until_mjd, limit=20, options=None):
+        return answers.pop(0)
+
+    monkeypatch.setattr(alerts, "fetch_alerts", fake_fetch)
+    enricher = GatedEnricher()
+    svc = AlertService(store, offline_client(), enricher, clock=lambda: 61307.0)  # type: ignore[arg-type]
+    _, due1 = await svc.ingest("fink", since_mjd=61306.0, limit=5)
+    background = asyncio.create_task(svc.crossmatch_in_background(due1))
+    await asyncio.sleep(0.05)
+    moved, due2 = await svc.ingest("fink", since_mjd=61306.0, limit=5)  # the alert moved while being enriched
+    assert moved.updated == 1 and store.crossmatch_status(old.alert_id) == "pending"
+    assert (await svc.crossmatch_alerts(due2))["skipped_in_flight"] == 1
+    enricher.gate.set()
+    await background
+    row = store.get(old.alert_id)
+    # The old position's enrichment is kept as data but the row stays pending, attempts untouched.
+    assert row["crossmatch_status"] == "pending" and row["crossmatch_attempts"] == 0
+    assert row["enrichment"]["dec"] == pytest.approx(2.0) and "previous position" in row["last_crossmatch_error"]
+    _, due3 = await svc.ingest("fink", since_mjd=61306.0, limit=5)
+    assert [a.dec for a in due3] == [pytest.approx(new.dec)]
+    assert (await svc.crossmatch_alerts(due3))["done"] == 1
+    row = store.get(old.alert_id)
+    assert row["crossmatch_status"] == "done" and row["enrichment"]["dec"] == pytest.approx(new.dec)
+    assert [d for _, d in enricher.positions] == [pytest.approx(2.0), pytest.approx(new.dec)]
+    _, due4 = await svc.ingest("fink", since_mjd=61306.0, limit=5)
+    assert due4 == []
+
+
+async def test_recrossmatch_of_a_moved_alert_waits_for_the_old_enrichment_and_runs_again(store: AlertStore) -> None:
+    """Synthetic: POST /{id}/crossmatch (enrich_alert) for the new position while the old one is enriched."""
+    old = Alert("fink", "ZTF26move", 150.0, 2.0, 61306.30, 19.0, "r", "SN candidate", 0.9, "")
+    store.upsert(old)
+    enricher = GatedEnricher()
+    svc = AlertService(store, offline_client(), enricher)  # type: ignore[arg-type]
+    background = asyncio.create_task(svc.crossmatch_in_background([old]))
+    await asyncio.sleep(0.02)
+    new = Alert.from_dict({**old.as_dict(), "mjd": 61306.4, "dec": 2.0 + 3.0 / 3600})
+    store.upsert(new)
+    request = asyncio.create_task(svc.enrich_alert(new))
+    await asyncio.sleep(0.02)
+    enricher.gate.set()
+    enrichment, stored = await asyncio.wait_for(request, timeout=10)
+    await background
+    assert stored == "stored" and enrichment.dec == pytest.approx(new.dec)
+    assert store.get(old.alert_id)["crossmatch_status"] == "done"
+    assert [d for _, d in enricher.positions] == [pytest.approx(2.0), pytest.approx(new.dec)]
+
+
+def test_router_recrossmatch_skips_the_queue_of_a_background_batch(store: AlertStore) -> None:
+    """Regression: POST /{id}/crossmatch of an alert queued last in a background batch waited for the whole
+    batch (60 alerts, concurrency 3: ~20 enrichments; live, a 500-alert batch made the request hang ~33 min)."""
+    batch = [Alert("alerce", f"ZTF26b{i:06d}", 150.0 + i * 0.01, 2.0, 61306.3, 19.0, "r", "SN", 0.9, "") for i in range(60)]
+    store.upsert_many(batch)
+    enricher = GatedEnricher(slow=False, delay=0.1)
+    svc = AlertService(store, offline_client(), enricher)  # type: ignore[arg-type]
+    app = FastAPI()
+    app.include_router(router)
+    app.state.alert_service = svc
+
+    async def scenario() -> tuple[int, int, int]:
+        background = asyncio.create_task(svc.crossmatch_in_background(batch))
+        await asyncio.sleep(0.02)
+        transport = httpx.ASGITransport(app=app)
+        async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+            answer = await client.post(f"/api/v1/alerts/{batch[-1].alert_id}/crossmatch")
+        done_before = sum(1 for r in store.list(limit=100) if r["crossmatch_status"] == "done")
+        await background
+        return answer.status_code, done_before, enricher.peak
+
+    status, done_before, peak = asyncio.run(scenario())
+    assert status == 200
+    # The request ran at once: when it answered, only the first few batch enrichments had finished.
+    assert done_before <= 10
+    assert peak <= svc.concurrency + 1  # the batch's 3 slots plus the request that skipped the queue
+    assert all(r["crossmatch_attempts"] == 1 for r in store.list(limit=100))
+
+
+async def test_overlapping_batches_share_the_service_concurrency(store: AlertStore) -> None:
+    """Regression: every crossmatch_alerts call created its own semaphore: 4 overlapping background batches ran
+    12 enrichments at once with concurrency 3."""
+    batches = [[Alert("alerce", f"ZTF26c{k}{i:05d}", 10.0 + i * 0.01, 2.0, 61306.3, 19.0, "r", "SN", 0.9, "")
+                for i in range(9)] for k in range(4)]
+    for b in batches:
+        store.upsert_many(b)
+    enricher = GatedEnricher(slow=False, delay=0.02)
+    svc = AlertService(store, offline_client(), enricher, concurrency=3)  # type: ignore[arg-type]
+    await asyncio.gather(*(svc.crossmatch_in_background(b) for b in batches))
+    assert enricher.peak == 3 and len(enricher.positions) == 36
+    assert all(r["crossmatch_status"] == "done" for r in store.list(limit=100))
+
+
+async def test_watch_without_iterations_keeps_a_bounded_history(store: AlertStore, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Regression: `alerts watch` (iterations None) kept every PollResult for the life of the daemon."""
+    async def fake_fetch(client, broker, *, since_mjd, until_mjd, limit=20, options=None):
+        return FetchResult([Alert("fink", "ZTF26w", 1.0, 1.0, 61306.3, 19.0, "r", "SN candidate", 0.9, "")])
+
+    monkeypatch.setattr(alerts, "fetch_alerts", fake_fetch)
+    svc = AlertService(store, offline_client(), None, clock=lambda: 61307.0)
+    stop = asyncio.Event()
+    seen: list[alerts.PollResult] = []
+
+    def on_result(res: alerts.PollResult) -> None:
+        seen.append(res)
+        if len(seen) >= 3 * alerts.WATCH_RESULTS_KEPT:
+            stop.set()
+
+    kept = await svc.watch(["fink"], interval_seconds=0.001, crossmatch=False, stop_event=stop, on_result=on_result)
+    assert len(seen) == 3 * alerts.WATCH_RESULTS_KEPT and len(kept) == alerts.WATCH_RESULTS_KEPT
+    assert kept == seen[-alerts.WATCH_RESULTS_KEPT:]
+    # With a number of iterations every result is returned.
+    assert len(await svc.watch(["fink"], interval_seconds=0.001, crossmatch=False, iterations=15)) == 15
+
+
+# ---------------------------------------------------------------------------
+# Review round 2 -- CLI: MJD range, non-finite passthrough values, `alerts crossmatch`
+# ---------------------------------------------------------------------------
+
+
+def _cli(argv: list[str]) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(prog="astrosearch")
+    alerts.register_cli(parser.add_subparsers(dest="command"))
+    return parser.parse_args(argv)
+
+
+@pytest.mark.parametrize("argv", [
+    ["alerts", "poll", "--broker", "fink", "--no-crossmatch", "--since-mjd", "3000000", "--until-mjd", "3000001"],
+    ["alerts", "poll", "--broker", "fink_lsst", "--no-crossmatch", "--since-mjd", "-700000"],
+    ["alerts", "poll", "--until-mjd", "nan"],
+    ["alerts", "list", "--since-mjd", "nan"],
+    ["alerts", "list", "--since-mjd", "39999"],
+])
+def test_cli_rejects_out_of_range_mjds_with_exit_2(argv: list[str], capsys: pytest.CaptureFixture[str]) -> None:
+    """Regression: an MJD outside the datetime range raised an uncaught OverflowError (a traceback)."""
+    with pytest.raises(SystemExit) as exc:
+        _cli(argv)
+    assert exc.value.code == 2
+    err = capsys.readouterr().err
+    assert "an MJD must lie between 40000 and 100000" in err and "Traceback" not in err
+
+
+def test_non_finite_passthrough_values_are_stored_as_null(store: AlertStore, tmp_path: Path,
+                                                          capsys: pytest.CaptureFixture[str]) -> None:
+    """Regression: an upstream NaN in a raw passthrough field (ALeRCE isdiffpos, Fink i:ndethist) was stored as a
+    NaN token, and `alerts list/show --format json` then raised ValueError (the API wrote null)."""
+    db = f"sqlite:///{(tmp_path / 'nan.sqlite3').as_posix()}"
+    nan_store = AlertStore(MetadataStore(db))
+    app = FastAPI()
+    app.include_router(router)
+    app.state.alert_store = nan_store
+    api = TestClient(app)
+    items = [{"oid": "ZTF26aaaaaaf", "meanra": 150.0, "meandec": 2.0, "firstmjd": 61306.1, "lastmjd": 61306.3,
+              "class": "SN", "probability": 0.9, "ndet": float("nan"), "stellar": float("nan")}]
+    fink_rows = [{"i:objectId": "ZTF26aaaaaad", "i:ra": 10.0, "i:dec": 5.0, "i:jd": 2461306.8, "i:magpsf": 19.0,
+                  "i:fid": 1, "i:isdiffpos": "t", "d:snn_sn_vs_all": 0.9, "i:ndethist": float("nan"),
+                  "d:gaiaVarFlag": float("nan"), "d:roid": float("inf")}]
+    with respx.mock(assert_all_mocked=True) as mock:
+        mock.get(url__startswith="https://api.alerce.online/ztf/v1/objects/?").mock(return_value=httpx.Response(
+            200, text=json.dumps({"items": items}), headers={"content-type": "application/json"}))
+        mock.get("https://api.alerce.online/ztf/v1/objects/ZTF26aaaaaaf/detections").mock(return_value=httpx.Response(
+            200, text='[{"mjd": 61306.3, "magpsf": 19.2, "fid": 1, "isdiffpos": NaN, "candid": 7}]',
+            headers={"content-type": "application/json"}))
+        stamp_probabilities(mock)
+        mock.get("https://api.ztf.fink-portal.org/api/v1/latests").mock(return_value=httpx.Response(
+            200, text=json.dumps(fink_rows), headers={"content-type": "application/json"}))
+        for broker in ("alerce", "fink"):
+            answer = api.post("/api/v1/alerts/poll", json={"broker": broker, "since_mjd": 61306.0, "until_mjd": 61307.0,
+                                                           "crossmatch": False})
+            assert answer.status_code == 200, answer.text
+    alerce_row, fink_row = nan_store.get("alerce:ZTF26aaaaaaf"), nan_store.get("fink:ZTF26aaaaaad")
+    assert alerce_row["extra"]["isdiffpos"] is None and alerce_row["extra"]["ndet"] is None
+    assert alerce_row["extra"]["stellar"] is None and alerce_row["is_negative"] is None
+    assert (fink_row["extra"]["ndethist"], fink_row["extra"]["gaia_var_flag"], fink_row["extra"]["roid"]) == (None, None, None)
+    for argv in (["alerts", "list", "--db", db, "--format", "json"], ["alerts", "show", "fink:ZTF26aaaaaad", "--db", db]):
+        args = _cli(argv)
+        assert args.handler(args) == 0
+        out = capsys.readouterr().out
+        assert "NaN" not in out and "Infinity" not in out
+        json.loads(out)
+    # A row stored with a NaN token before this fix is still printed as strict JSON.
+    with nan_store._conn() as conn:
+        conn.execute("UPDATE alerts SET extra_json = ? WHERE id = ?", ('{"ndethist": NaN}', "fink:ZTF26aaaaaad"))
+    args = _cli(["alerts", "show", "fink:ZTF26aaaaaad", "--db", db])
+    assert args.handler(args) == 0 and json.loads(capsys.readouterr().out)["extra"] == {"ndethist": None}
+
+
+def test_cli_crossmatch_reruns_one_alert_or_the_incomplete_ones(store: AlertStore, tmp_path: Path,
+                                                                capsys: pytest.CaptureFixture[str],
+                                                                monkeypatch: pytest.MonkeyPatch) -> None:
+    """`alerts crossmatch <id>` / `--incomplete`: run now, whatever the retry schedule or attempt cap."""
+    db = f"sqlite:///{(tmp_path / 'x.sqlite3').as_posix()}"
+    cli_store = AlertStore(MetadataStore(db))
+    capped = Alert.from_dict({**ALERT.as_dict(), "object_id": "ZTF26capped"})
+    other = Alert.from_dict({**ALERT.as_dict(), "object_id": "ZTF26other", "ra": 151.0})
+    cli_store.upsert_many([capped, other])
+    broken = AlertEnrichment(status="partial", match_radius_arcsec=2.0, host_radius_arcsec=60.0, catalogs=["gaia_dr3"],
+                             failures=[{"catalog": "ned", "error_type": "CatalogQueryError"}], ra=capped.ra, dec=capped.dec)
+    for _ in range(alerts.MAX_CROSSMATCH_ATTEMPTS):
+        cli_store.set_enrichment(capped.alert_id, broken, now_mjd=61306.5)
+    assert cli_store.incomplete(now_mjd=61306.6) == [Alert.from_dict(cli_store.get(other.alert_id))]
+    built: list[AlertService] = []
+
+    def fake_build(client, *, store, crossmatch=True, match_radius_arcsec=2.0, host_radius_arcsec=60.0, **kwargs):
+        svc = AlertService(store, client, GatedEnricher(slow=False))  # type: ignore[arg-type]
+        built.append(svc)
+        return svc
+
+    monkeypatch.setattr(alerts, "build_alert_service", fake_build)
+    args = _cli(["alerts", "crossmatch", capped.alert_id, "--db", db])
+    assert args.handler(args) == 0
+    assert "crossmatched 1 alert(s): done 1" in capsys.readouterr().out
+    assert cli_store.get(capped.alert_id)["crossmatch_status"] == "done"
+    args = _cli(["alerts", "crossmatch", "--incomplete", "--db", db, "--format", "json"])
+    assert args.handler(args) == 0
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["crossmatched"] == 1 and [r["id"] for r in payload["alerts"]] == [other.alert_id]
+    assert payload["counts"]["done"] == 1
+    for argv, code in ((["alerts", "crossmatch", "--db", db], 2), (["alerts", "crossmatch", "fink:nope", "--db", db], 1)):
+        args = _cli(argv)
+        assert args.handler(args) == code
+    assert "give an alert id or --incomplete" in capsys.readouterr().err

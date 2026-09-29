@@ -1041,7 +1041,39 @@
   "query_radius_arcsec": 10.0
  },
  "resolved_object": {
-  "aliases": [],
+  "aliases": [
+   "1RXS J055228.1+155313",
+   "2EUVE J0552+15.8",
+   "2MASS J05522761+1553137",
+   "2RE J0552+155",
+   "2RE J055226+155251",
+   "2RXF J055227.7+155320",
+   "EGGR 210",
+   "EUVE J0552+15.8",
+   "FB 45",
+   "FS 12",
+   "GCRV 21689",
+   "GEN# +6.10060071",
+   "Gaia DR2 3348071631670500736",
+   "Gaia DR3 3348071631670500736",
+   "KPD 0549+1552",
+   "L 1243-36",
+   "LAMOST J055227.67+155311.4",
+   "LP 418-13",
+   "LSPM J0552+1553",
+   "LTT 11733",
+   "NLTT 15730",
+   "RE J0552+15",
+   "RE J0552+155",
+   "RE J055226+155248",
+   "RX J0552.4+1553",
+   "TIC 247923021",
+   "UBV M 42518",
+   "UCAC2 37320791",
+   "USNO-B1.0 1058-00090877",
+   "WD 0549+158",
+   "[HMT98] AS 12-0"
+  ],
   "canonical_name": "GD 71",
   "dec_deg": 15.88700802,
   "epoch": 2000.0,
@@ -1053,13 +1085,47 @@
   "redshift": null,
   "resolver": "cds_sesame",
   "resolver_metadata": {
-   "endpoint": "https://cds.unistra.fr/cgi-bin/nph-sesame/-oxp/SNV",
+   "endpoint": "https://cds.unistra.fr/cgi-bin/nph-sesame/-oxpI/SNV",
    "epoch_source": "SIMBAD positions are ICRS at epoch J2000",
    "extragalactic": false,
    "parallax_mas": 19.5638,
    "proper_motion_applicable": true,
    "radial_velocity_kms": -6.45,
    "raw_fields": {
+    "alias": [
+     "GD 71",
+     "EGGR 210",
+     "2EUVE J0552+15.8",
+     "EUVE J0552+15.8",
+     "FB 45",
+     "FS 12",
+     "GCRV 21689",
+     "GEN# +6.10060071",
+     "KPD 0549+1552",
+     "LAMOST J055227.67+155311.4",
+     "L 1243-36",
+     "LP 418-13",
+     "LSPM J0552+1553",
+     "LTT 11733",
+     "2MASS J05522761+1553137",
+     "NLTT 15730",
+     "2RE J0552+155",
+     "2RE J055226+155251",
+     "RE J0552+15",
+     "RE J055226+155248",
+     "RE J0552+155",
+     "2RXF J055227.7+155320",
+     "RX J0552.4+1553",
+     "1RXS J055228.1+155313",
+     "TIC 247923021",
+     "UBV M 42518",
+     "UCAC2 37320791",
+     "USNO-B1.0 1058-00090877",
+     "WD 0549+158",
+     "[HMT98] AS 12-0",
+     "Gaia DR2 3348071631670500736",
+     "Gaia DR3 3348071631670500736"
+    ],
     "errdemas": [
      "0.0354"
     ],
@@ -1076,7 +1142,7 @@
      "88.11508275"
     ],
     "nrefs": [
-     "411"
+     "412"
     ],
     "oid": [
      "842231"

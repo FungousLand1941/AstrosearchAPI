@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>WR 147</name>
+  <!-- Q8506013 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 0ms [0] -->
+    <INFO>from cache</INFO>
+    <oid>30310</oid>
+    <otype>WR*</otype>
+    <jpos>20:36:43.63 +40:21:07.4</jpos>
+    <jradeg>309.18180114</jradeg>
+    <jdedeg>40.35206739</jdedeg>
+    <refPos>2020yCat.1350....0G</refPos>
+    <errRAmas>0.0627</errRAmas><errDEmas>0.0675</errDEmas>
+    <pm>
+      <v>5.909</v><e>0.117</e><q>A</q><r>2020yCat.1350....0G</r>
+      <pa>194</pa>
+      <pmRA>-1.417</pmRA><epmRA>0.081</epmRA>
+      <pmDE>-5.737</pmDE><epmDE>0.084</epmDE>
+    </pm>
+    <plx><v>0.5014</v><e>0.0797</e><q>A</q><r>2020yCat.1350....0G</r></plx>
+    <spType>WN8(h)+B0.5V</spType><spNum>0.00145000.0000.1000000000100000</spNum>
+    <oname>EM* AS  431</oname>
+    <nrefs>232</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ====Done (2026-Sep-29,10:36:23z)==== -->

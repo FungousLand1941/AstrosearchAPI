@@ -4,13 +4,13 @@
   xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
  <DESCRIPTION>
    VizieR Astronomical Server vizier.cds.unistra.fr
-    Date: 2026-09-28T11:37:54 [V7.6]
+    Date: 2026-09-29T03:46:31 [V7.6]
    Explanations and Statistics of UCDs:			See LINK below
    In case of problem, please report to:	cds-question@unistra.fr
  </DESCRIPTION>
 <!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
 <INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
-<INFO name="request_date" value="2026-09-28T11:37:54">  Query execution date</INFO>
+<INFO name="request_date" value="2026-09-29T03:46:31">  Query execution date</INFO>
 <INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-meta=&amp;-meta.max=10&amp;-words=galaxy+redshift+optical&amp;-ucd=src.redshift">  Full request URL</INFO>
 <INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
 <INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
@@ -28,7 +28,7 @@
   <INFO name="original_date" value="2023">    Year of the article publication  </INFO>
   <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/V/159">    Dataset landing page  </INFO>
   <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
-  <INFO name="ipopu" value="0.643367">popularity index</INFO>
+  <INFO name="ipopu" value="0.643387">popularity index</INFO>
   <INFO name="cpopu" value="39723">number of calls</INFO>
   <INFO name="-kw.Wavelength" value="optical"/>
   <INFO name="-kw.Wavelength" value="IR"/>
@@ -52,8 +52,8 @@
   <INFO name="original_date" value="1982">    Year of the article publication  </INFO>
   <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/VII/213">    Dataset landing page  </INFO>
   <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
-  <INFO name="ipopu" value="0.569749">popularity index</INFO>
-  <INFO name="cpopu" value="11824">number of calls</INFO>
+  <INFO name="ipopu" value="0.569761">popularity index</INFO>
+  <INFO name="cpopu" value="11823">number of calls</INFO>
   <INFO name="-kw.Wavelength" value="optical"/>
   <INFO name="-kw.Astronomy" value="Clusters_of_galaxies"/>
   <INFO name="-kw.Astronomy" value="Photometry"/>
@@ -75,8 +75,8 @@
   <INFO name="original_date" value="2020">    Year of the article publication  </INFO>
   <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/VII/287">    Dataset landing page  </INFO>
   <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
-  <INFO name="ipopu" value="0.556634">popularity index</INFO>
-  <INFO name="cpopu" value="9528">number of calls</INFO>
+  <INFO name="ipopu" value="0.556606">popularity index</INFO>
+  <INFO name="cpopu" value="9521">number of calls</INFO>
   <INFO name="-kw.Wavelength" value="Gamma-ray"/>
   <INFO name="-kw.Wavelength" value="optical"/>
   <INFO name="-kw.Wavelength" value="IR"/>
@@ -100,8 +100,8 @@
   <INFO name="original_date" value="2021">    Year of the article publication  </INFO>
   <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/VII/299">    Dataset landing page  </INFO>
   <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
-  <INFO name="ipopu" value="0.853481">popularity index</INFO>
-  <INFO name="cpopu" value="1261919">number of calls</INFO>
+  <INFO name="ipopu" value="0.852898">popularity index</INFO>
+  <INFO name="cpopu" value="1249343">number of calls</INFO>
   <INFO name="-kw.Wavelength" value="optical"/>
   <INFO name="-kw.Wavelength" value="IR"/>
   <INFO name="-kw.Wavelength" value="Millimeter"/>
@@ -131,8 +131,8 @@
   <INFO name="original_date" value="2018">    Year of the article publication  </INFO>
   <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/IX/52">    Dataset landing page  </INFO>
   <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
-  <INFO name="ipopu" value="0.669819">popularity index</INFO>
-  <INFO name="cpopu" value="61395">number of calls</INFO>
+  <INFO name="ipopu" value="0.669806">popularity index</INFO>
+  <INFO name="cpopu" value="61361">number of calls</INFO>
   <INFO name="-kw.Wavelength" value="X-ray"/>
   <INFO name="-kw.Wavelength" value="optical"/>
   <INFO name="-kw.Wavelength" value="IR"/>
@@ -162,8 +162,8 @@
   <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/684/136">    Dataset landing page  </INFO>
   <INFO name="citation" value="doi:10.26093/cds/vizier.16840136">    Dataset identifier that can be used for citation  </INFO>
   <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
-  <INFO name="ipopu" value="0.474461">popularity index</INFO>
-  <INFO name="cpopu" value="2463">number of calls</INFO>
+  <INFO name="ipopu" value="0.474525">popularity index</INFO>
+  <INFO name="cpopu" value="2465">number of calls</INFO>
   <INFO name="-kw.Wavelength" value="UV"/>
   <INFO name="-kw.Wavelength" value="optical"/>
   <INFO name="-kw.Wavelength" value="IR"/>
@@ -189,8 +189,8 @@
   <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/684/1026">    Dataset landing page  </INFO>
   <INFO name="citation" value="doi:10.26093/cds/vizier.16841026">    Dataset identifier that can be used for citation  </INFO>
   <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
-  <INFO name="ipopu" value="0.473316">popularity index</INFO>
-  <INFO name="cpopu" value="2417">number of calls</INFO>
+  <INFO name="ipopu" value="0.473355">popularity index</INFO>
+  <INFO name="cpopu" value="2418">number of calls</INFO>
   <INFO name="-kw.Wavelength" value="optical"/>
   <INFO name="-kw.Astronomy" value="Galaxies"/>
   <INFO name="-kw.Astronomy" value="Redshifts"/>
@@ -210,8 +210,8 @@
   <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/685/235">    Dataset landing page  </INFO>
   <INFO name="citation" value="doi:10.26093/cds/vizier.16850235">    Dataset identifier that can be used for citation  </INFO>
   <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
-  <INFO name="ipopu" value="0.473316">popularity index</INFO>
-  <INFO name="cpopu" value="2417">number of calls</INFO>
+  <INFO name="ipopu" value="0.473305">popularity index</INFO>
+  <INFO name="cpopu" value="2416">number of calls</INFO>
   <INFO name="-kw.Wavelength" value="optical"/>
   <INFO name="-kw.Astronomy" value="Galaxies"/>
   <INFO name="-kw.Astronomy" value="Spectroscopy"/>
@@ -233,8 +233,8 @@
   <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/685/904">    Dataset landing page  </INFO>
   <INFO name="citation" value="doi:10.26093/cds/vizier.16850904">    Dataset identifier that can be used for citation  </INFO>
   <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
-  <INFO name="ipopu" value="0.458605">popularity index</INFO>
-  <INFO name="cpopu" value="1897">number of calls</INFO>
+  <INFO name="ipopu" value="0.458587">popularity index</INFO>
+  <INFO name="cpopu" value="1896">number of calls</INFO>
   <INFO name="-kw.Wavelength" value="optical"/>
   <INFO name="-kw.Astronomy" value="Abundances"/>
   <INFO name="-kw.Astronomy" value="Galaxies"/>
@@ -255,8 +255,8 @@
   <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/690/670">    Dataset landing page  </INFO>
   <INFO name="citation" value="doi:10.26093/cds/vizier.16900670">    Dataset identifier that can be used for citation  </INFO>
   <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
-  <INFO name="ipopu" value="0.477748">popularity index</INFO>
-  <INFO name="cpopu" value="2600">number of calls</INFO>
+  <INFO name="ipopu" value="0.477786">popularity index</INFO>
+  <INFO name="cpopu" value="2601">number of calls</INFO>
   <INFO name="-kw.Wavelength" value="optical"/>
   <INFO name="-kw.Astronomy" value="Clusters_of_galaxies"/>
   <INFO name="-kw.Astronomy" value="Galaxies"/>

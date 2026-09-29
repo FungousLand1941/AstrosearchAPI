@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>Barnard's star</name>
+  <!-- Q8487643 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 116ms [3] -->
+    <oid>2669393</oid>
+    <otype>BY*</otype>
+    <jpos>17:57:48.49 +04:41:36.1</jpos>
+    <jradeg>269.45207696</jradeg>
+    <jdedeg>4.69336497</jdedeg>
+    <refPos>2020yCat.1350....0G</refPos>
+    <errRAmas>0.0262</errRAmas><errDEmas>0.0290</errDEmas>
+    <pm>
+      <v>10393.349</v><e>0.048</e><q>A</q><r>2020yCat.1350....0G</r>
+      <pa>355.577</pa>
+      <pmRA>-801.551</pmRA><epmRA>0.032</epmRA>
+      <pmDE>10362.394</pmDE><epmDE>0.036</epmDE>
+    </pm>
+    <Vel><v>-110.11</v><e>0.0002</e><q>A</q><r>2018MNRAS.475.1960F</r></Vel>
+    <plx><v>546.9759</v><e>0.0401</e><q>A</q><r>2020yCat.1350....0G</r></plx>
+    <spType>M4V</spType><spNum>0.00028000.0030.0000000000000000</spNum>
+    <oname>NAME Barnard's star</oname>
+    <nrefs>924</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ****Total of 1 crashes -->
+<!-- Configuration tested: /run/sesame.conf -->

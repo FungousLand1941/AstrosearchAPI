@@ -161,6 +161,17 @@ def brute_force(cat: SynthCatalog, ra: float, dec: float, radius_arcsec: float) 
     return inside, edge
 
 
+def covered_rows(store, cat, name: str = "synth") -> np.ndarray:
+    """Mask of the catalog rows lying in the store's coverage MOC: exactly the rows a mirror
+    keeps (rows fetched beyond the covered cells -- the overhang of tile and cone requests --
+    are not stored, since no local answer can use them)."""
+    return store.coverage(name).contains_points(cat.ra, cat.dec) & cat.alive
+
+
+def stored_ids(store, name: str = "synth") -> list[str]:
+    return [r.source_id for r in store.load_rows(name)]
+
+
 def assert_identical(local, remote) -> None:
     """Local and remote QueryResults hold the same CatalogSources (provenance aside)."""
     assert [s.source_id for s in local] == [s.source_id for s in remote]
@@ -298,7 +309,12 @@ def test_mirror_cone_across_ra_zero_matches_remote_and_brute_force(tmp_path, syn
     assert report.queries == 1 and report.tiles_failed == 0
     assert report.region_covered_fraction > 0.95
     sep = angular_sep_deg(0.02, 0.0, cat.ra, cat.dec)
-    assert report.rows_total == int((sep <= 0.4).sum())
+    covered = covered_rows(store, cat)
+    assert not covered[sep > 0.4].any()  # the coverage lies inside the mirrored cone
+    assert covered[sep <= 0.4 * (1 - 3 * skycache.COVERAGE_RES_FRACTION)].all()  # minus a thin rim
+    assert report.rows_total == int(covered.sum()) == report.rows_stored
+    assert sorted(stored_ids(store)) == sorted(str(i) for i in np.asarray(cat.ids)[covered])
+    assert report.rows_fetched == int((sep <= 0.4).sum()) == report.rows_stored + report.rows_outside_coverage
     cones = [(0.0, 0.0, 60.0), (359.95, 0.01, 200.0), (0.05, -0.05, 400.0), (359.99, 0.0, 5.0), (0.02, 0.0, 1200.0)]
     _compare_cones(store, cat, definition, cones)
     result = store.cone_search("synth", 0.0, 0.0, 720.0)
@@ -427,8 +443,7 @@ def test_remirror_dedupes_and_replaces_rows(tmp_path, synth):
     second, _ = _mirror(store, cat, definition, ra=300.1, dec=-40.0, radius_deg=0.2)  # overlaps the first
     ids = [r.source_id for r in store.load_rows("synth")]
     assert len(ids) == len(set(ids))
-    union = (angular_sep_deg(300.0, -40.0, cat.ra, cat.dec) <= 0.2) | (angular_sep_deg(300.1, -40.0, cat.ra, cat.dec) <= 0.2)
-    assert len(ids) == int(union.sum())
+    assert sorted(ids) == sorted(str(i) for i in np.asarray(cat.ids)[covered_rows(store, cat)])
     assert second.rows_replaced > 0
     # A source deleted upstream disappears when its area is mirrored again.
     victim = int(np.flatnonzero(angular_sep_deg(300.0, -40.0, cat.ra, cat.dec) < 0.05)[0])
@@ -547,12 +562,14 @@ def _app(tmp_path, cat):
 
 def test_router_status_mirror_cone_delete(tmp_path):
     cat = SynthCatalog(*cap_points(45.0, 45.0, 0.2, 1500, seed=41))
-    client = TestClient(_app(tmp_path, cat))
+    app = _app(tmp_path, cat)
+    client = TestClient(app)
     assert client.get("/api/v1/skycache/status").json()["catalogs"] == []
     response = client.post("/api/v1/skycache/mirror", json={"catalog": "synth", "ra": 45.0, "dec": 45.0, "radius_deg": 0.15})
     assert response.status_code == 200, response.text
     body = response.json()
-    assert body["rows_total"] == int((angular_sep_deg(45.0, 45.0, cat.ra, cat.dec) <= 0.15).sum())
+    assert body["rows_total"] == int(covered_rows(app.state.skycache, cat).sum()) > 0
+    assert body["rows_fetched"] == int((angular_sep_deg(45.0, 45.0, cat.ra, cat.dec) <= 0.15).sum())
     status = client.get("/api/v1/skycache/status").json()
     assert status["catalogs"][0]["catalog"] == "synth" and status["catalogs"][0]["coverage_area_deg2"] > 0.05
     cone = client.get("/api/v1/skycache/cone", params={"catalog": "synth", "ra": 45.0, "dec": 45.0, "radius_arcsec": 60})

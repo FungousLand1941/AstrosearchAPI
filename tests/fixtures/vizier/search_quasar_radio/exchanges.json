@@ -12,7 +12,15 @@
     {
       "method": "POST",
       "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
-      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+table_name%2C+description%2C+nrows+FROM+TAP_SCHEMA.tables+WHERE+table_name+LIKE+%27%22J%2FApJ%2F427%2F125%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F445%2F62%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F511%2F612%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F609%2F539%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F645%2F856%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F726%2F20%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F754%2F38%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F766%2F37%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F768%2F37%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F813%2F45%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F842%2F87%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F873%2F132%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F881%2F125%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F896%2F18%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F904%2F179%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F922%2F202%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F934%2F26%2F%25%27&FORMAT=json",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+100+table_name%2C+description%2C+nrows+FROM+TAP_SCHEMA.tables+WHERE+%28description+LIKE+%27%25quasar%25%27+OR+description+LIKE+%27%25Quasar%25%27+OR+description+LIKE+%27%25QUASAR%25%27%29+ORDER+BY+nrows+DESC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+table_name%2C+description%2C+nrows+FROM+TAP_SCHEMA.tables+WHERE+table_name+LIKE+%27%22J%2FApJ%2F427%2F125%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F445%2F62%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F511%2F612%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F609%2F539%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F645%2F856%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F657%2F116%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F709%2F1407%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F726%2F20%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F754%2F38%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F766%2F37%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F768%2F37%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F813%2F45%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F842%2F87%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F873%2F132%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F881%2F125%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F896%2F18%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F897%2F18%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F904%2F179%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F922%2F202%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F934%2F26%2F%25%27&FORMAT=json",
       "status_code": 200,
       "content_type": "application/json;charset=UTF-8",
       "match": []

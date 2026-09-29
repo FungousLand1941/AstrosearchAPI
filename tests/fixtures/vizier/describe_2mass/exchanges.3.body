@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-29T05:44:09 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-29T05:44:10">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-source=II%2F246%2Fout&amp;-meta.all=">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+
+<RESOURCE ID="yCat_2246_1" name="II/246/out" type="meta">
+  <INFO name="nrows" value="470992970">Number of rows of the table</INFO>
+  <DESCRIPTION>
+    2MASS All-Sky Catalog of Point Sources (Cutri+ 2003)
+    2MASS Point Source Catalogue, output (on a total of 470,992,970 sources)
+  </DESCRIPTION>
+
+<!-- The Point Source catalogue of 470,992,970 sources. \inputViz{2mass.intro.htx} -->
+  <PARAM name="-c" datatype="char" arraysize="32*" value="">
+    <DESCRIPTION>Query from a celestial position according to ASU syntax:
+      {RA{+|-}Dec|object_name}[,eq=equinox][,ep=epoch][,rm=[min/]max]
+      (see http://vizier.cds.unistra.fr/doc/asu.html)
+    </DESCRIPTION>
+  </PARAM>
+  <LINK content-role="query" action="votable?-source=II/246/out&amp;">
+    Action to Query the current RESOURCE, to be completed by PARAMs and FIELDs contents
+  </LINK>
+
+  <TABLE name="II/246/out" nrows="470992970">
+    <COOSYS ID="J2000" system="eq_FK5" equinox="J2000"/>
+    <!-- Definitions of GROUPs and FIELDs -->
+    <FIELD name="RAJ2000" ucd="pos.eq.ra;meta.main" ref="J2000" display="1" datatype="double" width="10" precision="6" unit="deg"><!-- ucd="POS_EQ_RA_MAIN" -->
+      <DESCRIPTION>(ra) Right ascension (J2000)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DEJ2000" ucd="pos.eq.dec;meta.main" ref="J2000" display="1" datatype="double" width="10" precision="6" unit="deg"><!-- ucd="POS_EQ_DEC_MAIN" -->
+      <DESCRIPTION>(dec) Declination (J2000) (dec)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="errMaj" ucd="stat.error" display="0" datatype="float" width="5" precision="2" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>(err_maj) Semi-major axis of position error ellipse</DESCRIPTION>
+    </FIELD>
+    <FIELD name="errMin" ucd="stat.error" display="0" datatype="float" width="5" precision="2" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>(err_min) Semi-minor axis of position error ellipse</DESCRIPTION>
+    </FIELD>
+    <FIELD name="errPA" ucd="stat.error" display="0" datatype="short" width="3" unit="deg"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0,180] (err_ang) Position angle of error ellipse major axis (E of N)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="2MASS" ucd="meta.id;meta.main" display="1" datatype="char" arraysize="17*"><!-- ucd="ID_MAIN" -->
+      <DESCRIPTION>(designation) Source designation (1)</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-5?-info=XML&amp;-out.add=.&amp;-source=II/246/out&amp;2MASS===${2MASS}"/>
+    </FIELD>
+    <FIELD name="Jmag" ucd="phot.mag;em.IR.J" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_JHN_J" -->
+      <DESCRIPTION>?(j_m) J selected default magnitude (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Jcmsig" ucd="stat.error;phot.mag" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>?(j_cmsig) J default magnitude uncertainty (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Jmag" ucd="stat.error;phot.mag" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>?(j_msigcom) J total magnitude uncertainty (4)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Jsnr" ucd="stat.snr" display="0" datatype="double" width="9" precision="1"><!-- ucd="INST_S/N" -->
+      <DESCRIPTION>?(j_snr) J Signal-to-noise ratio</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Hmag" ucd="phot.mag;em.IR.H" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_JHN_H" -->
+      <DESCRIPTION>?(h_m) H selected default magnitude (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Hcmsig" ucd="stat.error;phot.mag" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>?(h_cmsig) H default magnitude uncertainty (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Hmag" ucd="stat.error;phot.mag" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>?(h_msigcom) H total magnitude uncertainty (4)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Hsnr" ucd="stat.snr" display="0" datatype="double" width="9" precision="1"><!-- ucd="INST_S/N" -->
+      <DESCRIPTION>?(h_snr) H Signal-to-noise ratio</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Kmag" ucd="phot.mag;em.IR.K" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_JHN_K" -->
+      <DESCRIPTION>?(k_m) K selected default magnitude (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Kcmsig" ucd="stat.error;phot.mag" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>?(k_cmsig) K default magnitude uncertainty (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Kmag" ucd="stat.error;phot.mag" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>?(k_msigcom) K total magnitude uncertainty (4)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Ksnr" ucd="stat.snr" display="0" datatype="double" width="9" precision="1"><!-- ucd="INST_S/N" -->
+      <DESCRIPTION>?(k_snr) K Signal-to-noise ratio</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Qflg" ucd="meta.code.qual;phot" display="1" datatype="char" arraysize="3"><!-- ucd="CODE_QUALITY" -->
+      <DESCRIPTION>(ph_qual) JHK Photometric quality flag (5)</DESCRIPTION>
+
+<!-- No link in: \sed{s!\([^ABCD]\)!{\\fg{red3}\1}!g}{${}} -->
+    </FIELD>
+    <FIELD name="Rflg" ucd="meta.ref" display="1" datatype="char" arraysize="3"><!-- ucd="REFER_CODE" -->
+      <DESCRIPTION>(rd_flg) Source of JHK default mag (6)</DESCRIPTION>
+
+<!-- No link in: \sed{s!\([069]\)!{\\fg{red3}\1}!g}{${}} -->
+    </FIELD>
+    <FIELD name="Bflg" ucd="meta.code" display="1" datatype="char" arraysize="3"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>(bl_flg) JHK components fit to source (7)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Cflg" ucd="meta.code" display="1" datatype="char" arraysize="3"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>(cc_flg) Artifact contamination, confusion (8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Ndet" ucd="meta.number" display="0" datatype="char" arraysize="6*"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>(ndet) Number of aperture measurements (jjhhkk) (9)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="prox" ucd="pos.angDistance" display="0" datatype="float" width="5" precision="1" unit="arcsec"><!-- ucd="POS_ANG_DIST_GENERAL" -->
+      <DESCRIPTION>Distance between source and nearest neighbour</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-5?-info=XML&amp;-out.add=.&amp;-source=II/246&amp;-c=${+RAJ2000}${+DEJ2000}&amp;-out.add=.&amp;-c.rs=${$*}"/>
+    </FIELD>
+    <FIELD name="pxPA" ucd="pos.posAng" display="0" datatype="short" width="3" unit="deg"><!-- ucd="POS_POS-ANG" -->
+      <DESCRIPTION>? (pxpa) Position angle of vector from source to nearest neighbour (E of N)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="pxCntr" ucd="meta.number" display="0" datatype="long" width="10"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>(pxcntr) Sequence number of nearest neighbour</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Xflg" ucd="meta.code" display="1" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0,2] (gal_contam) Extended source contamination (10)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Aflg" ucd="meta.code" display="1" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0,1] (mp_flg) Association with asteroid or comet (11)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Cntr" ucd="meta.id;meta.table" display="0" datatype="int" width="10"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>(pts_key) Unique source identifier in catalogue</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Hemis" ucd="obs.param;obs" display="0" datatype="char" arraysize="1"><!-- ucd="OBS_CODE" -->
+      <DESCRIPTION>[ns] (hemis) Hemisphere of observation</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Date" ucd="time.epoch;obs" display="0" datatype="char" arraysize="10*"><!-- ucd="TIME_DATE" -->
+      <DESCRIPTION>(date) Observation date</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Scan" ucd="obs.field" display="0" datatype="short" width="3"><!-- ucd="ID_FIELD" -->
+      <DESCRIPTION>(scan) Scan number (within date)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="GLON" ucd="pos.galactic.lon" display="0" datatype="double" width="7" precision="3" unit="deg"><!-- ucd="POS_GAL_LON" -->
+      <DESCRIPTION>(glon) Galactic longitude (12)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="GLAT" ucd="pos.galactic.lat" display="0" datatype="double" width="7" precision="3" unit="deg"><!-- ucd="POS_GAL_LAT" -->
+      <DESCRIPTION>(glat) Galactic latitude (12)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Xscan" ucd="pos.cartesian;instr.det" display="0" datatype="float" width="6" precision="1" unit="arcsec"><!-- ucd="INST_POS" -->
+      <DESCRIPTION>(x_scan) Distance of source from focal plane centerline</DESCRIPTION>
+    </FIELD>
+    <FIELD name="JD" ucd="time.epoch" ref="time_4" display="0" datatype="double" width="12" precision="4" unit="d"><!-- ucd="TIME_DATE" -->
+      <DESCRIPTION>(jdate) Julian date of source measurement (13)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Jpsfchi" ucd="stat.fit.chi2;stat.value" display="0" datatype="float" width="6" precision="2"><!-- ucd="FIT_ERROR" -->
+      <DESCRIPTION>?(j_psfchi) J band reduced chi2 value of fit</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Hpsfchi" ucd="stat.fit.chi2;stat.value" display="0" datatype="float" width="6" precision="2"><!-- ucd="FIT_ERROR" -->
+      <DESCRIPTION>?(h_psfchi) H band reduced chi2 value of fit</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Kpsfchi" ucd="stat.fit.chi2;stat.value" display="0" datatype="float" width="6" precision="2"><!-- ucd="FIT_ERROR" -->
+      <DESCRIPTION>?(k_psfchi) K band reduced chi2 value of fit</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Jstdap" ucd="phot.mag;em.IR.J" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_JHN_J" -->
+      <DESCRIPTION>?(j_m_stdap) J standard aperture magnitude (18)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Jstdap" ucd="stat.error" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>?(j_msig_stdap) error on Jstdap</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Hstdap" ucd="phot.mag;em.IR.H" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_JHN_H" -->
+      <DESCRIPTION>?(h_m_stdap) H standard aperture magnitude (18)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Hstdap" ucd="stat.error" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>?(h_msig_stdap) error on Hstdap</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Kstdap" ucd="phot.mag;em.IR.K" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_JHN_K" -->
+      <DESCRIPTION>?(k_m_stdap) K standard aperture magnitude (18)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Kstdap" ucd="stat.error" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>?(k_msig_stdap) error on Kstdap</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="edgeNS" ucd="pos;arith.diff" display="0" datatype="int" width="5" unit="arcsec"><!-- ucd="INST_PLATE_DIST" -->
+      <DESCRIPTION>(dist_edge_ns) Distance from the source to the nearest North or South scan edge</DESCRIPTION>
+    </FIELD>
+    <FIELD name="edgeEW" ucd="pos;arith.diff" display="0" datatype="short" width="3" unit="arcsec"><!-- ucd="INST_PLATE_DIST" -->
+      <DESCRIPTION>(dist_edge_ew) Distance from the source to the nearest East or West scan edge</DESCRIPTION>
+    </FIELD>
+    <FIELD name="edge" ucd="pos.cartesian;instr.det" display="0" datatype="char" arraysize="2"><!-- ucd="INST_POS" -->
+      <DESCRIPTION>[nsew] (dist_edge_flg) flag indicating to which edges the edgeNS and edgeEW values refer</DESCRIPTION>
+    </FIELD>
+    <FIELD name="dup" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>(dup_src) Flag indicating duplicate source (14)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="use" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>(use_src) Use source flag (15)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="opt" ucd="meta.id;meta.dataset" display="0" datatype="char" arraysize="1"><!-- ucd="ID_CATALOG" -->
+      <DESCRIPTION>[0UT] (a) Associated optical source (16)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Dopt" ucd="pos.angDistance" display="0" datatype="float" width="4" precision="1" unit="arcsec"><!-- ucd="POS_ANG_DIST_GENERAL" -->
+      <DESCRIPTION>?(dist_opt) Distance to associated optical source</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PAopt" ucd="pos.posAng" display="0" datatype="short" width="3" unit="deg"><!-- ucd="POS_POS-ANG" -->
+      <DESCRIPTION>[0,360]? (phi_opt) position angle from optical source to the 2MASS source position</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="Bmag" ucd="phot.mag;em.opt.B" display="0" datatype="float" width="5" precision="2" unit="mag"><!-- ucd="PHOT_PHG_B" -->
+      <DESCRIPTION>?(b_m_opt) Blue magnitude of associated optical source</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Rmag" ucd="phot.mag;em.opt.R" display="0" datatype="float" width="5" precision="2" unit="mag"><!-- ucd="PHOT_PHG_R" -->
+      <DESCRIPTION>?(vr_m_opt) Visual or red mag of associated optical source</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Nopt" ucd="meta.number" display="0" datatype="unsignedByte" width="1"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>(nopt_mchs) Number of optical sources within 5arcsec (17)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="extKey" ucd="meta.id.cross" display="0" datatype="int" width="7"><!-- ucd="ID_CROSSID" -->
+      <DESCRIPTION>?(ext_key) Record Identifier in XSC</DESCRIPTION>
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="scanKey" ucd="meta.id" display="0" datatype="int" width="5"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>(scan_key) Record Identifier in the Scan Information Table</DESCRIPTION>
+    </FIELD>
+    <FIELD name="coaddKey" ucd="meta.id;meta.dataset" display="0" datatype="int" width="7"><!-- ucd="ID_TABLE" -->
+      <DESCRIPTION>(coadd_key) Record Identifier in the Atlas Image Data Table</DESCRIPTION>
+    </FIELD>
+    <FIELD name="coadd" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>(coadd) Sequence number of the Atlas Image</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Opt" ucd="meta.ref.url" display="0" datatype="char" arraysize="3"><!-- ucd="DATA_LINK" -->
+      <DESCRIPTION>Show the nearby Optical Sources from USNO and GSC Catalogues</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-5?-info=XML&amp;-out.add=.&amp;-source=USNO-B1.0,GSC2.3&amp;-out.add=.&amp;-c=${+RAJ2000}${+DEJ2000}&amp;-c.rs=5"/>
+    </FIELD>
+  </TABLE>
+<INFO name="matches" value="2">matching records</INFO>
+</RESOURCE>
+</VOTABLE>

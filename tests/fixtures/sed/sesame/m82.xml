@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>M82</name>
+  <!-- Q8483450 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 147ms [2] -->
+    <oid>433918</oid>
+    <otype>AGN</otype>
+    <jpos>09:55:52.42 +69:40:46.9</jpos>
+    <jradeg>148.96845833</jradeg>
+    <jdedeg>69.67970278</jdedeg>
+    <refPos>2006AJ....131.1163S</refPos>
+    <z><v>0.00073</v><e>0.00009</e><q>E</q><r>2009ApJS..182..543A</r></z>
+    <MType>S</MType>
+    <oname>M  82</oname>
+    <alias>M 82</alias>
+    <alias>APG 337</alias>
+    <alias>1AXG J095549+6940</alias>
+    <alias>BWE 0951+6954</alias>
+    <alias>3C 231.0</alias>
+    <alias>3C 231</alias>
+    <alias>4C 69.12</alias>
+    <alias>6C 095143+695502</alias>
+    <alias>7C 095143.50+695500.00</alias>
+    <alias>8C 0951+699</alias>
+    <alias>3CR 231</alias>
+    <alias>CXOM82 J095549.7+694043</alias>
+    <alias>DA 277</alias>
+    <alias>1E 0951+69.8</alias>
+    <alias>2E 2197</alias>
+    <alias>2E 0951.7+6955</alias>
+    <alias>1ES 0951+69.9</alias>
+    <alias>1FGL J0956.5+6938</alias>
+    <alias>2FGL J0955.9+6936</alias>
+    <alias>3FGL J0955.4+6940</alias>
+    <alias>4FGL J0955.7+6940</alias>
+    <alias>3FHL J0955.8+6939</alias>
+    <alias>FL8Y J0955.7+6940</alias>
+    <alias>GB6 B0951+6955</alias>
+    <alias>87GB 095143.5+695452</alias>
+    <alias>HIJASS J0955+69B</alias>
+    <alias>INTREF 396</alias>
+    <alias>IRAS F09517+6954</alias>
+    <alias>IRAS 09517+6954</alias>
+    <alias>JVAS J0955+6940</alias>
+    <alias>1Jy 0951+69</alias>
+    <alias>1Jy 0951+699</alias>
+    <alias>KPG 218b</alias>
+    <alias>LEDA 28655</alias>
+    <alias>2MASX J09555243+6940469</alias>
+    <alias>MCG+12-10-011</alias>
+    <alias>2MFGC 7685</alias>
+    <alias>NAME UMa A</alias>
+    <alias>NAME Cigar Galaxy</alias>
+    <alias>NGC 3034</alias>
+    <alias>NRAO 341</alias>
+    <alias>NVSS J095551+694046</alias>
+    <alias>PBC J0955.7+6941</alias>
+    <alias>PCCS1 030 G141.43+40.58</alias>
+    <alias>PLCKERC -100 G141.42+40.57</alias>
+    <alias>PRC D-13</alias>
+    <alias>PSCz Q09517+6954</alias>
+    <alias>QSO B0951+699</alias>
+    <alias>RAFGL 1388</alias>
+    <alias>RBS 809</alias>
+    <alias>RFC J0955+6940</alias>
+    <alias>RGB J0955.9+6940</alias>
+    <alias>RGB J0955+696</alias>
+    <alias>RX J095550+69406</alias>
+    <alias>RX J0955.8+6940</alias>
+    <alias>1RXS J095550.4+694052</alias>
+    <alias>S4 0951+699</alias>
+    <alias>S4 0951+69</alias>
+    <alias>SDSS J095551.73+694048.6</alias>
+    <alias>SWIFT J0956.1+6942</alias>
+    <alias>TeV J0955+696</alias>
+    <alias>4U 1004+70</alias>
+    <alias>UGC 5322</alias>
+    <alias>UT 0951+699</alias>
+    <alias>UZC J095557.0+694110</alias>
+    <alias>VLSS J0955.8+6940</alias>
+    <alias>WB 0951+6954</alias>
+    <alias>WMAP J0955+6940</alias>
+    <alias>WN B0951.7+6954</alias>
+    <alias>WN B0951.7+6954A</alias>
+    <alias>9Y-MST J0955+6939</alias>
+    <alias>Z 333-8</alias>
+    <alias>Z 0951.7+6955</alias>
+    <alias>[B93] 14</alias>
+    <alias>[BAG2012] 148.9211+69.6846</alias>
+    <alias>[CAB95] IRAS F09517+6954</alias>
+    <alias>[CHM2007] HDC 552 J095552.43+6940469</alias>
+    <alias>[CHM2007] LDC 842 J095552.43+6940469</alias>
+    <alias>[DML87] 745</alias>
+    <alias>[DSL2000] 0951+700</alias>
+    <alias>[M98c] 095145.3+695511</alias>
+    <alias>[NKB95] N3034</alias>
+    <alias>[R97] NGC 3031 1</alias>
+    <alias>[RPS97] NGC 3034 2</alias>
+    <alias>[SPS97] 8</alias>
+    <alias>[TSA98] J095541.25+693927.31</alias>
+    <alias>[VDD93] 100</alias>
+    <alias>[WZX98] 09517+6954</alias>
+    <alias>[ZEH2003] RX J0955.8+6940 1</alias>
+    <nrefs>6219</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ****Total of 1 crashes -->
+<!-- Configuration tested: /run/sesame.conf -->

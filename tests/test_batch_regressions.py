@@ -22,7 +22,7 @@ import pytest
 import respx
 from fixture_io import TARGETS, load_exchanges, replay_side_effect
 from helpers import make_service, offline_client
-from test_batch import canary_cone_exchanges, replay_batch
+from test_batch import replay_batch
 from test_batch_fixtures import (
     CANARY_RADIUS,
     CANARY_TARGETS,
@@ -119,9 +119,14 @@ def test_batch_confidence_equals_crossmatch_service(canary, key):
     service = {(m["catalog"], m["source_id"]): m["confidence"] for m in record.provenance["matches"]}
     got = {(name, m["source_id"]): m["confidence"] for name, ms in canary.target_matches(key).items() for m in ms}
     assert got and set(got) == set(service)
+    # Confidences are rounded to 6 decimals, and the rows are the same sources from different services (VizieR
+    # I/355 via CDS XMatch vs the Gaia archive round some columns differently: posteriors agree to ~5e-7), so
+    # two equal posteriors may round one quantum apart; compare in quanta (a float |a - b| <= 1e-6 test fails
+    # on 0.998922 - 0.998921 = 1.0000000000287557e-06).
     for pair, value in service.items():
-        assert got[pair] == pytest.approx(value, abs=1e-6), pair
-    assert canary.target_association(key)["p_any"] == record.provenance["association"]["p_any"]
+        assert abs(round(got[pair] * 1e6) - round(value * 1e6)) <= 1, (pair, got[pair], value)
+    p_any, expected = canary.target_association(key)["p_any"], record.provenance["association"]["p_any"]
+    assert abs(p_any - expected) <= 1e-6 + 1e-12, (p_any, expected)
 
 
 def test_confidence_is_a_posterior_for_true_counterparts(canary):
@@ -199,20 +204,30 @@ def test_xmatch_rows_are_cut_to_each_targets_own_cone():
     assert [m["source_id"] for m in result.target_matches("B")["gaia_dr3"]] == ["1010", "1011"]
 
 
-def test_quadratic_too_wide_filter_is_gone_and_limit_checked_first():
-    """20000 targets at epoch 1995 (every Gaia cone > 180"): no XMatch request, fast, reported per target."""
+def test_many_too_wide_cones_are_capped_quickly():
+    """20000 targets at epoch 1995 without proper motion: every Gaia cone needs 5" + 10.5"/yr x 21 yr = 225",
+    beyond XMatch's 180". More than BATCH_MAX_CONE_TARGETS (100 here) cannot be cone-searched, so the cones are
+    capped at 180" (with a warning naming the speed limit) and sent to XMatch in area-scaled chunks -- instead of
+    all 20000 targets failing. The too-wide filter stays linear (the former quadratic set rebuild took ~39 s)."""
     targets = [{"id": str(i), "ra": (i * 0.017) % 360, "dec": 0.0, "epoch": 1995.0} for i in range(20000)]
+    sent: list[tuple[str, int]] = []
 
-    def handler(request: httpx.Request) -> httpx.Response:  # pragma: no cover - must not be called
-        raise AssertionError("no request expected")
+    def handler(request: httpx.Request) -> httpx.Response:
+        fields = multipart_fields(request.headers["content-type"], request_body(request))
+        sent.append((fields["distMaxArcsec"], len(uploaded_targets(request))))
+        return httpx.Response(200, content=xmatch_votable([]), headers={"content-type": "text/xml"})
 
     started = time.perf_counter()
     result = asyncio.run(run_with(handler, parse_targets(targets), ["gaia_dr3"], 5.0, max_cone_targets=100))
     elapsed = time.perf_counter() - started
     run = result.runs["gaia_dr3"]
-    assert run.requests == 0 and run.failed_targets == 20000 and run.fallback_targets == 0
-    assert "BATCH_MAX_CONE_TARGETS" in run.errors[-1]
-    assert elapsed < 20.0, elapsed  # was ~39 s (quadratic set rebuild) before the fix
+    assert run.failed_targets == 0 and run.fallback_targets == 0 and run.refused_targets == 0
+    assert {dist for dist, _ in sent} == {"180.000"} and sum(n for _, n in sent) == 20000
+    assert max(n for _, n in sent) <= int(20000 * (10.0 / 180.0) ** 2)  # chunks shrunk for 180" cones
+    assert run.requests == len(sent)
+    assert any("capped at the XMatch limit" in w and "BATCH_MAX_CONE_TARGETS=100" in w for w in run.warnings)
+    assert any("stars faster than" in w for w in run.warnings)
+    assert elapsed < 30.0, elapsed
 
 
 # ---------------------------------------------------------------------------
@@ -383,6 +398,114 @@ def test_timeouts_split_chunks_instead_of_resending():
     assert run.split_chunks == 3 and run.matched_targets == 4 and run.fallback_targets == 0
 
 
+def _run_with_guards(handler, targets, guards, **kwargs) -> BatchResult:
+    async def scenario() -> BatchResult:
+        with respx.mock(assert_all_called=False) as router:
+            router.route().mock(side_effect=handler)
+            async with offline_client() as client:
+                engine = BatchCrossmatcher(client=client, guards=guards, **kwargs)
+                engine.retry_backoff_seconds = 0.0
+                return await engine.run(targets, ["simbad"], radius_arcsec=5.0)
+
+    return asyncio.run(scenario())
+
+
+def test_heavy_join_timeouts_split_all_the_way_without_opening_the_circuit():
+    """A 32-target join that only completes one target at a time (IRSA-style 5-minute limit): every level of
+    splitting must still run -- 62 timed-out multi-target attempts must not open the circuit breaker (the
+    default threshold is 5 failures), which previously sent the rest of the chunk to cone searches."""
+    targets = [{"id": f"t{i}", "ra": 10.0 + i * 0.01, "dec": 5.0} for i in range(32)]
+    guards: dict[str, Any] = {}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        rows = simbad_rows_for(request)
+        if len(rows) > 1:
+            raise httpx.ReadTimeout("simulated execution limit", request=request)
+        return httpx.Response(200, json=simbad_json(rows))
+
+    result = _run_with_guards(handler, targets, guards, chunk_sizes={"simbad": 32})
+    run = result.runs["simbad"]
+    assert run.matched_targets == 32 and run.failed_targets == 0 and run.fallback_targets == 0
+    assert run.split_chunks == 31 and run.requests == 2 * 31 + 32
+    assert guards[f"batch-upload:{batch.SIMBAD_TAP}"].state == "closed"
+
+
+def test_single_target_timeouts_still_open_the_circuit():
+    """A dead (hanging) endpoint is still detected: single-target timeouts count as endpoint failures."""
+    targets = [{"id": f"t{i}", "ra": 10.0 + i * 0.01, "dec": 5.0} for i in range(6)]
+    guards: dict[str, Any] = {}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        raise httpx.ReadTimeout("hung", request=request)
+
+    result = _run_with_guards(handler, targets, guards, chunk_sizes={"simbad": 1}, fallback_to_cone=False,
+                              chunk_concurrency=1)
+    run = result.runs["simbad"]
+    guard = guards[f"batch-upload:{batch.SIMBAD_TAP}"]
+    assert guard.state == "open" and run.failed_targets == 6
+    assert run.requests == 5  # 2 + 2 + 1 timeouts reach the threshold; the rest fail fast on the open circuit
+    assert any("circuit is open" in message for message in result.failures[5].values())
+
+
+def test_timed_out_recovery_probe_reopens_the_circuit():
+    """A multi-target join sent as the half-open probe settles the breaker when it times out."""
+    guards: dict[str, Any] = {}
+    now = [1000.0]
+    guard = BatchCrossmatcher(guards=guards)._guard(batch.SIMBAD_TAP)
+    guard.clock = lambda: now[0]
+    for _ in range(guard.failure_threshold):
+        guard.record_failure()
+    now[0] += guard.recovery_seconds + 1.0  # half-open: the next request is the probe
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        raise httpx.ReadTimeout("still hung", request=request)
+
+    result = _run_with_guards(handler, CANARY_TARGETS, guards, fallback_to_cone=False)
+    assert result.runs["simbad"].requests == 1 and result.runs["simbad"].failed_targets == 4
+    assert guard.state == "open" and not guard.probe_in_flight
+
+
+def test_cancelled_ordinary_uploads_do_not_open_the_circuit():
+    """Clients that disconnect mid-request give no verdict on the archive: three cancelled batches with two
+    in-flight uploads each (6 >= the threshold of 5) must leave the circuit of a healthy archive closed."""
+    guards: dict[str, Any] = {}
+    targets = [{"id": f"t{i}", "ra": 10.0 + i * 0.01, "dec": 5.0} for i in range(4)]
+
+    in_flight = [0]
+
+    async def scenario() -> BatchResult:
+        async def hang(request: httpx.Request) -> httpx.Response:
+            in_flight[0] += 1
+            try:
+                await asyncio.sleep(30)
+            finally:
+                in_flight[0] -= 1
+            return httpx.Response(200, json=simbad_json([]))
+
+        def healthy(request: httpx.Request) -> httpx.Response:
+            return httpx.Response(200, json=simbad_json(simbad_rows_for(request)))
+
+        async with offline_client() as client:
+            engine = BatchCrossmatcher(client=client, guards=guards, chunk_sizes={"simbad": 1}, fallback_to_cone=False)
+            guard = engine._guard(batch.SIMBAD_TAP)
+            for _ in range(3):
+                with respx.mock(assert_all_called=False) as router:
+                    router.route().mock(side_effect=hang)
+                    task = asyncio.create_task(engine.run(targets, ["simbad"], radius_arcsec=5.0))
+                    await asyncio.sleep(0.3)
+                    assert in_flight[0] == 2  # two uploads in flight (chunk concurrency 2)
+                    task.cancel()
+                    with pytest.raises(asyncio.CancelledError):
+                        await task
+            assert guard.state == "closed" and not guard.probe_in_flight
+            with respx.mock(assert_all_called=False) as router:
+                router.route().mock(side_effect=healthy)
+                return await engine.run(targets, ["simbad"], radius_arcsec=5.0)
+
+    result = asyncio.run(scenario())
+    assert result.runs["simbad"].requests == 4 and result.runs["simbad"].matched_targets == 4
+
+
 def test_catalog_time_budget_bounds_a_hanging_archive():
     async def hang(request: httpx.Request) -> httpx.Response:
         await asyncio.sleep(30)
@@ -412,17 +535,32 @@ def test_deterministic_4xx_does_not_fall_back_to_cones():
 
 
 def test_oversized_answers_are_split_before_parsing():
-    one_row = len(json.dumps(simbad_json([[0, "obj-0-0", 1.0, 1.0]])).encode())
+    """The byte cap is set between the largest one-target answer and the smallest two-target answer.
+
+    Bodies are serialised explicitly (httpx's ``json=`` uses compact separators, so a size computed with
+    ``json.dumps`` defaults would not describe the bytes actually sent).
+    """
+
+    def body(rows: list[list[Any]]) -> bytes:
+        return json.dumps(simbad_json(rows)).encode()
+
+    parsed = parse_targets(CANARY_TARGETS)
+    singles = [body([[i, f"obj-{i}-0", t.target.ra, t.target.dec]]) for i, t in enumerate(parsed)]
+    pairs = [body([[i, f"obj-{i}-0", a.target.ra, a.target.dec], [j, f"obj-{j}-0", b.target.ra, b.target.dec]])
+             for i, a in enumerate(parsed) for j, b in enumerate(parsed) if i < j]
+    cap = max(len(s) for s in singles)
+    assert cap < min(len(p) for p in pairs)  # the cap separates one-target from two-target answers
     sizes: list[int] = []
 
     def handler(request: httpx.Request) -> httpx.Response:
         rows = simbad_rows_for(request)
         sizes.append(len(rows))
-        return httpx.Response(200, json=simbad_json(rows))
+        return httpx.Response(200, content=body(rows), headers={"content-type": "application/json"})
 
-    result = asyncio.run(run_with(handler, CANARY_TARGETS, ["simbad"], 5.0, max_response_bytes=one_row + 40))
+    result = asyncio.run(run_with(handler, CANARY_TARGETS, ["simbad"], 5.0, max_response_bytes=cap))
     run = result.runs["simbad"]
     assert sizes == [4, 2, 2, 1, 1, 1, 1] and run.split_chunks == 3 and run.matched_targets == 4
+    assert run.failed_targets == 0 and run.fallback_targets == 0
 
 
 # ---------------------------------------------------------------------------
@@ -474,12 +612,17 @@ def test_router_engine_shares_api_provider_guards_and_cache():
 
     guards: dict[str, Any] = {}
     cache = CacheManager(None)
-    providers = provider_map(None, guards=guards, cache=cache)
-    state = SimpleNamespace(providers=providers, registry=None, service=None, client=None)
-    engine = batch._engine_for(SimpleNamespace(app=SimpleNamespace(state=state)))
-    assert engine.guards is guards and engine.cache is cache
-    again = batch._engine_for(SimpleNamespace(app=SimpleNamespace(state=state)))
-    assert again.upload_slots is engine.upload_slots
+    # One shared (offline) client as in the API; provider_map(None) would build an SSL context per provider.
+    client = offline_client()
+    try:
+        providers = provider_map(client, guards=guards, cache=cache)
+        state = SimpleNamespace(providers=providers, registry=None, service=None, client=client)
+        engine = batch._engine_for(SimpleNamespace(app=SimpleNamespace(state=state)))
+        assert engine.guards is guards and engine.cache is cache and engine.client is client
+        again = batch._engine_for(SimpleNamespace(app=SimpleNamespace(state=state)))
+        assert again.upload_slots is engine.upload_slots
+    finally:
+        asyncio.run(client.aclose())
 
 
 def test_uploads_are_limited_per_endpoint_across_catalogs():
@@ -537,6 +680,25 @@ def test_large_answer_does_not_block_the_event_loop():
     result, worst = asyncio.run(scenario())
     assert result.runs["simbad"].matched_targets == 3000 and result.runs["simbad"].total_matches == 6000
     assert worst < 1.0, worst  # the whole conversion (several seconds) used to run on the loop
+
+
+def test_conversion_and_association_scale_linearly():
+    """Per-target cost of parsing, conversion and association does not grow with the chunk size (a quadratic
+    step -- such as the former per-element set rebuild -- would make 4x the targets ~16x slower)."""
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(200, json=simbad_json(simbad_rows_for(request, per_target=2)))
+
+    def timed(n: int) -> float:
+        targets = [{"id": str(i), "ra": (i * 0.113) % 360, "dec": -60 + (i * 0.037) % 120} for i in range(n)]
+        started = time.perf_counter()
+        result = asyncio.run(run_with(handler, targets, ["simbad"], 5.0, chunk_sizes={"simbad": 5000}))
+        assert result.runs["simbad"].requests == 1 and result.runs["simbad"].total_matches == 2 * n
+        return time.perf_counter() - started
+
+    timed(50)  # warm-up (imports, registry)
+    small, large = timed(500), timed(2000)
+    assert large / small < 4 * 1.75, (small, large)
 
 
 # ---------------------------------------------------------------------------

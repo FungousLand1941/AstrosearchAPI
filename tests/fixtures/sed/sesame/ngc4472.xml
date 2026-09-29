@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>NGC 4472</name>
+  <!-- Q8483473 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 213ms [1] -->
+    <oid>1938908</oid>
+    <otype>Sy2</otype>
+    <jpos>12:29:46.77 +08:00:01.4</jpos>
+    <jradeg>187.4449</jradeg>
+    <jdedeg>8.0004</jdedeg>
+    <refPos>1997A&amp;AS..122..235L</refPos>
+    <errRAmas>670</errRAmas><errDEmas>670</errDEmas>
+    <z><v>0.00317</v><e>0.00010</e><q>E</q><r>2009ApJS..182..543A</r></z>
+    <MType>E-E/S0</MType>
+    <oname>M  49</oname>
+    <alias>M 49</alias>
+    <alias>ACSVCS 1</alias>
+    <alias>APG 134</alias>
+    <alias>BWE 1227+0816</alias>
+    <alias>1E 1227.5+0817</alias>
+    <alias>2E 2735</alias>
+    <alias>2E 1227.2+0816</alias>
+    <alias>1ES 1227+08.2</alias>
+    <alias>EVCC 755</alias>
+    <alias>GALEX J122946.6+080000</alias>
+    <alias>GB6 B1227+0816</alias>
+    <alias>87GB 122714.6+081649</alias>
+    <alias>GIN 781</alias>
+    <alias>GLEAM J122946+075958</alias>
+    <alias>1H 1228+081</alias>
+    <alias>INTREF 501</alias>
+    <alias>LEDA 41220</alias>
+    <alias>1M 1231+071</alias>
+    <alias>2MASX J12294679+0800014</alias>
+    <alias>MCG+01-32-083</alias>
+    <alias>MITG J122942+0800</alias>
+    <alias>NGC 4472</alias>
+    <alias>NVSS B122714+081639</alias>
+    <alias>NVSS J122946+080002</alias>
+    <alias>RGB J1229.8+0800</alias>
+    <alias>RGB J1229+080</alias>
+    <alias>RX J1229.7+0759</alias>
+    <alias>SDSS J122946.76+080001.7</alias>
+    <alias>SDSS J122944.50+080029.6</alias>
+    <alias>SDSS J122946.76+080001.6</alias>
+    <alias>TGSSADR J122946.6+080006</alias>
+    <alias>2U 1231+07</alias>
+    <alias>3U 1231+07</alias>
+    <alias>4U 1232+07</alias>
+    <alias>UGC 7629</alias>
+    <alias>UZC J122946.6+075958</alias>
+    <alias>VCC 1226</alias>
+    <alias>XSS J12312+0833</alias>
+    <alias>Z 42-134</alias>
+    <alias>Z 1227.2+0816</alias>
+    <alias>[BEC2010] HRS 178</alias>
+    <alias>[CHM2007] HDC 720 J122946.79+0800014</alias>
+    <alias>[CHM2007] LDC 904 J122946.79+0800014</alias>
+    <alias>[DC78] UGC 7629</alias>
+    <alias>[DLB87] V9</alias>
+    <alias>[DSB94] 225</alias>
+    <alias>[FWB89] Galaxy 265</alias>
+    <alias>[M98c] 122713.9+081632</alias>
+    <alias>[VV2003c] J122946.8+080002</alias>
+    <alias>[VV2006c] J122946.8+080002</alias>
+    <alias>[VV2010c] J122946.8+080002</alias>
+    <alias>[ZEH2003] RX J1229.7+0759 1</alias>
+    <nrefs>2198</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ****Total of 1 crashes -->
+<!-- Configuration tested: /run/sesame.conf -->

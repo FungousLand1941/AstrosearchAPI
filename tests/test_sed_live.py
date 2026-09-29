@@ -273,12 +273,24 @@ async def test_blazar_proper_motion_is_not_galactic(tmp_path: Path, name: str) -
 
 
 async def test_aldebaran_saturated_wise_is_flagged(tmp_path: Path) -> None:
-    # Aldebaran (K5 III, Ks ~ -2.9): every AllWISE band is saturated (limits 8, 7, 3.8, 0.4 mag).
+    # Aldebaran (K5 III, Ks ~ -3.0): AllWISE W1/W2/W3 are ph_qual 'U' "limits" at saturated brightnesses (5.6, 1.3,
+    # -2.8 mag, brighter than the nominal saturation limits 8, 7, 3.8): failed extractions, flagged. W4 = -2.93
+    # (ph_qual A) is a valid profile-fit measurement: profile fitting of the unsaturated wings is reliable to -4.0 mag
+    # in W4 (All-Sky Explanatory Supplement VI.3.d; the 0.4 mag limit is the APERTURE-photometry one), and it lies on
+    # the Rayleigh-Jeans tail of Ks (tests/test_sed_round2.py: 124 Jy vs 105 Jy).
     result = await build(tmp_path, name="Aldebaran")
     require_catalogs(result, ["allwise", "twomass_psc", "simbad"])
-    for name in ("W1", "W2", "W3", "W4"):
+    for name in ("W1", "W2", "W3"):
         p = band(result, "WISE", name)
-        assert p["quality_warning"] and any("saturation limit" in w for w in p["warnings"])
+        assert p["is_upper_limit"] and p["quality_warning"], (name, p)
+        assert any("nominal saturation limit" in w and "failed extraction" in w for w in p["warnings"]), p["warnings"]
+    w4 = band(result, "WISE", "W4")
+    assert not w4["is_upper_limit"] and not w4["quality_warning"], w4["warnings"]
+    assert -4.0 < w4["magnitude"] < 0.4
+    ks = band(result, "2MASS", "Ks")
+    rj = ks["flux_jy"] * (ks["wavelength_um"] / w4["wavelength_um"]) ** 2
+    assert rj / sed.WISE_RJ_MARGIN < w4["flux_jy"] < rj * sed.WISE_RJ_MARGIN
+    assert "WISE W1-W2" not in " | ".join(result["classification"]["evidence"])  # flagged bands feed no colour rule
     assert result["classification"]["label"] == "star"
 
 

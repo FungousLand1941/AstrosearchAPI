@@ -647,6 +647,12 @@ RECORD_TARGETS: dict[str, dict[str, Any]] = {
     "sn2006gy": {"name": "SN 2006gy"},  # SIMBAD 'SN*' in NGC 1260 (z = 0.019)
     "q2237": {"name": "Q2237+030"},  # Einstein Cross: lensed quasar z = 1.695, lens galaxy z = 0.039
     "adleo": {"name": "AD Leo"},  # M dwarf: Gaia DSC binarystar = 0.999999, star = 1e-6
+    # Round-5 review regressions (records resolved with Sesame -oxpI: the resolution lists the object's aliases).
+    "t8main": {"name": "2MASSI J0415195-093506"},  # T8 dwarf by SIMBAD's main id: 2MASS row found through an alias
+    "scholz": {"name": "Scholz's star"},  # Gaia DR3 3048443305671969152 at 2.08 arcsec, named by a Sesame alias
+    "pks1510": {"name": "PKS 1510-089"},  # quasar z = 0.36 (SIMBAD); NED lists z = 0.0068 (6dF): discordant spectra
+    "proxima": {"name": "Proxima Centauri"},  # three 5XMM unique sources of the moving star (stack-diluted fluxes)
+    "arp220": {"name": "Arp 220"},  # dusty starburst: radio excess over the optical, but q22 on the IR/radio correlation
 }
 
 
@@ -704,6 +710,43 @@ async def _record_supplementary(client: httpx.AsyncClient, log: list, key: str, 
         print(key, name, [r.status_code for _, r in picked])
 
 
+async def _resolve_and_save(client: httpx.AsyncClient, key: str, name: str) -> dict[str, Any]:
+    """sed.resolve_name, keeping the Sesame answer as tests/fixtures/sed/sesame/<key>.xml."""
+    log: list[httpx.Response] = []
+
+    async def hook(response: httpx.Response) -> None:
+        await response.aread()
+        log.append(response)
+
+    client.event_hooks["response"].append(hook)
+    try:
+        info = await sed.resolve_name(name, client)
+    finally:
+        client.event_hooks["response"].remove(hook)
+    answer = next(r for r in log if r.request.url.host == "cds.unistra.fr")
+    (SED_FIXTURES / "sesame").mkdir(parents=True, exist_ok=True)
+    (SED_FIXTURES / "sesame" / f"{key}.xml").write_bytes(answer.content)
+    return info
+
+
+async def _refresh_resolutions(which: list[str]) -> None:
+    """Re-resolve the names of recorded records with Sesame -oxpI and store the resolution (aliases included) in
+    each record, without re-running the crossmatch."""
+    async with httpx.AsyncClient(timeout=60.0, follow_redirects=True) as client:
+        for key, spec in RECORD_TARGETS.items():
+            if not spec.get("name") or (which and key not in which):
+                continue
+            path = SED_FIXTURES / "records" / f"{key}.json"
+            if not path.exists():
+                continue
+            record = json.loads(path.read_text(encoding="utf-8"))
+            info = await _resolve_and_save(client, key, spec["name"])
+            record["resolved_object"] = json.loads(json.dumps(info["resolved"], default=str))
+            path.write_text(json.dumps(record, indent=1, sort_keys=True), encoding="utf-8")
+            print(key, "aliases:", len(record["resolved_object"].get("aliases") or []))
+            await asyncio.sleep(0.5)  # polite
+
+
 async def _record(which: list[str]) -> None:
     import tempfile
 
@@ -737,7 +780,7 @@ async def _record(which: list[str]) -> None:
                     ra, dec, epoch, pm = spec.get("ra"), spec.get("dec"), None, (None, None)
                     resolved = None
                     if spec.get("name"):
-                        info = await sed.resolve_name(spec["name"], plain)
+                        info = await _resolve_and_save(plain, key, spec["name"])
                         ra, dec, epoch = info["ra"], info["dec"], info["epoch"]
                         pm, resolved = (info["pm_ra_masyr"], info["pm_dec_masyr"]), info["resolved"]
                     rec = await build_service(client=plain).crossmatch(
@@ -754,7 +797,9 @@ async def _record(which: list[str]) -> None:
 
 if __name__ == "__main__":
     # record [svo] [canary] [targets | <key> ...] [supplementary-only]
-    if sys.argv[1:2] == ["record"]:
+    if sys.argv[1:3] == ["record", "resolutions"]:
+        asyncio.run(_refresh_resolutions(sys.argv[3:]))
+    elif sys.argv[1:2] == ["record"]:
         asyncio.run(_record(sys.argv[2:] or ["svo", "canary", "targets"]))
     else:
         print(__doc__)

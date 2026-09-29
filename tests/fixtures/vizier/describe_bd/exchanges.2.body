@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-29T05:45:10 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-29T05:45:10">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-source=I%2F122%2Fbd&amp;-meta.all=">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+
+<RESOURCE ID="yCat_1122_1" name="I/122/bd" type="meta">
+  <INFO name="nrows" value="325037">Number of rows of the table</INFO>
+  <DESCRIPTION>
+    Bonner Durchmusterung (Argelander 1859-1903)
+    The Bonner Durchmusterung catalog
+  </DESCRIPTION>
+  <PARAM name="-c" datatype="char" arraysize="32*" value="">
+    <DESCRIPTION>Query from a celestial position according to ASU syntax:
+      {RA{+|-}Dec|object_name}[,eq=equinox][,ep=epoch][,rm=[min/]max]
+      (see http://vizier.cds.unistra.fr/doc/asu.html)
+    </DESCRIPTION>
+  </PARAM>
+  <LINK content-role="query" action="votable?-source=I/122/bd&amp;">
+    Action to Query the current RESOURCE, to be completed by PARAMs and FIELDs contents
+  </LINK>
+
+  <TABLE name="I/122/bd" nrows="325037">
+    <COOSYS ID="B1855" system="eq_FK4" equinox="B1855"/>
+    <!-- Definitions of GROUPs and FIELDs -->
+<!--The precision of the computed positions has been increased compared to the original positions-->
+
+<!-- +++No column could be found to attach a LINK in table: I/122/bd -->
+    <FIELD name="recno" ucd="meta.record" display="0" datatype="int" width="8"><!-- ucd="RECORD" -->
+      <DESCRIPTION>Record number assigned by the VizieR team. Should Not be used for identification.</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-5?-info=XML&amp;-out.add=.&amp;-source=I/122/bd&amp;recno=${recno}"/>
+    </FIELD>
+    <FIELD name="zonesign" ucd="meta.id.part;meta.main" display="1" datatype="char" arraysize="1"><!-- ucd="ID_MAIN:1" -->
+      <DESCRIPTION>[+-]The sign of the declination zone</DESCRIPTION>
+    </FIELD>
+    <FIELD name="zone" ucd="meta.id.part;meta.main" display="1" datatype="short" width="2" unit="deg"><!-- ucd="ID_MAIN:2" -->
+      <DESCRIPTION>The declination zone</DESCRIPTION>
+    </FIELD>
+    <FIELD name="num" ucd="meta.id.part;meta.main" display="1" datatype="short" width="5"><!-- ucd="ID_MAIN:3" -->
+      <DESCRIPTION>The number of the star within the zone</DESCRIPTION>
+    </FIELD>
+    <FIELD name="suppl" ucd="meta.note" display="1" datatype="char" arraysize="1"><!-- ucd="NOTE" -->
+      <DESCRIPTION>[a-c D*?M] Note</DESCRIPTION>
+    </FIELD>
+    <FIELD name="mag" ucd="phot.mag;em.opt" display="1" datatype="float" width="4" precision="1" unit="mag"><!-- ucd="PHOT_MAG_EYE" -->
+      <DESCRIPTION>Estimated visual magnitude</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RA1855" ucd="pos.eq.ra;meta.main" ref="B1855" display="1" datatype="char" arraysize="10" xtype="hms"><!-- ucd="POS_EQ_RA_MAIN" -->
+      <DESCRIPTION>Right Ascension 1855</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DE1855" ucd="pos.eq.dec;meta.main" ref="B1855" display="1" datatype="char" arraysize="8" xtype="dms"><!-- ucd="POS_EQ_DEC_MAIN" -->
+      <DESCRIPTION>Declination 1855</DESCRIPTION>
+    </FIELD>
+    <FIELD name="_RA.icrs" ucd="pos.eq.ra" display="1" datatype="char" arraysize="10" xtype="hms"><!-- ucd="POS_EQ_RA_OTHER" -->
+      <DESCRIPTION>Right ascension (ICRS) (computed by VizieR, not part of the original data)</DESCRIPTION>
+      <VALUES null=" " />
+    </FIELD>
+    <FIELD name="_DE.icrs" ucd="pos.eq.dec" display="1" datatype="char" arraysize="9" xtype="dms"><!-- ucd="POS_EQ_DEC_OTHER" -->
+      <DESCRIPTION>Declination (ICRS) (computed by VizieR, not part of the original data)</DESCRIPTION>
+      <VALUES null=" " />
+    </FIELD>
+  </TABLE>
+<INFO name="matches" value="2">matching records</INFO>
+</RESOURCE>
+</VOTABLE>

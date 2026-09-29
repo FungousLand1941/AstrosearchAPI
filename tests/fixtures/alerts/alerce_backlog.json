@@ -295,6 +295,46 @@
       "status_code": 200,
       "content_type": "application/json",
       "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF26abxsysn/probabilities?classifier=stamp_classifier",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF26abxsxww/probabilities?classifier=stamp_classifier",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF26abxsyjc/probabilities?classifier=stamp_classifier",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF26abxsgim/probabilities?classifier=stamp_classifier",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF20acfhsql/probabilities?classifier=stamp_classifier",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
     }
   ]
 }

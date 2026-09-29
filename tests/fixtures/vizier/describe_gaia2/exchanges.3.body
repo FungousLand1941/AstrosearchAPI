@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-29T07:47:24 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-29T07:47:24">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-source=I%2F345%2Fgaia2&amp;-meta.all=">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+
+<RESOURCE ID="yCat_1345_1" name="I/345/gaia2" type="meta">
+  <INFO name="nrows" value="1692919135">Number of rows of the table</INFO>
+  <DESCRIPTION>
+    Gaia DR2 (Gaia Collaboration, 2018)
+    GaiaSource DR2 data
+  </DESCRIPTION>
+
+<!-- Gaia data release 2 (Gaia DR2). \inputViz{gaiadr2.intro.htx} (\originalcolumnnames) -->
+  <PARAM name="-c" datatype="char" arraysize="32*" value="">
+    <DESCRIPTION>Query from a celestial position according to ASU syntax:
+      {RA{+|-}Dec|object_name}[,eq=equinox][,ep=epoch][,rm=[min/]max]
+      (see http://vizier.cds.unistra.fr/doc/asu.html)
+    </DESCRIPTION>
+  </PARAM>
+  <LINK content-role="query" action="votable?-source=I/345/gaia2&amp;">
+    Action to Query the current RESOURCE, to be completed by PARAMs and FIELDs contents
+  </LINK>
+
+  <TABLE name="I/345/gaia2" nrows="1692919135">
+    <COOSYS ID="H_2015.500" system="ICRS" epoch="2015.500"/>
+    <!-- Definitions of GROUPs and FIELDs -->
+    <FIELD name="DR2Name" ucd="meta.id" display="0" datatype="char" arraysize="28*"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>Unique source designation (unique across all Data Releases) (Gaia DR2 NNNNNNNNNNNNNNNNNNN) (designation) (1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RA_ICRS" ucd="pos.eq.ra;meta.main" ref="H_2015.500" display="1" datatype="double" width="15" precision="11" unit="deg"><!-- ucd="POS_EQ_RA_MAIN" -->
+      <DESCRIPTION>Barycentric right ascension (ICRS) at Ep=2015.5 (ra)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_RA_ICRS" ucd="stat.error;pos.eq.ra" display="1" datatype="double" width="7" precision="4" unit="mas"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Standard error of right ascension (e_RA*cosDE) (ra_error)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DE_ICRS" ucd="pos.eq.dec;meta.main" ref="H_2015.500" display="1" datatype="double" width="15" precision="11" unit="deg"><!-- ucd="POS_EQ_DEC_MAIN" -->
+      <DESCRIPTION>Barycentric declination (ICRS) at Ep=2015.5 (dec)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_DE_ICRS" ucd="stat.error;pos.eq.dec" display="1" datatype="double" width="7" precision="4" unit="mas"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Standard error of declination (dec_error)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="SolID" ucd="meta.id;meta.version" display="0" datatype="long" width="19"><!-- ucd="ID_VERSION" -->
+      <DESCRIPTION>Solution Identifier (solution_id) (G1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Source" ucd="meta.id;meta.main" display="1" datatype="long" width="19"><!-- ucd="ID_MAIN" -->
+      <DESCRIPTION>Unique source identifier (unique within a particular Data Release) (source_id) (G2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RandomI" ucd="meta.code" display="0" datatype="long" width="10"><!-- ucd="ID_SET" -->
+      <DESCRIPTION>Random index used to select subsets (random_index) (2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Epoch" ucd="meta.ref;time.epoch" display="0" datatype="float" width="6" precision="1" unit="yr"><!-- ucd="TIME_EPOCH" -->
+      <DESCRIPTION>[2015.5] Reference epoch (ref_epoch)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Plx" ucd="pos.parallax" display="1" datatype="double" width="10" precision="4" unit="mas"><!-- ucd="POS_PARLX_TRIG" -->
+      <DESCRIPTION>? Absolute stellar parallax (parallax)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Plx" ucd="stat.error;pos.parallax" display="1" datatype="float" width="7" precision="4" unit="mas"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Standard error of parallax (parallax_error)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="RPlx" ucd="arith.ratio" display="0" datatype="double" width="10" precision="4"><!-- ucd="FIT_RATIO" -->
+      <DESCRIPTION>? Parallax divided by its error (parallax_over_error)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="pmRA" ucd="pos.pm;pos.eq.ra" ref="H_2015.500" display="1" datatype="double" width="9" precision="3" unit="mas/yr"><!-- ucd="POS_EQ_PMRA" -->
+      <DESCRIPTION>? Proper motion in right ascension direction (pmRA*cosDE) (pmra) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_pmRA" ucd="stat.error;pos.pm;pos.eq.ra" display="1" datatype="float" width="6" precision="3" unit="mas/yr"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Standard error of proper motion in right ascension direction (pmra_error)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="pmDE" ucd="pos.pm;pos.eq.dec" ref="H_2015.500" display="1" datatype="double" width="9" precision="3" unit="mas/yr"><!-- ucd="POS_EQ_PMDEC" -->
+      <DESCRIPTION>? Proper motion in declination direction (pmdec) (4)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_pmDE" ucd="stat.error;pos.pm;pos.eq.dec" display="1" datatype="float" width="6" precision="3" unit="mas/yr"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Standard error of proper motion in declination direction (pmdec_error)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="RADEcor" ucd="stat.correlation;pos.eq.ra;pos.eq.dec" display="0" datatype="double" width="7" precision="4"><!-- ucd="STAT_CORRELATION" -->
+      <DESCRIPTION>Correlation between right ascension and declination (ra_dec_corr)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RAPlxcor" ucd="stat.correlation;pos.eq.ra;pos.parallax" display="0" datatype="double" width="7" precision="4"><!-- ucd="STAT_CORRELATION" -->
+      <DESCRIPTION>? Correlation between right ascension and parallax (ra_parallax_corr)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="RApmRAcor" ucd="stat.correlation;pos.eq.ra;pos.pm" display="0" datatype="double" width="7" precision="4"><!-- ucd="STAT_CORRELATION" -->
+      <DESCRIPTION>? Correlation between right ascension and proper motion in right ascension (ra_pmra_corr)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="RApmDEcor" ucd="stat.correlation;pos.eq.ra;pos.pm" display="0" datatype="double" width="7" precision="4"><!-- ucd="STAT_CORRELATION" -->
+      <DESCRIPTION>? Correlation between right ascension and proper motion in declination (ra_pmdec_corr)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="DEPlxcor" ucd="stat.correlation;pos.eq.dec;pos.parallax" display="0" datatype="double" width="7" precision="4"><!-- ucd="STAT_CORRELATION" -->
+      <DESCRIPTION>? Correlation between declination and parallax (dec_parallax_corr)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="DEpmRAcor" ucd="stat.correlation;pos.eq.dec;pos.pm" display="0" datatype="double" width="7" precision="4"><!-- ucd="STAT_CORRELATION" -->
+      <DESCRIPTION>? Correlation between declination and proper motion in right ascension (dec_pmra_corr)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="DEpmDEcor" ucd="stat.correlation;pos.eq.dec;pos.pm" display="0" datatype="double" width="7" precision="4"><!-- ucd="STAT_CORRELATION" -->
+      <DESCRIPTION>? Correlation between declination and proper motion in declination (dec_pmdec_corr)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PlxpmRAcor" ucd="stat.correlation;pos.parallax;pos.pm" display="0" datatype="double" width="7" precision="4"><!-- ucd="STAT_CORRELATION" -->
+      <DESCRIPTION>? Correlation between parallax and proper motion in right ascension (parallax_pmra_corr)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PlxpmDEcor" ucd="stat.correlation;pos.parallax;pos.pm" display="0" datatype="double" width="7" precision="4"><!-- ucd="STAT_CORRELATION" -->
+      <DESCRIPTION>? Correlation between parallax and proper motion in declination (parallax_pmdec_corr)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="pmRApmDEcor" ucd="stat.correlation;pos.pm;pos.eq.ra" display="0" datatype="double" width="7" precision="4"><!-- ucd="STAT_CORRELATION" -->
+      <DESCRIPTION>? Correlation between proper motion in right ascension and proper motion in declination (pmra_pmdec_corr)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="NAL" ucd="meta.number" display="0" datatype="short" width="4"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Total number of observations AL (astrometric_n_obs_al) (6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="NAC" ucd="meta.number" display="0" datatype="short" width="4"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Total number of observations AC (astrometric_n_obs_ac) (7)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="NgAL" ucd="meta.number" display="0" datatype="short" width="4"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of good observations AL (astrometric_n_good_obs_al) (8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="NbAL" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of bad observations AL (astrometric_n_bad_obs_al) (9)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="gofAL" ucd="stat.fit.goodness" display="0" datatype="double" width="9" precision="4"><!-- ucd="FIT_GOODNESS" -->
+      <DESCRIPTION>Goodness of fit statistic of model wrt along-scan observations (astrometric_gof_al) (10)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="chi2AL" ucd="stat.fit.chi2" display="0" datatype="double" width="11" precision="2"><!-- ucd="FIT_PARAM_VALUE" -->
+      <DESCRIPTION>AL chi-square value (astrometric_chi2_al) (11)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="epsi" ucd="stat.value" display="0" datatype="float" width="6" precision="3" unit="mas"><!-- ucd="STAT_PARAM" -->
+      <DESCRIPTION>Excess noise of the source (astrometric_excess_noise) (12)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="sepsi" ucd="stat.value" display="0" datatype="float" width="9" precision="E2"><!-- ucd="STAT_PARAM" -->
+      <DESCRIPTION>Significance of excess noise (astrometric_excess_noise_sig) (13)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Solved" ucd="meta.number" display="0" datatype="short" width="2"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Which parameters have been solved for? (astrometric_params_solved) (14)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APF" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Primary or secondary (astrometric_primary_flag) (15)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="WAL" ucd="stat.weight;stat.mean" display="0" datatype="double" width="8" precision="4" unit="mas**-2"><!-- ucd="WEIGHT" -->
+      <DESCRIPTION>Mean astrometric weight of the source (astrometric_weight_al) (16)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="pscol" ucd="em.wavenumber" display="0" datatype="double" width="7" precision="4" unit="um**-1"><!-- ucd="FIT_PARAM_VALUE" -->
+      <DESCRIPTION>? Astrometrically determined pseudocolour of the source (astrometric_pseudo_colour) (17)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_pscol" ucd="em.wavenumber;stat.error" display="0" datatype="float" width="7" precision="4" unit="um**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Standard error of the pseudocolour of the source (astrometric_pseudo_colour_error)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="fvarpi" ucd="arith.factor;pos.parallax" display="0" datatype="float" width="6" precision="3"><!-- ucd="POS_EQ_PLX_FACTOR" -->
+      <DESCRIPTION>Mean Parallax factor AL (mean_varpi_factor_al)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MatchObsA" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Matched FOV transits used in the AGIS solution (astrometric_matched_observations) (18)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Nper" ucd="meta.number" display="0" datatype="short" width="2"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of visibility periods used in Astrometric solution (visibility_periods_used)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="amax" ucd="pos.errorEllipse;stat.max" display="0" datatype="double" width="12" precision="E5" unit="mas"><!-- ucd="EXTENSION_FWHM_MAJ" -->
+      <DESCRIPTION>The longest semi-major axis of the 5-d error ellipsoid (astrometric_sigma5d_max) (19)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="type" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/3] The type of the source mainly used for frame rotation (frame_rotator_object_type) (20)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MatchObs" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>The total number of FOV transits matched to this source (matched_observations)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Dup" ucd="meta.code.status" display="1" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/1] Source with duplicate sources (duplicated_source) (21)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="o_Gmag" ucd="meta.number" display="0" datatype="short" width="4"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of observations contributing to G photometry (phot_g_n_obs) (22)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="FG" ucd="phot.flux;stat.mean;em.opt" display="1" datatype="float" width="11" precision="E4"><!-- ucd="PHOT_FLUX_OPTICAL" -->
+      <DESCRIPTION>G-band mean flux (phot_g_mean_flux)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_FG" ucd="stat.error;phot.flux;stat.mean" display="1" datatype="float" width="11" precision="E4"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Error on G-band mean flux (phot_g_mean_flux_error)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RFG" ucd="arith.ratio" display="0" datatype="double" width="9" precision="3"><!-- ucd="FIT_RATIO" -->
+      <DESCRIPTION>G-band mean flux divided by its error (phot_g_mean_flux_over_error)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Gmag" ucd="phot.mag;stat.mean;em.opt" display="1" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_MAG_OPTICAL" -->
+      <DESCRIPTION>G-band mean magnitude (Vega) (phot_g_mean_mag) (23)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_Gmag" ucd="stat.error;phot.mag;stat.mean" display="1" datatype="double" width="6" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Standard error of G-band mean magnitude (Vega) (added by CDS) (phot_g_mean_mag_error) (37)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="o_BPmag" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of observations contributing to BP photometry (phot_bp_n_obs) (24)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="FBP" ucd="phot.flux;stat.mean;em.opt.B" display="1" datatype="float" width="11" precision="E4"><!-- ucd="PHOT_FLUX_B" -->
+      <DESCRIPTION>? Mean flux in the integrated BP band (phot_bp_mean_flux)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_FBP" ucd="stat.error;phot.flux;stat.mean" display="1" datatype="float" width="11" precision="E4"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error on the integrated BP mean flux (phot_bp_mean_flux_error) (25)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="RFBP" ucd="arith.ratio" display="0" datatype="double" width="9" precision="3"><!-- ucd="FIT_RATIO" -->
+      <DESCRIPTION>? Integrated BP mean flux divided by its error (phot_bp_mean_flux_over_error)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="BPmag" ucd="phot.mag;stat.mean;em.opt.B" display="1" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_MAG_B" -->
+      <DESCRIPTION>? Integrated BP mean magnitude (Vega) (phot_bp_mean_mag) (26)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_BPmag" ucd="stat.error;phot.mag;stat.mean" display="1" datatype="double" width="6" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Standard error of BP mean magnitude (Vega) (added by CDS) (phot_bp_mean_mag_error) (37)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="o_RPmag" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Number of observations contributing to RP photometry (phot_rp_n_obs) (27)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="FRP" ucd="phot.flux.density;em.opt.R" display="1" datatype="float" width="11" precision="E4"><!-- ucd="PHOT_FLUX_R" -->
+      <DESCRIPTION>? Mean flux in the integrated RP band (phot_rp_mean_flux)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_FRP" ucd="stat.error;phot.flux;stat.mean" display="1" datatype="float" width="11" precision="E4"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error on the integrated RP mean flux (phot_rp_mean_flux_error) (28)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="RFRP" ucd="arith.ratio" display="0" datatype="double" width="9" precision="3"><!-- ucd="FIT_RATIO" -->
+      <DESCRIPTION>? Integrated RP mean flux divided by its error (phot_rp_mean_flux_over_error)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="RPmag" ucd="phot.mag;stat.mean;em.opt.R" display="1" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_MAG_R" -->
+      <DESCRIPTION>? Integrated RP mean magnitude (Vega) (phot_rp_mean_mag) (29)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_RPmag" ucd="stat.error;phot.mag;stat.mean" display="1" datatype="double" width="6" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Standard error of RP mean magnitude (Vega) (added by CDS) (phot_rp_mean_mag_error) (37)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E(BR/RP)" ucd="stat.value" display="0" datatype="float" width="6" precision="3"><!-- ucd="DATA_SCALE-FACTOR" -->
+      <DESCRIPTION>? BP/RP excess factor (phot_bp_rp_excess_factor)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Mode" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Photometry processing mode (phot_proc_mode)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="BP-RP" ucd="phot.color;em.opt.B;em.opt.R" display="1" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_CI_B-R" -->
+      <DESCRIPTION>? BP-RP colour (photBpMeanMag-photRMeanMag) (bp_rp)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="BP-G" ucd="phot.color;em.opt.B;em.opt" display="0" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_CI_OPT" -->
+      <DESCRIPTION>? BP-G colour (photBpMeanMag-photGMeanMag) (bp_g)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="G-RP" ucd="phot.color;em.opt.R;em.opt" display="0" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_CI_OPT" -->
+      <DESCRIPTION>? G-RP colour (photGMeanMag-photRpMeanMag) (g_rp)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="RV" ucd="spect.dopplerVeloc.opt;pos.barycenter" display="1" datatype="double" width="7" precision="2" unit="km/s"><!-- ucd="VELOC_BARYCENTER" -->
+      <DESCRIPTION>? Spectroscopic radial velocity in the solar barycentric reference frame (radial_velocity)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_RV" ucd="stat.error;spect.dopplerVeloc.opt;pos.barycenter" display="1" datatype="float" width="5" precision="2" unit="km/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Radial velocity error (radial_velocity_error) (30)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="o_RV" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of transits used to compute radial velocity (rv_nb_transits)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Tefftemp" ucd="phys.temperature.effective;stat.fit.param" display="0" datatype="float" width="6" precision="1" unit="K"><!-- ucd="PHYS_TEMP_EFFEC" -->
+      <DESCRIPTION>? Teff of the template used to compute radial velocity (rv_template_teff) (36)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="loggtemp" ucd="phys.gravity;stat.fit.param" display="0" datatype="float" width="4" precision="1" unit="log(cm.s**-2)"><!-- ucd="PHYS_GRAVITY_SURFACE" -->
+      <DESCRIPTION>? logg of the template used to compute radial velocity (rv_template_logg) (36)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="[Fe/H]temp" ucd="phys.abund.Fe;stat.fit.param" display="0" datatype="float" width="4" precision="1"><!-- ucd="PHYS_ABUND_FE/H" -->
+      <DESCRIPTION>? Fe/H of the template used to compute radial velocity (rv_template_fe_h) (36)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Var" ucd="meta.code;src.var" display="0" datatype="char" arraysize="13*"><!-- ucd="CODE_VARIAB" -->
+      <DESCRIPTION>Photometric variability flag (phot_variable_flag) (31)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="GLON" ucd="pos.galactic.lon" display="0" datatype="double" width="15" precision="11" unit="deg"><!-- ucd="POS_GAL_LON" -->
+      <DESCRIPTION>Galactic longitude (l) (32)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="GLAT" ucd="pos.galactic.lat" display="0" datatype="double" width="15" precision="11" unit="deg"><!-- ucd="POS_GAL_LAT" -->
+      <DESCRIPTION>Galactic latitude (b) (32)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="ELON" ucd="pos.ecliptic.lon" display="0" datatype="double" width="15" precision="11" unit="deg"><!-- ucd="POS_EC_LON" -->
+      <DESCRIPTION>Ecliptic longitude (ecl_lon) (33)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="ELAT" ucd="pos.ecliptic.lat" display="0" datatype="double" width="15" precision="11" unit="deg"><!-- ucd="POS_EC_LAT" -->
+      <DESCRIPTION>Ecliptic latitude (ecl_lat) (33)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="fPriam" ucd="meta.code" display="0" datatype="int" width="6"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>? Flags for the Apsis-Priam results (priam_flags) (34)</DESCRIPTION>
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="Teff" ucd="phys.temperature.effective" display="1" datatype="double" width="7" precision="2" unit="K"><!-- ucd="PHYS_TEMP_EFFEC" -->
+      <DESCRIPTION>? Stellar effective temperature (estimate from Apsis-Priam) (teff_val)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_Teff" ucd="phys.temperature.effective;stat.min" display="0" datatype="double" width="7" precision="2" unit="K"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Uncertainty (lower) on Teff estimate from Apsis-Priam (16th percentile) (teff_percentile_lower)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_Teff" ucd="phys.temperature.effective;stat.max" display="0" datatype="double" width="7" precision="2" unit="K"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Uncertainty (upper) on Teff estimate from Apsis-Priam (84th percentile) (teff_percentile_upper)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="AG" ucd="phys.absorption.gal" display="1" datatype="float" width="7" precision="4" unit="mag"><!-- ucd="PHOT_EXTINCTION_ISM" -->
+      <DESCRIPTION>? Estimate of extinction in the G band from Apsis-Priam (a_g_val)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_AG" ucd="phys.absorption.gal;stat.min" display="0" datatype="float" width="7" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Uncertainty (lower) on AG estimate from Apsis-Priam (16th percentile) (a_g_percentile_lower)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_AG" ucd="phys.absorption.gal;stat.max" display="0" datatype="float" width="7" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Uncertainty (upper) on AG estimate from Apsis-Priam (84th percentile) (a_g_percentile_upper)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E(BP-RP)" ucd="phot.color.excess" display="1" datatype="float" width="7" precision="4" unit="mag"><!-- ucd="PHOT_COLOR_EXCESS" -->
+      <DESCRIPTION>? Estimate of redenning E(BP-RP) from Apsis-Priam (e_bp_min_rp_val)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_E(BP-RP)" ucd="phot.color.excess;stat.min" display="0" datatype="float" width="7" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Uncertainty (lower) on E(BP-RP) estimate from Apsis-Priam (16th percentile) (e_bp_min_rp_percentile_lower)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_E(BP-RP)" ucd="phot.color.excess;stat.max" display="0" datatype="float" width="7" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Uncertainty (upper) on E(BP-RP) estimate from Apsis-Priam (84th percentile) (e_bp_min_rp_percentile_upper)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="fFLAME" ucd="meta.code" display="0" datatype="int" width="6"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>? Flags for the Apsis-FLAME results (flame_flags) (35)</DESCRIPTION>
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="Rad" ucd="phys.size.radius" display="1" datatype="float" width="6" precision="2" unit="solRad"><!-- ucd="PHYS_SIZE_RADIUS_GENERAL" -->
+      <DESCRIPTION>? Estimate of radius from Apsis-FLAME (radius_val)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_Rad" ucd="phys.size.radius;stat.min" display="0" datatype="float" width="6" precision="2" unit="solRad"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Uncertainty (lower) on radius estimate from Apsis-FLAME (16th percentile) (radius_percentile_lower)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_Rad" ucd="phys.size.radius;stat.max" display="0" datatype="double" width="7" precision="2" unit="solRad"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Uncertainty (upper) on radius estimate from Apsis-FLAME (84th percentile) (radius_percentile_upper)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Lum" ucd="phys.luminosity" display="1" datatype="double" width="9" precision="3" unit="solLum"><!-- ucd="PHYS_LUMINOSITY_GENERAL" -->
+      <DESCRIPTION>? Esimate of luminosity from Apsis-FLAME (lum_val)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_Lum" ucd="phys.luminosity;stat.min" display="0" datatype="double" width="9" precision="3" unit="solLum"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Uncertainty (lower) on luminosity estimate from Apsis-FLAME (16th percentile) (lum_percentile_lower)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_Lum" ucd="phys.luminosity;stat.max" display="0" datatype="double" width="9" precision="3" unit="solLum"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Uncertainty (upper) on luminosity estimate from Apsis-FLAME (84th percentile) (lum_percentile_upper)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="RAJ2000" ucd="pos.eq.ra" display="0" datatype="double" width="15" precision="11" unit="deg"><!-- ucd="POS_EQ_RA_OTHER" -->
+      <DESCRIPTION>Barycentric right ascension (ICRS) at Ep=2000.0 (added by CDS) (ra_epoch2000)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_RAJ2000" ucd="stat.error;pos.eq.ra" display="0" datatype="double" width="7" precision="4" unit="mas"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Standard error of right ascension (e_RA*cosDE) (added by CDS) (ra_epoch2000_error)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DEJ2000" ucd="pos.eq.dec" display="0" datatype="double" width="15" precision="11" unit="deg"><!-- ucd="POS_EQ_DEC_OTHER" -->
+      <DESCRIPTION>Barycentric declination (ICRS) at Ep=2000.0 (added by CDS) (dec_epoch2000)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_DEJ2000" ucd="stat.error;pos.eq.dec" display="0" datatype="double" width="7" precision="4" unit="mas"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Standard error of declination (added by CDS) (dec_epoch2000_error)</DESCRIPTION>
+    </FIELD>
+  </TABLE>
+<INFO name="matches" value="2">matching records</INFO>
+</RESOURCE>
+</VOTABLE>

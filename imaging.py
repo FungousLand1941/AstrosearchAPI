@@ -80,7 +80,7 @@ import sys
 import tempfile
 import threading
 import time
-from collections.abc import AsyncIterator, Iterable, Sequence
+from collections.abc import AsyncIterator, Iterable, Mapping, Sequence
 from contextlib import asynccontextmanager
 from dataclasses import asdict, dataclass, field, replace
 from datetime import UTC, datetime
@@ -2134,22 +2134,12 @@ def _service(request: Request) -> CutoutService:
 
 
 def name_unknown_to_sesame(exc: BaseException) -> bool:
-    """True when a Sesame resolution error is the client's (an unknown or empty name: HTTP 422).
+    """True when a Sesame resolution error is the client's: an unknown name (HTTP 404) or an
+    empty one (422). Transport errors, HTTP errors and answers that are not XML are upstream
+    failures (503/502). See :func:`models.resolution_failure_status`."""
+    from models import resolution_failure_status
 
-    ``providers.SesameResolver`` wraps every failure in ``ObjectResolutionError``; only a
-    well-formed answer without coordinates (``ValueError('No coordinates found ...')``) or
-    an empty name is the client's problem. Transport errors, HTTP errors and answers that
-    are not XML (an HTML maintenance page, truncated XML: ``ElementTree.ParseError``) are
-    upstream failures (HTTP 502).
-    """
-    from xml.etree.ElementTree import ParseError
-
-    cause = exc.__cause__
-    if isinstance(cause, ParseError):
-        return False
-    if isinstance(cause, ValueError) and "No coordinates found" in str(cause):
-        return True
-    return "must not be empty" in str(exc)
+    return resolution_failure_status(exc) in (404, 422)
 
 
 async def _resolve_position(
@@ -2159,7 +2149,7 @@ async def _resolve_position(
         return ra, dec, None
     if not name:
         raise HTTPException(status_code=422, detail="Either name or both ra and dec are required")
-    from models import ObjectResolutionError
+    from models import ObjectResolutionError, resolution_failure_status
     from providers import SesameResolver
 
     client = getattr(request.app.state, "client", None)
@@ -2168,22 +2158,33 @@ async def _resolve_position(
     try:
         resolved = await SesameResolver(active).resolve(name)
     except ObjectResolutionError as exc:
-        status = 422 if name_unknown_to_sesame(exc) else 502
-        raise HTTPException(status_code=status, detail=f"Could not resolve '{name}': {exc}") from exc
+        # The same statuses as every route: 404 unknown name, 503 resolver down, 502 unusable answer.
+        status = resolution_failure_status(exc)
+        raise HTTPException(status_code=status, detail=f"Could not resolve '{name}': {exc}",
+                            headers={"Retry-After": "30"} if status == 503 else None) from exc
     finally:
         if owned:
             await active.aclose()
     info: dict[str, Any] = {"name": name, "canonical_name": resolved.canonical_name, "resolver": resolved.resolver}
     # The resolver decides whether the catalogued motion is physical: for extragalactic objects
     # (3C 273: Gaia pm -0.02/+0.10 mas/yr, measurement noise) it is not applied.
+    motion = resolver_motion(resolved)
+    if motion is not None:
+        info.update(motion.as_dict())
+    return resolved.ra_deg, resolved.dec_deg, info
+
+
+def resolver_motion(resolved: Any) -> ProperMotion | None:
+    """The proper motion of a resolver answer the cutouts follow, or None: only when the
+    resolver deems it physical (``proper_motion_applicable``; not the Gaia noise of a quasar).
+    Sesame/SIMBAD positions are ICRS at epoch J2000 unless the resolver says otherwise."""
     applicable = resolved.resolver_metadata.get("proper_motion_applicable")
     if applicable is None:
         applicable = resolved.pm_ra_masyr is not None and resolved.pm_dec_masyr is not None
-    if applicable and resolved.pm_ra_masyr is not None and resolved.pm_dec_masyr is not None:
-        # Sesame/SIMBAD positions are ICRS at epoch J2000 unless the resolver says otherwise.
-        info.update(pm_ra_masyr=resolved.pm_ra_masyr, pm_dec_masyr=resolved.pm_dec_masyr,
-                    epoch=resolved.epoch if resolved.epoch is not None else 2000.0)
-    return resolved.ra_deg, resolved.dec_deg, info
+    if not applicable or resolved.pm_ra_masyr is None or resolved.pm_dec_masyr is None:
+        return None
+    return ProperMotion(resolved.pm_ra_masyr, resolved.pm_dec_masyr,
+                        resolved.epoch if resolved.epoch is not None else 2000.0)
 
 
 @router.get("/cutouts/surveys", response_model=list[SurveyModel])
@@ -2273,8 +2274,20 @@ async def get_cutout(
     min_cut: str | None = Query(None, max_length=24),
     max_cut: str | None = Query(None, max_length=24),
     rotation_angle: float = Query(0.0, ge=-360, le=360),
+    pm_ra_masyr: float | None = Query(None, ge=-MAX_PM_MASYR, le=MAX_PM_MASYR,
+                                      description="Proper motion in RA (mas/yr, includes cos dec)"),
+    pm_dec_masyr: float | None = Query(None, ge=-MAX_PM_MASYR, le=MAX_PM_MASYR,
+                                       description="Proper motion in Dec (mas/yr)"),
+    epoch: float | None = Query(None, ge=1800, le=2200,
+                                description="Julian year of ra/dec (default 2000.0 when a proper motion is given)"),
 ) -> Response:
     """Image cutout (PNG/JPEG/FITS) of any catalogued HiPS survey, rendered by CDS hips2fits.
+
+    With a proper motion (given, or from Sesame when ``name`` is used, as for
+    ``/cutouts/stack``) the image is centred on the target's position at the survey's mean
+    observing epoch; ``X-Cutout-Centre-Epoch`` and ``X-Cutout-Centre-Offset-Arcsec`` then
+    say where it was moved (``X-Cutout-Centre-Note`` when the survey epoch is unknown or the
+    target moves out of the field during the survey).
 
     Headers: ``X-Cutout-Pixels`` (``display`` | ``rgb-preview`` | ``survey``, read
     from the returned image), ``X-Cutout-Pixel-Units`` / ``X-Cutout-Calibrated`` for
@@ -2283,19 +2296,36 @@ async def get_cutout(
     (rendering failure; never cached), ``X-Cutout-Pixel-Scale-Arcsec`` (angular pixel
     size at the image centre) and ``X-Cutout-Cdelt-Deg`` (the WCS CDELT hips2fits writes).
     """
-    ra, dec, _ = await _resolve_position(request, ra, dec, name)
+    if (pm_ra_masyr is None) != (pm_dec_masyr is None):
+        raise HTTPException(status_code=422, detail="pm_ra_masyr and pm_dec_masyr must be given together")
+    ra, dec, resolved = await _resolve_position(request, ra, dec, name)
+    centre: PanelCentre | None = None
     try:
+        motion: ProperMotion | None = None
+        if pm_ra_masyr is not None and pm_dec_masyr is not None:
+            motion = ProperMotion(pm_ra_masyr, pm_dec_masyr, 2000.0 if epoch is None else epoch)
+        elif resolved and "pm_ra_masyr" in resolved:
+            motion = ProperMotion(resolved["pm_ra_masyr"], resolved["pm_dec_masyr"], resolved["epoch"])
+        if motion is not None:
+            centre = panel_centre(get_survey(survey), ra, dec, motion, fov_arcmin)
         cutout_request = CutoutRequest(
-            ra=ra, dec=dec, fov_arcmin=fov_arcmin, survey=survey, width=width, height=height, format=format,
-            projection=projection, stretch=stretch, cmap=cmap, min_cut=min_cut, max_cut=max_cut,
-            rotation_angle=rotation_angle,
+            ra=centre.ra if centre else ra, dec=centre.dec if centre else dec, fov_arcmin=fov_arcmin, survey=survey,
+            width=width, height=height, format=format, projection=projection, stretch=stretch, cmap=cmap,
+            min_cut=min_cut, max_cut=max_cut, rotation_angle=rotation_angle,
         )
         cutout = await _service(request).cutout(cutout_request)
     except CutoutValidationError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     except CutoutUpstreamError as exc:
         raise HTTPException(status_code=502, detail=str(exc)) from exc
-    return Response(content=cutout.content, media_type=cutout.media_type, headers=cutout.headers())
+    headers = cutout.headers()
+    if centre is not None:
+        if centre.epoch is not None:
+            headers["X-Cutout-Centre-Epoch"] = f"{centre.epoch:.3f}"
+            headers["X-Cutout-Centre-Offset-Arcsec"] = f"{centre.offset_arcsec:.3f}"
+        if centre.note:
+            headers["X-Cutout-Centre-Note"] = _header_text(centre.note)
+    return Response(content=cutout.content, media_type=cutout.media_type, headers=headers)
 
 
 # ---------------------------------------------------------------------------
@@ -2317,6 +2347,43 @@ _UI_MEDIA_TYPES = {
 }
 RESERVED_PREFIXES = ("/api", "/vo")
 _UI_CACHE_CONTROL = "no-cache"  # always revalidate (ETag/Last-Modified) so UI updates show at once
+
+
+def _etag_matches(header: str, etag: str) -> bool:
+    """If-None-Match comparison (RFC 9110 13.1.2: weak comparison, ``*`` matches any)."""
+    strip = etag.removeprefix("W/")
+    for tag in header.split(","):
+        tag = tag.strip()
+        if tag == "*" or tag.removeprefix("W/") == strip:
+            return True
+    return False
+
+
+def ui_file_response(path: Path, media_type: str, request_headers: Mapping[str, str]) -> Response:
+    """A UI file with ETag/Last-Modified and ``Cache-Control: no-cache``, or ``304 Not
+    Modified`` when the browser's copy is current: If-None-Match takes precedence over
+    If-Modified-Since (RFC 9110 13.2.2), and a 304 repeats the validators."""
+    from email.utils import parsedate_to_datetime
+
+    stat = os.stat(path)
+    response = FileResponse(path, media_type=media_type, headers={"Cache-Control": _UI_CACHE_CONTROL}, stat_result=stat)
+    etag = response.headers.get("etag", "")
+    last_modified = response.headers.get("last-modified", "")
+    not_modified = False
+    if_none_match = request_headers.get("if-none-match")
+    if if_none_match is not None:
+        not_modified = bool(etag) and _etag_matches(if_none_match, etag)
+    elif (since := request_headers.get("if-modified-since")) and last_modified:
+        try:
+            not_modified = parsedate_to_datetime(last_modified) <= parsedate_to_datetime(since)
+        except (TypeError, ValueError, IndexError):
+            not_modified = False
+    if not_modified:
+        headers = {"Cache-Control": _UI_CACHE_CONTROL, "ETag": etag}
+        if last_modified:
+            headers["Last-Modified"] = last_modified
+        return Response(status_code=304, headers=headers)
+    return response
 
 
 def ui_files(web_dir: Path | None = None) -> dict[str, Path]:
@@ -2366,8 +2433,10 @@ class UIStaticMiddleware:
         if scope.get("type") == "http" and scope.get("method") in ("GET", "HEAD"):
             entry = self.files.get(_route_path(scope))
             if entry is not None:
+                from starlette.datastructures import Headers
+
                 path, media_type = entry
-                response = FileResponse(path, media_type=media_type, headers={"Cache-Control": _UI_CACHE_CONTROL})
+                response = ui_file_response(path, media_type, Headers(scope=scope))
                 await response(scope, receive, send)
                 return
         await self.app(scope, receive, send)
@@ -2401,8 +2470,8 @@ def mount_ui(app: FastAPI, web_dir: Path | str | None = None, *, public: bool = 
     def make_endpoint(path: Path):
         media_type = _UI_MEDIA_TYPES[path.suffix.lower()]
 
-        async def endpoint() -> FileResponse:
-            return FileResponse(path, media_type=media_type, headers={"Cache-Control": _UI_CACHE_CONTROL})
+        async def endpoint(request: Request) -> Response:
+            return ui_file_response(path, media_type, request.headers)
 
         return endpoint
 
@@ -2513,6 +2582,15 @@ def cli_cutout(args: argparse.Namespace) -> int:
                 resolved = await SesameResolver(client).resolve(args.name)
                 ra, dec = resolved.ra_deg, resolved.dec_deg
                 print(f"Resolved '{args.name}' -> RA={ra:.6f} Dec={dec:+.6f} ({resolved.resolver})")
+                motion = resolver_motion(resolved)
+                if motion is not None:  # centred where the star was when the survey observed it
+                    centre = panel_centre(get_survey(args.survey), ra, dec, motion, args.fov)
+                    ra, dec = centre.ra, centre.dec
+                    if centre.epoch is not None:
+                        print(f"Centred on the epoch-{centre.epoch:.1f} position ({centre.offset_arcsec:.1f}\" "
+                              f"from the resolver's epoch-{motion.epoch:g} position)")
+                    if centre.note:
+                        print(f"Note: {centre.note}")
             request = CutoutRequest(ra=ra, dec=dec, fov_arcmin=args.fov, survey=args.survey, width=args.width,
                                     height=args.height, format=fmt, projection=args.projection,
                                     stretch=args.stretch, cmap=args.cmap)

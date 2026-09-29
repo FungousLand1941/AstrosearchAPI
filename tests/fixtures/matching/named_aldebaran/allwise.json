@@ -1,0 +1,19 @@
+{
+  "catalog": "allwise",
+  "target": "named_aldebaran",
+  "search": {
+    "name": "Aldebaran",
+    "sesame": "aldebaran",
+    "radius_arcsec": 5.0
+  },
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://irsa.ipac.caltech.edu/TAP/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+211+designation%2C+ra%2C+dec%2C+sigra%2C+sigdec%2C+sigradec%2C+w1mpro%2C+w1sigmpro%2C+w2mpro%2C+w2sigmpro%2C+w3mpro%2C+w3sigmpro%2C+w4mpro%2C+w4sigmpro%2C+cc_flags%2C+ext_flg%2C+ph_qual%2C+w1mjdmean%2C+tmass_key%2C+DISTANCE%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+POINT%28%27ICRS%27%2C+68.980357648%2C+16.508746027%29%29+AS+match_dist+FROM+allwise_p3as_psd+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+68.980357648%2C+16.508746027%2C+0.0014221071%29%29+ORDER+BY+match_dist+ASC",
+      "status_code": 200,
+      "content_type": "application/x-votable+xml",
+      "match": []
+    }
+  ]
+}

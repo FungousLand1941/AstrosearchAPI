@@ -1,0 +1,22 @@
+{
+  "catalog": "sdss",
+  "target": "3c273_rounded",
+  "ra": 187.278,
+  "dec": 2.052,
+  "epoch": null,
+  "pm_ra_masyr": null,
+  "pm_dec_masyr": null,
+  "radius_arcsec": 10.0,
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://skyserver.sdss.org/dr18/SkyServerWS/SearchTools/SqlSearch?cmd=SELECT+TOP+201+n.objID+AS+objID%2C+n.distance%2A60.0+AS+dist_arcsec%2C+p.ra%2C+p.dec%2C+p.raErr%2C+p.decErr%2C+p.mjd%2C+p.type%2C+p.clean%2C+p.mode%2C+p.psfMag_u%2C+p.psfMag_g%2C+p.psfMag_r%2C+p.psfMag_i%2C+p.psfMag_z%2C+p.psfMagErr_r%2C+p.modelMag_r%2C+pz.z+AS+photoz%2C+pz.zErr+AS+photozErr%2C+s.z+AS+specz%2C+s.zErr+AS+speczErr%2C+s.class+AS+specClass+FROM+dbo.fGetNearbyObjEq%28187.278000000%2C+2.052000000%2C+0.1666666667%29+AS+n+JOIN+PhotoPrimary+AS+p+ON+p.objID+%3D+n.objID+LEFT+OUTER+JOIN+Photoz+AS+pz+ON+pz.objID+%3D+n.objID+LEFT+OUTER+JOIN+SpecObj+AS+s+ON+s.bestObjID+%3D+n.objID+ORDER+BY+n.distance&format=json",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": [
+        "FROM PhotoPrimary "
+      ]
+    }
+  ]
+}

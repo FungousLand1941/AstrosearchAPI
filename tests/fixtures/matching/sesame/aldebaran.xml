@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>Aldebaran</name>
+  <!-- Q8506036 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 123ms [2] -->
+    <oid>719377</oid>
+    <otype>LP?</otype>
+    <jpos>04:35:55.23 +16:30:33.4</jpos>
+    <jradeg>68.98016279</jradeg>
+    <jdedeg>16.50930235</jdedeg>
+    <refPos>2007A&amp;A...474..653V</refPos>
+    <errRAmas>7.38</errRAmas><errDEmas>5.70</errDEmas>
+    <pm>
+      <v>199.31</v><e>1.06</e><q>A</q><r>2007A&amp;A...474..653V</r>
+      <pa>161.4</pa>
+      <pmRA>63.45</pmRA><epmRA>0.65</epmRA>
+      <pmDE>-188.94</pmDE><epmDE>0.84</epmDE>
+    </pm>
+    <Vel><v>54.398</v><e>0.0008</e><q>A</q><r>2018A&amp;A...616A...7S</r></Vel>
+    <plx><v>48.94</v><e>0.77</e><q>A</q><r>2007A&amp;A...474..653V</r></plx>
+    <spType>K5+III</spType><spNum>0.00022600.0000.0000000000100000</spNum>
+    <oname>* alf Tau</oname>
+    <nrefs>1307</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ****Total of 1 crashes -->
+<!-- Configuration tested: /run/sesame.conf -->

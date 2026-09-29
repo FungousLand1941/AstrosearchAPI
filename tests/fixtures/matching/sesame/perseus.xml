@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>Perseus Cluster</name>
+  <!-- Q8515982 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 72ms [1] -->
+    <oid>89368</oid>
+    <otype>ClG</otype>
+    <jpos>03:19:47.56 +41:30:54.0</jpos>
+    <jradeg>49.9482</jradeg>
+    <jdedeg>41.515</jdedeg>
+    <refPos>2022A&amp;A...661A..38P</refPos>
+    <errRAmas>5000</errRAmas><errDEmas>5000</errDEmas>
+    <z><v>0.01836</v><q>D</q><r>2019NatAs...3..844Y</r></z>
+    <oname>ACO   426</oname>
+    <nrefs>2579</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ****Total of 1 crashes -->
+<!-- Configuration tested: /run/sesame.conf -->

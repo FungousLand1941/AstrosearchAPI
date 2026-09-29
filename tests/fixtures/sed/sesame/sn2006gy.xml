@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>SN 2006gy</name>
+  <!-- Q8483489 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 0ms [0] -->
+    <INFO>from cache</INFO>
+    <oid>89382</oid>
+    <otype>SN*</otype>
+    <jpos>03:17:27.06 +41:24:19.5</jpos>
+    <jradeg>49.36275</jradeg>
+    <jdedeg>41.40541667</jdedeg>
+    <refPos>2006IAUC.8754....1F</refPos>
+    <z><v>0.019</v><q>D</q><r>2012Sci...337..927G</r></z>
+    <spType>SNIIn</spType><spNum>0.00503000.0000.0000000000000000</spNum>
+    <oname>SN 2006gy</oname>
+    <alias>SN 2006gy</alias>
+    <nrefs>380</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ====Done (2026-Sep-29,05:02:00z)==== -->

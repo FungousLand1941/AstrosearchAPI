@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-29T07:48:28 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-29T07:48:28">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-source=IX%2F10A%2F1rxs&amp;-meta.all=">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+
+<RESOURCE ID="yCat_9010_1" name="IX/10A/1rxs" type="meta">
+  <INFO name="nrows" value="18806">Number of rows of the table</INFO>
+  <DESCRIPTION>
+    ROSAT All-Sky Bright Source Catalogue (1RXS) (Voges+ 1999)
+    The 1RXS catalogue
+  </DESCRIPTION>
+  <PARAM name="-c" datatype="char" arraysize="32*" value="">
+    <DESCRIPTION>Query from a celestial position according to ASU syntax:
+      {RA{+|-}Dec|object_name}[,eq=equinox][,ep=epoch][,rm=[min/]max]
+      (see http://vizier.cds.unistra.fr/doc/asu.html)
+    </DESCRIPTION>
+  </PARAM>
+  <LINK content-role="query" action="votable?-source=IX/10A/1rxs&amp;">
+    Action to Query the current RESOURCE, to be completed by PARAMs and FIELDs contents
+  </LINK>
+
+  <TABLE name="IX/10A/1rxs" nrows="18806">
+    <COOSYS ID="J2000" system="eq_FK5" equinox="J2000"/>
+    <!-- Definitions of GROUPs and FIELDs -->
+
+<!-- +++No column could be found to attach a LINK in table: IX/10A/1rxs -->
+    <FIELD name="recno" ucd="meta.record" display="0" datatype="int" width="8"><!-- ucd="RECORD" -->
+      <DESCRIPTION>Record number assigned by the VizieR team. Should Not be used for identification.</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-5?-info=XML&amp;-out.add=.&amp;-source=IX/10A/1rx*&amp;1RXS===${1RXS}"/>
+    </FIELD>
+    <FIELD name="1RXS" ucd="meta.id;meta.main" display="1" datatype="char" arraysize="16"><!-- ucd="ID_MAIN" -->
+      <DESCRIPTION>ROSAT All-Sky Survey Catalogue source name (1)</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-5?-info=XML&amp;-out.add=.&amp;-source=IX/10A/1rx*&amp;1RXS===${1RXS}"/>
+    </FIELD>
+    <FIELD name="n_1RXS" ucd="meta.note" display="0" datatype="char" arraysize="1"><!-- ucd="NOTE" -->
+      <DESCRIPTION>[*] Names modified from previous version</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RAJ2000" ucd="pos.eq.ra;meta.main" ref="J2000" display="1" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_RA_MAIN" -->
+      <DESCRIPTION>Right ascension (J2000), decimal degrees</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DEJ2000" ucd="pos.eq.dec;meta.main" ref="J2000" display="1" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_DEC_MAIN" -->
+      <DESCRIPTION>Declination (J2000), decimal degrees</DESCRIPTION>
+    </FIELD>
+    <FIELD name="PosErr" ucd="stat.error" display="1" datatype="short" width="2" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Total positional error (including 6" systematic error)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="ScrFlags" ucd="meta.code" display="0" datatype="char" arraysize="5"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[T_] screening flags (2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="NewFlag" ucd="meta.code" display="1" datatype="char" arraysize="4"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[T._] 'new data' flags (3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Count" ucd="phot.count;em.X-ray" display="1" datatype="float" width="9" precision="E2" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>? Source countrate (4)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Count" ucd="stat.error;phot.count" display="1" datatype="float" width="9" precision="E2" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error on Count (4)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="bgCt" ucd="arith.rate;instr.background" display="0" datatype="float" width="9" precision="E2" unit="count.s**-1.arcmin**-2"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>? Background countrate (4)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ExpTime" ucd="time.duration;obs.exposure" display="0" datatype="int" width="5" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>? Exposure time</DESCRIPTION>
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="HR1" ucd="phot.flux;arith.ratio" display="1" datatype="float" width="5" precision="2"><!-- ucd="SPECT_HARDNESS-RATIO" -->
+      <DESCRIPTION>[-1/1]? Hardness ratio 1 (5)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_HR1" ucd="stat.error" display="1" datatype="float" width="5" precision="2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error on HR1 (6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="HR2" ucd="phot.flux;arith.ratio" display="1" datatype="float" width="5" precision="2"><!-- ucd="SPECT_HARDNESS-RATIO" -->
+      <DESCRIPTION>[-1/1]? hardness ratio 2 (5)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_HR2" ucd="stat.error" display="1" datatype="float" width="5" precision="2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error on HR2 (6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Extent" ucd="instr.det.psf" display="0" datatype="short" width="3" unit="arcsec"><!-- ucd="EXTENSION_DIAM" -->
+      <DESCRIPTION>Source extent, by which the source image exceeds the point spread function.</DESCRIPTION>
+    </FIELD>
+    <FIELD name="L_Extent" ucd="stat.likelihood" display="0" datatype="short" width="4"><!-- ucd="STAT_LIKELIHOOD" -->
+      <DESCRIPTION>? Likelihood of source extent (7)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="Ldetect" ucd="stat.likelihood" display="0" datatype="short" width="4"><!-- ucd="STAT_LIKELIHOOD" -->
+      <DESCRIPTION>? Likelihood of source detection algorithm (7)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="ExtRad" ucd="phys.angSize" display="0" datatype="int" width="5" unit="arcsec"><!-- ucd="REDUCT_EXTR-RAD" -->
+      <DESCRIPTION>? Extraction radius</DESCRIPTION>
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="PrioFlags" ucd="meta.code.error" display="0" datatype="char" arraysize="6"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[01] priority flags (8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="PHA" ucd="meta.code" display="0" datatype="char" arraysize="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[ABCDb] PHA range of best detection (9)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="VigFactor" ucd="arith.factor" display="0" datatype="float" width="5" precision="2"><!-- ucd="INST_CORR-FACTOR" -->
+      <DESCRIPTION>? Vignetting factor</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="IncDate" ucd="time.epoch" display="0" datatype="char" arraysize="10" xtype="timestamp"><!-- ucd="TIME_DATE" -->
+      <DESCRIPTION>? Date when source was included (10)</DESCRIPTION>
+      <VALUES null=" " />
+    </FIELD>
+    <FIELD name="UpdDate" ucd="time.epoch" display="0" datatype="char" arraysize="10" xtype="timestamp"><!-- ucd="TIME_DATE" -->
+      <DESCRIPTION>? Date when source properties changed (11)</DESCRIPTION>
+      <VALUES null=" " />
+    </FIELD>
+    <FIELD name="Ncand" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of identification candidates in the correlation catalogue</DESCRIPTION>
+    </FIELD>
+    <FIELD name="SASS" ucd="meta.id;obs.field" display="0" datatype="int" width="8"><!-- ucd="ID_FIELD" -->
+      <DESCRIPTION>Identification number of SASS field (12)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MASOL" ucd="meta.id;obs.field" display="0" datatype="char" arraysize="4"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>SASS source number (MASOL number) in SASS field (mainly for internal use)</DESCRIPTION>
+    </FIELD>
+  </TABLE>
+<INFO name="matches" value="2">matching records</INFO>
+</RESOURCE>
+</VOTABLE>

@@ -1,0 +1,29 @@
+{
+  "case": "mira_320_ztf",
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://irsa.ipac.caltech.edu/TAP/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&FORMAT=csv&QUERY=SELECT+table_name+FROM+TAP_SCHEMA.tables+WHERE+table_name+LIKE+%27ztf_objects_dr%25%27",
+      "status_code": 200,
+      "content_type": "text/csv",
+      "location": ""
+    },
+    {
+      "method": "POST",
+      "url": "https://irsa.ipac.caltech.edu/TAP/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&FORMAT=csv&QUERY=SELECT+oid%2C+ra%2C+dec%2C+filtercode%2C+field%2C+ccdid%2C+qid%2C+ngoodobs+FROM+ztf_objects_dr24+WHERE+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+292.3252500%2C+22.3064200%2C+0.00083333%29%29+%3D+1",
+      "status_code": 200,
+      "content_type": "text/csv",
+      "location": ""
+    },
+    {
+      "method": "GET",
+      "url": "https://irsa.ipac.caltech.edu/cgi-bin/ZTF/nph_light_curves?ID=1636108100006124&ID=1636208100053521&ID=1636308100007319&ID=590113100037561&ID=590213100018376&ID=590313100018627&ID=591116200011521&ID=591216200016244&ID=591316200067247&COLLECTION=ztf_dr24&FORMAT=csv",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "text/csv",
+      "location": ""
+    }
+  ]
+}

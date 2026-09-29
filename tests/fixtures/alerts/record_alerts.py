@@ -5,10 +5,13 @@ Live network, polite (a few dozen small requests)::
     .venv/Scripts/python.exe tests/fixtures/alerts/record_alerts.py            # everything
     .venv/Scripts/python.exe tests/fixtures/alerts/record_alerts.py validation # class/tag validation only
     .venv/Scripts/python.exe tests/fixtures/alerts/record_alerts.py famous     # famous-object enrichments only
+    .venv/Scripts/python.exe tests/fixtures/alerts/record_alerts.py review     # review-round-2 + random positions
+    .venv/Scripts/python.exe tests/fixtures/alerts/record_alerts.py round3     # review-round-3 positions
     .venv/Scripts/python.exe tests/fixtures/alerts/record_alerts.py backlog    # truncated-window backlog scenarios
     .venv/Scripts/python.exe tests/fixtures/alerts/record_alerts.py enrich     # re-record xmatch_* for the stored alerts
     .venv/Scripts/python.exe tests/fixtures/alerts/record_alerts.py variables  # Fink CV / RR Lyrae rows + enrichment
-    .venv/Scripts/python.exe tests/fixtures/alerts/record_alerts.py duplicates # ALeRCE rows repeated per classifier version
+    .venv/Scripts/python.exe tests/fixtures/alerts/record_alerts.py duplicates [UNTIL_MJD]  # ALeRCE rows per classifier version
+    .venv/Scripts/python.exe tests/fixtures/alerts/record_alerts.py versions   # add live /probabilities answers to alerce*
 
 Each scenario is stored like the catalog fixtures (see ``tests/fixture_io.py``):
 ``<scenario>.json`` holds the request/response metadata plus the ``params`` the
@@ -110,6 +113,83 @@ FAMOUS: dict[str, tuple[float, float]] = {
     # The blazar 3C 273 (SIMBAD BLL): a known variable and AGN.
     "3C273": (187.27791594049, 2.05238823055),
 }
+# Review round 2 (SIMBAD / Gaia DR3 positions, queried 2026-09-28):
+REVIEW: dict[str, tuple[float, float]] = {
+    # Galactic stars that Gaia DR3's DSC calls extragalactic or lists as galaxy candidates, with decisive
+    # astrometry: the white dwarf WDJ153053.31+690231.98 (parallax 100 sigma, DSC ext 0.985), the dwarf nova
+    # UV Per (pm 446 sigma), and two foreground stars on M31 ([LF82] d, 12.9-sigma parallax; M31GC
+    # J004237+411422, pm 208 sigma), both Gaia galaxy candidates.
+    "WD1647493723250083584": (232.72187939379668, 69.04262554294488),
+    "UV_Per": (32.53473412720054, 57.189166068564425),
+    "M31_LF82d": (10.675847289712872, 41.26275007396792),
+    "M31GC_J004237": (10.653569378979347, 41.2395322366092),
+    # Bright SIMBAD stars on M31's disc with huge Gaia excess noise: M_G -13.3 ... -10.5 at M31's distance.
+    "M31_WWV2004_LPV": (10.801861658055273, 40.77813034081048),
+    "M31_GSC02805-02180": (10.645509790548862, 41.34538678030782),
+    "M31_MLV92_187476": (10.862927889768518, 41.081079385159036),
+    "M31_GPM11.17+41.19": (11.17444344099562, 41.194919482730555),
+    # The eclipsing binary Gaia DR3 6189441739218449664 (RUWE 5.1, pm 11 mas/yr at 31 sigma), 5.9' from
+    # NGC 5078, whose 2003 HyperLEDA D25 is 51' (current: 2.6'), and a point 40' from NGC 5078.
+    "EB_6189441739218449664": (199.85616010770747, -27.374244054046667),
+    "NGC5078_40arcmin": (200.25, -27.95),
+    # Background SNe projected on (or beside) nearby giants: PTF 11dws (z = 0.15) on M106, 0.8" from its host;
+    # PTF 10hv (z = 0.052) on M101; SN 2008hz (z = 0.0795) and PTF 12gix (z = 0.11) on M31; M31's outskirts:
+    # iPTF 15dql (z = 0.13, d_DLR 3.3), PTF 11paw (z = 0.19, 1.7), iPTF 15dhn (z = 0.15, 1.3).
+    "PTF11dws": (184.7785, 47.355805555555555),
+    "PTF10hv": (210.98408333333336, 54.45863888888889),
+    "SN2008hz": (10.827583333333333, 42.170611111111114),
+    "PTF12gix": (11.764458333333334, 41.502138888888894),
+    "iPTF15dql": (11.512629166666665, 38.96977777777778),
+    "PTF11paw": (9.758583333333334, 42.01794444444444),
+    "iPTF15dhn": (12.236, 43.059666666666665),
+    # SN 2016bam (z = 0.0135) in NGC 2445, with a z = 2.06 QSO 15" away; PTF 12lz (z = 0.07) with a z = 0.336
+    # galaxy 48" away and a QSO 53" away, 3 D25 radii from M33.
+    "SN2016bam": (116.71966666666667, 39.02272222222222),
+    "PTF12lz": (24.32041666666667, 30.120638888888887),
+    # SNe on a NED '*' ("star or point source") entry without a Gaia source: SN 2002gn, SN 2018aks.
+    "SN2002gn": (29.22733333333333, -1.113611111111111),
+    "SN2018aks": (157.46508333333333, 9.01293888888889),
+}
+# Random blank positions at |b| > 30 deg (the reviewer's sample: random.seed(7), uniform in RA and sin(dec) in
+# [-0.5, 1]); rand6 lies 33' from the Ursa Minor dwarf, whose 2003 D25 (logD25 2.54) is 6 times today's.
+RANDOM_POSITIONS: dict[str, tuple[float, float]] = {
+    "rand0": (192.9175215504081, 2.781850406686493), "rand1": (20.879612918894452, 15.138523680868694),
+    "rand2": (13.498437039114556, 8.654079263941124), "rand3": (25.147952486862817, -21.341777431445312),
+    "rand4": (152.82690809130503, 47.75511822753619), "rand5": (44.568706013872415, -9.505457671295577),
+    "rand6": (225.87596006601214, 67.1557232073773), "rand7": (207.7570615022995, 5.452511913966438),
+    "rand8": (351.4518380134512, -25.47555535530242), "rand9": (51.93183000867751, -18.863317720357127),
+    "rand10": (230.00884881342625, 3.3592457097746107), "rand11": (197.1880076554408, -23.94230570840837),
+    "rand12": (21.45642118784376, -11.014763745280108), "rand13": (244.94399034544293, 8.128198320862905),
+    "rand14": (163.14637549347913, -2.8860343815904383), "rand15": (189.0707413721225, 54.36118773443206),
+    "rand16": (352.86294509732954, -18.838476241663162), "rand17": (150.5242158426818, 39.47276724689663),
+    "rand18": (54.71443247778171, 13.499957978919726), "rand19": (14.114612537077559, 30.153859821429943),
+}
+# Review round 3 (SIMBAD ICRS positions, queried 2026-09-29):
+ROUND3: dict[str, tuple[float, float]] = {
+    # Blazars / QSOs whose own AGN entry is at the alert (SIMBAD BLL/Bla with redshifts): 3C 273 (z = 0.158; a
+    # z = 0.0053 dwarf lies 10.8" away), BL Lac (z = 0.0655), PKS 2155-304 (z = 0.116, companion 4.4" away),
+    # Mrk 421 (z = 0.030, its own D25 galaxy), 3C 279 (z = 0.536) and PG 1553+113 (z = 0.36).
+    "3C273": (187.27791594049, 2.05238823055),
+    "BL_Lac": (330.68038064033993, 42.27777206022),
+    "PKS2155-304": (329.71693843745, -30.225588457719997),
+    "Mrk421": (166.11380868146, 38.20883291552),
+    "3C279": (194.04652741491665, -5.789312541944445),
+    "PG1553+113": (238.92935002022, 11.190101569430002),
+    # Galaxy nuclei with a SIMBAD '*' duplicate entry (the Gaia source there is DSC-extragalactic with a large
+    # excess noise): LEDA 1798300 on SDSS J125151.03+270706.1 (z = 0.027), 2MASS J09480288+1319111 (z = 0.081),
+    # Pul -3 1020035 on LEDA 43358 (z = 0.035), 2MASS J14075302+5336515 (z = 0.078); and MGC 97030, a real
+    # foreground star (Gaia pm 9.6 mas/yr at 34 sigma) on a galaxy entry.
+    "LEDA1798300": (192.96265666372997, 27.118380852369995),
+    "2MASS_J09480288+1319111": (147.01196897129, 13.319751523210002),
+    "Pul-3_1020035": (192.382818, 25.996307),
+    "2MASS_J14075302+5336515": (211.97093492933, 53.61428059463),
+    "MGC97030": (214.53133333333332, 0.08519444444444442),
+    # Blank points 50" and 45" from '[RGG2003] new galaxy' (a z = 0.0053 dwarf 9" from 3C 273's PGC 41121).
+    "blank_near_dwarf": (187.26112, 2.05167),
+    "blank_near_dwarf2": (187.2750, 2.03917),
+    # The Sculptor dSph RR Lyrae star EV* SclG V0214, 12' from Sculptor's centre (current D25: 34").
+    "SclG_V0214": (14.83046939535, -33.6108759036),
+}
 # Polite recording: at most this many enrichments at once (each makes ~8 archive requests).
 RECORD_CONCURRENCY = 3
 LSST_SINCE_MJD = 61200.0  # 2026-06-09: Fink/LSST last processed night so far is 2026-07-14.
@@ -203,6 +283,19 @@ async def record_famous(until: float) -> None:
     await record_enrichment("xmatch_famous", famous)
 
 
+async def record_round3(until: float) -> None:
+    """Enrichments of the review-round-3 positions."""
+    await record_enrichment("xmatch_round3", [Alert("manual", name, ra, dec, until, None, None, None, None, "",
+                                                    survey="none") for name, (ra, dec) in ROUND3.items()])
+
+
+async def record_review(until: float) -> None:
+    """Enrichments of the review-round-2 positions and of random blank positions."""
+    positions = {**REVIEW, **RANDOM_POSITIONS}
+    await record_enrichment("xmatch_review", [Alert("manual", name, ra, dec, until, None, None, None, None, "",
+                                                    survey="none") for name, (ra, dec) in positions.items()])
+
+
 BACKLOG_OVERLAP_DAYS = 0.25
 BACKLOG_LIMIT = 2
 
@@ -285,26 +378,106 @@ async def record_duplicates(until: float) -> None:
     async with rec.client() as client:
         result = await fetch_alerts(client, "alerce", since_mjd=since, until_mjd=until, limit=DUPLICATES_LIMIT,
                                     options=DUPLICATES_OPTIONS)
-    ids = [a.object_id for a in result.alerts]
-    repeated = [a.object_id for a in result.alerts if a.extra.get("classifier_choice")]
-    print(f"  alerce_duplicates: {len(ids)} alerts ({len(set(ids))} unique), {len(repeated)} repeated per version, "
-          f"truncated={result.truncated}, requests={result.requests}, warnings={result.warnings}")
+    summary = duplicates_params(result)
+    print(f"  alerce_duplicates: {len(summary['alert_ids'])} alerts, {len(summary['repeated'])} repeated per version, "
+          f"{len(summary['versions'])} resolved, truncated={result.truncated}, requests={result.requests}, "
+          f"warnings={result.warnings}")
     rec.save("alerce_duplicates", {"broker": "alerce", "since_mjd": since, "until_mjd": until, "limit": DUPLICATES_LIMIT,
-                                   "options": DUPLICATES_OPTIONS, "alert_ids": ids, "repeated": repeated,
-                                   "truncated": result.truncated, "boundary_mjd": result.boundary_mjd,
-                                   "requests": result.requests})
+                                   "options": DUPLICATES_OPTIONS, **summary})
+
+
+def duplicates_params(result: Any) -> dict[str, Any]:
+    """The expected results of the duplicates scenario (checked by the offline test)."""
+    return {"alert_ids": [a.object_id for a in result.alerts],
+            "repeated": [a.object_id for a in result.alerts if len(a.extra.get("classifier_rows") or []) > 1],
+            "versions": {a.object_id: a.extra["classifier_version"] for a in result.alerts
+                         if a.extra.get("classifier_version")},
+            "probabilities": {a.object_id: a.probability for a in result.alerts},
+            "truncated": result.truncated, "boundary_mjd": result.boundary_mjd, "requests": result.requests,
+            "warnings": result.warnings}
+
+
+async def add_versions(name: str) -> None:
+    """Append to a recorded ALeRCE scenario the ``/objects/{oid}/probabilities`` answers that the fetch now
+    requests for every kept object, recorded live; the scenario's other exchanges (including answers already
+    recorded) are replayed unchanged. The duplicates scenario's expected results are recomputed."""
+    import respx
+    from fixture_io import load_exchanges, replay_side_effect
+
+    meta = json.loads((HERE / f"{name}.json").read_text(encoding="utf-8"))
+    params = meta["params"]
+    replay = replay_side_effect(load_exchanges("alerts", [name]))
+    wanted: list[str] = []
+
+    def probabilities(request: httpx.Request) -> httpx.Response:
+        # Phase 1 (offline): note every /probabilities request; answer recorded ones, others with a placeholder
+        # (which objects are kept, hence requested, does not depend on the answers).
+        try:
+            return replay(request)
+        except Exception:  # noqa: BLE001 - FixtureMismatch: not recorded yet
+            if str(request.url) not in wanted:
+                wanted.append(str(request.url))
+            return httpx.Response(200, json=[])
+
+    async def run(client: httpx.AsyncClient) -> Any:
+        if "polls" in params:  # a backlog scenario: the same polls, then the reference fetch
+            with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+                store = AlertStore(MetadataStore(f"sqlite:///{Path(tmp, 'rec.sqlite3').as_posix()}"))
+                results = await run_backlog(client, store, params["broker"], params["options"], params["until_mjd"],
+                                            params["lookback_days"])
+                return await fetch_alerts(client, params["broker"], since_mjd=results[0].since_mjd,
+                                          until_mjd=params["until_mjd"], limit=100, options=params["options"])
+        return await fetch_alerts(client, params["broker"], since_mjd=params["since_mjd"], until_mjd=params["until_mjd"],
+                                  limit=params["limit"], options=params["options"])
+
+    with respx.mock(assert_all_called=False) as mock:
+        mock.get(url__regex=r".*/objects/[^/]+/probabilities.*").mock(side_effect=probabilities)
+        mock.route().mock(side_effect=replay)
+        async with httpx.AsyncClient(timeout=120.0) as client:
+            await run(client)
+    # Phase 2 (live): record the missing answers.
+    added: list[tuple[httpx.Request, httpx.Response]] = []
+    async with httpx.AsyncClient(timeout=120.0, follow_redirects=True) as live:
+        for url in wanted:
+            response = await live.get(url)
+            added.append((response.request, response))
+    start = len(meta["exchanges"])
+    for idx, (request, response) in enumerate(added, start=start):
+        (HERE / f"{name}.{idx}.body").write_bytes(redact(response.content))
+        meta["exchanges"].append({"method": request.method, "url": str(request.url), "request_body": "",
+                                  "status_code": response.status_code,
+                                  "content_type": response.headers.get("content-type", ""), "match": []})
+    (HERE / f"{name}.json").write_text(json.dumps(meta, indent=2, default=str), encoding="utf-8")
+    print(f"{name:<24} +{len(added)} /probabilities exchange(s)")
+    if name == "alerce_duplicates":
+        with respx.mock(assert_all_called=False) as mock:
+            mock.route().mock(side_effect=replay_side_effect(load_exchanges("alerts", [name])))
+            async with httpx.AsyncClient(timeout=120.0) as client:
+                result = await run(client)
+        params.update(duplicates_params(result))
+        (HERE / f"{name}.json").write_text(json.dumps(meta, indent=2, default=str), encoding="utf-8")
+        print(f"  alerce_duplicates: {len(result.alerts)} alerts, warnings={result.warnings}")
 
 
 async def main() -> None:
     os.environ["PROVIDER_CACHE_TTL_SECONDS"] = "0"
-    until = round(now_mjd(), 4)
     mode = sys.argv[1] if len(sys.argv) > 1 else "all"
+    # An explicit window end (UTC MJD) re-records a scenario over the same window, e.g.
+    # ``record_alerts.py duplicates 61311.5221``.
+    until = float(sys.argv[2]) if len(sys.argv) > 2 else round(now_mjd(), 4)
     if mode in {"validation", "all"}:
         await record_validations(until)
     if mode in {"famous", "all"}:
         await record_famous(until)
+    if mode in {"review", "all"}:
+        await record_review(until)
+    if mode in {"round3", "all"}:
+        await record_round3(until)
     if mode == "enrich":
         await rerecord_enrichments()
+    if mode == "versions":
+        for name in ("alerce", "alerce_backlog", "alerce_duplicates"):
+            await add_versions(name)
     if mode in {"duplicates", "all"}:
         await record_duplicates(until)
     if mode in {"variables", "all"}:

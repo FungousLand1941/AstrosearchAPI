@@ -8,9 +8,17 @@ Brokers (public REST APIs, verified live 2026-09-28):
   (at least 1000 rows per page), ``count``, ``order_by``/``order_mode`` (swagger at
   ``/ztf/v1/swagger.json``). It answers one row per *classifier version* that ranks the class
   first (live: ZTF18actadei twice for lc_classifier AGN, 0.84372 and 0.497556); rows are merged per
-  object and a repeated object takes the probability of its newest version
-  (``/objects/{oid}/probabilities``), pages being read until ``limit + 1`` distinct objects are
-  seen. Positions are the object mean (``meanra``/``meandec``). The
+  object, pages being read until ``limit + 1`` distinct objects are seen, and every kept object is
+  classified by its *newest* classifier version (``/objects/{oid}/probabilities``): an object whose
+  only row comes from a superseded version that the newest one no longer ranks in the requested
+  class (live: 2 of 15 lc_classifier AGN objects are Blazar / CV-Nova in lc_classifier_1.1.13) is
+  dropped with a warning, and a stored row of it (stored while the version lookup failed, or before
+  ALeRCE re-ranked it) takes the newest version's class with ``classifier_choice`` 'superseded'. Rows sharing an MJD (one ZTF exposure: live, up to 11 of 40 rows) come in a different
+  order on every request, so ``page`` offsets can split, skip or repeat them: the pages are read
+  by *keyset* instead -- each next request ends at the exact MJD of the previous page's last row
+  (the bounds are inclusive; verified with the full-precision value), so every row of an object
+  is seen whenever its exposure's rows fit in one page (``page`` offsets are used only inside a
+  larger tie). Positions are the object mean (``meanra``/``meandec``). The
   photometry of the alert is the object's latest detection from
   ``GET /objects/{oid}/detections`` (``magpsf``, ``sigmapsf``, ``fid``, ``isdiffpos``,
   ``candid``); ``/magstats`` is not used because its ``maglast`` silently includes
@@ -67,49 +75,79 @@ host-galaxy search. Enrichment:
   use up the row limit, and in HyperLEDA (Paturel et al. 2003, A&A 412, 45; VizieR VII/237;
   every PGC type: galaxies 'G', galaxies in multiple systems 'GM' and multiple systems 'M',
   e.g. M86, IC 10) for galaxies within 4 D25 semi-major axes of the alert (up to 6 deg away,
-  covering the LMC). The host follows the directional light radius (DLR) method of Sullivan et
-  al. (2006, ApJ 648, 868) and Gupta et al. (2016, AJ 152, 154): d_DLR = separation / r(theta),
+  covering the LMC; 168 grossly wrong 2003 sizes -- NGC 5078's 51' D25 is 2.6' -- are replaced by the
+  current HyperLEDA ones). The host follows the directional light radius (DLR) method of Sullivan
+  et al. (2006, ApJ 648, 868) and Gupta et al. (2016, AJ 152, 154): d_DLR = separation / r(theta),
   with r the D25 ellipse radius toward the alert (HyperLEDA's B1950 position angles are
-  precessed to ICRS). An alert inside a D25 ellipse (d_DLR <= 1) is assigned to the galaxy with
-  the smallest d_DLR (e.g. SN 2014J -> M82, 58" from its nucleus); else to the galaxy with the
-  smallest d_DLR <= 4, outside its ellipse (SN 2023bee -> NGC 2708 at 1.48, SN 2018aoz -> NGC 3923
-  at 1.45), unless a catalogued galaxy without a D25 size lies nearer than that galaxy's light
-  radius; else to the nearest catalogued galaxy, never to an entry named only by a transient
-  designation (NED lists e.g. the CV 'AT 2017abr' as a galaxy): such a case is reported as
-  ``ambiguous_transient_entry``. Host names prefer major catalogues (Messier, NGC, IC, UGC,
-  PGC...) over fibre/sub-component entries and transient-host labels ('SN 1994I HOST').
+  precessed to ICRS). The alert is assigned to the galaxy with the smallest d_DLR <= 2 D25 radii
+  (Gupta's d_DLR < 4 is in second-moment radii, ~half the D25 radius): inside its ellipse (SN 2014J
+  -> M82, 58" from its nucleus) or outside it (SN 2023bee -> NGC 2708 at 1.48, SN 2018aoz -> NGC 3923
+  at 1.45); galaxies at 2 < d_DLR <= 4 are reported as possible associations only. A D25 galaxy
+  whose redshift differs from the transient's own catalogued redshift (its SIMBAD/NED entry, or the
+  broker's TNS redshift) by > 3000 km/s is a foreground/background projection, not the host (PTF
+  10hv, z = 0.052, on M101), and a host-cone galaxy without a D25 size takes precedence when it is
+  at another redshift and the alert lies within its (typical, 8 kpc) light radius (PTF 11dws, 0.8"
+  from a z = 0.15 galaxy on M106), or -- at the same or an unknown redshift -- when it lies outside
+  the D25 ellipse, nearer than its light radius and is not a likely chance alignment. Without a D25
+  galaxy, a host-cone galaxy is adopted (method 'nearest') only when it is not a likely chance
+  alignment: its redshift agrees with the transient's, or its chance-coincidence probability (Bloom
+  et al. 2002; from the cone's local galaxy density) is <= 0.1 -- never when it lies beyond 2 typical
+  (8 kpc) light radii at its redshift, and lying within one is no evidence by itself (the galaxy may be
+  a 1 kpc dwarf: blank points 50" from a z = 0.005 dwarf); otherwise ``host_status`` is 'unassociated'
+  (12 of 20 random blank positions had a 'found' host before, 2 now). An alert on a catalogued AGN /
+  QSO / blazar (within the match radius) is that active nucleus: its galaxy is the host (method
+  'agn_nucleus', or its D25 galaxy, e.g. Mrk 421) and its redshift the transient's, so no neighbour at
+  another redshift is adopted (3C 273, z = 0.158, is not hosted by a z = 0.0053 dwarf 10.8" away).
+  Elsewhere in the cone quasars, blazars and pair/group entries are never hosts (SN 2016bam's host was
+  a z = 2.06 QSO 15" away), nor entries named only by a transient designation
+  (NED lists e.g. the CV 'AT 2017abr' as a galaxy: ``ambiguous_transient_entry``). Host names
+  prefer major catalogues (Messier, NGC, IC, UGC, PGC...) over fibre/sub-component entries and
+  transient-host labels ('SN 1994I HOST').
   The projected offset in kpc uses a redshift-independent Cosmicflows-4 distance (Tully et
   al. 2023, ApJ 944, 94) for hosts with z < 0.01 or no redshift (e.g. SN 1987A -> LMC,
   1.0 kpc), else the CF4 distance of the host's group (Tully 2015, AJ 149, 171 membership; e.g.
-  M100 and M86 -> Virgo, 16.2 Mpc), else the Planck 2018 distances (Planck Collaboration 2020,
-  A&A 641, A6) of the CMB-frame redshift -- the group's CMB velocity when the host is in a group
-  -- uncertain by ~v_pec / cz (300 km/s, or the group's velocity dispersion); below
+  M100 and M86 -> Virgo, 16.2 Mpc), else the Hubble-flow distances of the CMB-frame redshift --
+  the group's CMB velocity when the host is in a group -- in a flat LCDM cosmology with the Planck
+  2018 densities (Planck Collaboration 2020, A&A 641, A6) and CF4's H0 = 74.6 km/s/Mpc (one
+  distance scale: no jump where the method changes), uncertain by ~v_pec / cz (300 km/s, or the
+  group's velocity dispersion); below
   cz_CMB = 1500 km/s without a CF4 distance no offset is given (None, with the reason in the
   evidence). Truncated cones or failed catalogs make the search ``incomplete`` (never a false
   ``none_within_radius``).
 * ``known_star`` means *Galactic* star. The astrometry of a Gaia DR3 counterpart is first
-  vetted: it is not a star's when its parallax is < -3 sigma, when Gaia's DSC gives P(galaxy) +
-  P(quasar) > 0.5 (Delchambre et al. 2023), when it is a Gaia galaxy candidate, or when a
-  SIMBAD/NED galaxy/AGN entry lies within 1.5" and the single-star model fits it poorly -- a
-  galaxy nucleus, AGN or star cluster, whose formally significant proper motions are spurious
-  (M87 7.5 mas/yr at 12 sigma, NGC 3783 0.24 mas/yr at 15 sigma). Otherwise it is Galactic when
-  its parallax / parallax_error >= 5 (Bailer-Jones 2015, PASP 127, 994) -- inside a D25 ellipse
-  only if >= 10 sigma, or G < 19, or RUWE < 1.4 (Rybizki et al. 2022, MNRAS 510, 2597; Lindegren
-  et al. 2021, A&A 649, A2); when it is a well-behaved point source (RUWE < 1.4, excess-noise
-  significance <= 2) whose proper motion (>= 5 sigma) exceeds 750 km/s at the associated host's
-  distance (3.2 mas/yr at the LMC distance when unknown); or when it *is* a catalogued star
-  (stellar-type entry at its position) inside a galaxy of known distance with M_G < -10
-  (Humphreys & Davidson 1979). The broker's own Gaia xmatch parallax (no RUWE/G) counts at >= 5
+  vetted: it is not a star's when its parallax is < -3 sigma, when a SIMBAD/NED galaxy/AGN/cluster
+  entry lies within 1.5" and the single-star model fits it poorly -- a galaxy nucleus, AGN or star
+  cluster, whose formally significant proper motions are spurious (M87 7.5 mas/yr at 12 sigma,
+  NGC 3783 0.24 mas/yr at 15 sigma) --, or when Gaia's DSC gives P(galaxy) + P(quasar) > 0.5
+  (Delchambre et al. 2023) or it is a Gaia galaxy candidate *and* it fits poorly or its evidence
+  is marginal (< 20-sigma proper motion and < 10-sigma parallax): DSC's classes have a low purity,
+  and a white dwarf with a 100-sigma parallax is DSC-extragalactic. Otherwise it is Galactic when
+  its parallax / parallax_error >= 5 (Bailer-Jones 2015, PASP 127, 994) -- projected on a D25
+  ellipse only if >= 10 sigma, or G < 19, or RUWE < 1.4 (Rybizki et al. 2022, MNRAS 510, 2597;
+  Lindegren et al. 2021, A&A 649, A2); when its proper motion (>= 5 sigma) exceeds 750 km/s at the
+  associated host's distance (3.2 mas/yr at the LMC distance when unknown) and it is a well-behaved
+  point source (RUWE < 1.4, excess-noise significance <= 2) or the motion is >= 20 sigma (a binary's);
+  or when it *is* a catalogued star (stellar-type entry at its position, no galaxy/cluster entry
+  within 1.5") inside a galaxy of known distance with M_G < -10 (Humphreys & Davidson 1979), whatever
+  its excess noise (bright stars on M31's disc have huge excess noise). The broker's own Gaia xmatch parallax (no RUWE/G) counts at >= 5
   sigma outside galaxies and >= 10 sigma inside them (never for a broker galaxy/AGN match), and
   defers to the counterpart search's row of the same source. NED '!'-prefixed (Milky Way)
   stellar types are Galactic, NED 'exG*' extragalactic. Without such evidence, a stellar-type
   source inside a galaxy with |z| < 0.01 (D < ~43 Mpc, the distance to which individual stars --
   Cepheids, novae, X-ray binaries -- are catalogued, cf. the SH0ES Cepheid hosts, Riess et al.
   2022, ApJL 934, L7) is an *extragalactic* star (``known_star`` False, e.g. M31N 2008-12a,
-  IC 10 X-1 or an M82 X-ray binary); outside every D25 ellipse but associated with (d_DLR <= 4),
+  IC 10 X-1 or an M82 X-ray binary); outside every D25 ellipse but associated with (d_DLR <= 2),
   or within the host radius of, such a nearby galaxy the answer is unknown (None, e.g. the SN
   impostor SN 2009ip near NGC 7259); inside a galaxy of unknown redshift unknown (None); far from
-  any galaxy, Galactic. ``stellar_counterpart`` reports the stellar-type match itself.
+  any galaxy, Galactic -- except within the stellar extent of a Local Group dwarf (McConnachie 2012
+  half-light radii, not the D25 ellipse a dwarf spheroidal barely reaches: Sculptor's is 34"): within
+  3 r_h one of its stars (False, e.g. the Sculptor RR Lyrae EV* SclG V0214), up to 6 r_h unknown. A
+  NED '*' entry ("star or point source": often the transient's own earlier detection) is the only
+  stellar evidence of a transient with a host only when Gaia DR3 detected a point source there (else
+  None: SN 2002gn, SN 2018aks); a generic stellar entry (SIMBAD '*', NED '*') within 1.5" of a
+  galaxy/AGN entry is another entry of the galaxy's nucleus, not a star, unless a well-behaved,
+  non-extragalactic Gaia DR3 point source confirms it (SIMBAD 'LEDA 1798300' '*' on a z = 0.027
+  galaxy). ``stellar_counterpart`` reports the stellar-type match itself.
 * ``known_variable``: a catalogued variable source at the position (SIMBAD variable-star
   ``otypedef`` types, codes and labels including '_Candidate' labels as emitted by Fink,
   blazars, NED ``V*``/``Nova``/``Flare*``, the broker's Gaia DR3 variability flag); it may be
@@ -124,9 +162,14 @@ host-galaxy search. Enrichment:
 
 An enrichment is ``done`` when every query answered, ``partial`` when some failed (flags
 that depend on a failed catalog are None) and ``failed`` when no counterpart catalog
-answered; ``partial``/``failed`` rows are retried by later polls (up to
-``MAX_CROSSMATCH_ATTEMPTS``), and a failed retry never overwrites an earlier complete
-result.
+answered; ``partial``/``failed`` rows are retried by later polls and the retry sweep with a
+backoff (5 min after the first incomplete attempt, doubling, at most 6 h). Attempts that failed
+only because services were unreachable (timeouts, network errors, HTTP 5xx/429) do not count
+towards ``MAX_CROSSMATCH_ATTEMPTS``; after that many real failures an alert is retried once a day
+(``alerts crossmatch`` re-runs any alert at once). A failed retry never overwrites an earlier
+complete result, and an enrichment of a position the alert has since left keeps it 'pending'.
+Batch enrichments share one ``concurrency``-slot semaphore per service; a re-crossmatch request
+skips the queue.
 
 Alerts persist in the SQLite (or PostgreSQL) metadata database used by
 :class:`datasets.MetadataStore` (``ALERTS_DATABASE_URL`` overrides it for both the API and
@@ -138,6 +181,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import collections
 import contextlib
 import inspect
 import json
@@ -246,9 +290,29 @@ HOST_ALIAS_ARCSEC = 2.5
 D25_SEARCH_RADIUS_DEG = 6.0
 # d_DLR <= 1: inside the D25 isophote (Sullivan et al. 2006; Gupta et al. 2016).
 DLR_INSIDE = 1.0
-# Host association limit: Gupta et al. (2016, AJ 152, 154) assign the galaxy with the smallest
-# d_DLR when d_DLR < 4 and call the SN hostless otherwise.
-DLR_HOST_MAX = 4.0
+# Host association limit in *D25* light radii. Gupta et al. (2016, AJ 152, 154, sec. 3.1) associate
+# the galaxy with the smallest d_DLR < 4, their DLR being the SExtractor A_IMAGE/B_IMAGE second-moment
+# ellipse. For an exponential disc of Freeman central surface brightness (21.65 B mag/arcsec^2) the
+# D25 (25 B mag/arcsec^2) radius is 3.1 scale lengths while the second-moment radius of the isophotal
+# area is ~1.5-1.7 scale lengths: Gupta's d_DLR < 4 is d_DLR(D25) < ~2.
+DLR_HOST_MAX = 2.0
+# D25 galaxies are searched out to 4 D25 radii: those between DLR_HOST_MAX and this are reported as
+# possible associations (evidence, ``d25_galaxies``) but never adopted.
+DLR_SEARCH_MAX = 4.0
+# Cone galaxies without a D25 size (NED/SIMBAD entries too faint for HyperLEDA) are adopted only when
+# their chance-coincidence probability is small (Bloom et al. 2002, AJ 123, 1111; Berger 2010, ApJ 722,
+# 1946: P_cc < 0.1). Without magnitudes (NED gives none) the probability is that of the catalogue's
+# local surface density: P_cc = 1 - exp(-pi r^2 Sigma), Sigma = N / (pi R^2) for the N galaxies of the
+# host cone of radius R (at least the candidate itself).
+P_CHANCE_MAX = 0.1
+# The light radius of a galaxy without a D25 size is estimated, from its redshift distance, as that of
+# a typical supernova host: R25 ~ 8 kpc (a 10^10.3 Msun disc; the Milky Way's is ~13 kpc, the LMC's 4.7).
+HOST_TYPICAL_R25_KPC = 8.0
+# Two redshifts are the same system's within this velocity (x (1+z)): ~3 x a rich cluster's velocity
+# dispersion (Virgo members span -700..+2700 km/s), and the ~0.01 error of a supernova's template
+# redshift (Blondin & Tonry 2007, ApJ 666, 1024). A host candidate whose redshift differs by more from the
+# transient's own catalogued redshift is a foreground/background galaxy, not its host.
+SAME_REDSHIFT_KMS = 3000.0
 # NED/SIMBAD entry of a HyperLEDA galaxy: PGC 2003 centres differ from NED's by a few arcsec
 # (M31: 2.5", NGC 4993: 7.3"), more for large galaxies: max(10", a/4), at most 60".
 D25_ALIAS_MIN_ARCSEC = 10.0
@@ -258,12 +322,22 @@ D25_ALIAS_MAX_ARCSEC = 60.0
 LOCAL_VOLUME_MAX_Z = 0.01
 # A position change larger than this fraction of the match radius triggers a new crossmatch.
 REMATCH_FRACTION = 0.5
-# Crossmatch attempts per alert before a partial/failed enrichment stops being retried.
+# Crossmatch attempts per alert before a partial/failed enrichment stops being retried by the polls
+# (CAPPED_RETRY_DAYS later the retry sweep tries it again). An attempt that failed only because services
+# were unreachable (AlertEnrichment.outage) does not count: it is retried with a backoff instead.
 MAX_CROSSMATCH_ATTEMPTS = 5
+# Retry backoff: the n-th incomplete attempt (outages included) is retried no sooner than
+# RETRY_BACKOFF_SECONDS * 2**(n-1) later (5, 10, 20, 40 min...: one watch cycle, then doubling), at most
+# RETRY_BACKOFF_MAX_SECONDS; an alert at the attempt cap waits CAPPED_RETRY_DAYS.
+RETRY_BACKOFF_SECONDS = 300.0
+RETRY_BACKOFF_MAX_SECONDS = 6 * 3600.0
+CAPPED_RETRY_DAYS = 1.0
 # Catalog error types that mean "service unreachable" (network error, timeout, HTTP 5xx/429).
 UNREACHABLE_ERROR_TYPES = frozenset({"CatalogUnavailableError", "RateLimitedError", "QueryTimeoutError"})
 # Two MJDs closer than this (~9 ms) are the same instant.
 MJD_EPS = 1e-7
+# MJDs accepted as input by the API and the CLI (1968-05-24 .. 2132-08-31).
+MJD_MIN, MJD_MAX = 40000.0, 100000.0
 
 # SIMBAD object types from the ``otypedef`` table (SIMBAD TAP, queried 2026-09-28): one
 # "code|label|hierarchy path" entry per type of the stellar ("*"), galaxy ("G", "IG", "PaG")
@@ -395,6 +469,10 @@ NED_EXTRAGALACTIC_STAR_TYPES = frozenset({"exG*"})
 NED_TRANSIENT_TYPES = frozenset({"SN", "GRB"})
 NED_AGN_TYPES = frozenset({"QSO"})
 NED_GALACTIC_PREFIX = "!"
+# Galaxy-type entries that are never a transient's host (see _is_host_type): quasars and blazars (AGN
+# entries: known_agn) and multiple systems (pairs, triplets, groups, whose position is a centroid).
+NED_NON_HOST_TYPES = frozenset({"QSO", "GPair", "GTrpl", "GGroup", "GClstr"})
+SIMBAD_NON_HOST_TYPES = _otype_names(lambda code, path: "QSO" in path) | frozenset({"PaG", "PairG", "IG", "InteractingG"})
 
 # Transient designations (IAU/TNS names and the discovery names of transient surveys). NED
 # lists some host galaxies under the transient's name (AT2019dsg: 'AT 2019dsg', type G), and
@@ -507,13 +585,19 @@ class HostCandidate:
     projected_offset_kpc: float | None = None
     redshift_source: str | None = None
     aliases: list[str] = field(default_factory=list)
-    method: str = "nearest"  # d25_ellipse | dlr_outside_d25 | nearest
+    # d25_ellipse | dlr_outside_d25 | nearest (a host-cone galaxy without a D25 size) | agn_nucleus (the catalogued
+    # AGN/QSO at the alert position: its own galaxy)
+    method: str = "nearest"
     d_dlr: float | None = None
+    # 'nearest' / 'agn_nucleus' hosts: the chance-coincidence probability and the separation in typical light radii.
+    p_chance: float | None = None
+    d_dlr_estimated: float | None = None
     pgc: int | None = None
     d25_semi_major_arcsec: float | None = None
     distance_mpc: float | None = None  # angular-diameter distance used for projected_offset_kpc
     distance_modulus: float | None = None
-    distance_method: str | None = None  # cosmicflows4 | cosmicflows4_group | hubble_flow_planck18
+    distance_method: str | None = None  # cosmicflows4 | cosmicflows4_group | hubble_flow
+    hubble_constant_kms_mpc: float | None = None  # H0 of a Hubble-flow distance (the Cosmicflows-4 scale)
     distance_uncertainty_fraction: float | None = None
     redshift_cmb: float | None = None  # the CMB-frame redshift behind a Hubble-flow distance
     velocity_frame: str | None = None  # cmb | cmb_group | heliocentric
@@ -534,10 +618,16 @@ class AlertEnrichment:
     catalog_status: dict[str, str] = field(default_factory=dict)
     counterparts: list[dict[str, Any]] = field(default_factory=list)
     transient_designations: list[str] = field(default_factory=list)
+    # The transient's own catalogued redshift (its SIMBAD/NED entry in the match cone, else the broker's
+    # TNS redshift, else that of a catalogued AGN at the alert position) and where it came from: host
+    # candidates at another redshift are not its host.
+    transient_redshift: float | None = None
+    transient_redshift_source: str | None = None
     host: dict[str, Any] | None = None
     host_candidates: list[dict[str, Any]] = field(default_factory=list)
     d25_galaxies: list[dict[str, Any]] = field(default_factory=list)
-    # found | none_within_radius | incomplete | failed | not_searched | not_applicable_star | ambiguous_transient_entry
+    # found | none_within_radius | unassociated | incomplete | failed | not_searched | not_applicable_star |
+    # ambiguous_transient_entry ('unassociated': galaxies were found, none passes the association criteria)
     host_status: str = "not_searched"
     host_search_complete: bool | None = None
     known_star: bool | None = None
@@ -551,9 +641,20 @@ class AlertEnrichment:
     exception: str | None = None  # set only when the enrichment itself raised (a bug, not an outage)
     elapsed_ms: float | None = None
     crossmatched_at: str | None = None
+    # The position that was crossmatched (a stored alert may move while its enrichment runs).
+    ra: float | None = None
+    dec: float | None = None
 
     def as_dict(self) -> dict[str, Any]:
         return asdict(self)
+
+    @property
+    def outage(self) -> bool:
+        """True when the enrichment is incomplete only because services were unreachable (network
+        errors, timeouts, HTTP 5xx/429): such an attempt does not count towards MAX_CROSSMATCH_ATTEMPTS."""
+        if self.status == "done" or self.exception is not None or not self.failures:
+            return False
+        return all(f.get("error_type") in UNREACHABLE_ERROR_TYPES for f in self.failures)
 
 
 @dataclass(slots=True)
@@ -566,6 +667,9 @@ class FetchResult:
     # When truncated: alerts at or before this UTC MJD (of the window column) were not all fetched.
     boundary_mjd: float | None = None
     requests: int = 0
+    # ALeRCE objects of the window not returned in ``alerts`` because their newest classifier version ranks another
+    # class first (``extra['newest_version_class']``): a stored row of one of them is reclassified by the ingest.
+    superseded: list[Alert] = field(default_factory=list)
 
 
 @dataclass(slots=True)
@@ -589,8 +693,13 @@ class PollResult:
     # crossmatch_deferred they are enriched by a background task after the poll returned.
     crossmatch_queued: int = 0
     crossmatch_deferred: bool = False
-    # Fetched alerts not re-crossmatched because MAX_CROSSMATCH_ATTEMPTS were already made.
+    # Fetched alerts not re-crossmatched because MAX_CROSSMATCH_ATTEMPTS were already made (retried a day later).
     crossmatch_capped: int = 0
+    # Fetched alerts not re-crossmatched yet because their retry backs off after an incomplete attempt.
+    crossmatch_backoff: int = 0
+    # Stored ALeRCE rows reclassified because their object's newest classifier version now ranks another class
+    # first (the object is no longer returned for the class polled; see AlertStore.mark_superseded).
+    superseded: int = 0
     truncated: bool = False
     boundary_mjd: float | None = None
     backlog: dict[str, float] | None = None
@@ -618,6 +727,19 @@ class BrokerError(RuntimeError):
         self.unreachable = unreachable
 
 
+class CatalogLookupError(RuntimeError):
+    """A single archive lookup of the enrichment (Cosmicflows-4) failed; ``error_type`` is the failure's
+    type (e.g. QueryTimeoutError), so an outage is told from a real error (AlertEnrichment.outage)."""
+
+    def __init__(self, error_type: str, message: str) -> None:
+        super().__init__(f"{error_type}: {message}")
+        self.error_type = error_type
+
+
+def _error_type(exc: BaseException) -> str:
+    return str(getattr(exc, "error_type", None) or exc.__class__.__name__)
+
+
 # ---------------------------------------------------------------------------
 # Small helpers
 # ---------------------------------------------------------------------------
@@ -641,6 +763,16 @@ def _text(value: Any) -> str | None:
         return None
     text = str(value).strip()
     return None if text.lower() in FINK_NULLS else text
+
+
+def _raw(value: Any) -> Any:
+    """A raw upstream value kept as received in ``Alert.extra`` -- made JSON-safe: a non-finite float
+    (an upstream NaN glitch) becomes None, a non-scalar its text; strings, booleans, ints are kept."""
+    if value is None or isinstance(value, (bool, int, str)):
+        return value
+    if isinstance(value, float):
+        return value if math.isfinite(value) else None
+    return str(value)
 
 
 def _score(value: Any) -> float | None:
@@ -687,6 +819,9 @@ def negative_from_isdiffpos(value: Any) -> bool | None:
 def now_mjd() -> float:
     """Current UTC time as an MJD."""
     return float(Time.now().utc.mjd)
+
+
+_current_mjd = now_mjd  # for methods whose ``now_mjd`` parameter shadows the function
 
 
 def mjd_to_iso(mjd: float, *, round_up: bool = False) -> str:
@@ -766,13 +901,17 @@ def clear_class_list_cache() -> None:
     _CLASS_LIST_CACHE.clear()
 
 
-async def _class_list(client: httpx.AsyncClient, broker: str, url: str, timeout: float) -> tuple[Any, bool]:
-    """The (cached) JSON class list at ``url``; returns (payload, fetched_now)."""
+async def _class_list(client: httpx.AsyncClient, broker: str, url: str, timeout: float,
+                      usable: Callable[[Any], bool]) -> tuple[Any, bool]:
+    """The (cached) JSON class list at ``url``; returns (payload, fetched_now). Only a ``usable`` answer is cached:
+    a malformed, empty or partial list (a broker glitch) is used once and asked for again next time, never kept
+    for CLASS_LIST_TTL_SECONDS."""
     cached = _CLASS_LIST_CACHE.get(url)
     if cached is not None and time.monotonic() - cached[0] < CLASS_LIST_TTL_SECONDS:
         return cached[1], False
     payload = await _get_json(client, broker, url, {}, timeout)
-    _CLASS_LIST_CACHE[url] = (time.monotonic(), payload)
+    if usable(payload):
+        _CLASS_LIST_CACHE[url] = (time.monotonic(), payload)
     return payload, True
 
 
@@ -802,8 +941,13 @@ class AlerceBroker:
         classifier: str | None = "stamp_classifier",
         class_name: str | None = "SN",
         mjd_field: str = "firstmjd",
+        stop_mjd: float | None = None,
     ) -> list[tuple[str, str]]:
-        """Query parameters for ``GET /objects/`` (``limit`` rows, newest first within the MJD window)."""
+        """Query parameters for ``GET /objects/`` (``limit`` rows, newest first within the MJD window).
+
+        ``stop_mjd`` replaces ``until_mjd`` as the (inclusive) upper bound with its exact value
+        (``repr``): a row's own MJD, the keyset of the next page in :meth:`fetch`.
+        """
         if mjd_field not in {"firstmjd", "lastmjd"}:
             raise ValueError("mjd_field must be 'firstmjd' or 'lastmjd'")
         params: list[tuple[str, str]] = []
@@ -813,7 +957,7 @@ class AlerceBroker:
             params.append(("class", class_name))
         params += [
             (mjd_field, f"{since_mjd:.6f}"),
-            (mjd_field, f"{until_mjd:.6f}"),
+            (mjd_field, repr(float(stop_mjd)) if stop_mjd is not None else f"{until_mjd:.6f}"),
             ("page_size", str(int(limit))),
             ("order_by", mjd_field),
             ("order_mode", "DESC"),
@@ -869,11 +1013,11 @@ class AlerceBroker:
                     survey="ztf",
                     first_mjd=_float(item.get("firstmjd")),
                     extra={
-                        "classifier": item.get("classifier"),
+                        "classifier": _raw(item.get("classifier")),
                         "classifier_rows": [row],
-                        "ndet": item.get("ndet"),
+                        "ndet": _raw(item.get("ndet")),
                         "ndethist": _float(item.get("ndethist")),
-                        "stellar": item.get("stellar"),
+                        "stellar": _raw(item.get("stellar")),
                         "sigmara": _float(item.get("sigmara")),
                         "sigmadec": _float(item.get("sigmadec")),
                     },
@@ -898,24 +1042,44 @@ class AlerceBroker:
         return numbers, version or ""
 
     @classmethod
-    def choose_version(cls, alert: Alert, probabilities: Any, classifier: str | None) -> bool:
-        """Adopt the probability of the newest classifier version that ranks the alert's class
-        first (from ``/objects/{oid}/probabilities``); returns False when none does."""
+    def choose_version(cls, alert: Alert, probabilities: Any, classifier: str | None,
+                       class_name: str | None = None) -> str:
+        """Classify the alert by the newest version of ``classifier`` (``/objects/{oid}/probabilities``).
+
+        Returns 'newest_version' when the newest version that ranks any class first ranks the alert's
+        class (``class_name``, the requested one; any class when None) first: its probability, version and
+        the probabilities of every version ranking that class first are adopted. Returns 'superseded' when
+        the newest version ranks another class first (the /objects/ row came from an older version: live,
+        ZTF18abvvwjv's only lc_classifier SNIa row is hierarchical_rf_1.1.0's, while lc_classifier_1.1.13
+        ranks LPV first at 0.659); ``extra['newest_version_class']`` then holds that class. Returns
+        'unranked' when no version ranks a class first. Without a classifier, the newest version among the
+        rows ranking the alert's class first is taken (versions of different classifiers cannot be compared).
+        """
         if not isinstance(probabilities, list):
             raise BrokerError("alerce", f"unexpected probabilities payload for {alert.object_id}: "
                                         f"{str(probabilities)[:200]}")
-        ranked = [p for p in probabilities if isinstance(p, dict) and p.get("ranking") == 1
-                  and (classifier is None or p.get("classifier_name") == classifier)
-                  and p.get("class_name") == alert.classification and _score(p.get("probability")) is not None]
-        if not ranked:
-            return False
-        newest = max(ranked, key=lambda p: cls.version_key(str(p.get("classifier_version") or "")))
+        wanted = class_name if class_name is not None else (alert.classification if classifier is None else None)
+        first = [p for p in probabilities if isinstance(p, dict) and p.get("ranking") == 1
+                 and (classifier is None or p.get("classifier_name") == classifier)
+                 and _score(p.get("probability")) is not None]
+        if classifier is None:
+            first = [p for p in first if p.get("class_name") == wanted]
+        if not first:
+            return "unranked"
+        newest = max(first, key=lambda p: cls.version_key(str(p.get("classifier_version") or "")))
+        top_class = _text(newest.get("class_name"))
+        if wanted is not None and top_class != wanted:
+            alert.extra["newest_version_class"] = {"class": top_class, "probability": _score(newest.get("probability")),
+                                                   "classifier_version": newest.get("classifier_version")}
+            return "superseded"
+        ranked = [p for p in first if p.get("class_name") == top_class]
+        alert.classification = top_class
         alert.probability = _score(newest["probability"])
         alert.extra["classifier_version"] = newest.get("classifier_version")
         alert.extra["classifier_versions"] = {
             str(p.get("classifier_version")): _score(p.get("probability")) for p in ranked}
         alert.extra["classifier_choice"] = "newest_version"
-        return True
+        return "newest_version"
 
     @staticmethod
     def apply_detections(alert: Alert, detections: Any) -> Alert:
@@ -940,7 +1104,7 @@ class AlerceBroker:
                               "last_is_negative": negative_from_isdiffpos(d.get("isdiffpos"))})
             extra = {
                 "candid": str(latest["candid"]) if latest.get("candid") is not None else None,
-                "isdiffpos": latest.get("isdiffpos"),
+                "isdiffpos": _raw(latest.get("isdiffpos")),
                 "detection_mjd": _float(latest.get("mjd")),
                 "n_detections": len(rows),
                 "n_negative_detections": sum(1 for d in rows if negative_from_isdiffpos(d.get("isdiffpos"))),
@@ -958,22 +1122,33 @@ class AlerceBroker:
         alert.extra.update(extra)
         return alert
 
+    @classmethod
+    def _merged_classifiers(cls, payload: Any) -> dict[str, set[str]]:
+        """classifier name -> classes of a /classifiers/ answer (a classifier can be listed once per version)."""
+        merged: dict[str, set[str]] = {}
+        for c in payload if isinstance(payload, list) else []:
+            if isinstance(c, dict) and isinstance(c.get("classes"), list):
+                merged.setdefault(str(c.get("classifier_name")), set()).update(str(x) for x in c["classes"])
+        return merged
+
+    @classmethod
+    def usable_class_list(cls, payload: Any) -> bool:
+        """A /classifiers/ answer worth caching: a list naming the default classifier with its classes."""
+        return bool(cls._merged_classifiers(payload).get(str(cls.default_options["classifier"])))
+
     async def validate_class(self, client: httpx.AsyncClient, classifier: str | None, class_name: str | None) -> bool:
         """Raise ValueError for a classifier/class ALeRCE does not know (checked via /classifiers/).
 
-        Returns True when the class list was downloaded (False: cached or nothing to check).
+        Returns True when the class list was downloaded (False: cached or nothing to check). A class list that
+        cannot be used (not a list, or listing no classifier at all) raises BrokerError: it proves nothing.
         """
         if not classifier and not class_name:
             return False
         url = f"{self.base_url}/classifiers/"
-        payload, fetched = await _class_list(client, self.name, url, self.timeout)
-        if not isinstance(payload, list):
-            _CLASS_LIST_CACHE.pop(url, None)
-            raise BrokerError(self.name, f"unexpected /classifiers/ payload: {str(payload)[:200]}")
-        merged: dict[str, set[str]] = {}  # a classifier can be listed once per version
-        for c in payload:
-            if isinstance(c, dict):
-                merged.setdefault(str(c.get("classifier_name")), set()).update(c.get("classes") or [])
+        payload, fetched = await _class_list(client, self.name, url, self.timeout, self.usable_class_list)
+        merged = self._merged_classifiers(payload)
+        if not merged:
+            raise BrokerError(self.name, f"unusable /classifiers/ answer (no classifier listed): {str(payload)[:200]}")
         if classifier and classifier not in merged:
             raise ValueError(f"Unknown ALeRCE classifier {classifier!r}; known: {sorted(merged)}")
         if class_name:
@@ -1000,7 +1175,21 @@ class AlerceBroker:
         seen (ALeRCE repeats an object once per classifier version, see :meth:`parse_objects`)
         or the window is exhausted: more than ``limit`` objects means the window holds more
         (``truncated``; ``boundary_mjd`` is the ``mjd_field`` value of the oldest kept object).
-        A repeated object takes the probability of its newest classifier version.
+
+        Paging is by keyset: the next request's (inclusive) upper bound is the exact MJD of the
+        last row received, so the rows of that MJD -- which ALeRCE returns in a different order on
+        every request -- are all read again together, and so are every object's version rows.
+        Only when one MJD holds more than a page of rows are ``page`` offsets used inside it.
+
+        Every kept object is then classified by its newest classifier version
+        (``/objects/{oid}/probabilities``, :meth:`choose_version`): an object returned once may carry only
+        a superseded version's row (live: 8 of 30 lc_classifier SNIa objects of a lastmjd window are LPVs,
+        CVs... in lc_classifier_1.1.13), and a repeated object's rows come in any order. Objects whose
+        newest version ranks another class first are dropped with a warning and returned in
+        ``FetchResult.superseded`` (:meth:`AlertStore.mark_superseded` reclassifies their stored rows); when the lookup fails the
+        object is kept with ``classifier_choice`` 'unresolved' (one row) or 'max_probability' (several),
+        and :meth:`AlertStore.upsert_many` keeps an earlier newest-version classification of the same
+        detection. The stored classification never depends on the order ALeRCE returned the rows in.
         """
         _check_limit(limit)
         page_size = limit + 1
@@ -1009,9 +1198,11 @@ class AlerceBroker:
         requests = 0
         exhausted = False
         last_row_mjd: float | None = None
-        for page in range(1, MAX_PAGES + 1):
-            params = self.object_params(since_mjd=since_mjd, until_mjd=until_mjd, limit=page_size,
-                                        classifier=classifier, class_name=class_name, mjd_field=mjd_field)
+        stop: float | None = None  # keyset: the exact MJD of the last row read (None: until_mjd)
+        page = 1  # offset inside one MJD holding more rows than a page
+        for _ in range(MAX_PAGES):
+            params = self.object_params(since_mjd=since_mjd, until_mjd=until_mjd, limit=page_size, classifier=classifier,
+                                        class_name=class_name, mjd_field=mjd_field, stop_mjd=stop)
             if page > 1:
                 params.append(("page", str(page)))
             payload = await _get_json(client, self.name, f"{self.base_url}/objects/", params, self.timeout)
@@ -1023,24 +1214,35 @@ class AlerceBroker:
                 if known is None:
                     collected[alert.object_id] = alert
                     continue
-                # The same object on two pages (one row per classifier version).
+                # The same object again: another classifier version's row, or a row read again
+                # at the keyset MJD (identical rows are not counted twice).
                 rows = known.extra.setdefault("classifier_rows", [{"class": known.classification,
                                                                     "probability": known.probability}])
-                rows.extend(alert.extra.get("classifier_rows") or [{"class": alert.classification,
-                                                                    "probability": alert.probability}])
-                known.extra["classifier_choice"] = "max_probability"
+                for row in alert.extra.get("classifier_rows") or [{"class": alert.classification,
+                                                                   "probability": alert.probability}]:
+                    if row not in rows:
+                        rows.append(row)
+                if len(rows) > 1:
+                    known.extra["classifier_choice"] = "max_probability"
+                else:
+                    known.extra.pop("classifier_rows")
                 if alert.probability is not None and (known.probability is None or alert.probability > known.probability):
                     known.probability = alert.probability
-            items = [i for i in payload["items"] if isinstance(i, dict)]
-            if items:
-                last_row_mjd = _float(items[-1].get(mjd_field))
             if len(payload["items"]) < page_size:
                 exhausted = True
                 break
+            values = [v for v in (_float(i.get(mjd_field)) for i in payload["items"] if isinstance(i, dict)) if v is not None]
+            if not values:
+                raise BrokerError(self.name, f"a full /objects/ page without {mjd_field} values: cannot page back")
+            last_row_mjd = min(values)
             if len(collected) > limit:
                 break
+            if stop is not None and last_row_mjd >= stop:
+                page += 1  # the whole page is one MJD: step through it by offset
+            else:
+                stop, page = last_row_mjd, 1
         else:
-            warnings.append(f"alerce: stopped after {MAX_PAGES} pages of repeated objects")
+            warnings.append(f"alerce: stopped after {MAX_PAGES} requests")
         ordered = list(collected.values())  # newest first (order_by mjd_field DESC)
         kept = ordered[:limit]
         truncated = len(ordered) > limit or not exhausted
@@ -1050,22 +1252,33 @@ class AlerceBroker:
             boundary = last.first_mjd if mjd_field == "firstmjd" else last.mjd
         elif truncated:
             boundary = last_row_mjd if last_row_mjd is not None else until_mjd
-        if not kept and await self.validate_class(client, classifier, class_name):
-            requests += 1
+        if not kept:
+            # ALeRCE answers an unknown classifier/class with an empty list: check it (a ValueError), but an
+            # unavailable class list does not turn the empty answer the broker did give into a failed poll.
+            try:
+                if await self.validate_class(client, classifier, class_name):
+                    requests += 1
+            except BrokerError as exc:
+                requests += 1
+                warnings.append(f"alerce: empty window; the classifier/class could not be checked ({exc})")
         semaphore = asyncio.Semaphore(self.concurrency)
-        repeated = [a for a in kept if len(a.extra.get("classifier_rows") or []) > 1]
+        superseded: list[Alert] = []
 
         async def version(alert: Alert) -> None:
             async with semaphore:
                 try:
                     found = await _get_json(client, self.name, f"{self.base_url}/objects/{alert.object_id}/probabilities",
                                             {"classifier": classifier} if classifier else {}, self.timeout)
-                    if not self.choose_version(alert, found, classifier):
-                        warnings.append(f"alerce: {alert.object_id}: no classifier version ranks {alert.classification!r} "
-                                        "first; kept the highest probability of its rows")
+                    outcome = self.choose_version(alert, found, classifier, class_name)
                 except (BrokerError, *_ROW_ERRORS) as exc:
-                    warnings.append(f"alerce: classifier versions of {alert.object_id} unavailable ({exc}); kept the "
-                                    "highest probability of its rows")
+                    outcome = f"unavailable ({exc})"
+                if outcome == "superseded":
+                    superseded.append(alert)
+                elif outcome != "newest_version":
+                    alert.extra.setdefault("classifier_choice", "unresolved")
+                    why = ("no classifier version ranks a class first" if outcome == "unranked"
+                           else f"classifier versions {outcome}")
+                    warnings.append(f"alerce: {alert.object_id}: {why}; kept the highest probability of its rows")
 
         async def photometry(alert: Alert) -> None:
             async with semaphore:
@@ -1076,13 +1289,22 @@ class AlerceBroker:
                 except (BrokerError, *_ROW_ERRORS) as exc:
                     warnings.append(f"alerce: no photometry for {alert.object_id}: {exc}")
 
-        if repeated:
-            await asyncio.gather(*(version(a) for a in repeated))
-            requests += len(repeated)
+        if kept:
+            await asyncio.gather(*(version(a) for a in kept))
+            requests += len(kept)
+        if superseded:
+            gone = {a.object_id for a in superseded}
+            kept = [a for a in kept if a.object_id not in gone]
+            examples = ", ".join(f"{a.object_id} ({a.extra['newest_version_class']['class']} "
+                                 f"{a.extra['newest_version_class']['probability']} in "
+                                 f"{a.extra['newest_version_class']['classifier_version']})" for a in superseded[:3])
+            warnings.append(f"alerce: {len(superseded)} object(s) dropped: their newest {classifier} version ranks "
+                            f"another class than {class_name!r} first (their {class_name!r} row came from an older "
+                            f"version; a stored row of one is reclassified), e.g. {examples}")
         if with_photometry and kept:
             await asyncio.gather(*(photometry(a) for a in kept))
             requests += len(kept)
-        return FetchResult(kept, warnings, truncated, boundary, requests)
+        return FetchResult(kept, warnings, truncated, boundary, requests, superseded=superseded)
 
 
 class _FinkWalkBack:
@@ -1269,8 +1491,8 @@ class FinkZTFBroker(_FinkWalkBack):
             is_negative=negative_from_isdiffpos(row.get("i:isdiffpos")),
             extra={
                 "candid": str(row["i:candid"]) if row.get("i:candid") is not None else None,
-                "isdiffpos": row.get("i:isdiffpos"),
-                "ndethist": row.get("i:ndethist"),
+                "isdiffpos": _raw(row.get("i:isdiffpos")),
+                "ndethist": _raw(row.get("i:ndethist")),
                 "drb": _float(row.get("i:drb")),
                 "classtar": _float(row.get("i:classtar")),
                 "sgscore1": _float(row.get("i:sgscore1")),
@@ -1286,11 +1508,11 @@ class FinkZTFBroker(_FinkWalkBack):
                 "gaia_dr3_name": _text(row.get("d:DR3Name")),
                 "gaia_parallax_mas": _float(row.get("d:Plx")),
                 "gaia_parallax_error_mas": _float(row.get("d:e_Plx")),
-                "gaia_var_flag": row.get("d:gaiaVarFlag"),
+                "gaia_var_flag": _raw(row.get("d:gaiaVarFlag")),
                 "mangrove_hyperleda_name": _text(row.get("d:mangrove_HyperLEDA_name")),
                 "mangrove_ang_dist": _float(row.get("d:mangrove_ang_dist")),
                 "mangrove_lum_dist": _float(row.get("d:mangrove_lum_dist")),
-                "roid": row.get("d:roid"),
+                "roid": _raw(row.get("d:roid")),
             },
         )
 
@@ -1302,15 +1524,22 @@ class FinkZTFBroker(_FinkWalkBack):
         Returns True when the class list was downloaded (False: cached).
         """
         url = f"{self.base_url}/classes"
-        payload, fetched = await _class_list(client, self.name, url, self.timeout)
-        if not isinstance(payload, dict):
-            _CLASS_LIST_CACHE.pop(url, None)
-            raise BrokerError(self.name, f"unexpected /classes payload: {str(payload)[:200]}")
-        known = {str(c) for group in payload.values() if isinstance(group, list) for c in group}
+        payload, fetched = await _class_list(client, self.name, url, self.timeout,
+                                             lambda p: bool(self._known_classes(p)))
+        known = self._known_classes(payload)
+        if not known:
+            raise BrokerError(self.name, f"unusable /classes answer (no class listed): {str(payload)[:200]}")
         bare = {c.removeprefix(FINK_SIMBAD_PREFIX) for c in known if c.startswith(FINK_SIMBAD_PREFIX)}
         if class_name not in known and class_name not in bare:
             raise ValueError(f"Unknown Fink/ZTF class {class_name!r} (see {self.base_url}/classes)")
         return fetched
+
+    @staticmethod
+    def _known_classes(payload: Any) -> set[str]:
+        """Every class of a /classes answer (a dict of class lists), empty when it is not one."""
+        if not isinstance(payload, dict):
+            return set()
+        return {str(c) for group in payload.values() if isinstance(group, list) for c in group}
 
     async def fetch(
         self,
@@ -1321,10 +1550,18 @@ class FinkZTFBroker(_FinkWalkBack):
         limit: int = 20,
         class_name: str = "SN candidate",
     ) -> FetchResult:
-        """The ``limit`` objects with the newest alerts of ``class_name`` in [since, until]."""
+        """The ``limit`` objects with the newest alerts of ``class_name`` in [since, until].
+
+        Fink answers an unknown class with an empty list, so an empty window checks the class (ValueError); an
+        unavailable class list only adds a warning to the (empty) answer."""
         result = await self._walk(client, since_mjd=since_mjd, until_mjd=until_mjd, limit=limit, class_name=class_name)
-        if not result.alerts and await self.validate_class(client, class_name):
-            result.requests += 1
+        if not result.alerts:
+            try:
+                if await self.validate_class(client, class_name):
+                    result.requests += 1
+            except BrokerError as exc:
+                result.requests += 1
+                result.warnings.append(f"fink: empty window; the class could not be checked ({exc})")
         return result
 
 
@@ -1447,7 +1684,7 @@ class FinkLSSTBroker(_FinkWalkBack):
                 "midpoint_mjd_tai": mjd_tai,
                 "psf_flux_njy": flux,
                 "psf_flux_err_njy": flux_err,
-                "is_negative": flag,
+                "is_negative": _raw(flag),
                 "reliability": _float(row.get("r:reliability")),
                 "extendedness": _float(row.get("r:extendedness")),
                 "snr": _float(row.get("r:snr")),
@@ -1512,13 +1749,19 @@ def broker_info() -> list[dict[str, Any]]:
 
 
 def normalize_options(broker: str, options: Mapping[str, Any] | None) -> dict[str, Any]:
-    """The broker's default options overridden by the given (non-None) ones; unknown options raise ValueError."""
+    """The broker's default options overridden by the given (non-None) ones; unknown options raise ValueError,
+    and so does a blank string (an empty class would disable ALeRCE's class filter and make every object
+    'superseded'): omit an option (None) for its default."""
     client_broker = get_broker(broker)
-    given = {k: v for k, v in (options or {}).items() if v is not None}
+    given = {k: v.strip() if isinstance(v, str) else v for k, v in (options or {}).items() if v is not None}
     allowed = set(client_broker.default_options)
     unknown = set(given) - allowed
     if unknown:
         raise ValueError(f"Options {sorted(unknown)} are not supported by broker {broker!r}")
+    blank = sorted(k for k, v in given.items() if isinstance(v, str) and not v)
+    if blank:
+        raise ValueError(f"Options {blank} must not be blank (omit them for the defaults "
+                         f"{ {k: client_broker.default_options[k] for k in blank} })")
     return {**client_broker.default_options, **given}
 
 
@@ -1577,8 +1820,94 @@ HYPERLEDA_DEFINITION: dict[str, Any] = {
     "coverage": "all-sky galaxy catalog (983k galaxies)",
 }
 HYPERLEDA_OTYPE_FILTER = "(OType LIKE 'G%' OR OType LIKE 'M%')"
+# Catastrophic D25 errors of the 2003 snapshot. Every VII/237 galaxy with logD25 >= 1.2 (5862 rows) was
+# compared with the current HyperLEDA (``meandata`` of the atlas.obs-hp.fr mirror, extracted 2026-09-28):
+# 151 differ by more than 0.3 dex (a factor 2 in diameter), all too large in 2003, e.g. NGC 5078
+# (PGC 46490) 2.71 -> 1.409 (51' -> 2.6'; RC3: 1.60) and NGC 3102 (PGC 29220) 2.03 -> 0.992 (RC3: 0.89),
+# which made every transient within 26' of NGC 5078 an object "in" it; and 17 have no D25 today. For
+# these PGC numbers the current "logD25:logR25" is used (empty: no D25 size, the galaxy is then treated
+# as a galaxy of unknown size). Galaxies below logD25 = 1.2 in 2003 reach at most 190" (4 radii).
+HYPERLEDA_D25_CORRECTIONS: dict[int, tuple[float | None, float | None]] = {
+    int(pgc): (float(d) if d else None, float(r) if r else None)
+    for pgc, d, r in (item.split(":") for item in (  # noqa: SIM905 - compact table
+    "965:0.78:0.37;2314:0.83:0.234;2357:1.104:0.142;3589:1.056:0.091;4063:1.01:0.51;4801:1.424:0.036;"
+    "5600:0.75:0.178;5847:0.609:0.308;6166:0.55:0.34;6337:0.47:0.18;6364:0.744:0.161;6799:0.95:0.37;"
+    "7495:0.708:0.151;7544:1.13:0.376;8378:0.913:0.236;8539:0.52:0.26;9247:0.72:0.153;9559:1.12:0.171;"
+    "9892:0.803:0.012;9951:0.92:0.06;10074:2.105:0.091;10102:0.906:0.396;10118:0.859:0.495;10217:0.843:0;"
+    "11586:0.904:0.498;11679:0.75:0.26;11856:1.11:0.44;12327:0.843:0;13189::;13400:0.87:0.488;14081::;"
+    "15018:1.26:0.245;16204:0.911:0.994;16420:1.09:0.34;16826:0.872:0.649;17560:0.68:0.2;18011:0.95:0.486;"
+    "18277:0.62:0.115;19206:0.658:0.388;19789:1.17:0.031;20498:0.697:0;21076:0.74:0.34;21088:0.71:0.329;"
+    "23423:0.655:0.179;23433:0.37:0.064;26071:1.17:0.6;26699:0.6:0.51;28435:0.7:0.17;28695:0.83:0.042;"
+    "29194:0.9:0.035;29214:0.84:0.34;29220:0.992:0.001;29469:0.83:0.11;29715:0.88:0.29;30156:0.548:0.232;"
+    "31466:1.26:0.064;31883:1.09:0.238;32617:1.004:0.63;32861:0.519:0.172;33408:1.19:0.34;33625:0.92:0.387;"
+    "34513:1.252:0.165;35931:1.28:0.294;36026:0.705:0.205;36343:1.09:0.44;36887:1.01:0.21;36973:0.88:0.5;"
+    "37307:0.85:0.034;37682:0.871:0.135;38101:0.683:0.123;38174:0.884:0.865;38325:1.098:0.489;38440:1.25:0.445;"
+    "38527:1.2:0.16;38567:1.316:0.38;38588:0.86:0.49;38739:1.459:0.114;39233:0.53:0.07;39723:0.75:0.26;"
+    "40367:1.06:0.23;40596:1.62:0.477;40692:1.29:0.24;40732:0.828:0.117;40821:0.567:0.521;42476:1.11:0.21;"
+    "42964:0.956:0.026;43141:1:0.25;45845:0.52:0.19;46066:0.56:0.42;46490:1.409:0.62;46819:0.65:0.06;47696::;"
+    "48786:0.78:0.388;49007:1.02:0.251;49014:0.81:0.33;49580:0.6:0.04;49836:1.17:0.53;50142:0.85:0.505;"
+    "50895:1.31:0.36;50966:0.855:0.324;51798:0.81:0.31;52107:0.81:0.43;52424:0.89:0.4;53499:1.55:0.41;"
+    "53588:0.999:0.102;53756:0.79:0.49;54074:0.76:0.261;56126:0.98:0.49;59400:0.813:0.177;59604::;59957:0.65:0.46;"
+    "60459:1.39:0.343;60466:1.08:0.114;60733:0.42:0.03;61223:0.77:0.524;61812:1.02:0.446;62673:0.95:0.241;"
+    "62918:0.863:0.557;64096:0.66:0.18;65775:0.87:0.485;66669:0.955:0.584;67266:1.25:0.291;67727:0.68:0.595;"
+    "67817:0.91:0.19;67878:1.275:0.09;67883:1.06:0.098;67966:0.81:0.62;68024:0.83:0.55;68106:0.589:0.062;"
+    "68155:0.708:0.169;68223:0.87:0.18;68265:0.66:0.22;68455:1.006:0.294;69419:0.75:0.495;69468:0.903:0.2;"
+    "69610:0.45:0.23;70067:0.83:0.29;70089:0.77:0.15;70098:0.96:0.04;72345:0.88:0.31;72525:0.86:0.462;"
+    "72957:1.05:0.04;73036:0.836:0.25;73317::;82563:0.669:1.141;83474:0.98:0.522;86298:0.55:0.167;86633:0.798:0.4;"
+    "90672:0.74:0.686;97267:0.59:0.27;101327::;128569:0.73:0.12;132144:0.631:0.239;133085::;212874:0.46:0.1;"
+    "213642:0.75:0.59;598322:0.69:0.2;634055::;1032198::;1403344:0.778:0.61;2801052::;2802336::;2807106::;"
+    "2807107::;2807116::;2807132::;2807155::;2807158::"
+    ).split(";"))
+}
 # Arcsec per unit of 10**logD25 for the semi-major axis: D25 = 0.1' * 10**logD25 = 6" * 10**logD25.
 D25_SEMI_MAJOR_ARCSEC_PER_UNIT = 3.0
+
+# Star membership of Local Group dwarfs. A D25 isophote (25 B mag/arcsec^2) says nothing about where the stars of
+# a dwarf spheroidal are: the current HyperLEDA D25 of Sculptor (PGC 3589, logD25 1.056) is 34" while its stars
+# extend ~76' (King tidal radius; Irwin & Hatzidimitriou 1995, MNRAS 277, 1354), so its member RR Lyrae stars
+# 12' from the centre would be "far from any galaxy". Host association keeps the D25 ellipses; star membership
+# uses the stellar extents of McConnachie (2012, AJ 144, 4; VizieR J/AJ/144/4, queried 2026-09-29): every
+# galaxy within 1.5 Mpc with a half-light radius and M_V <= -8 (the classical dwarfs; the ultra-faint ones
+# hold a few dozen stars, outnumbered by the Galactic foreground), except the Sagittarius dSph (a stream across
+# the Galactic bulge) and the Magellanic Clouds, M31 and M33 (large D25 ellipses). Entries: name | RA | Dec
+# (J2000, deg) | half-light radius along the major axis (arcmin) | ellipticity | PA (deg; empty: unknown) | m-M.
+LOCAL_GROUP_DWARFS: tuple[tuple[str, float, float, float, float, float | None, float], ...] = tuple(
+    (name, float(ra), float(dec), float(r_h), float(ell or 0.0), float(pa) if pa else None, float(dm))
+    for name, ra, dec, r_h, ell, pa, dm in (item.split("|") for item in (  # noqa: SIM905 - compact table
+    "Draco|260.05167|57.91528|10|0.31|89|19.4;Ursa Minor|227.28542|67.22250|8.2|0.56|53|19.4;"
+    "Sculptor|15.03917|-33.70917|11.3|0.32|99|19.67;Sextans|153.26250|-1.61472|27.8|0.35|56|19.67;"
+    "Carina|100.40292|-50.96611|8.2|0.33|65|20.11;Fornax|39.99708|-34.44917|16.6|0.3|41|20.84;"
+    "Canes Venatici|202.01458|33.55583|8.9|0.39|70|21.69;Leo II|168.37000|22.15167|2.6|0.13|12|21.84;"
+    "Leo I|152.11708|12.30639|3.4|0.21|79|22.02;Phoenix|27.77625|-44.44472|3.76|0.4|5|23.09;"
+    "Leo T|143.72250|17.05139|0.99|0.0|0|23.1;NGC 6822|296.23583|-14.78917|2.65|0.24|330|23.31;"
+    "Andromeda XVI|14.87417|32.37667|0.89|0.0|0|23.6;NGC 185|9.74167|48.33750|2.55|0.15|35|23.95;"
+    "Andromeda XV|18.57792|38.11750|1.21|0.0|0|24;Andromeda II|19.12417|33.41917|6.2|0.2|34|24.07;"
+    "Andromeda XXVIII|338.17167|31.21611|1.11|0.34|39|24.1;NGC 147|8.30042|48.50889|3.17|0.41|25|24.15;"
+    "Andromeda XXIX|359.73167|30.75556|1.7|0.35|51|24.32;Andromeda XIV|12.89583|29.69694|1.7|0.31||24.33;"
+    "Andromeda I|11.41583|38.04111|3.1|0.22|22|24.36;Andromeda III|8.89083|36.49778|2.2|0.52|136|24.37;"
+    "IC 1613|16.19917|2.11778|6.81|0.11|50|24.39;Cetus|6.54583|-11.04444|3.2|0.33|63|24.39;"
+    "Andromeda VII|351.63208|50.67583|3.5|0.13|94|24.41;Andromeda IX|13.22083|43.19583|2.5|0||24.42;"
+    "Andromeda XXIII|22.34083|38.71889|4.6|0.4|138|24.43;LGS 3|15.97917|21.88500|2.1|0.2|0|24.43;"
+    "Andromeda V|17.57125|47.62806|1.4|0.18|32|24.44;Andromeda VI|357.94292|24.58250|2.3|0.41|163|24.47;"
+    "Andromeda XVII|9.27917|44.32222|1.24|0.27|122|24.5;IC 10|5.07208|59.30389|2.65|0.19||24.5;"
+    "Leo A|149.86042|30.74639|2.15|0.4|114|24.51;M32|10.67417|40.86528|0.47|0.25|159|24.53;"
+    "Andromeda XXV|7.53708|46.85194|3|0.25|170|24.55;NGC 205|10.09208|41.68528|2.46|0.43|28|24.58;"
+    "Andromeda XXI|358.69875|42.47083|3.5|0.2|110|24.67;Tucana|340.45667|-64.41944|1.1|0.48|97|24.74;"
+    "Pegasus dIrr|352.15125|14.74306|2.1|0.46|120|24.82;WLM|0.49250|-15.46083|7.78|0.65|4|24.85;"
+    "Andromeda XIX|4.88375|35.04361|6.2|0.17|37|24.85;Sagittarius dIrr|292.49583|-17.67806|0.91|0.5|90|25.14;"
+    "Aquarius|311.71583|-12.84806|1.47|0.5|99|25.15;NGC 3109|150.77875|-26.15972|4.3|0.82|92|25.57;"
+    "Antlia|151.01708|-27.33111|1.2|0.4|135|25.65;Andromeda XVIII|0.56042|45.08889|0.92|0||25.66;"
+    "UGC 4879|139.00917|52.84000|0.41|0.44|84|25.67;Sextans B|150.00042|5.33222|1.06|0.31|110|25.77;"
+    "Sextans A|152.75333|-4.69278|2.47|0.17|0|25.78"
+    ).split(";"))
+)
+# A stellar-type source within this many half-light radii (elliptical radius) of a Local Group dwarf is taken as
+# one of its stars (for a Plummer profile 90% of the stars lie within 3 r_h); up to LG_DWARF_EXTENT_RH (the King
+# tidal radii of the classical dSphs are ~3-7 r_h: Draco ~2.8, Fornax ~4.3, Ursa Minor ~6.2, Sculptor ~6.8 with
+# the r_t of Irwin & Hatzidimitriou 1995) its membership is possible but not established (the Galactic
+# foreground dominates the outskirts).
+LG_DWARF_MEMBER_RH = 3.0
+LG_DWARF_EXTENT_RH = 6.0
 
 COSMICFLOWS4 = "cosmicflows4"
 # Cosmicflows-4 redshift-independent distance moduli of individual galaxies, keyed by PGC
@@ -1695,6 +2024,12 @@ GAIA_DSC_EXTRAGALACTIC_MIN = 0.5
 #    1.50". A well-fitted star blended with a catalogued galaxy keeps its evidence: the 9.8 mas/yr
 #    common-proper-motion pair under ZTF26abxsysn, which NED types as a galaxy.)
 GALAXY_COINCIDENCE_ARCSEC = 1.5
+# A proper motion this significant is real whatever the source's RUWE / excess noise, unless Gaia classifies
+# the source as extragalactic: the spurious proper motions of nuclei and clusters found are all < 18 sigma
+# (NGC 4395 17.3, NGC 3783 14.5, M87 12.0, SN 2004dj's cluster 6.2), binaries' real ones reach hundreds.
+# Together with PARALLAX_SNR_SECURE it also marks astrometry too decisive for Gaia's DSC / galaxy-candidate
+# flags alone to veto (a white dwarf with a 100-sigma parallax is DSC-extragalactic).
+PM_SNR_DECISIVE = 20.0
 # The proper-motion test and the luminosity test further need a well-behaved *point source*:
 # RUWE < 1.4 (Lindegren et al. 2021, A&A 649, A2) and astrometric_excess_noise_sig <= 2 (a larger
 # value means the excess noise is significant, i.e. the source is not fitted by the single-star
@@ -1721,20 +2056,25 @@ HUBBLE_FLOW_MIN_CZ_KMS = 1500.0
 CMB_DIPOLE_KMS = 369.82
 CMB_DIPOLE_L_DEG = 264.021
 CMB_DIPOLE_B_DEG = 48.253
-# Note on scales: Cosmicflows-4 distances are on the TRGB/Cepheid zero point (H0 = 74.6 km/s/Mpc,
-# Tully et al. 2023) while Hubble-flow distances use Planck 2018 (H0 = 67.66): redshift distances are
-# ~10% larger than CF4 ones at the same velocity; the adopted method is reported with every host.
+# One distance scale: Cosmicflows-4 distances are on the TRGB/Cepheid zero point, whose Hubble constant
+# is H0 = 74.6 km/s/Mpc (Tully et al. 2023, ApJ 944, 94). Hubble-flow distances use the same H0 (with
+# the Planck 2018 matter and radiation densities for the shape of D(z)), so that a host's distance does
+# not jump by H0_Planck / H0_CF4 - 1 = -9% where the method changes at z = 0.01 (with Planck's
+# H0 = 67.66 a redshift distance would be ~10% larger than a CF4 one at the same velocity).
+HUBBLE_FLOW_H0_KMS_MPC = 74.6
 
 _COSMOLOGY: Any = None
 
 
-def _planck18() -> Any:
-    """astropy's Planck 2018 cosmology (imported once; ~1 s, so warmed in a thread by the enricher)."""
+def _hubble_flow_cosmology() -> Any:
+    """Flat LCDM of the Hubble-flow distances: Planck 2018 (Planck Collaboration 2020, A&A 641, A6)
+    with H0 on the Cosmicflows-4 scale (``HUBBLE_FLOW_H0_KMS_MPC``). Built once (the astropy
+    import takes ~1 s, so the enricher warms it in a thread)."""
     global _COSMOLOGY
     if _COSMOLOGY is None:
         from astropy.cosmology import Planck18
 
-        _COSMOLOGY = Planck18
+        _COSMOLOGY = Planck18.clone(H0=HUBBLE_FLOW_H0_KMS_MPC, name="Planck18 with H0 = 74.6 (Cosmicflows-4 scale)")
     return _COSMOLOGY
 
 
@@ -1952,6 +2292,48 @@ def _is_extragalactic_star(entry: dict[str, Any]) -> bool:
     return entry.get("catalog") == "ned" and _ned_type(entry.get("object_type"))[0] in NED_EXTRAGALACTIC_STAR_TYPES
 
 
+# Star clusters and associations: a Gaia source on one may be the cluster itself (e.g. the cluster Sandage 96
+# under SN 2004dj), as bright as M_G ~ -10..-12. The SIMBAD "Cl*" and "As*" branches of ``otypedef`` (SIMBAD TAP,
+# queried 2026-09-29: Cl* Cluster*, Cl? Cluster*_Candidate, GlC GlobCluster, Gl? GlobCluster_Candidate,
+# OpC OpenCluster, As* Association, As? Association_Candidate, St* Stream, MGr MouvGroup; TAP basic.otype holds
+# the codes, e.g. 'Cl?' for M31's PHAT cluster candidates [JSD2012] PC), plus the legacy code 'C?*' and NED '*Cl'.
+SIMBAD_CLUSTER_OTYPEDEF: tuple[tuple[str, str], ...] = (
+    ("Cl*", "Cluster*"), ("Cl?", "Cluster*_Candidate"), ("GlC", "GlobCluster"), ("Gl?", "GlobCluster_Candidate"),
+    ("OpC", "OpenCluster"), ("As*", "Association"), ("As?", "Association_Candidate"), ("St*", "Stream"),
+    ("MGr", "MouvGroup"),
+)
+SIMBAD_CLUSTER_TYPES = frozenset(name for pair in SIMBAD_CLUSTER_OTYPEDEF for name in pair) | frozenset({"C?*"})
+NED_CLUSTER_TYPES = frozenset({"*Cl"})
+
+
+def _is_cluster(entry: Mapping[str, Any]) -> bool:
+    otype = entry.get("object_type")
+    if entry.get("catalog") == "ned":
+        return _ned_type(otype)[0] in NED_CLUSTER_TYPES
+    return entry.get("catalog") == "simbad" and otype in SIMBAD_CLUSTER_TYPES
+
+
+def _coincident_extended(entry: Mapping[str, Any], counterparts: Sequence[Mapping[str, Any]]
+                         ) -> tuple[dict[str, Any], float] | None:
+    """The SIMBAD/NED entry of an AGN/QSO (else a galaxy, else a star cluster) nearest to a Gaia source within
+    GALAXY_COINCIDENCE_ARCSEC, with its distance: the source may be that galaxy's nucleus or that cluster."""
+    if entry.get("ra") is None or entry.get("dec") is None:
+        return None
+    found: list[tuple[int, float, dict[str, Any]]] = []
+    for other in counterparts:
+        if other.get("catalog") not in {"simbad", "ned"} or other.get("ra") is None or other.get("dec") is None:
+            continue
+        rank = 0 if _is_agn(dict(other)) else 1 if _is_galaxy(dict(other)) else 2 if _is_cluster(other) else None
+        if rank is not None:
+            d = haversine_arcsec(entry["ra"], entry["dec"], other["ra"], other["dec"])
+            if d <= GALAXY_COINCIDENCE_ARCSEC:
+                found.append((rank, d, dict(other)))
+    if not found:
+        return None
+    _, d, other = min(found, key=lambda t: (t[0], t[1]))
+    return other, d
+
+
 def _is_transient(entry: dict[str, Any]) -> bool:
     """True for the transient itself: a transient catalogue type, or a transient-style designation
     that the catalogue does not type as a star or variable.
@@ -1967,6 +2349,49 @@ def _is_transient(entry: dict[str, Any]) -> bool:
     if not is_transient_designation(entry.get("source_id")):
         return False
     return not (_is_stellar(entry) or _is_variable(entry))
+
+
+def _is_transient_type(entry: Mapping[str, Any]) -> bool:
+    """An entry whose catalogue *type* is a transient (SIMBAD SN*/GRB/GW/... branch, NED SN/GRB)."""
+    otype = entry.get("object_type")
+    if entry.get("catalog") == "ned":
+        return _ned_type(otype)[0] in NED_TRANSIENT_TYPES
+    return entry.get("catalog") == "simbad" and otype in SIMBAD_TRANSIENT_TYPES
+
+
+def _is_host_type(catalog: Any, otype: Any) -> bool:
+    """A single galaxy that can host a transient: a galaxy type other than a quasar or blazar (an AGN
+    *entry*, kept for ``known_agn``; SN 2016bam's host was a z = 2.06 QSO 15" away) and other than a
+    pair, triplet or group entry (whose position is a centroid, e.g. SIMBAD '[T2015] nest 102796' PaG)."""
+    entry = {"catalog": catalog, "object_type": otype}
+    if not _is_galaxy(entry):
+        return False
+    if catalog == "ned":
+        return _ned_type(otype)[0] not in NED_NON_HOST_TYPES
+    return otype not in SIMBAD_NON_HOST_TYPES
+
+
+def _is_plausible_host(group: Mapping[str, Any]) -> bool:
+    """True when one of a galaxy group's catalogue entries is of a host type (:func:`_is_host_type`)."""
+    types = group.get("member_types") or [(group.get("catalog"), group.get("object_type"))]
+    return any(_is_host_type(catalog, otype) for catalog, otype in types)
+
+
+def _same_redshift(z1: float, z2: float) -> bool:
+    """Redshifts of one system: within SAME_REDSHIFT_KMS x (1 + z)."""
+    return abs(z1 - z2) * C_KMS <= SAME_REDSHIFT_KMS * (1.0 + max(z1, z2, 0.0))
+
+
+def typical_light_radius_arcsec(redshift: float | None, ra: float | None = None, dec: float | None = None
+                                ) -> float | None:
+    """Angular D25 radius of a typical host (HOST_TYPICAL_R25_KPC) at the Hubble-flow distance of
+    ``redshift`` (:func:`host_distance`); None without such a distance (cz_CMB < 1500 km/s)."""
+    if redshift is None:
+        return None
+    dist = host_distance(redshift, ra=ra, dec=dec)
+    if dist is None or dist["method"] != "hubble_flow":
+        return None
+    return math.degrees(HOST_TYPICAL_R25_KPC / (dist["angular_diameter_mpc"] * 1000.0)) * 3600.0
 
 
 _CMB_APEX_ICRS: tuple[float, float] | None = None
@@ -2006,11 +2431,12 @@ def host_distance(redshift: float | None, cf4: tuple[float, float] | None = None
     * ``cosmicflows4_group``: else, in the same range, the CF4 distance modulus of the galaxy's
       group (``group``: dm, e_dm, r2t_mpc from :meth:`AlertEnricher._cf4_group`), uncertain by
       e_DM and by the group's depth (~ its projected second-turnaround radius R2t);
-    * ``hubble_flow_planck18``: else, for cz_CMB >= 1500 km/s, the Planck 2018 distances of the
-      CMB-frame redshift -- the group's CMB velocity (``group['v3k_kms']``, free of the
-      intra-group velocity dispersion) or the galaxy's own redshift corrected for the solar
-      dipole when ``ra``/``dec`` are given (heliocentric otherwise). Uncertain by v_pec / cz_CMB
-      with v_pec = 300 km/s, or the group's velocity dispersion when larger (Virgo: 670 km/s).
+    * ``hubble_flow``: else, for cz_CMB >= 1500 km/s, the distances of the CMB-frame redshift in
+      :func:`_hubble_flow_cosmology` (Planck 2018 densities, H0 = 74.6 on the CF4 scale) -- the
+      group's CMB velocity (``group['v3k_kms']``, free of the intra-group velocity dispersion) or
+      the galaxy's own redshift corrected for the solar dipole when ``ra``/``dec`` are given
+      (heliocentric otherwise). Uncertain by v_pec / cz_CMB with v_pec = 300 km/s, or the group's
+      velocity dispersion when larger (Virgo: 670 km/s).
     """
     local = redshift is None or redshift < LOCAL_VOLUME_MAX_Z
     z_obs = redshift if redshift is not None and redshift > 0 else 0.0
@@ -2046,11 +2472,12 @@ def host_distance(redshift: float | None, cf4: tuple[float, float] | None = None
         return None
     from astropy import units as u
 
-    cosmo = _planck18()
+    cosmo = _hubble_flow_cosmology()
     d_m = float(cosmo.comoving_transverse_distance(z_cmb).to(u.Mpc).value)
     d_l = d_m * (1.0 + redshift)
     return {"angular_diameter_mpc": d_m / (1.0 + redshift), "distance_modulus": 5.0 * math.log10(d_l * 1e5),
-            "method": "hubble_flow_planck18", "fractional_uncertainty": peculiar / (C_KMS * z_cmb),
+            "method": "hubble_flow", "hubble_constant_kms_mpc": float(cosmo.H0.value),
+            "fractional_uncertainty": peculiar / (C_KMS * z_cmb),
             "redshift_cmb": z_cmb, "velocity_frame": frame, "peculiar_velocity_kms": peculiar,
             **({"group": group} if group else {})}
 
@@ -2103,6 +2530,7 @@ def group_host_candidates(galaxies: list[dict[str, Any]], alias_arcsec: float = 
             if definite is not None:
                 grp["object_type"] = definite["object_type"]
         grp["aliases"] = [f"{m['catalog']}:{m['source_id']}" for m in members if m is not named]
+        grp["member_types"] = [(m.get("catalog"), m.get("object_type")) for m in members]
         grp["transient_named"] = all(is_transient_designation(m.get("source_id")) for m in members)
         with_z = next((m for m in [named, *members] if m.get("redshift") is not None), None)
         grp["redshift"] = with_z["redshift"] if with_z else None
@@ -2217,14 +2645,15 @@ class AlertEnricher:
     async def _d25(self, alert: Alert) -> tuple[list[dict[str, Any]], dict[str, Any] | None, bool]:
         """HyperLEDA galaxies within the host radius or near enough to host the alert by their D25 ellipse.
 
-        The server keeps rows with DLR_HOST_MAX * 3" * 10**logD25 (4 semi-major axes) >= separation,
-        i.e. every galaxy the alert could be associated with at d_DLR <= 4 (Gupta et al. 2016);
-        the exact ellipse distance is computed here. Returns (galaxies sorted by d_DLR, failure,
-        truncated).
+        The server keeps rows with DLR_SEARCH_MAX * 3" * 10**logD25 (4 semi-major axes) >= separation:
+        every galaxy the alert could be associated with (d_DLR <= DLR_HOST_MAX) or is a possible
+        association of (d_DLR <= 4); the exact ellipse distance is computed here, with the current
+        HyperLEDA size of the galaxies whose 2003 D25 was grossly wrong (``HYPERLEDA_D25_CORRECTIONS``).
+        Returns (galaxies sorted by d_DLR, failure, truncated).
         """
         distance = f"DISTANCE(POINT('ICRS', RAJ2000, DEJ2000), POINT('ICRS', {alert.ra:.9f}, {alert.dec:.9f}))"
         where = (f"{HYPERLEDA_OTYPE_FILTER} AND ({distance} <= {self.host_radius_arcsec / 3600.0:.10f} OR "
-                 f"{DLR_HOST_MAX * D25_SEMI_MAJOR_ARCSEC_PER_UNIT:g} * POWER(10, logD25) >= 3600.0 * {distance})")
+                 f"{DLR_SEARCH_MAX * D25_SEMI_MAJOR_ARCSEC_PER_UNIT:g} * POWER(10, logD25) >= 3600.0 * {distance})")
         definition = self.host_service.registry.get(HYPERLEDA)
         plan = QueryPlan(HYPERLEDA, definition.provider, definition.endpoint, {"where": where},
                          D25_SEARCH_RADIUS_DEG * 3600.0, definition.wavelength)
@@ -2238,16 +2667,24 @@ class AlertEnricher:
         galaxies: list[dict[str, Any]] = []
         for src, pa_1950, pa in zip(rows, pas_1950, pas_icrs, strict=True):
             data = src.data or {}
-            axes = d25_ellipse(_float(data.get("logD25")), _float(data.get("logR25")))
-            sep = haversine_arcsec(src.ra, src.dec, alert.ra, alert.dec)
             pgc = data.get("PGC", src.source_id)
+            pgc_number = int(pgc) if str(pgc).isdigit() else None
+            log_d25, log_r25 = _float(data.get("logD25")), _float(data.get("logR25"))
+            corrected = HYPERLEDA_D25_CORRECTIONS.get(pgc_number) if pgc_number is not None else None
+            if corrected is not None:
+                log_d25, log_r25 = corrected
+            axes = d25_ellipse(log_d25, log_r25)
+            sep = haversine_arcsec(src.ra, src.dec, alert.ra, alert.dec)
             entry: dict[str, Any] = {
-                "catalog": HYPERLEDA, "source_id": f"PGC {pgc}", "pgc": int(pgc) if str(pgc).isdigit() else None,
+                "catalog": HYPERLEDA, "source_id": f"PGC {pgc}", "pgc": pgc_number,
                 "otype": _text(data.get("OType")),
                 "hyperleda_names": [a for a in str(data.get("ANames") or "").split() if a],
                 "ra": src.ra, "dec": src.dec, "separation_arcsec": sep, "semi_major_arcsec": None,
                 "semi_minor_arcsec": None, "pa_deg": pa, "pa_b1950_deg": pa_1950, "dlr_arcsec": None, "d_dlr": None,
+                "log_d25": log_d25,
             }
+            if corrected is not None:
+                entry["log_d25_2003"] = _float(data.get("logD25"))
             if axes is not None:
                 a, b = axes
                 radius = directional_light_radius(a, b, pa, position_angle_deg(src.ra, src.dec, alert.ra, alert.dec))
@@ -2264,8 +2701,7 @@ class AlertEnricher:
                          CF4_SEARCH_RADIUS_ARCSEC, definition.wavelength)
         successes, failures = await self.host_service.executor.execute([plan], validate_target(ra, dec))
         if failures:
-            failure = failures[0]
-            raise RuntimeError(f"{failure.error_type}: {failure.message}")
+            raise CatalogLookupError(str(failures[0].error_type), str(failures[0].message))
         for src in successes[0][1]:
             data = src.data or {}
             if str(data.get("PGC", src.source_id)) == str(pgc) and _float(data.get("DM")) is not None:
@@ -2280,8 +2716,7 @@ class AlertEnricher:
                          CF4_SEARCH_RADIUS_ARCSEC, definition.wavelength)
         successes, failures = await self.host_service.executor.execute([plan], validate_target(ra, dec))
         if failures:
-            failure = failures[0]
-            raise RuntimeError(f"{failure.error_type}: {failure.message}")
+            raise CatalogLookupError(str(failures[0].error_type), str(failures[0].message))
         for src in successes[0][1]:
             data = src.data or {}
             if str(data.get("PGC", src.source_id)) != str(pgc):
@@ -2304,9 +2739,11 @@ class AlertEnricher:
             match_radius_arcsec=self.match_radius_arcsec,
             host_radius_arcsec=self.host_radius_arcsec,
             catalogs=list(self.catalogs),
+            ra=alert.ra,
+            dec=alert.dec,
         )
         search_host = bool(self.host_catalogs) and self.host_radius_arcsec > 0
-        jobs: dict[str, Awaitable[Any]] = {"cosmology": asyncio.to_thread(_planck18)}
+        jobs: dict[str, Awaitable[Any]] = {"cosmology": asyncio.to_thread(_hubble_flow_cosmology)}
         if self.catalogs:
             jobs["match"] = self._crossmatch(self.match_service, alert.ra, alert.dec, self.catalogs, self.match_radius_arcsec)
         if search_host:
@@ -2329,6 +2766,13 @@ class AlertEnricher:
                 if _is_transient(entry):
                     if str(entry["source_id"]).lower() not in {d.lower() for d in result.transient_designations}:
                         result.transient_designations.append(str(entry["source_id"]))
+                    # Only an entry *typed* as a transient (SIMBAD SN*, NED SN...) gives the transient's redshift:
+                    # a galaxy-typed entry under a transient's name (NED 'AT 2017abr', type G, z = 0.207, is a
+                    # Galactic CV) carries a host's redshift at best.
+                    z_t = entry.get("redshift") if _is_transient_type(entry) else None
+                    if result.transient_redshift is None and z_t is not None and -0.01 < z_t < 10.0:
+                        result.transient_redshift = z_t
+                        result.transient_redshift_source = f"{entry['catalog']}:{entry['source_id']}"
                     continue
                 if is_transient_designation(entry["source_id"]):
                     result.evidence.append(
@@ -2339,7 +2783,11 @@ class AlertEnricher:
             match_failed = True
             result.error = f"counterpart crossmatch failed: {match_outcome.__class__.__name__}: {match_outcome}"
             result.failures.append({"catalog": "counterparts", "status": "failed",
-                                    "error_type": match_outcome.__class__.__name__, "message": str(match_outcome)})
+                                    "error_type": _error_type(match_outcome), "message": str(match_outcome)})
+        tns_z = _float((alert.extra or {}).get("tns_redshift"))
+        if result.transient_redshift is None and tns_z is not None and -0.01 < tns_z < 10.0:
+            result.transient_redshift = tns_z
+            result.transient_redshift_source = f"{alert.broker} TNS cross-match ({(alert.extra or {}).get('tns')})"
         if self.catalogs and not answered:
             # Nothing is known about the position: keep the alert queued for another attempt.
             result.status = "failed"
@@ -2364,7 +2812,7 @@ class AlertEnricher:
         elif isinstance(host_outcome, BaseException):
             host_failed = True
             result.failures.append({"catalog": "host", "search": "host", "status": "failed",
-                                    "error_type": host_outcome.__class__.__name__, "message": str(host_outcome)})
+                                    "error_type": _error_type(host_outcome), "message": str(host_outcome)})
         d25: list[dict[str, Any]] = []
         d25_failed = False
         if isinstance(d25_outcome, tuple):
@@ -2378,7 +2826,7 @@ class AlertEnricher:
         elif isinstance(d25_outcome, BaseException):
             d25_failed = True
             result.failures.append({"catalog": HYPERLEDA, "search": "host", "status": "failed",
-                                    "error_type": d25_outcome.__class__.__name__, "message": str(d25_outcome)})
+                                    "error_type": _error_type(d25_outcome), "message": str(d25_outcome)})
         distance_failed = False
         if search_host:
             identity_failed = await self._choose_host(alert, result, groups, d25)
@@ -2389,7 +2837,8 @@ class AlertEnricher:
                 if result.host_status == "ambiguous_transient_entry":
                     pass
                 elif complete:
-                    result.host_status = "none_within_radius"
+                    # 'unassociated' (set by _choose_host): galaxies were found, none passed the criteria.
+                    result.host_status = "unassociated" if result.host_status == "unassociated" else "none_within_radius"
                 elif host_cone_answered or (self.d25_search and not d25_failed):
                     result.host_status = "incomplete"
                 else:
@@ -2401,10 +2850,11 @@ class AlertEnricher:
                                            "a better host may exist")
 
         self._flags(alert, result, answered, d25_answered=self.d25_search and not d25_failed)
-        if result.known_star and result.host is not None:
+        if result.known_star and search_host:
             # A Galactic star has no extragalactic host: galaxies nearby are background objects.
-            result.evidence.append(f"host candidate {result.host['name']} not adopted: the alert is a Galactic star")
-            result.host = None
+            if result.host is not None:
+                result.evidence.append(f"host candidate {result.host['name']} not adopted: the alert is a Galactic star")
+                result.host = None
             result.host_status = "not_applicable_star"
         if result.status != "failed" and (match_failed or host_failed or d25_failed or distance_failed):
             result.status = "partial"
@@ -2414,24 +2864,111 @@ class AlertEnricher:
         result.crossmatched_at = _utcnow()
         return result
 
+    def _assess_cone(self, groups: list[dict[str, Any]], usable: list[dict[str, Any]],
+                     z_t: float | None) -> None:
+        """Annotate the host-cone galaxies with the association criteria of the cone rule.
+
+        * ``p_chance``: chance-coincidence probability 1 - exp(-N (r / R)^2) of a catalogued galaxy at the
+          separation r, for the N (at least 1) plausible galaxies of the host cone of radius R;
+        * ``d_dlr_estimated``: separation in light radii of a typical host (HOST_TYPICAL_R25_KPC) at the
+          galaxy's Hubble-flow distance (None without a redshift or below cz_CMB = 1500 km/s);
+        * ``redshift_consistent``: its redshift agrees with the transient's own (None when either is unknown).
+        """
+        n = max(1, len(usable))
+        radius = self.host_radius_arcsec
+        for g in groups:
+            sep = float(g["separation_arcsec"] or 0.0)
+            g["p_chance"] = 1.0 - math.exp(-n * (sep / radius) ** 2) if radius > 0 else None
+            light = typical_light_radius_arcsec(g.get("redshift"), g.get("ra"), g.get("dec"))
+            g["d_dlr_estimated"] = sep / light if light else None
+            z = g.get("redshift")
+            g["redshift_consistent"] = None if z is None or z_t is None else _same_redshift(z, z_t)
+
+    @staticmethod
+    def _cone_verdict(g: Mapping[str, Any], z_t: float | None) -> tuple[bool, str]:
+        """(adoptable, why) for a host-cone galaxy without a D25 size (see :meth:`_choose_host`)."""
+        sep, est, p_cc = g["separation_arcsec"] or 0.0, g.get("d_dlr_estimated"), g.get("p_chance")
+        if g.get("redshift_consistent") is False:
+            return False, f"its redshift z={g['redshift']} differs from the transient's (z={z_t})"
+        if est is not None and est > DLR_HOST_MAX:
+            return False, (f"{sep:.1f}\" is {est:.1f} typical light radii ({HOST_TYPICAL_R25_KPC:g} kpc) at its redshift "
+                           f"z={g['redshift']} (> {DLR_HOST_MAX:g})")
+        if g.get("redshift_consistent"):
+            return True, f"its redshift z={g['redshift']} agrees with the transient's (z={z_t})"
+        # The typical light radius only bounds the association (above): a galaxy of unknown size may be a dwarf
+        # of R25 ~ 1 kpc, so lying within 8 kpc of it is no evidence of association by itself (a blank point 50"
+        # from a z = 0.005 dwarf is within its "typical" radius, at P_cc = 0.9997).
+        within = f", within a typical light radius at its redshift (d_DLR ~ {est:.2f})" if est is not None and est <= DLR_INSIDE else ""
+        if p_cc is not None and p_cc <= P_CHANCE_MAX:
+            return True, f"chance-coincidence probability {p_cc:.3f} <= {P_CHANCE_MAX:g}{within}"
+        size = (f"; lying within a typical {HOST_TYPICAL_R25_KPC:g} kpc light radius (d_DLR ~ {est:.2f}) does not make it "
+                "the host, its own size being unknown") if within else ""
+        p_text = f"{p_cc:.2f} > {P_CHANCE_MAX:g}" if p_cc is not None else "unknown"
+        return False, (f"chance-coincidence probability {p_text} (the catalogue's local galaxy "
+                       f"density makes a galaxy this far a likely chance alignment){size}")
+
+    def _competitor(self, gal: dict[str, Any], best: Mapping[str, Any], candidates: list[dict[str, Any]],
+                    z_t: float | None) -> tuple[dict[str, Any], str] | None:
+        """A host-cone galaxy without a D25 size that takes precedence over the D25 galaxy ``gal``, and why.
+
+        ``candidates`` are the adoptable cone galaxies (:meth:`_cone_verdict`), nearest first.
+
+        * At another redshift than ``gal`` (a background/foreground galaxy seen on or beside it): when the
+          alert lies within that galaxy's estimated light radius and nearer to it, in light radii, than to
+          ``gal`` (PTF 11dws on M106, 0.8" from a z = 0.15 galaxy).
+        * At the same or an unknown redshift (a companion, or a part of ``gal``): only outside ``gal``'s
+          D25 ellipse, nearer than its light radius, with a small chance-coincidence probability and --
+          when its size can be estimated -- nearer in light radii (SN 2016bam keeps NGC 2445 although a
+          same-redshift LEDA galaxy lies 29.6" away, a likely chance alignment in that group).
+        """
+        z_gal = best.get("redshift")
+        for g in candidates:
+            if g.get("pgc") is not None and g.get("pgc") == gal.get("pgc"):
+                continue
+            z, est, sep = g.get("redshift"), g.get("d_dlr_estimated"), g["separation_arcsec"] or 0.0
+            if z_gal is not None and z is not None and not _same_redshift(z_gal, z):
+                if est is not None and est <= min(DLR_INSIDE, gal["d_dlr"]):
+                    return g, (f"at z={z}, a different redshift (z={z_gal}), and the alert lies within its light radius "
+                               f"(d_DLR ~ {est:.2f} for a typical {HOST_TYPICAL_R25_KPC:g} kpc galaxy)")
+                continue
+            if _inside_d25(g, gal) or sep >= gal["dlr_arcsec"]:
+                continue
+            p_cc = g.get("p_chance")
+            if p_cc is None or p_cc > P_CHANCE_MAX or (est is not None and est >= gal["d_dlr"]):
+                continue
+            return g, (f"(no D25 size) lies nearer ({sep:.1f}\") than that galaxy's light radius "
+                       f"({gal['dlr_arcsec']:.0f}\"), outside its D25 ellipse, with a chance-coincidence probability "
+                       f"of {p_cc:.3f}")
+        return None
+
     async def _choose_host(self, alert: Alert, result: AlertEnrichment, groups: list[dict[str, Any]],
                            d25: list[dict[str, Any]]) -> bool:
         """Choose the host galaxy by the directional light radius (Sullivan et al. 2006; Gupta et al. 2016).
 
-        1. Inside a D25 ellipse (d_DLR <= 1): the galaxy with the smallest d_DLR (method 'd25_ellipse').
-        2. Else the galaxy with the smallest d_DLR <= DLR_HOST_MAX = 4, outside its D25 ellipse
-           (method 'dlr_outside_d25'; e.g. SN 2023bee -> NGC 2708 at d_DLR 1.4, SN 2018aoz -> NGC 3923
-           at 1.1) -- unless a catalogued galaxy without a D25 size (whose own d_DLR cannot be
-           computed) lies nearer to the alert than that galaxy's light radius and outside its D25
-           ellipse: that galaxy may be the host, and rule 3 applies (the D25 candidate is recorded
-           in the evidence).
-        3. Else the nearest catalogued galaxy of the host cone (method 'nearest').
+        1. D25 rule: the HyperLEDA galaxy with the smallest d_DLR <= DLR_HOST_MAX = 2 D25 radii (Gupta's
+           limit of 4 second-moment radii, see ``DLR_HOST_MAX``): inside its ellipse (method
+           'd25_ellipse', e.g. SN 2014J -> M82) or outside it (method 'dlr_outside_d25'; SN 2023bee ->
+           NGC 2708 at d_DLR 1.48, SN 2018aoz -> NGC 3923 at 1.45) -- unless
+             * its redshift differs from the transient's own catalogued redshift: a foreground/background
+               galaxy (PTF 10hv, z = 0.052, is not in M101; the next galaxy is tried);
+             * a host-cone galaxy without a D25 size takes precedence (:meth:`_competitor`).
+           Galaxies at 2 < d_DLR <= 4 are reported as possible associations, not adopted.
+        2. Cone rule (method 'nearest'): a host-cone galaxy without a D25 size (a NED/SIMBAD single galaxy:
+           no quasar, blazar or pair/group entry) is adopted only when it is not a likely chance alignment
+           (:meth:`_cone_verdict`): its redshift agrees with the transient's, or its chance-coincidence
+           probability is <= 0.1 -- and never when its redshift disagrees with the transient's or it lies
+           beyond 2 typical light radii. A galaxy at the transient's redshift is preferred, then the nearest.
+        3. AGN nucleus (method 'agn_nucleus'): when a catalogued AGN / QSO / blazar lies within the match radius
+           (:meth:`_agn_nucleus`), the alert is that active nucleus. Its redshift becomes the transient's (when
+           none is catalogued), its galaxy is the host -- the D25 galaxy it is the identity of (Mrk 421), else
+           the AGN entry itself -- and no other cone galaxy is adopted (a companion 4.4" from PKS 2155-304).
 
-        Galaxy entries named only by a transient designation (or by one of the alert's own
-        designations) are not adopted by the nearest-galaxy rule: the catalogue may list the
-        transient itself as a galaxy (e.g. NED 'AT 2017abr', type G, for a Galactic CV). When
-        they are the only candidates, ``host_status`` is 'ambiguous_transient_entry'.
-        Returns True when the NED/SIMBAD identity lookup of a D25 host failed.
+        Galaxy entries named only by a transient designation (or one of the alert's own designations) are
+        never adopted: the catalogue may list the transient itself as a galaxy (e.g. NED 'AT 2017abr',
+        type G, for a Galactic CV); when they are the only candidates ``host_status`` is
+        'ambiguous_transient_entry'. When galaxies were found but none passes, ``host_status`` is
+        'unassociated' (the candidates stay in ``host_candidates``/``d25_galaxies`` with the reasons in
+        the evidence). Returns True when the NED/SIMBAD identity lookup of a D25 galaxy failed.
         """
         for gal in d25:
             # A cone entry is the HyperLEDA galaxy when it lies at its centre (catalogue centres
@@ -2441,46 +2978,86 @@ class AlertEnricher:
             # Among several such entries, one carrying a HyperLEDA name or the best catalogue name
             # wins over a fibre/fragment entry nearer to HyperLEDA's centre (M83: 'M 83', not
             # '6dFGS gJ133700.5-295200').
+            # An unnamed entry near the centre stands for the galaxy only when the host cone holds every entry at
+            # least as near to that centre (else the galaxy's own entry may lie outside the cone: a dwarf 9" from
+            # 3C 273's PGC 41121, 60" from the alert, must not take 3C 273's PGC number and CF4 identity).
             reach = _alias_reach(gal)
             near = [(haversine_arcsec(g["ra"], g["dec"], gal["ra"], gal["dec"]), g) for g in groups]
             near = [(d, g) for d, g in near if d <= reach and g.get("pgc") is None
-                    and (d <= D25_ALIAS_MIN_ARCSEC or _names_hyperleda_galaxy(g, gal))]
+                    and ((d <= D25_ALIAS_MIN_ARCSEC and gal["separation_arcsec"] + d <= self.host_radius_arcsec)
+                         or _names_hyperleda_galaxy(g, gal))]
             if near:
                 grp = min(near, key=lambda t: (not _names_hyperleda_galaxy(t[1], gal), _name_rank(t[1])[:-1], t[0]))[1]
                 grp.update({"pgc": gal["pgc"], "d_dlr": gal["d_dlr"], "d25_semi_major_arcsec": gal["semi_major_arcsec"]})
                 grp["aliases"].append(f"{HYPERLEDA}:{gal['source_id']}")
                 gal["matched"] = f"{grp['catalog']}:{grp['source_id']}"
-        result.host_candidates = [dict(g) for g in groups[:5]]
+        own = {d.lower() for d in result.transient_designations}
+        transient_entries = [g for g in groups if g.get("transient_named") or str(g["source_id"]).lower() in own]
+        # A catalogued AGN / QSO / blazar at the alert position (within the match radius) is the alert's own active
+        # nucleus: the flare is its variability, or a nuclear transient of that galaxy. It is the host (its own
+        # galaxy), and its redshift is the transient's: a neighbouring galaxy is not (3C 273, z = 0.158, is not
+        # hosted by a z = 0.0053 dwarf 10.8" away). A quasar elsewhere in the cone stays a non-host (SN 2016bam).
+        nucleus = self._agn_nucleus(groups, transient_entries)
+        not_hosts = [g for g in groups if g not in transient_entries and g is not nucleus and not _is_plausible_host(g)]
+        usable = [g for g in groups if g not in transient_entries and g not in not_hosts]
+        if nucleus is not None and result.transient_redshift is None and nucleus.get("redshift") is not None:
+            result.transient_redshift = nucleus["redshift"]
+            result.transient_redshift_source = (f"{nucleus.get('redshift_source') or nucleus['source_id']} (the catalogued "
+                                                "AGN/QSO at the alert position)")
+        z_t = result.transient_redshift
+        self._assess_cone(groups, usable, z_t)
+        result.host_candidates = [{k: v for k, v in g.items() if k != "member_types"} for g in groups[:5]]
         result.d25_galaxies = [dict(g) for g in d25[:5]]
-        own = set(result.transient_designations)
-        usable = [g for g in groups if not g.get("transient_named") and str(g["source_id"]) not in own]
-        inside = [g for g in d25 if g["d_dlr"] is not None and g["d_dlr"] <= DLR_INSIDE]
-        outer = [g for g in d25 if g["d_dlr"] is not None and DLR_INSIDE < g["d_dlr"] <= DLR_HOST_MAX]
-        chosen: dict[str, Any] | None = None
-        method = "nearest"
-        if inside:
-            chosen, method = inside[0], "d25_ellipse"
-        elif outer:
-            gal = outer[0]
-            blockers = [g for g in usable if g.get("pgc") is None and g["separation_arcsec"] < gal["dlr_arcsec"]
-                        and not _inside_d25(g, gal)]
-            names = " ".join(gal["hyperleda_names"][:2])
-            if blockers:
-                near_gal = blockers[0]
+        # Cone galaxies without a D25 size that pass the association criteria, nearest first. At an AGN only the AGN
+        # itself can be the host found in the cone.
+        unsized = [g for g in usable if g.get("d_dlr") is None]
+        verdicts = {id(g): self._cone_verdict(g, z_t) for g in unsized}
+        if nucleus is not None:
+            elsewhere = (f"the alert lies on the catalogued AGN/QSO {nucleus['catalog']}:{nucleus['source_id']} "
+                         f"({nucleus['separation_arcsec']:.1f}\"), whose own galaxy is the host")
+            for g in unsized:
+                verdicts[id(g)] = (True, self._nucleus_text(nucleus)) if g is nucleus else (False, elsewhere)
+        adoptable = [g for g in unsized if verdicts[id(g)][0]]
+        for g in not_hosts:
+            if g["separation_arcsec"] <= (adoptable[0]["separation_arcsec"] if adoptable else self.host_radius_arcsec):
                 result.evidence.append(
-                    f"{gal['source_id']}{f' ({names})' if names else ''} (d_DLR = {gal['d_dlr']:.2f}, outside its D25 "
-                    f"ellipse) not adopted: {near_gal['catalog']}:{near_gal['source_id']} (no D25 size) lies nearer "
-                    f"({near_gal['separation_arcsec']:.1f}\") than that galaxy's light radius ({gal['dlr_arcsec']:.0f}\") "
-                    "and may be the host")
-            else:
-                chosen, method = gal, "dlr_outside_d25"
-        best: dict[str, Any] | None = None
+                    f"{g['catalog']}:{g['source_id']} (type {g['object_type']}, z={g['redshift']}) at "
+                    f"{g['separation_arcsec']:.1f}\" is not a host candidate: a quasar/blazar or a multiple-system entry")
+
+        chosen: dict[str, Any] | None = None  # the D25 galaxy adopted
+        best: dict[str, Any] | None = None  # the entry that becomes the host
+        method = "nearest"
         identity_failed = False
+        rejected: list[str] = []
+        for gal in (g for g in d25 if g["d_dlr"] is not None and g["d_dlr"] <= DLR_HOST_MAX):
+            names = " ".join(gal["hyperleda_names"][:2])
+            label = f"{gal['source_id']}{f' ({names})' if names else ''}"
+            identity = next((g for g in groups if g.get("pgc") is not None and g.get("pgc") == gal["pgc"]), None)
+            if identity is None:
+                identity, failed = await self._resolve_d25_galaxy(alert, gal, result)
+                identity_failed = identity_failed or failed
+            z_gal = identity.get("redshift")
+            if z_t is not None and z_gal is not None and not _same_redshift(z_gal, z_t):
+                rejected.append(label)
+                result.evidence.append(
+                    f"{label} (d_DLR = {gal['d_dlr']:.2f}, z={z_gal}) not adopted: the transient's own redshift z={z_t} "
+                    f"({result.transient_redshift_source}) differs by {abs(z_gal - z_t) * C_KMS:.0f} km/s -- a "
+                    "foreground/background projection")
+                continue
+            competitor = self._competitor(gal, identity, adoptable, z_t)
+            if competitor is not None:
+                near_gal, why = competitor
+                result.evidence.append(
+                    f"{label} (d_DLR = {gal['d_dlr']:.2f}) not adopted: {near_gal['catalog']}:{near_gal['source_id']} "
+                    f"{why}, and may be the host")
+                best = near_gal
+            else:
+                chosen, best = gal, identity
+                method = "d25_ellipse" if gal["d_dlr"] <= DLR_INSIDE else "dlr_outside_d25"
+            break
         if chosen is not None:
             gal = chosen
-            best = next((g for g in groups if g.get("pgc") is not None and g.get("pgc") == gal["pgc"]), None)
-            if best is None:
-                best, identity_failed = await self._resolve_d25_galaxy(alert, gal, result)
+            assert best is not None
             off_centre = haversine_arcsec(best["ra"], best["dec"], gal["ra"], gal["dec"])
             unnamed = off_centre > D25_ALIAS_MIN_ARCSEC and not _names_hyperleda_galaxy(best, gal)
             if best.get("catalog") != HYPERLEDA and (best.get("transient_named") or unnamed):
@@ -2495,39 +3072,79 @@ class AlertEnricher:
                         "separation_arcsec": gal["separation_arcsec"],
                         "aliases": [*best.get("aliases", []), f"{best['catalog']}:{best['source_id']}"]}
             names = " ".join(gal["hyperleda_names"][:2])
+            size = f"semi-major axis {gal['semi_major_arcsec']:.0f}\", separation {gal['separation_arcsec']:.1f}\""
+            if "log_d25_2003" in gal:
+                size += f"; D25 of the current HyperLEDA, logD25 {gal['log_d25']} (2003: {gal['log_d25_2003']})"
             if method == "d25_ellipse":
-                result.evidence.append(
-                    f"inside the D25 ellipse of {gal['source_id']}{f' ({names})' if names else ''}: d_DLR = "
-                    f"{gal['d_dlr']:.2f} (semi-major axis {gal['semi_major_arcsec']:.0f}\", separation "
-                    f"{gal['separation_arcsec']:.1f}\")")
+                result.evidence.append(f"inside the D25 ellipse of {gal['source_id']}{f' ({names})' if names else ''}: "
+                                       f"d_DLR = {gal['d_dlr']:.2f} ({size})")
             else:
                 result.evidence.append(
                     f"outside every D25 ellipse; nearest in light radii: {gal['source_id']}"
                     f"{f' ({names})' if names else ''} at d_DLR = {gal['d_dlr']:.2f} <= {DLR_HOST_MAX:g} (Gupta et al. "
-                    f"2016; semi-major axis {gal['semi_major_arcsec']:.0f}\", separation {gal['separation_arcsec']:.1f}\")")
-        else:
-            skipped = [g for g in groups if g not in usable]
-            best = usable[0] if usable else None
-            for grp in skipped:
-                if best is None or grp["separation_arcsec"] < best["separation_arcsec"]:
-                    result.evidence.append(
-                        f"galaxy entry {grp['catalog']}:{grp['source_id']} (type {grp['object_type']}, z={grp['redshift']}) "
-                        f"at {grp['separation_arcsec']:.2f}\" is named only by a transient designation: the catalogue "
-                        "may list the transient itself as a galaxy; not adopted as host")
-            if best is None and skipped:
-                result.host_status = "ambiguous_transient_entry"
+                    f"2016's d_DLR < 4 in D25 radii; {size})")
+        elif best is None:
+            consistent = [g for g in adoptable if g.get("redshift_consistent")]
+            if consistent:
+                best = min(consistent, key=lambda g: (g.get("d_dlr_estimated") is None, g.get("d_dlr_estimated") or 0.0,
+                                                      g["separation_arcsec"]))
+            elif adoptable:
+                best = adoptable[0]
+        if best is not None and best is nucleus and chosen is None:
+            method = "agn_nucleus"
+            result.evidence.append(f"host {best['catalog']}:{best['source_id']} (type {best['object_type']}, "
+                                   f"z={best['redshift']}): {self._nucleus_text(best)}")
+        elif best is not None and method == "nearest":
+            result.evidence.append(f"host-cone galaxy {best['catalog']}:{best['source_id']} at "
+                                   f"{best['separation_arcsec']:.1f}\" (no D25 size): {verdicts[id(best)][1]}")
+        for grp in transient_entries:
+            if best is None or grp["separation_arcsec"] < best["separation_arcsec"]:
+                result.evidence.append(
+                    f"galaxy entry {grp['catalog']}:{grp['source_id']} (type {grp['object_type']}, z={grp['redshift']}) "
+                    f"at {grp['separation_arcsec']:.2f}\" is named only by a transient designation: the catalogue "
+                    "may list the transient itself as a galaxy; not adopted as host")
         if best is None:
+            for g in unsized:
+                if not verdicts[id(g)][0]:
+                    result.evidence.append(f"host-cone galaxy {g['catalog']}:{g['source_id']} at "
+                                           f"{g['separation_arcsec']:.1f}\" not adopted: {verdicts[id(g)][1]}")
+            possible = [g for g in d25 if g["d_dlr"] is not None and DLR_HOST_MAX < g["d_dlr"] <= DLR_SEARCH_MAX]
+            for g in possible[:3]:
+                names = " ".join(g["hyperleda_names"][:2])
+                result.evidence.append(
+                    f"possible association, not adopted: {g['source_id']}{f' ({names})' if names else ''} at d_DLR = "
+                    f"{g['d_dlr']:.2f} ({DLR_HOST_MAX:g} < d_DLR <= {DLR_SEARCH_MAX:g} D25 radii)")
+            if transient_entries and not usable and not rejected and not possible:
+                result.host_status = "ambiguous_transient_entry"
+            elif usable or not_hosts or rejected or possible:
+                result.host_status = "unassociated"
             return identity_failed
         host = HostCandidate(
             name=str(best["source_id"]), catalog=str(best["catalog"]), ra=float(best["ra"]), dec=float(best["dec"]),
             separation_arcsec=float(best["separation_arcsec"]), object_type=best.get("object_type"),
             redshift=best.get("redshift"), projected_offset_kpc=best.get("projected_offset_kpc"),
             redshift_source=best.get("redshift_source"), aliases=list(best.get("aliases") or []), method=method,
-            d_dlr=best.get("d_dlr"), pgc=best.get("pgc"), d25_semi_major_arcsec=best.get("d25_semi_major_arcsec"),
+            d_dlr=best.get("d_dlr") if chosen is not None else None, pgc=best.get("pgc"),
+            d25_semi_major_arcsec=best.get("d25_semi_major_arcsec"),
+            p_chance=best.get("p_chance") if chosen is None else None,
+            d_dlr_estimated=best.get("d_dlr_estimated") if chosen is None else None,
         )
         result.host = host.as_dict()
         result.host_status = "found"
         return identity_failed
+
+    def _agn_nucleus(self, groups: list[dict[str, Any]], excluded: list[dict[str, Any]]) -> dict[str, Any] | None:
+        """The nearest host-cone group within the match radius with an AGN-type entry (SIMBAD 'G > AGN' branch:
+        AGN, Seyferts, LINERs, QSOs, blazars; NED 'QSO'), not named only by a transient designation; or None."""
+        found = [g for g in groups if g not in excluded and (g["separation_arcsec"] or 0.0) <= self.match_radius_arcsec
+                 and any(_is_agn({"catalog": c, "object_type": t})
+                         for c, t in g.get("member_types") or [(g.get("catalog"), g.get("object_type"))])]
+        return min(found, key=lambda g: g["separation_arcsec"] or 0.0) if found else None
+
+    @staticmethod
+    def _nucleus_text(nucleus: Mapping[str, Any]) -> str:
+        return (f"the alert coincides ({nucleus['separation_arcsec']:.1f}\") with this catalogued AGN/QSO: its own "
+                "active nucleus (AGN variability or a nuclear transient), so its galaxy is the host")
 
     async def _host_distance(self, result: AlertEnrichment) -> bool:
         """Set the host's distance and projected offset (:func:`host_distance`); True when a CF4 lookup failed.
@@ -2550,14 +3167,14 @@ class AlertEnricher:
             except Exception as exc:  # noqa: BLE001 - the host stands without its redshift-independent distance
                 failed = True
                 result.failures.append({"catalog": COSMICFLOWS4, "search": "host_distance", "status": "failed",
-                                        "error_type": exc.__class__.__name__, "message": str(exc)})
+                                        "error_type": _error_type(exc), "message": str(exc)})
         if pgc is not None and cf4 is None and not failed and (z is None or C_KMS * z < GROUP_CATALOG_MAX_CZ_KMS):
             try:
                 group = await self._cf4_group(int(pgc), ra, dec)
             except Exception as exc:  # noqa: BLE001 - the host stands without its group distance
                 failed = True
                 result.failures.append({"catalog": COSMICFLOWS4_GROUPS, "search": "host_distance", "status": "failed",
-                                        "error_type": exc.__class__.__name__, "message": str(exc)})
+                                        "error_type": _error_type(exc), "message": str(exc)})
         dist = host_distance(z, cf4, ra=ra, dec=dec, group=group)
         offset = None
         if dist is not None:
@@ -2565,7 +3182,8 @@ class AlertEnricher:
             host.update({"distance_mpc": dist["angular_diameter_mpc"], "distance_modulus": dist["distance_modulus"],
                          "distance_method": dist["method"],
                          "distance_uncertainty_fraction": dist.get("fractional_uncertainty"),
-                         "redshift_cmb": dist.get("redshift_cmb"), "velocity_frame": dist.get("velocity_frame")})
+                         "redshift_cmb": dist.get("redshift_cmb"), "velocity_frame": dist.get("velocity_frame"),
+                         "hubble_constant_kms_mpc": dist.get("hubble_constant_kms_mpc")})
         if group is not None:
             host["group"] = group
         host["projected_offset_kpc"] = offset
@@ -2591,7 +3209,8 @@ class AlertEnricher:
             velocity = {"cmb_group": f"the CMB-frame velocity of its {group_label}",
                         "cmb": "its CMB-frame redshift", "heliocentric": "its heliocentric redshift"}[dist["velocity_frame"]]
             result.evidence.append(
-                f"host distance {dist['angular_diameter_mpc']:.3g} Mpc (Planck 2018) from {velocity}, cz = "
+                f"host distance {dist['angular_diameter_mpc']:.3g} Mpc (Hubble flow, H0 = "
+                f"{dist['hubble_constant_kms_mpc']:g} km/s/Mpc on the Cosmicflows-4 scale, Planck 2018 densities) from {velocity}, cz = "
                 f"{C_KMS * dist['redshift_cmb']:.0f} km/s: uncertain by ~{100.0 * dist['fractional_uncertainty']:.0f}% "
                 f"(peculiar velocities ~{dist['peculiar_velocity_kms']:.0f} km/s"
                 + (", the group's velocity dispersion" if dist["peculiar_velocity_kms"] > PECULIAR_VELOCITY_KMS else "")
@@ -2630,7 +3249,7 @@ class AlertEnricher:
             record = await self._crossmatch(self.host_service, gal["ra"], gal["dec"], self.host_catalogs, reach)
         except Exception as exc:  # noqa: BLE001 - the D25 host stands without its NED/SIMBAD identity
             result.failures.append({"catalog": "host_identity", "search": "host", "status": "failed",
-                                    "error_type": exc.__class__.__name__, "message": str(exc)})
+                                    "error_type": _error_type(exc), "message": str(exc)})
             return base, True
         result.failures.extend(dict(f, search="host_identity") for f in record.failures)
         found = group_host_candidates(_galaxies(record), alias_arcsec=reach)
@@ -2650,54 +3269,83 @@ class AlertEnricher:
                       counterparts: Sequence[dict[str, Any]]) -> tuple[list[str], list[str]]:
         """(reasons the Gaia DR3 source is a Galactic star, notes on evidence not used).
 
-        First, is the astrometry a star's? It is not used at all when the parallax is < -3 sigma
-        (a spurious solution) or when the source looks extragalactic: Gaia's DSC gives
-        P(galaxy) + P(quasar) > 0.5, it is a Gaia DR3 galaxy candidate, or a SIMBAD/NED galaxy,
-        AGN or QSO entry lies within 1.5" *and* the source is not a well-behaved point source
-        (RUWE < 1.4, excess-noise significance <= 2) -- a galaxy nucleus, AGN or cluster (bright
-        Seyfert 1 nuclei have DSC P(star) ~ 1 but excess noise; a well-fitted star blended with a
-        catalogued galaxy keeps its evidence, e.g. the 9.8 mas/yr pair under ZTF26abxsysn). Then:
+        ``enclosing`` is the D25 galaxy the alert is projected on (crowded field), ``associated`` the
+        D25 host whose distance sets the proper-motion and luminosity limits.
 
-        * parallax >= 5 sigma: outside galaxies always; inside a D25 ellipse when >= 10 sigma,
+        First, is the astrometry a star's? It is not used at all when the parallax is < -3 sigma (a
+        spurious solution), when a SIMBAD/NED galaxy, AGN or QSO entry lies within 1.5" and the source is
+        not a well-behaved point source (RUWE < 1.4, excess-noise significance <= 2) -- a galaxy nucleus,
+        AGN or cluster --, or when Gaia's DSC gives P(galaxy) + P(quasar) > 0.5 or it is a Gaia DR3 galaxy
+        candidate *and* it is either not a well-behaved point source or its evidence is marginal (proper
+        motion < 20 sigma and parallax < 10 sigma). DSC's galaxy and quasar classes have a low purity
+        (Delchambre et al. 2023) and blue stars (white dwarfs, CVs, hot subdwarfs) and foreground stars on
+        bright galaxies fall in them: a well-fitted source with a 100-sigma parallax or a 900-sigma proper
+        motion is a star (the white dwarf WDJ153053.31+690231.98, DSC-extragalactic). Then:
+
+        * parallax >= 5 sigma: outside galaxies always; projected on a D25 ellipse when >= 10 sigma,
           or G < 19, or RUWE < 1.4;
-        * proper motion >= 5 sigma and faster than 750 km/s at the distance of the associated
-          host (3.2 mas/yr at the LMC's when unknown), for a well-behaved point source;
-        * at the distance of the associated host: the Gaia source *is* a catalogued star (a
-          SIMBAD/NED stellar-type entry within 0.5" after the J2000 -> J2016 drift), is a
-          well-behaved point source, and has M_G = G - DM < -10 (Humphreys & Davidson 1979).
+        * proper motion >= 5 sigma and faster than 750 km/s at the distance of the associated host
+          (3.2 mas/yr at the LMC's when unknown), for a well-behaved point source -- or, whatever its
+          RUWE/excess noise, at >= 20 sigma when nothing marks the source as extragalactic (DSC, galaxy
+          candidate): a binary's proper motion (the eclipsing binary Gaia DR3 6189441739218449664, RUWE
+          5.1, 11 mas/yr at 31 sigma) is real, while the spurious ones of nuclei and clusters stay < 18 sigma;
+        * at the distance of the associated host: the Gaia source *is* a catalogued star (a SIMBAD/NED
+          stellar-type entry within 0.5" after the J2000 -> J2016 drift), no galaxy/AGN/cluster entry lies
+          within 1.5" of it, and M_G = G - DM < -10 (Humphreys & Davidson 1979) -- whatever its RUWE or
+          excess noise: bright stars on a galaxy's disc have huge excess noise (the long-period variable
+          [WWV2004] J0043124+404639, G = 11.0, would be M_G = -13.3 in M31).
         """
         reasons: list[str] = []
         notes: list[str] = []
         sid, sep = entry["source_id"], entry["separation_arcsec"] or 0.0
-        poe, ruwe, g = entry.get("parallax_over_error"), entry.get("ruwe"), entry.get("g_mag")
+        poe, ruwe = entry.get("parallax_over_error"), entry.get("ruwe")
         pm, pm_sig = entry.get("pm_masyr"), entry.get("pm_over_error")
-        aens, igc, p_ext = entry.get("astrometric_excess_noise_sig"), entry.get("in_galaxy_candidates"),             entry.get("dsc_p_extragalactic")
+        aens, igc = entry.get("astrometric_excess_noise_sig"), entry.get("in_galaxy_candidates")
+        p_ext = entry.get("dsc_p_extragalactic")
         not_point: list[str] = []  # the single-star astrometric model does not fit it well
         if ruwe is not None and ruwe >= GAIA_RUWE_MAX:
             not_point.append(f"RUWE {ruwe:.2f}")
         if aens is not None and aens > GAIA_EXCESS_NOISE_SIG_MAX:
             not_point.append(f"excess-noise significance {aens:.1f}")
+        coincident = _coincident_extended(entry, counterparts)
+        classified: list[str] = []  # Gaia's own extragalactic classification
+        if p_ext is not None and p_ext > GAIA_DSC_EXTRAGALACTIC_MIN:
+            classified.append(f"Gaia DSC P(galaxy) + P(quasar) = {p_ext:.3f}")
+        if igc:
+            classified.append("a Gaia DR3 galaxy candidate")
+        decisive = (pm_sig is not None and pm_sig >= PM_SNR_DECISIVE) or (poe is not None and poe >= PARALLAX_SNR_SECURE)
         spurious: list[str] = []
         if poe is not None and poe <= GAIA_NEGATIVE_PARALLAX_SNR:
             spurious.append(f"parallax {poe:.1f} sigma: negative, the solution is spurious")
-        if p_ext is not None and p_ext > GAIA_DSC_EXTRAGALACTIC_MIN:
-            spurious.append(f"Gaia DSC P(galaxy) + P(quasar) = {p_ext:.3f}")
-        if igc:
-            spurious.append("a Gaia DR3 galaxy candidate")
-        if not_point and entry.get("ra") is not None and entry.get("dec") is not None:
-            for other in counterparts:
-                if other.get("catalog") in {"simbad", "ned"} and _is_galaxy(other) and other.get("ra") is not None                         and other.get("dec") is not None:
-                    d = haversine_arcsec(entry["ra"], entry["dec"], other["ra"], other["dec"])
-                    if d <= GALAXY_COINCIDENCE_ARCSEC:
-                        spurious.append(f"{other['catalog'].upper()} {other['source_id']} (type {other['object_type']}) "
-                                        f"at {d:.2f}\" with {', '.join(not_point)}")
-                        break
+        if classified and (not_point or not decisive):
+            spurious.extend(classified)
+        if not_point and coincident is not None:
+            other, d = coincident
+            spurious.append(f"{other['catalog'].upper()} {other['source_id']} (type {other['object_type']}) "
+                            f"at {d:.2f}\" with {', '.join(not_point)}")
+        if classified and not spurious:
+            notes.append(f"Gaia DR3 {sid}: {'; '.join(classified)}, but a well-fitted point source with decisive "
+                         "astrometry (DSC's galaxy/quasar classes have a low purity, Delchambre et al. 2023): its "
+                         "parallax and proper motion are used")
         if spurious:
             motion = (f"; its proper motion {pm:.2f} mas/yr ({pm_sig:.0f} sigma) is not a star's"
                       if pm is not None and pm_sig is not None and pm_sig >= PM_SNR_STAR else "")
             notes.append(f"Gaia DR3 {sid} at {sep:.2f}\" looks like a galaxy nucleus, AGN or cluster, not a star ("
                          + "; ".join(spurious) + f"): its parallax and proper motion are not used{motion}")
-            return reasons, notes
+        else:
+            self._gaia_astrometry(entry, enclosing, associated, in_galaxy, not_point, bool(classified), reasons, notes)
+        luminous = self._gaia_luminosity(entry, associated, in_galaxy, counterparts, coincident)
+        if luminous is not None:
+            (reasons if luminous[0] else notes).append(luminous[1])
+        return reasons, notes
+
+    def _gaia_astrometry(self, entry: dict[str, Any], enclosing: dict[str, Any] | None,
+                         associated: dict[str, Any] | None, in_galaxy: str, not_point: list[str], classified: bool,
+                         reasons: list[str], notes: list[str]) -> None:
+        """The parallax and proper-motion tests of :meth:`_gaia_verdict` (astrometry already vetted)."""
+        sid, sep = entry["source_id"], entry["separation_arcsec"] or 0.0
+        poe, ruwe, g = entry.get("parallax_over_error"), entry.get("ruwe"), entry.get("g_mag")
+        pm, pm_sig = entry.get("pm_masyr"), entry.get("pm_over_error")
         if poe is not None and poe >= self.parallax_snr:
             plx = (f"Gaia DR3 {sid} at {sep:.2f}\": parallax {entry['parallax_mas']:.3f} +/- "
                    f"{entry['parallax_error_mas']:.3f} mas ({poe:.1f} sigma, G={g}, RUWE {ruwe})")
@@ -2713,7 +3361,8 @@ class AlertEnricher:
                 brightness = f"faint (G={g:.2f})" if g is not None else "G unknown"
                 notes.append(f"Gaia DR3 {sid}: {poe:.1f} sigma parallax not used: projected{in_galaxy}, {brightness}, "
                              f"RUWE {ruwe} (not < {GAIA_RUWE_MAX}): possibly spurious (Rybizki et al. 2022)")
-        distance_kpc = associated.get("distance_mpc") * 1000.0 if associated and associated.get("distance_mpc") else None
+        distance_mpc = _float(associated.get("distance_mpc")) if associated else None
+        distance_kpc = distance_mpc * 1000.0 if distance_mpc else None
         pm_max = (MAX_GALAXY_TRANSVERSE_KMS / (KMS_PER_KPC_MASYR * distance_kpc) if distance_kpc
                   else PM_MAX_UNKNOWN_DISTANCE)
         if pm is not None and pm_sig is not None and pm_sig >= PM_SNR_STAR and pm > pm_max:
@@ -2721,30 +3370,51 @@ class AlertEnricher:
                      else f" even at the LMC's distance ({LMC_DISTANCE_KPC:g} kpc; host distance unknown)")
             text = (f"Gaia DR3 {sid}: proper motion {pm:.2f} mas/yr ({pm_sig:.0f} sigma) > {pm_max:.3g} mas/yr, "
                     f"i.e. faster than {MAX_GALAXY_TRANSVERSE_KMS:.0f} km/s{where}")
-            if not_point:
-                notes.append(f"{text}: not used, not a well-behaved point source ({', '.join(not_point)})")
-            else:
+            if not not_point:
                 reasons.append(f"{text} -> Galactic star")
-        dm = associated.get("distance_modulus") if associated else None
-        if dm is not None and g is not None and g - dm < M_G_BRIGHTEST_STAR:
-            drift = (pm or 0.0) * (GAIA_DR3_EPOCH_YR - CATALOGUE_EPOCH_YR) / 1000.0
-            same = [o for o in counterparts if _is_stellar(o) and not _is_extragalactic_star(o)
-                    and o.get("ra") is not None and o.get("dec") is not None and entry.get("ra") is not None
-                    and haversine_arcsec(entry["ra"], entry["dec"], o["ra"], o["dec"]) <= SAME_SOURCE_ARCSEC + drift]
-            where = f" at the distance modulus {dm:.2f}{in_galaxy or ' of ' + str(associated.get('name'))}"
-            if not same:
-                if any(_is_stellar(o) for o in counterparts):
-                    notes.append(f"Gaia DR3 {sid}: G = {g:.2f} would be M_G = {g - dm:.1f}{where}, but no stellar-type "
-                                 "entry is this Gaia source: luminosity not used")
-            elif not_point:
-                notes.append(f"Gaia DR3 {sid} (= {same[0]['catalog'].upper()} {same[0]['source_id']}): M_G = "
-                             f"{g - dm:.1f}{where} not used: not a well-behaved point source ({', '.join(not_point)})")
+            elif pm_sig >= PM_SNR_DECISIVE and not classified:
+                reasons.append(f"{text}, at >= {PM_SNR_DECISIVE:g} sigma: real although the single-star model fits it "
+                               f"poorly ({', '.join(not_point)}; a binary) -> Galactic star")
             else:
-                star = same[0]
-                reasons.append(f"Gaia DR3 {sid} = {star['catalog'].upper()} {star['source_id']} (type "
-                               f"{star['object_type']}), a catalogued star with G = {g:.2f}, i.e. M_G = {g - dm:.1f} < "
-                               f"{M_G_BRIGHTEST_STAR:g}{where}: brighter than any star -> Galactic foreground star")
-        return reasons, notes
+                notes.append(f"{text}: not used, not a well-behaved point source ({', '.join(not_point)}) and "
+                             f"< {PM_SNR_DECISIVE:g} sigma")
+
+    @staticmethod
+    def _gaia_luminosity(entry: dict[str, Any], associated: dict[str, Any] | None, in_galaxy: str,
+                         counterparts: Sequence[dict[str, Any]], coincident: tuple[dict[str, Any], float] | None
+                         ) -> tuple[bool, str] | None:
+        """(Galactic, text) of the Humphreys & Davidson luminosity test of :meth:`_gaia_verdict`, or None."""
+        sid, g, pm = entry["source_id"], entry.get("g_mag"), entry.get("pm_masyr")
+        dm = associated.get("distance_modulus") if associated else None
+        if associated is None or dm is None or g is None or g - dm >= M_G_BRIGHTEST_STAR:
+            return None
+        drift = (pm or 0.0) * (GAIA_DR3_EPOCH_YR - CATALOGUE_EPOCH_YR) / 1000.0
+        same = [o for o in counterparts if _is_stellar(o) and not _is_extragalactic_star(o)
+                and o.get("ra") is not None and o.get("dec") is not None and entry.get("ra") is not None
+                and haversine_arcsec(entry["ra"], entry["dec"], o["ra"], o["dec"]) <= SAME_SOURCE_ARCSEC + drift]
+        where = f" at the distance modulus {dm:.2f}{in_galaxy or ' of ' + str(associated.get('name'))}"
+        # A NED '*' ("star or point source") is a star only when a Gaia source Gaia does not call extragalactic
+        # is at its position: on a DSC-extragalactic source (a compact knot of the host) it proves nothing.
+        unconfirmed = [o for o in same if _is_point_source_entry(o) and not _gaia_point_source_at(o, counterparts)]
+        same = [o for o in same if o not in unconfirmed]
+        if not same and unconfirmed:
+            return False, (f"Gaia DR3 {sid}: G = {g:.2f} would be M_G = {g - dm:.1f}{where}, but its only stellar-type "
+                           f"entry is NED type '*' (star or point source) and Gaia classifies the source as "
+                           "extragalactic: luminosity not used")
+        if not same:
+            if any(_is_stellar(o) for o in counterparts):
+                return False, (f"Gaia DR3 {sid}: G = {g:.2f} would be M_G = {g - dm:.1f}{where}, but no stellar-type "
+                               "entry is this Gaia source: luminosity not used")
+            return None
+        star = same[0]
+        if coincident is not None:
+            other, d = coincident
+            return False, (f"Gaia DR3 {sid} (= {star['catalog'].upper()} {star['source_id']}): M_G = {g - dm:.1f}{where} "
+                           f"not used: {other['catalog'].upper()} {other['source_id']} (type {other['object_type']}) lies "
+                           f"{d:.2f}\" from it (a nucleus or cluster can be this bright)")
+        return True, (f"Gaia DR3 {sid} = {star['catalog'].upper()} {star['source_id']} (type {star['object_type']}), a "
+                      f"catalogued star with G = {g:.2f}, i.e. M_G = {g - dm:.1f} < {M_G_BRIGHTEST_STAR:g}{where}: "
+                      "brighter than any star -> Galactic foreground star")
 
     def _flags(self, alert: Alert, result: AlertEnrichment, answered: set[str], *, d25_answered: bool) -> None:
         """Galactic-star, stellar, variable, AGN and 'new' flags (see the module docstring for the rules)."""
@@ -2753,6 +3423,31 @@ class AlertEnricher:
         associated = host if host is not None and host.get("method") in {"d25_ellipse", "dlr_outside_d25"} else None
         z = enclosing.get("redshift") if enclosing else None
         in_galaxy = f" in {enclosing['name']} (d_DLR {enclosing['d_dlr']:.2f}, z={z})" if enclosing else ""
+        # The D25 galaxy the alert is projected on -- its host, or a foreground galaxy when the host is a
+        # background one (PTF 11dws on M106): a crowded field for the parallax test either way.
+        projected = enclosing
+        if projected is None:
+            on = next((g for g in result.d25_galaxies if g.get("d_dlr") is not None and g["d_dlr"] <= DLR_INSIDE), None)
+            if on is not None:
+                projected = {"name": on["source_id"], "d_dlr": on["d_dlr"], "redshift": None}
+        on_galaxy = in_galaxy or (f" on {projected['name']} (d_DLR {projected['d_dlr']:.2f})" if projected else "")
+
+        # A generic stellar entry (SIMBAD '*', NED '*') on a catalogued galaxy/AGN entry, where no well-behaved Gaia
+        # point source confirms a star, is another entry of that galaxy's nucleus (SIMBAD lists 'LEDA 1798300' and
+        # 2MASS sources of galaxy nuclei as '*'; the Gaia source there is DSC-extragalactic with a large excess
+        # noise): it is not a stellar counterpart.
+        counterparts: list[dict[str, Any]] = []
+        for entry in result.counterparts:
+            duplicate = _nucleus_duplicate(entry, result.counterparts)
+            if duplicate is None:
+                counterparts.append(entry)
+                continue
+            other, d = duplicate
+            result.evidence.append(
+                f"{str(entry['catalog']).upper()} {entry['source_id']} (type {entry['object_type']}) at "
+                f"{entry['separation_arcsec'] or 0.0:.2f}\" is not taken as a star: {str(other['catalog']).upper()} "
+                f"{other['source_id']} (type {other['object_type']}) lies {d:.2f}\" from it and no well-behaved Gaia DR3 "
+                "point source confirms a star there -- another catalogue entry of the galaxy's nucleus")
 
         galactic: list[str] = []
         stellar: list[str] = []
@@ -2760,12 +3455,12 @@ class AlertEnricher:
         variable: list[str] = []
         agn: list[str] = []
         service_gaia_ids: set[str] = set()
-        for entry in result.counterparts:
+        for entry in counterparts:
             catalog, otype = entry["catalog"], entry["object_type"]
             sep = entry["separation_arcsec"] or 0.0
             if catalog == "gaia_dr3":
                 service_gaia_ids.add(str(entry["source_id"]))
-                reasons, notes = self._gaia_verdict(entry, enclosing, associated, in_galaxy, result.counterparts)
+                reasons, notes = self._gaia_verdict(entry, projected, associated, on_galaxy, counterparts)
                 galactic.extend(reasons)
                 result.evidence.extend(notes)
             if _is_stellar(entry):
@@ -2799,10 +3494,10 @@ class AlertEnricher:
             elif broker_galaxy:
                 result.evidence.append(f"{text} not used: the broker's SIMBAD cross-match is a galaxy/AGN "
                                        f"({broker_otype}), whose Gaia astrometry is spurious")
-            elif enclosing is None or poe >= PARALLAX_SNR_SECURE:
+            elif projected is None or poe >= PARALLAX_SNR_SECURE:
                 galactic.append(f"{text} -> Galactic star")
             else:
-                result.evidence.append(f"{text} not used: projected{in_galaxy}, and the broker gives no RUWE/G to "
+                result.evidence.append(f"{text} not used: projected{on_galaxy}, and the broker gives no RUWE/G to "
                                        f"vet a < {PARALLAX_SNR_SECURE:g} sigma parallax")
         if extra.get("gaia_var_flag") in (1, "1", "VARIABLE"):
             variable.append(f"{alert.broker} Gaia DR3 xmatch (photometric variability flag)")
@@ -2820,6 +3515,19 @@ class AlertEnricher:
                 "(nuclear transient or AGN variability)"
             )
 
+        # NED's '*' means "star or point source": an earlier detection of the transient itself or a compact
+        # knot of its host is listed so (SN 2002gn, SN 2018aks). When it is the only stellar-type evidence, the
+        # alert is taken for a foreground star only if Gaia DR3 detected a persistent point source there.
+        broker_star = broker_otype in SIMBAD_STAR_TYPES or broker_otype in FINK_LEGACY_STAR_LABELS
+        point_entries = [e for e in counterparts if _is_stellar(e) and _is_point_source_entry(e)]
+        point_only = bool(point_entries) and not broker_star and all(
+            _is_point_source_entry(e) for e in counterparts if _is_stellar(e))
+        unconfirmed_point = point_only and not any(_gaia_point_source_at(e, counterparts) for e in point_entries)
+        unconfirmed_text = (
+            "the only stellar-type counterpart is NED type '*' (star or point source): "
+            f"{'; '.join(stellar)}, with no Gaia DR3 point source at its position -- possibly an earlier detection of "
+            "the transient or a compact knot of its host; Galactic nature not established")
+
         star: bool | None
         result.evidence.extend(galactic)
         if stellar:
@@ -2836,15 +3544,33 @@ class AlertEnricher:
             star = False
             result.evidence.append("NED classifies the counterpart as an extragalactic star: " + "; ".join(extragalactic_star))
         elif stellar:
+            dwarf = local_group_dwarf_at(alert.ra, alert.dec)
             if enclosing is not None and z is not None and abs(z) < LOCAL_VOLUME_MAX_Z:
                 star = False
                 result.evidence.append(f"the stellar-type counterpart lies{in_galaxy}, with no parallax, proper motion "
                                        f"or luminosity marking it as a foreground star: an extragalactic star, not a "
                                        f"Galactic one (|z| < {LOCAL_VOLUME_MAX_Z})")
+            elif dwarf is not None and dwarf[1] <= LG_DWARF_MEMBER_RH:
+                star = False
+                result.evidence.append(
+                    f"the stellar-type counterpart lies {dwarf[1]:.1f} half-light radii from the centre of the Local Group "
+                    f"dwarf {dwarf[0]} (m-M = {dwarf[2]:g}; McConnachie 2012), within the {LG_DWARF_MEMBER_RH:g} r_h holding "
+                    "most of its stars, with no parallax, proper motion or luminosity marking it as a foreground star: "
+                    "one of its stars, an extragalactic star, not a Galactic one")
+            elif dwarf is not None:
+                star = None
+                result.evidence.append(
+                    f"the stellar-type counterpart lies {dwarf[1]:.1f} half-light radii from the centre of the Local Group "
+                    f"dwarf {dwarf[0]} (m-M = {dwarf[2]:g}; McConnachie 2012), within its stellar extent "
+                    f"({LG_DWARF_EXTENT_RH:g} r_h): it may be one of its stars; Galactic nature not established")
             elif enclosing is not None and z is not None:
-                star = True
-                result.evidence.append(f"the stellar-type counterpart is projected{in_galaxy}, too distant for "
-                                       "individually catalogued stars: a Galactic foreground star")
+                if unconfirmed_point:
+                    star = None
+                    result.evidence.append(f"projected{in_galaxy}: {unconfirmed_text}")
+                else:
+                    star = True
+                    result.evidence.append(f"the stellar-type counterpart is projected{in_galaxy}, too distant for "
+                                           "individually catalogued stars: a Galactic foreground star")
             elif enclosing is not None:
                 star = None
                 result.evidence.append(f"the stellar-type counterpart is projected{in_galaxy} of unknown redshift: "
@@ -2864,14 +3590,21 @@ class AlertEnricher:
                     f"z={near_gal['redshift']}, {near_gal['separation_arcsec']:.1f}\"): without parallax or proper-motion "
                     "evidence the stellar-type counterpart may be one of its stars; Galactic nature not established")
             elif associated is not None and associated.get("redshift") is not None:
-                star = True
-                result.evidence.append(
-                    f"the stellar-type counterpart lies outside the D25 ellipse of {associated['name']} (z="
-                    f"{associated['redshift']}), too distant for individually catalogued stars: a Galactic star")
+                if unconfirmed_point:
+                    star = None
+                    result.evidence.append(f"near {associated['name']} (z={associated['redshift']}): {unconfirmed_text}")
+                else:
+                    star = True
+                    result.evidence.append(
+                        f"the stellar-type counterpart lies outside the D25 ellipse of {associated['name']} (z="
+                        f"{associated['redshift']}), too distant for individually catalogued stars: a Galactic star")
             elif associated is not None:
                 star = None
                 result.evidence.append(f"the stellar-type counterpart lies near {associated['name']} (d_DLR "
                                        f"{associated['d_dlr']:.2f}) of unknown redshift: Galactic nature not established")
+            elif d25_answered and unconfirmed_point and host is not None:
+                star = None
+                result.evidence.append(f"host {host['name']} at {host['separation_arcsec']:.1f}\": {unconfirmed_text}")
             elif d25_answered:
                 star = True
                 result.evidence.append("the stellar-type counterpart is not projected on any HyperLEDA galaxy nor near "
@@ -2897,7 +3630,7 @@ class AlertEnricher:
         else:
             result.known_agn = False if answered & {"simbad", "ned"} else None
 
-        if result.counterparts:
+        if result.counterparts:  # a nucleus' duplicate '*' entry is still a catalogued source there
             result.is_new = False
         elif self.catalogs and set(self.catalogs) <= answered:
             result.is_new = True
@@ -2906,6 +3639,78 @@ class AlertEnricher:
             )
         else:
             result.is_new = None
+
+
+def _is_point_source_entry(entry: Mapping[str, Any]) -> bool:
+    """A NED '*' entry: "star or point source" (not a curated stellar type such as V*, WD*, SIMBAD '*')."""
+    return entry.get("catalog") == "ned" and _ned_type(entry.get("object_type"))[0] == "*"
+
+
+def _is_generic_star_entry(entry: Mapping[str, Any]) -> bool:
+    """A SIMBAD '*' ("Star") or NED '*' ("star or point source") entry: the generic stellar type, which catalogues
+    also give to galaxy nuclei (SIMBAD 'LEDA 1798300' and several 2MASS nuclei are '*'), unlike a curated type
+    (V*, WD*, LXB...) or NED's '!*' (a Milky Way star)."""
+    otype = entry.get("object_type")
+    if entry.get("catalog") == "ned":
+        return str(otype or "") == "*"
+    return entry.get("catalog") == "simbad" and otype in {"*", "Star"}
+
+
+def _nucleus_duplicate(entry: Mapping[str, Any], counterparts: Sequence[Mapping[str, Any]]
+                       ) -> tuple[Mapping[str, Any], float] | None:
+    """(galaxy entry, its distance) when ``entry`` is a generic stellar entry lying within GALAXY_COINCIDENCE_ARCSEC
+    of a SIMBAD/NED galaxy or AGN entry with no well-behaved, non-extragalactic Gaia DR3 point source confirming a
+    star at its position: another catalogue entry of that galaxy's nucleus. None otherwise."""
+    if not _is_generic_star_entry(entry) or entry.get("ra") is None or entry.get("dec") is None:
+        return None
+    near = [(haversine_arcsec(entry["ra"], entry["dec"], o["ra"], o["dec"]), o) for o in counterparts
+            if o is not entry and o.get("catalog") in {"simbad", "ned"} and o.get("ra") is not None
+            and o.get("dec") is not None and _is_galaxy(dict(o))]
+    near = [(d, o) for d, o in near if d <= GALAXY_COINCIDENCE_ARCSEC]
+    if not near or _gaia_point_source_at(entry, counterparts, point_like=True):
+        return None
+    d, other = min(near, key=lambda t: t[0])
+    return other, d
+
+
+def _gaia_point_source_at(entry: Mapping[str, Any], counterparts: Sequence[Mapping[str, Any]], *,
+                          point_like: bool = False) -> bool:
+    """True when a Gaia DR3 source that Gaia does not classify as extragalactic (DSC, galaxy candidate) lies
+    at the entry's position (within SAME_SOURCE_ARCSEC plus its J2000 -> J2016 proper-motion drift); with
+    ``point_like`` it must also be a well-behaved point source (RUWE < 1.4, excess-noise significance <= 2,
+    parallax not below -3 sigma), i.e. not the extended source of a galaxy nucleus."""
+    if entry.get("ra") is None or entry.get("dec") is None:
+        return False
+    for gaia in counterparts:
+        if gaia.get("catalog") != "gaia_dr3" or gaia.get("ra") is None or gaia.get("dec") is None:
+            continue
+        if (gaia.get("dsc_p_extragalactic") or 0.0) > GAIA_DSC_EXTRAGALACTIC_MIN or gaia.get("in_galaxy_candidates"):
+            continue
+        if point_like and ((gaia.get("ruwe") or 0.0) >= GAIA_RUWE_MAX
+                           or (gaia.get("astrometric_excess_noise_sig") or 0.0) > GAIA_EXCESS_NOISE_SIG_MAX
+                           or (gaia.get("parallax_over_error") or 0.0) <= GAIA_NEGATIVE_PARALLAX_SNR):
+            continue
+        drift = (gaia.get("pm_masyr") or 0.0) * (GAIA_DR3_EPOCH_YR - CATALOGUE_EPOCH_YR) / 1000.0
+        if haversine_arcsec(entry["ra"], entry["dec"], gaia["ra"], gaia["dec"]) <= SAME_SOURCE_ARCSEC + drift:
+            return True
+    return False
+
+
+def local_group_dwarf_at(ra: float, dec: float) -> tuple[str, float, float] | None:
+    """(name, elliptical radius in half-light radii, distance modulus) of the Local Group dwarf
+    (``LOCAL_GROUP_DWARFS``) within LG_DWARF_EXTENT_RH half-light radii of (ra, dec) -- the one the position is
+    deepest in -- or None."""
+    best: tuple[str, float, float] | None = None
+    for name, g_ra, g_dec, r_h, ell, pa, dm in LOCAL_GROUP_DWARFS:
+        sep = haversine_arcsec(g_ra, g_dec, ra, dec)
+        a = r_h * 60.0
+        if sep > LG_DWARF_EXTENT_RH * a:  # beyond the extent along the major axis, hence along every direction
+            continue
+        radius = directional_light_radius(a, a * (1.0 - ell), pa, position_angle_deg(g_ra, g_dec, ra, dec))
+        r_ell = sep / radius if radius > 0 else math.inf
+        if r_ell <= LG_DWARF_EXTENT_RH and (best is None or r_ell < best[1]):
+            best = (name, r_ell, dm)
+    return best
 
 
 def _is_local_host(host: Mapping[str, Any]) -> bool:
@@ -2936,7 +3741,7 @@ _ALERT_COLUMNS = (
     "classification", "probability", "url", "extra_json", "crossmatch_status", "enrichment_json", "is_new",
     "known_star", "known_variable", "host_name", "host_separation_arcsec", "host_redshift", "first_seen_at",
     "updated_at", "n_updates", "is_negative", "crossmatch_attempts", "last_crossmatch_error", "last_crossmatch_at",
-    "known_agn",
+    "known_agn", "crossmatch_outages", "next_crossmatch_mjd",
 )
 # Columns added after the first release, created on existing databases by AlertStore.
 _ALERT_MIGRATIONS: dict[str, str] = {
@@ -2945,12 +3750,21 @@ _ALERT_MIGRATIONS: dict[str, str] = {
     "last_crossmatch_error": "TEXT",
     "last_crossmatch_at": "TEXT",
     "known_agn": "INTEGER",
+    "crossmatch_outages": "INTEGER NOT NULL DEFAULT 0",
+    "next_crossmatch_mjd": "DOUBLE PRECISION",
 }
 _BOOL_COLUMNS = ("is_new", "known_star", "known_variable", "is_negative", "known_agn")
 # Alert.extra keys that come from the photometry request of one detection (ALeRCE /detections).
 _PHOTOMETRY_EXTRA_KEYS = frozenset({"candid", "isdiffpos", "detection_mjd", "n_detections", "n_negative_detections",
                                     "bands", "malformed_fid"})
+# Alert.extra keys of ALeRCE's classifier-version resolution (/objects/{oid}/probabilities).
+_CLASSIFIER_EXTRA_KEYS = frozenset({"classifier_version", "classifier_versions", "classifier_choice", "classifier_rows",
+                                    "newest_version_class", "superseded_class"})
+# classifier_choice values of a resolved newest-version lookup (vs 'unresolved' / 'max_probability': the lookup failed).
+_RESOLVED_CHOICES = frozenset({"newest_version", "superseded"})
 _STATUS_RANK = {"failed": 0, "partial": 1, "done": 2}
+# AlertStore.set_enrichment re-reads a row changed by a concurrent writer at most this many times.
+SET_ENRICHMENT_TRIES = 4
 
 
 def _bool_or_none(value: Any) -> bool | None:
@@ -2959,6 +3773,30 @@ def _bool_or_none(value: Any) -> bool | None:
 
 def _int_or_none(value: bool | None) -> int | None:
     return None if value is None else int(value)
+
+
+def retry_delay_days(attempts: int, outages: int) -> float:
+    """Backoff before the next crossmatch of an incomplete alert (see RETRY_BACKOFF_SECONDS)."""
+    if attempts >= MAX_CROSSMATCH_ATTEMPTS:
+        return CAPPED_RETRY_DAYS
+    tries = max(1, attempts + outages)
+    return min(RETRY_BACKOFF_SECONDS * 2.0 ** min(tries - 1, 30), RETRY_BACKOFF_MAX_SECONDS) / 86400.0
+
+
+def _json_safe(value: Any) -> Any:
+    """``value`` with non-finite floats (NaN, Infinity: not JSON) replaced by None, recursively."""
+    if isinstance(value, float):
+        return value if math.isfinite(value) else None
+    if isinstance(value, Mapping):
+        return {k: _json_safe(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_json_safe(v) for v in value]
+    return value
+
+
+def _dumps(value: Any) -> str:
+    """Strict JSON (no NaN/Infinity tokens) of a stored value."""
+    return json.dumps(_json_safe(value), default=str, allow_nan=False)
 
 
 @dataclass(slots=True)
@@ -2970,6 +3808,7 @@ class PollWindow:
     kind: str  # explicit | new | backlog
     key: str
     cursor: dict[str, Any] | None = None
+    warnings: list[str] = field(default_factory=list)
 
 
 class AlertStore:
@@ -3014,7 +3853,8 @@ class AlertStore:
                 "host_redshift DOUBLE PRECISION, first_seen_at TEXT NOT NULL, updated_at TEXT NOT NULL, "
                 "n_updates INTEGER NOT NULL DEFAULT 0, is_negative INTEGER, "
                 "crossmatch_attempts INTEGER NOT NULL DEFAULT 0, last_crossmatch_error TEXT, last_crossmatch_at TEXT, "
-                "known_agn INTEGER, UNIQUE (broker, object_id))"
+                "known_agn INTEGER, crossmatch_outages INTEGER NOT NULL DEFAULT 0, next_crossmatch_mjd DOUBLE PRECISION, "
+                "UNIQUE (broker, object_id))"
             )
             cur = conn.execute("SELECT * FROM alerts WHERE 1 = 0")
             existing = {d[0].lower() for d in cur.description}
@@ -3038,6 +3878,7 @@ class AlertStore:
         for key in _BOOL_COLUMNS:
             item[key] = _bool_or_none(item[key])
         item["crossmatch_attempts"] = int(item["crossmatch_attempts"] or 0)
+        item["crossmatch_outages"] = int(item["crossmatch_outages"] or 0)
         return item
 
     # -- writes ---------------------------------------------------------------
@@ -3051,8 +3892,8 @@ class AlertStore:
             values = (
                 alert.alert_id, alert.broker, alert.object_id, alert.survey, alert.ra, alert.dec, alert.mjd,
                 alert.first_mjd, alert.magpsf, alert.magpsf_err, alert.band, alert.classification, alert.probability,
-                alert.url, json.dumps(alert.extra, default=str), "pending", None, None, None, None, None, None, None,
-                now, now, 0, _int_or_none(alert.is_negative), 0, None, None, None,
+                alert.url, _dumps(alert.extra), "pending", None, None, None, None, None, None, None,
+                now, now, 0, _int_or_none(alert.is_negative), 0, None, None, None, 0, None,
             )
             cur = conn.execute(
                 self._sql(f"INSERT INTO alerts ({', '.join(_ALERT_COLUMNS)}) VALUES ({', '.join('?' * len(_ALERT_COLUMNS))}) "
@@ -3078,20 +3919,35 @@ class AlertStore:
                 return "updated", str(status), attempts
             return "unchanged", str(status), attempts
         newer = alert.mjd > old_mjd + MJD_EPS
+        stored_extra = json.loads(old_extra or "{}") or {}
+        new_extra = alert.extra or {}
+        if (not newer and stored_extra.get("classifier_choice") in _RESOLVED_CHOICES
+                and new_extra.get("classifier_choice") in {"unresolved", "max_probability"}):
+            # A re-poll of the same detection whose classifier-version lookup failed: its probability is a (possibly
+            # superseded) row's, not a reclassification. Keep the stored newest-version result (or superseded mark).
+            kept = {k: v for k, v in stored_extra.items() if k in _CLASSIFIER_EXTRA_KEYS}
+            extra = {k: v for k, v in new_extra.items() if k not in _CLASSIFIER_EXTRA_KEYS}
+            alert = replace(alert, classification=old_class, probability=_float(old_prob), extra={**extra, **kept})
+            new_extra = alert.extra
         reclassified = alert.classification != old_class or (
             alert.probability is not None and (old_prob is None or abs(alert.probability - float(old_prob)) > 1e-6)
         )
+        # The classifier-version lookup now succeeded for a row stored while it failed (or for another version):
+        # the same class and probability, but the row's version metadata must be refreshed.
+        reversioned = new_extra.get("classifier_choice") == "newest_version" and (
+            stored_extra.get("classifier_choice") != "newest_version"
+            or stored_extra.get("classifier_version") != new_extra.get("classifier_version"))
         # The same detection with photometry the stored row lacks (an earlier /detections request
         # failed) or of another candid (a different packet of the same instant) refreshes the row.
-        old_candid = (json.loads(old_extra or "{}") or {}).get("candid")
+        old_candid = stored_extra.get("candid")
         new_candid = (alert.extra or {}).get("candid")
         rephotometered = alert.magpsf is not None and (
             old_mag is None or (new_candid is not None and old_candid is not None and str(new_candid) != str(old_candid)))
-        if not newer and not reclassified and not rephotometered and first == old_first:
+        if not newer and not reclassified and not rephotometered and not reversioned and first == old_first:
             return "unchanged", str(status), attempts
         if not newer and alert.magpsf is None and old_mag is not None:
             # A re-poll of the same detection whose photometry request failed: keep the stored photometry.
-            kept = {k: v for k, v in json.loads(old_extra or "{}").items() if k in _PHOTOMETRY_EXTRA_KEYS}
+            kept = {k: v for k, v in stored_extra.items() if k in _PHOTOMETRY_EXTRA_KEYS}
             alert = replace(alert, magpsf=float(old_mag), magpsf_err=_float(old_mag_err), band=old_band,
                             is_negative=_bool_or_none(old_neg), extra={**(alert.extra or {}), **kept})
         moved = haversine_arcsec(float(old_ra), float(old_dec), alert.ra, alert.dec) > REMATCH_FRACTION * match_radius_arcsec
@@ -3100,11 +3956,12 @@ class AlertStore:
                 "UPDATE alerts SET ra = ?, dec = ?, mjd = ?, first_mjd = ?, magpsf = ?, magpsf_err = ?, band = ?, "
                 "classification = ?, probability = ?, url = ?, extra_json = ?, is_negative = ?, updated_at = ?, "
                 "n_updates = n_updates + 1"
-                + (", crossmatch_status = 'pending', crossmatch_attempts = 0" if moved else "")
+                + (", crossmatch_status = 'pending', crossmatch_attempts = 0, crossmatch_outages = 0, "
+                   "next_crossmatch_mjd = NULL" if moved else "")
                 + " WHERE id = ?"
             ),
             (alert.ra, alert.dec, alert.mjd, first, alert.magpsf, alert.magpsf_err, alert.band, alert.classification,
-             alert.probability, alert.url, json.dumps(alert.extra, default=str), _int_or_none(alert.is_negative), now,
+             alert.probability, alert.url, _dumps(alert.extra), _int_or_none(alert.is_negative), now,
              alert.alert_id),
         )
         return ("updated", "pending", 0) if moved else ("updated", str(status), attempts)
@@ -3119,8 +3976,10 @@ class AlertStore:
         detection; an older detection only extends ``first_mjd``. The same detection also
         refreshes a row stored without photometry (its /detections request had failed) or
         with another ``candid``; a re-poll whose photometry request failed keeps the stored
-        photometry. A position shift beyond half the match radius re-queues the crossmatch
-        (and resets its attempt count). Re-polling a window changes nothing.
+        photometry, and one whose classifier-version lookup failed keeps the stored newest-version
+        classification; one whose lookup succeeded refreshes the version metadata of a row stored while it
+        failed ('unresolved' -> 'newest_version'). A position shift beyond half the match radius re-queues the crossmatch (and
+        resets its attempt count and retry schedule). Re-polling a window changes nothing.
         """
         if not alerts:
             return []
@@ -3131,52 +3990,136 @@ class AlertStore:
         """Insert or refresh one alert; returns 'inserted', 'updated' or 'unchanged' (see :meth:`upsert_many`)."""
         return self.upsert_many([alert], match_radius_arcsec=match_radius_arcsec)[0][0]
 
-    def set_enrichment(self, alert_id: str, enrichment: AlertEnrichment) -> str:
-        """Store an enrichment; returns 'stored', 'kept_previous' or 'missing'.
+    def mark_superseded(self, alerts: Sequence[Alert]) -> list[str]:
+        """Reclassify the stored rows of objects whose newest classifier version ranks another class first
+        (``extra['newest_version_class']``, set by :meth:`AlerceBroker.choose_version`); returns the ids changed.
+
+        Such an object is no longer returned for the class it was stored under, so without this a row stored
+        while the version lookup failed (or before ALeRCE re-ranked the object) would keep its obsolete class
+        for ever. The row takes the newest version's class and probability, ``classifier_choice`` 'superseded'
+        and ``superseded_class`` (the class and probability it had); its detection is left as it is. Objects
+        without a stored row are not inserted; a row already marked alike is unchanged.
+        """
+        if not alerts:
+            return []
+        now = _utcnow()
+        changed: list[str] = []
+        with self._conn() as conn:
+            for alert in alerts:
+                newest = dict((alert.extra or {}).get("newest_version_class") or {})
+                if not newest.get("class"):
+                    continue
+                row = conn.execute(self._sql("SELECT classification, probability, extra_json FROM alerts WHERE id = ?"),
+                                   (alert.alert_id,)).fetchone()
+                if row is None:
+                    continue
+                old_class, old_prob, old_extra = row
+                stored = json.loads(old_extra or "{}") or {}
+                marks = {"classifier_choice": "superseded", "classifier_version": newest.get("classifier_version"),
+                         "newest_version_class": newest}
+                probability = _score(newest.get("probability"))
+                if old_class == newest["class"] and all(stored.get(k) == v for k, v in marks.items()):
+                    continue
+                if stored.get("classifier_choice") != "superseded":
+                    marks["superseded_class"] = {"class": old_class, "probability": _float(old_prob)}
+                elif "superseded_class" in stored:
+                    marks["superseded_class"] = stored["superseded_class"]
+                extra = {**{k: v for k, v in stored.items() if k not in _CLASSIFIER_EXTRA_KEYS}, **marks}
+                conn.execute(self._sql("UPDATE alerts SET classification = ?, probability = ?, extra_json = ?, "
+                                       "updated_at = ?, n_updates = n_updates + 1 WHERE id = ?"),
+                             (newest["class"], probability, _dumps(extra), now, alert.alert_id))
+                changed.append(alert.alert_id)
+        return changed
+
+    def set_enrichment(self, alert_id: str, enrichment: AlertEnrichment, *, now_mjd: float | None = None) -> str:
+        """Store an enrichment; returns 'stored', 'kept_previous', 'stale_position' or 'missing'.
 
         A failed attempt never replaces an earlier done/partial result, and a partial one
         never replaces a done result of the same position: the earlier result is kept and
         the attempt is recorded in ``last_crossmatch_error``. A row whose position moved
         (status 'pending') takes the new status so that it is retried.
+
+        An enrichment computed for another position than the row's (the alert moved beyond
+        REMATCH_FRACTION x the match radius while it ran) is stored, but the row stays 'pending'
+        with its attempts untouched, so the next poll crossmatches the new position.
+
+        Retry schedule (``next_crossmatch_mjd``, from ``now_mjd``, default now): an incomplete
+        attempt counts towards MAX_CROSSMATCH_ATTEMPTS unless it failed only because services were
+        unreachable (``enrichment.outage``: counted in ``crossmatch_outages``); either way the next
+        attempt waits :func:`retry_delay_days`.
         """
         now = _utcnow()
+        clock = float(now_mjd) if now_mjd is not None else _current_mjd()
+        error = enrichment.exception or enrichment.error
+        host = enrichment.host or {}
+        values = (_dumps(enrichment.as_dict()), _int_or_none(enrichment.is_new), _int_or_none(enrichment.known_star),
+                  _int_or_none(enrichment.known_variable), _int_or_none(enrichment.known_agn), host.get("name"),
+                  host.get("separation_arcsec"), host.get("redshift"))
+        columns = ("enrichment_json = ?, is_new = ?, known_star = ?, known_variable = ?, known_agn = ?, host_name = ?, "
+                   "host_separation_arcsec = ?, host_redshift = ?")
+        # The row is read, then written only if it is still the row read (compare-and-set on its position, status
+        # and attempt counters): a poll committing in between (another thread) -- e.g. moving the alert and
+        # re-queueing it -- makes the write match nothing, and the row is read again. Without the condition that
+        # poll's 'pending' was overwritten by 'done' with the flags and host of the position the alert had left.
+        unchanged = "id = ? AND ra = ? AND dec = ? AND crossmatch_status = ? AND crossmatch_attempts = ?"
         with self._conn() as conn:
-            row = conn.execute(self._sql("SELECT crossmatch_status, enrichment_json FROM alerts WHERE id = ?"),
-                               (alert_id,)).fetchone()
-            if row is None:
-                return "missing"
-            current, previous_json = row
-            previous = json.loads(previous_json) if previous_json else None
-            prev_status = previous.get("status") if previous else None
-            new_rank = _STATUS_RANK.get(enrichment.status, 0)
-            prev_rank = _STATUS_RANK.get(prev_status, -1)
-            keep = prev_rank > new_rank and (enrichment.status == "failed" or current == "done")
-            error = enrichment.exception or enrichment.error
-            if keep:
-                status = current if current == "done" else enrichment.status
-                conn.execute(
-                    self._sql("UPDATE alerts SET crossmatch_status = ?, crossmatch_attempts = crossmatch_attempts + 1, "
-                              "last_crossmatch_error = ?, last_crossmatch_at = ? WHERE id = ?"),
-                    (status, error, now, alert_id),
+            for _ in range(SET_ENRICHMENT_TRIES):
+                row = conn.execute(self._sql("SELECT crossmatch_status, enrichment_json, ra, dec, crossmatch_attempts, "
+                                             "crossmatch_outages FROM alerts WHERE id = ?"), (alert_id,)).fetchone()
+                if row is None:
+                    return "missing"
+                current, previous_json, row_ra, row_dec, stored_attempts, outages = row
+                read = (alert_id, row_ra, row_dec, current, stored_attempts)
+                attempts, outages = int(stored_attempts or 0), int(outages or 0)
+                if (enrichment.ra is not None and enrichment.dec is not None
+                        and haversine_arcsec(float(row_ra), float(row_dec), enrichment.ra, enrichment.dec)
+                        > REMATCH_FRACTION * enrichment.match_radius_arcsec):
+                    # Re-queueing is right whatever happened meanwhile: no condition needed.
+                    conn.execute(self._sql(f"UPDATE alerts SET crossmatch_status = 'pending', {columns}, "
+                                           "last_crossmatch_error = ?, last_crossmatch_at = ?, next_crossmatch_mjd = NULL "
+                                           "WHERE id = ?"), (*values, self._stale_note(enrichment), now, alert_id))
+                    return "stale_position"
+                if enrichment.status == "done":
+                    attempts, next_mjd = attempts + 1, None
+                else:
+                    if enrichment.outage:
+                        outages += 1
+                    else:
+                        attempts += 1
+                    next_mjd = clock + retry_delay_days(attempts, outages)
+                previous = json.loads(previous_json) if previous_json else None
+                prev_status = previous.get("status") if previous else None
+                new_rank = _STATUS_RANK.get(enrichment.status, 0)
+                prev_rank = _STATUS_RANK.get(str(prev_status), -1)
+                keep = prev_rank > new_rank and (enrichment.status == "failed" or current == "done")
+                schedule = ("crossmatch_attempts = ?, crossmatch_outages = ?, next_crossmatch_mjd = ?, "
+                            "last_crossmatch_error = ?, last_crossmatch_at = ?")
+                if keep:
+                    status = current if current == "done" else enrichment.status
+                    cur = conn.execute(self._sql(f"UPDATE alerts SET crossmatch_status = ?, {schedule} WHERE {unchanged}"),
+                                       (status, attempts, outages, None if status == "done" else next_mjd, error, now,
+                                        *read))
+                    if cur.rowcount == 1:
+                        return "kept_previous"
+                    continue
+                cur = conn.execute(
+                    self._sql(f"UPDATE alerts SET crossmatch_status = ?, {columns}, {schedule} WHERE {unchanged}"),
+                    (enrichment.status, *values, attempts, outages, next_mjd,
+                     None if enrichment.status == "done" else error, now, *read),
                 )
-                return "kept_previous"
-            host = enrichment.host or {}
-            conn.execute(
-                self._sql(
-                    "UPDATE alerts SET crossmatch_status = ?, enrichment_json = ?, is_new = ?, known_star = ?, "
-                    "known_variable = ?, known_agn = ?, host_name = ?, host_separation_arcsec = ?, host_redshift = ?, "
-                    "crossmatch_attempts = crossmatch_attempts + 1, last_crossmatch_error = ?, last_crossmatch_at = ? "
-                    "WHERE id = ?"
-                ),
-                (
-                    enrichment.status, json.dumps(enrichment.as_dict(), default=str),
-                    _int_or_none(enrichment.is_new), _int_or_none(enrichment.known_star),
-                    _int_or_none(enrichment.known_variable), _int_or_none(enrichment.known_agn), host.get("name"),
-                    host.get("separation_arcsec"),
-                    host.get("redshift"), None if enrichment.status == "done" else error, now, alert_id,
-                ),
-            )
-            return "stored"
+                if cur.rowcount == 1:
+                    return "stored"
+            # The row kept changing under us: leave it queued for another crossmatch.
+            conn.execute(self._sql(f"UPDATE alerts SET crossmatch_status = 'pending', {columns}, last_crossmatch_error = ?, "
+                                   "last_crossmatch_at = ?, next_crossmatch_mjd = NULL WHERE id = ?"),
+                         (*values, "the alert changed while its enrichment was being stored: to be crossmatched again",
+                          now, alert_id))
+            return "stale_position"
+
+    @staticmethod
+    def _stale_note(enrichment: AlertEnrichment) -> str:
+        return (f"computed at the previous position ({enrichment.ra:.6f}, {enrichment.dec:.6f}); the alert moved: "
+                "to be crossmatched again")
 
     # -- reads ----------------------------------------------------------------
 
@@ -3218,12 +4161,17 @@ class AlertStore:
         return Alert.from_dict(row) if row else None
 
     def incomplete(self, *, broker: str | None = None, limit: int = 10, exclude: Sequence[str] = (),
-                   max_attempts: int = MAX_CROSSMATCH_ATTEMPTS) -> list[Alert]:
-        """Alerts whose crossmatch is pending/partial/failed and was tried fewer than ``max_attempts`` times."""
+                   now_mjd: float | None = None, due_only: bool = True) -> list[Alert]:
+        """Alerts whose crossmatch is pending/partial/failed, newest first; with ``due_only`` only those
+        whose retry is due at ``now_mjd`` (default now; see :meth:`set_enrichment`): an alert at the
+        attempt cap is taken again CAPPED_RETRY_DAYS after its last attempt."""
         if limit <= 0:
             return []
-        clauses = ["crossmatch_status IN ('pending', 'partial', 'failed')", "crossmatch_attempts < ?"]
-        params: list[Any] = [int(max_attempts)]
+        clauses = ["crossmatch_status IN ('pending', 'partial', 'failed')"]
+        params: list[Any] = []
+        if due_only:
+            clauses.append("(next_crossmatch_mjd IS NULL OR next_crossmatch_mjd <= ?)")
+            params.append((float(now_mjd) if now_mjd is not None else _current_mjd()) + MJD_EPS)
         if broker:
             clauses.append("broker = ?")
             params.append(broker)
@@ -3238,6 +4186,26 @@ class AlertStore:
                           "ORDER BY mjd DESC, id LIMIT ?"), params,
             ).fetchall()
         return [Alert.from_dict(self._row_dict(r)) for r in rows]
+
+    def crossmatch_schedule(self, alert_ids: Sequence[str], now_mjd: float) -> dict[str, str]:
+        """For each stored alert id: 'done', 'due' (crossmatch now), 'capped' (MAX_CROSSMATCH_ATTEMPTS made,
+        waiting CAPPED_RETRY_DAYS) or 'backoff' (waiting for its retry, e.g. during an outage)."""
+        out: dict[str, str] = {}
+        ids = list(dict.fromkeys(alert_ids))
+        with self._conn() as conn:
+            for start in range(0, len(ids), 500):
+                chunk = ids[start:start + 500]
+                rows = conn.execute(
+                    self._sql("SELECT id, crossmatch_status, crossmatch_attempts, next_crossmatch_mjd FROM alerts "
+                              f"WHERE id IN ({', '.join('?' * len(chunk))})"), chunk).fetchall()
+                for alert_id, status, attempts, next_mjd in rows:
+                    if status == "done":
+                        out[alert_id] = "done"
+                    elif next_mjd is None or float(next_mjd) <= now_mjd + MJD_EPS:
+                        out[alert_id] = "due"
+                    else:
+                        out[alert_id] = "capped" if int(attempts or 0) >= MAX_CROSSMATCH_ATTEMPTS else "backoff"
+        return out
 
     def list(
         self,
@@ -3325,8 +4293,28 @@ def cursor_key(broker: str, options: Mapping[str, Any]) -> str:
     return f"{broker}|{json.dumps(dict(options), sort_keys=True)}"
 
 
+@dataclass(slots=True, eq=False)
+class _Claim:
+    """An alert being enriched: its task, whether it got its turn yet, and the event that lets it skip the
+    batch queue (a re-crossmatch request must not wait behind a background batch)."""
+
+    alert: Alert
+    task: asyncio.Future[tuple[AlertEnrichment, str]] | None = None
+    started: bool = False
+    bypass: asyncio.Event = field(default_factory=asyncio.Event)
+
+
+# watch() without ``iterations`` keeps only this many recent PollResults (on_result sees every one).
+WATCH_RESULTS_KEPT = 10
+
+
 class AlertService:
-    """Poll brokers, persist alerts idempotently, and auto-crossmatch new ones."""
+    """Poll brokers, persist alerts idempotently, and auto-crossmatch new ones.
+
+    Enrichments of every batch (polls, background tasks) share one semaphore of ``concurrency`` slots per
+    service, so overlapping batches never multiply the archive load; a re-crossmatch request
+    (:meth:`enrich_alert`) runs at once, skipping the queue.
+    """
 
     def __init__(
         self,
@@ -3346,9 +4334,18 @@ class AlertService:
         self.overlap_days = overlap_days
         self.lookback_days = lookback_days
         self.clock = clock
-        # Alert id -> the task enriching it now (a poll, a background task or a re-crossmatch
-        # request): an alert is never enriched twice at once.
-        self._running: dict[str, asyncio.Future[tuple[AlertEnrichment, str]]] = {}
+        # Alert id -> the enrichment running (or queued) now (a poll, a background task or a
+        # re-crossmatch request): an alert is never enriched twice at once.
+        self._running: dict[str, _Claim] = {}
+        self._semaphore: asyncio.Semaphore | None = None
+        self._semaphore_loop: asyncio.AbstractEventLoop | None = None
+
+    def _batch_semaphore(self) -> asyncio.Semaphore:
+        """The service-wide semaphore of batch enrichments (created in, and bound to, the running loop)."""
+        loop = asyncio.get_running_loop()
+        if self._semaphore is None or self._semaphore_loop is not loop:
+            self._semaphore, self._semaphore_loop = asyncio.Semaphore(self.concurrency), loop
+        return self._semaphore
 
     def plan_window(self, broker: str, options: Mapping[str, Any], since_mjd: float | None,
                     until_mjd: float | None) -> PollWindow:
@@ -3357,7 +4354,9 @@ class AlertService:
         Without a cursor (first poll) the window starts at the latest stored alert of the
         broker minus the overlap, or ``lookback_days`` before now. The overlap re-covers
         alerts that reach the broker late. Only fully default windows (no since/until)
-        read the backlog and advance the cursor.
+        read the backlog and advance the cursor. With ``until_mjd`` alone, a cursor-derived start
+        that is not earlier than ``until_mjd`` (the stream has moved past it) is replaced by
+        ``until_mjd - lookback_days``, with a warning, instead of an empty sliver of a window.
         """
         key = cursor_key(broker, options)
         until = float(until_mjd) if until_mjd is not None else self.clock()
@@ -3369,12 +4368,19 @@ class AlertService:
                 window = PollWindow(float(cursor["backlog_since"]), float(cursor["backlog_until"]), "backlog", key, cursor)
             else:
                 if cursor and cursor.get("resume_mjd") is not None:
-                    since = float(cursor["resume_mjd"]) - self.overlap_days
+                    since, origin = float(cursor["resume_mjd"]) - self.overlap_days, "the stream cursor"
                 else:
                     latest = self.store.latest_mjd(broker)
                     since = latest - self.overlap_days if latest is not None else until - self.lookback_days
+                    origin = "the latest stored alert"
+                notes: list[str] = []
+                if until_mjd is not None and since >= until:
+                    notes.append(f"until_mjd {until:.6f} is not after the default start {since:.6f} ({origin} minus "
+                                 f"the overlap): the window starts lookback_days = {self.lookback_days:g} d earlier, "
+                                 f"at {until - self.lookback_days:.6f}; give since_mjd to choose it")
+                    since = until - self.lookback_days
                 since = min(since, until - 1e-3)
-                window = PollWindow(since, until, "new" if until_mjd is None else "explicit", key, cursor)
+                window = PollWindow(since, until, "new" if until_mjd is None else "explicit", key, cursor, notes)
         if not (math.isfinite(window.since) and math.isfinite(window.until)) or window.since >= window.until:
             raise ValueError(f"since_mjd ({window.since}) must be earlier than until_mjd ({window.until})")
         return window
@@ -3423,43 +4429,62 @@ class AlertService:
         """Ids of the alerts being enriched right now."""
         return frozenset(self._running)
 
-    def _claim(self, alert: Alert, semaphore: asyncio.Semaphore | None = None
-               ) -> asyncio.Future[tuple[AlertEnrichment, str]]:
-        """Start enriching ``alert`` (under ``semaphore``) and register the task until it ends."""
+    def _claim(self, alert: Alert, semaphore: asyncio.Semaphore | None = None) -> _Claim:
+        """Start enriching ``alert`` (after a slot of ``semaphore``, unless bypassed) and register it until it ends."""
+        claim = _Claim(alert)
+
         async def run() -> tuple[AlertEnrichment, str]:
-            if semaphore is None:
+            held = semaphore is not None and await _acquire_or_bypass(semaphore, claim.bypass)
+            claim.started = True
+            try:
                 return await self._enrich_and_store(alert)
-            async with semaphore:
-                return await self._enrich_and_store(alert)
+            finally:
+                if held:
+                    assert semaphore is not None
+                    semaphore.release()
 
         task = asyncio.ensure_future(run())
+        claim.task = task
         alert_id = alert.alert_id
-        self._running[alert_id] = task
+        self._running[alert_id] = claim
 
         def release(done: asyncio.Future[Any]) -> None:
-            if self._running.get(alert_id) is done:
+            if self._running.get(alert_id) is claim:
                 del self._running[alert_id]
             if not done.cancelled() and done.exception() is not None:  # retrieved: no "never retrieved" warning
                 logger.error("alert crossmatch task of %s failed: %r", alert_id, done.exception())
 
         task.add_done_callback(release)
-        return task
+        return claim
 
     async def enrich_alert(self, alert: Alert) -> tuple[AlertEnrichment, str]:
-        """Crossmatch one alert and store the result; returns (enrichment, 'stored' | 'kept_previous' | 'missing').
+        """Crossmatch one alert now and store the result; returns (enrichment, 'stored' | 'kept_previous' |
+        'stale_position' | 'missing').
 
         When the alert is already being enriched (by a poll, a background task or another
         request) the running enrichment is awaited and its result returned: the archives are
-        queried once and the attempt counter moves once. Cancelling the caller does not cancel
-        the shared enrichment. An exception inside the enricher is stored as status 'failed'
-        with ``exception`` set, so the alert stays queryable (and never erases an earlier
-        complete result).
+        queried once and the attempt counter moves once. An enrichment still queued behind a
+        background batch is started at once (it skips the batch queue), and one of an earlier
+        position of a moved alert is awaited, then the new position is enriched. Cancelling the
+        caller does not cancel the shared enrichment. An exception inside the enricher is stored
+        as status 'failed' with ``exception`` set, so the alert stays queryable (and never erases
+        an earlier complete result).
         """
         if self.enricher is None:
             raise RuntimeError("AlertService has no enricher (crossmatch disabled)")
         running = self._running.get(alert.alert_id)
-        task = running if running is not None else self._claim(alert)
-        return await asyncio.shield(task)
+        if running is not None and _moved(running.alert, alert, self.enricher.match_radius_arcsec):
+            running.bypass.set()
+            assert running.task is not None
+            with contextlib.suppress(Exception):
+                await asyncio.shield(running.task)
+            running = self._running.get(alert.alert_id)
+        if running is None:
+            running = self._claim(alert)
+        elif not running.started:
+            running.bypass.set()  # queued behind a batch: run now
+        assert running.task is not None
+        return await asyncio.shield(running.task)
 
     async def _enrich_and_store(self, alert: Alert) -> tuple[AlertEnrichment, str]:
         enricher = self.enricher
@@ -3473,26 +4498,33 @@ class AlertService:
                 status="failed", match_radius_arcsec=enricher.match_radius_arcsec,
                 host_radius_arcsec=enricher.host_radius_arcsec, catalogs=list(enricher.catalogs),
                 error=f"{exc.__class__.__name__}: {exc}", exception=f"{exc.__class__.__name__}: {exc}",
-                crossmatched_at=_utcnow(),
+                crossmatched_at=_utcnow(), ra=alert.ra, dec=alert.dec,
             )
-        stored = await asyncio.to_thread(self.store.set_enrichment, alert.alert_id, enrichment)
+        if enrichment.ra is None or enrichment.dec is None:  # an enricher that does not record the position
+            enrichment = replace(enrichment, ra=alert.ra, dec=alert.dec)
+        stored = await asyncio.to_thread(self.store.set_enrichment, alert.alert_id, enrichment, now_mjd=self.clock())
         return enrichment, stored
 
     async def crossmatch_alerts(self, alerts: Sequence[Alert], result: PollResult | None = None) -> dict[str, int]:
-        """Enrich ``alerts`` (bounded concurrency), skipping any already being enriched by this service.
+        """Enrich ``alerts`` (at most ``concurrency`` at once over every batch of this service), skipping any
+        already being enriched by this service.
 
         Returns counts {'done', 'partial', 'failed', 'skipped_in_flight'} (also added to ``result``).
+        An alert skipped because an enrichment of an earlier position of it is running stays 'pending'
+        (see :meth:`AlertStore.set_enrichment`) and is crossmatched again by a later poll.
         """
         if self.enricher is None:
             raise RuntimeError("AlertService has no enricher (crossmatch disabled)")
-        semaphore = asyncio.Semaphore(self.concurrency)
+        semaphore = self._batch_semaphore()
         counts = {"done": 0, "partial": 0, "failed": 0, "skipped_in_flight": 0}
         tasks: list[asyncio.Future[tuple[AlertEnrichment, str]]] = []
         for alert in alerts:
             if alert.alert_id in self._running:  # claimed now, so a duplicate in ``alerts`` is skipped too
                 counts["skipped_in_flight"] += 1
                 continue
-            tasks.append(self._claim(alert, semaphore))
+            task = self._claim(alert, semaphore).task
+            assert task is not None
+            tasks.append(task)
         for enrichment, _stored in await asyncio.gather(*(asyncio.shield(t) for t in tasks)):
             counts[enrichment.status if enrichment.status in counts else "failed"] += 1
         if result is not None:
@@ -3523,8 +4555,11 @@ class AlertService:
         """Fetch the newest ``limit`` alerts of a window and upsert them, without crossmatching.
 
         Returns the PollResult and the stored alerts whose crossmatch is due: fetched alerts
-        not yet 'done' that were tried fewer than ``MAX_CROSSMATCH_ATTEMPTS`` times (a moved
-        alert starts again at 0), plus (``retry_limit``) other incomplete rows of this broker.
+        not yet 'done' whose retry is due (:meth:`AlertStore.crossmatch_schedule`: an alert backs off
+        after an incomplete attempt and waits a day after MAX_CROSSMATCH_ATTEMPTS; a moved alert starts
+        again), plus (``retry_limit``) other incomplete rows of this broker whose retry is due. Stored rows of
+        ALeRCE objects the fetch dropped as superseded are reclassified (:meth:`AlertStore.mark_superseded`;
+        ``PollResult.superseded``).
         """
         started = time.perf_counter()
         _check_limit(limit)
@@ -3532,7 +4567,8 @@ class AlertService:
         if crossmatch and self.enricher is None:
             raise RuntimeError("crossmatch requested but the AlertService has no enricher")
         window = await asyncio.to_thread(self.plan_window, broker, opts, since_mjd, until_mjd)
-        result = PollResult(broker=broker, since_mjd=window.since, until_mjd=window.until, options=opts, window=window.kind)
+        result = PollResult(broker=broker, since_mjd=window.since, until_mjd=window.until, options=opts, window=window.kind,
+                            warnings=list(window.warnings))
         fetched = await fetch_alerts(self.client, broker, since_mjd=window.since, until_mjd=window.until, limit=limit,
                                      options=opts)
         result.fetched = len(fetched.alerts)
@@ -3541,20 +4577,33 @@ class AlertService:
         result.boundary_mjd = fetched.boundary_mjd
         radius = self.enricher.match_radius_arcsec if self.enricher else DEFAULT_MATCH_RADIUS_ARCSEC
         outcomes = await asyncio.to_thread(self.store.upsert_many, fetched.alerts, match_radius_arcsec=radius)
-        to_match: list[str] = []
-        for alert, (outcome, status, attempts) in zip(fetched.alerts, outcomes, strict=True):
+        if fetched.superseded:
+            marked = await asyncio.to_thread(self.store.mark_superseded, fetched.superseded)
+            result.superseded = len(marked)
+            if marked:
+                result.warnings.append(
+                    f"{len(marked)} stored alert(s) reclassified: their newest classifier version now ranks another "
+                    f"class first (classifier_choice 'superseded'): {', '.join(marked[:5])}")
+        now = self.clock()
+        pending: list[str] = []
+        for alert, (outcome, status, _attempts) in zip(fetched.alerts, outcomes, strict=True):
             setattr(result, outcome, getattr(result, outcome) + 1)
             result.alert_ids.append(alert.alert_id)
             if outcome == "inserted":
                 result.new_alert_ids.append(alert.alert_id)
             if crossmatch and status != "done":
-                if attempts < MAX_CROSSMATCH_ATTEMPTS:
-                    to_match.append(alert.alert_id)
-                else:
-                    result.crossmatch_capped += 1
+                pending.append(alert.alert_id)
+        schedule = await asyncio.to_thread(self.store.crossmatch_schedule, pending, now) if pending else {}
+        to_match = [i for i in pending if schedule.get(i) == "due"]
+        result.crossmatch_capped = sum(1 for i in pending if schedule.get(i) == "capped")
+        result.crossmatch_backoff = sum(1 for i in pending if schedule.get(i) == "backoff")
         if result.crossmatch_capped:
             result.warnings.append(f"{result.crossmatch_capped} fetched alert(s) not re-crossmatched: "
-                                   f"{MAX_CROSSMATCH_ATTEMPTS} attempts already made (re-run them explicitly)")
+                                   f"{MAX_CROSSMATCH_ATTEMPTS} attempts already made; retried "
+                                   f"{CAPPED_RETRY_DAYS:g} day after the last one (or run `alerts crossmatch`)")
+        if result.crossmatch_backoff:
+            result.warnings.append(f"{result.crossmatch_backoff} fetched alert(s) not re-crossmatched yet: their "
+                                   "last attempt was incomplete and the retry backs off (5 min, doubling)")
         if window.kind != "explicit":
             await asyncio.to_thread(self._advance_cursor, window, broker, opts, fetched, result)
         if fetched.truncated:
@@ -3575,7 +4624,7 @@ class AlertService:
             due.extend(Alert.from_dict(r) for r in rows)
         if crossmatch and retry_limit > 0:
             retry = await asyncio.to_thread(self.store.incomplete, broker=broker, limit=retry_limit,
-                                            exclude=result.alert_ids)
+                                            exclude=result.alert_ids, now_mjd=now)
             result.retried = len(retry)
             due.extend(retry)
         result.crossmatch_queued = len(due)
@@ -3631,6 +4680,8 @@ class AlertService:
         Each alert is committed as soon as it is processed, so cancelling (Ctrl+C,
         task.cancel()) loses nothing already fetched; CancelledError is re-raised.
         ``on_result`` may be a coroutine function (awaited), so it can do its I/O off the loop.
+        Returns the PollResults -- all of them with ``iterations``, else the last WATCH_RESULTS_KEPT
+        (a daemon must not grow without bound; ``on_result`` sees every one).
         """
         if not math.isfinite(interval_seconds) or interval_seconds <= 0:
             raise ValueError("interval_seconds must be positive")
@@ -3640,7 +4691,9 @@ class AlertService:
         for name in brokers:
             normalize_options(name, (options or {}).get(name))
         stop = stop_event or asyncio.Event()
-        results: list[PollResult] = []
+        results: collections.deque[PollResult] = collections.deque(maxlen=None if iterations is not None
+                                                                   else WATCH_RESULTS_KEPT)
+        polls = 0
         cycle = 0
         try:
             while not stop.is_set():
@@ -3658,6 +4711,7 @@ class AlertService:
                                          error=f"unexpected {exc.__class__.__name__}: {exc}")
                         logger.exception("alerts watch: poll of %s raised", name)
                     results.append(res)
+                    polls += 1
                     if on_result is not None:
                         pending = on_result(res)
                         if inspect.isawaitable(pending):
@@ -3668,9 +4722,38 @@ class AlertService:
                 with contextlib.suppress(TimeoutError):
                     await asyncio.wait_for(stop.wait(), timeout=interval_seconds)
         except asyncio.CancelledError:
-            logger.info("alerts watch cancelled after %d poll(s)", len(results))
+            logger.info("alerts watch cancelled after %d poll(s)", polls)
             raise
-        return results
+        return list(results)
+
+
+async def _acquire_or_bypass(semaphore: asyncio.Semaphore, bypass: asyncio.Event) -> bool:
+    """Wait for a slot of ``semaphore`` or for ``bypass``; True when a slot was acquired (release it)."""
+    if bypass.is_set():
+        return False
+    acquire = asyncio.ensure_future(semaphore.acquire())
+    skip = asyncio.ensure_future(bypass.wait())
+    try:
+        await asyncio.wait({acquire, skip}, return_when=asyncio.FIRST_COMPLETED)
+    except BaseException:  # cancelled while waiting: give back a slot acquired meanwhile
+        skip.cancel()
+        if acquire.done() and not acquire.cancelled():
+            semaphore.release()
+        else:
+            acquire.cancel()
+        raise
+    skip.cancel()
+    if acquire.done():
+        return True  # a slot acquired (even together with the bypass) is kept and released after the run
+    acquire.cancel()  # Semaphore.acquire undoes a wake-up that raced with the cancellation
+    with contextlib.suppress(asyncio.CancelledError):
+        await acquire
+    return False
+
+
+def _moved(before: Alert, after: Alert, match_radius_arcsec: float) -> bool:
+    """True when two positions of an alert differ by more than REMATCH_FRACTION of the match radius."""
+    return haversine_arcsec(before.ra, before.dec, after.ra, after.dec) > REMATCH_FRACTION * match_radius_arcsec
 
 
 def build_alert_service(
@@ -3731,6 +4814,8 @@ class AlertOut(BaseModel):
     updated_at: str
     n_updates: int = 0
     crossmatch_attempts: int = 0
+    crossmatch_outages: int = 0
+    next_crossmatch_mjd: float | None = None
     last_crossmatch_error: str | None = None
     last_crossmatch_at: str | None = None
 
@@ -3746,15 +4831,18 @@ MAX_WAIT_CROSSMATCH = 25
 
 
 class PollRequest(BaseModel):
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
 
     broker: BrokerName = "alerce"
-    since_mjd: float | None = Field(None, ge=40000.0, le=100000.0, description="Window start (UTC MJD); default: cursor")
-    until_mjd: float | None = Field(None, ge=40000.0, le=100000.0, description="Window end (UTC MJD); default now")
+    since_mjd: float | None = Field(None, ge=MJD_MIN, le=MJD_MAX, description="Window start (UTC MJD); default: cursor")
+    until_mjd: float | None = Field(None, ge=MJD_MIN, le=MJD_MAX, description="Window end (UTC MJD); default now "
+                                    "(with until_mjd alone the window starts at the cursor, or lookback days before "
+                                    "until_mjd when the cursor is not earlier)")
     limit: int = Field(20, ge=1, le=MAX_POLL_LIMIT, description="Max alerts stored by this poll")
     crossmatch: bool = True
-    class_name: str | None = Field(None, description="ALeRCE class, Fink/ZTF class, or Fink/LSST tag")
-    classifier: str | None = Field(None, description="ALeRCE classifier (alerce only)")
+    class_name: str | None = Field(None, min_length=1, description="ALeRCE class, Fink/ZTF class, or Fink/LSST tag "
+                                   "(omit for the broker default)")
+    classifier: str | None = Field(None, min_length=1, description="ALeRCE classifier (alerce only)")
     mjd_field: Literal["firstmjd", "lastmjd"] | None = Field(None, description="ALeRCE window column (alerce only)")
     crossmatch_mode: Literal["background", "wait"] = Field(
         "background", description="background: return after ingest and crossmatch in a background task (follow "
@@ -3786,6 +4874,8 @@ class PollResponse(BaseModel):
     crossmatch_queued: int = 0
     crossmatch_deferred: bool = False
     crossmatch_capped: int = 0
+    crossmatch_backoff: int = 0
+    superseded: int = 0
     truncated: bool
     boundary_mjd: float | None = None
     backlog: dict[str, float] | None = None
@@ -3854,8 +4944,8 @@ async def _service_for(request: Request, *, crossmatch: bool = True) -> AlertSer
 @router.get("", response_model=AlertListResponse)
 async def list_alerts(
     request: Request,
-    since_mjd: float | None = Query(None, ge=40000.0, le=100000.0),
-    until_mjd: float | None = Query(None, ge=40000.0, le=100000.0),
+    since_mjd: float | None = Query(None, ge=MJD_MIN, le=MJD_MAX),
+    until_mjd: float | None = Query(None, ge=MJD_MIN, le=MJD_MAX),
     limit: int = Query(50, ge=1, le=1000),
     broker: BrokerName | None = None,
     classification: str | None = None,
@@ -3966,6 +5056,17 @@ def _nonnegative_float(text: str) -> float:
     return value
 
 
+def _mjd(text: str) -> float:
+    """An MJD argument in the range the API accepts (40000-100000: 1968-2132)."""
+    try:
+        value = float(text)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"{text!r} is not a number") from None
+    if not (math.isfinite(value) and MJD_MIN <= value <= MJD_MAX):
+        raise argparse.ArgumentTypeError(f"{text!r}: an MJD must lie between {MJD_MIN:g} and {MJD_MAX:g}")
+    return value
+
+
 def _poll_limit(text: str) -> int:
     try:
         value = int(text)
@@ -3973,6 +5074,15 @@ def _poll_limit(text: str) -> int:
         raise argparse.ArgumentTypeError(f"{text!r} is not an integer") from None
     if not 1 <= value <= MAX_POLL_LIMIT:
         raise argparse.ArgumentTypeError(f"--limit must be between 1 and {MAX_POLL_LIMIT}")
+    return value
+
+
+def _nonblank(text: str) -> str:
+    """A class / classifier name: surrounding blanks removed, never empty (an empty class would disable the
+    broker's class filter)."""
+    value = text.strip()
+    if not value:
+        raise argparse.ArgumentTypeError("must not be blank (omit the option for the broker's default)")
     return value
 
 
@@ -3997,8 +5107,8 @@ def _cli_store(args: argparse.Namespace) -> AlertStore:
 
 
 def _json(payload: Any, *, indent: int | None = 2) -> str:
-    # allow_nan=False: strict JSON (no NaN/Infinity tokens).
-    return json.dumps(payload, indent=indent, default=str, allow_nan=False)
+    # Strict JSON: a non-finite float (a row stored before values were sanitized) is written as null.
+    return json.dumps(_json_safe(payload), indent=indent, default=str, allow_nan=False)
 
 
 def _print_poll(result: PollResult, fmt: str, store: AlertStore, *, stream: bool = False) -> None:
@@ -4016,6 +5126,7 @@ def _print_poll(result: PollResult, fmt: str, store: AlertStore, *, stream: bool
           f"crossmatched {result.crossmatched}, partial {result.crossmatch_partial}, "
           f"crossmatch failed {result.crossmatch_failed}, retried {result.retried}"
           + (f", {result.crossmatch_capped} at the attempt cap" if result.crossmatch_capped else "")
+          + (f", {result.superseded} stored reclassified (superseded)" if result.superseded else "")
           + (", TRUNCATED" if result.truncated else ""), flush=True)
     for row in store.get_many(result.alert_ids):
         _print_row(row)
@@ -4112,6 +5223,44 @@ def _cli_show(args: argparse.Namespace) -> int:
     return 0
 
 
+async def _cli_crossmatch(args: argparse.Namespace) -> int:
+    """(Re-)run the crossmatch of one alert, or of every incomplete alert, now (ignoring the retry schedule)."""
+    if bool(args.alert_id) == bool(args.incomplete):
+        print("Error: give an alert id or --incomplete (not both).", file=sys.stderr)
+        return 2
+    try:
+        store = await asyncio.to_thread(_cli_store, args)
+        if args.alert_id:
+            alert = await asyncio.to_thread(store.get_alert, args.alert_id)
+            if alert is None:
+                print(f"Alert {args.alert_id} not found.", file=sys.stderr)
+                return 1
+            todo = [alert]
+        else:
+            todo = await asyncio.to_thread(store.incomplete, broker=args.broker, limit=args.limit, due_only=False)
+        async with httpx.AsyncClient(timeout=120.0, follow_redirects=True) as client:
+            svc = build_alert_service(client, store=store, crossmatch=True, match_radius_arcsec=args.radius,
+                                      host_radius_arcsec=args.host_radius)
+            outcomes = await asyncio.gather(*(svc.enrich_alert(a) for a in todo)) if args.alert_id else None
+            counts = (await svc.crossmatch_alerts(todo)) if outcomes is None else None
+    except _CLI_STORE_ERRORS as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 2
+    if counts is None:
+        assert outcomes is not None
+        counts = {"done": 0, "partial": 0, "failed": 0}
+        for enrichment, _stored in outcomes:
+            counts[enrichment.status if enrichment.status in counts else "failed"] += 1
+    rows = await asyncio.to_thread(store.get_many, [a.alert_id for a in todo])
+    if args.format == "json":
+        print(_json({"crossmatched": len(todo), "counts": counts, "alerts": rows}))
+    else:
+        print(f"crossmatched {len(todo)} alert(s): " + ", ".join(f"{k} {v}" for k, v in counts.items()))
+        for row in rows:
+            _print_row(row)
+    return 1 if counts.get("failed") else 0
+
+
 def cli_handler(args: argparse.Namespace) -> int:
     """Dispatch `alerts <action>`; returns the process exit code (130 when interrupted)."""
     action = getattr(args, "alerts_command", None)
@@ -4124,15 +5273,17 @@ def cli_handler(args: argparse.Namespace) -> int:
             return _cli_list(args)
         if action == "show":
             return _cli_show(args)
+        if action == "crossmatch":
+            return asyncio.run(_cli_crossmatch(args))
     except KeyboardInterrupt:
         print("Interrupted; all processed alerts are saved.", file=sys.stderr)
         return 130
-    print("Usage: alerts {poll,watch,list,show} ... (see --help)", file=sys.stderr)
+    print("Usage: alerts {poll,watch,list,show,crossmatch} ... (see --help)", file=sys.stderr)
     return 2
 
 
 def register_cli(subparsers: argparse._SubParsersAction) -> None:
-    """Add the `alerts` subcommand (poll | watch | list | show) with handler=cli_handler."""
+    """Add the `alerts` subcommand (poll | watch | list | show | crossmatch) with handler=cli_handler."""
     parser = subparsers.add_parser("alerts", help="Ingest live transient alerts (ALeRCE, Fink) and crossmatch them")
     actions = parser.add_subparsers(dest="alerts_command")
 
@@ -4154,10 +5305,10 @@ def register_cli(subparsers: argparse._SubParsersAction) -> None:
 
     poll = actions.add_parser("poll", help="Poll one broker once")
     poll.add_argument("--broker", choices=sorted(BROKERS), default="alerce")
-    poll.add_argument("--since-mjd", type=float, help="Window start (UTC MJD); default: the stream cursor (or a backlog)")
-    poll.add_argument("--until-mjd", type=float, help="Window end (UTC MJD); default now")
-    poll.add_argument("--class", dest="class_name", help="ALeRCE class / Fink class / Fink-LSST tag")
-    poll.add_argument("--classifier", help="ALeRCE classifier (default stamp_classifier)")
+    poll.add_argument("--since-mjd", type=_mjd, help="Window start (UTC MJD); default: the stream cursor (or a backlog)")
+    poll.add_argument("--until-mjd", type=_mjd, help="Window end (UTC MJD); default now")
+    poll.add_argument("--class", dest="class_name", type=_nonblank, help="ALeRCE class / Fink class / Fink-LSST tag")
+    poll.add_argument("--classifier", type=_nonblank, help="ALeRCE classifier (default stamp_classifier)")
     poll.add_argument("--mjd-field", choices=["firstmjd", "lastmjd"], help="ALeRCE window column (default firstmjd)")
     polling(poll)
     common(poll)
@@ -4170,7 +5321,7 @@ def register_cli(subparsers: argparse._SubParsersAction) -> None:
     common(watch)
 
     lst = actions.add_parser("list", help="List stored alerts")
-    lst.add_argument("--since-mjd", type=float)
+    lst.add_argument("--since-mjd", type=_mjd)
     lst.add_argument("--broker", choices=sorted(BROKERS))
     lst.add_argument("--limit", type=_positive_int, default=50)
     common(lst)
@@ -4178,5 +5329,18 @@ def register_cli(subparsers: argparse._SubParsersAction) -> None:
     show = actions.add_parser("show", help="Show one stored alert with its crossmatch summary")
     show.add_argument("alert_id", help="broker:object_id or object id")
     common(show)
+
+    xmatch = actions.add_parser("crossmatch", help="(Re-)run the crossmatch of stored alerts now, ignoring the retry "
+                                                   "schedule and the attempt cap")
+    xmatch.add_argument("alert_id", nargs="?", help="broker:object_id or object id")
+    xmatch.add_argument("--incomplete", action="store_true",
+                        help="every stored alert whose crossmatch is pending, partial or failed (newest first)")
+    xmatch.add_argument("--broker", choices=sorted(BROKERS), help="with --incomplete: this broker's alerts only")
+    xmatch.add_argument("--limit", type=_positive_int, default=50, help="with --incomplete: at most N alerts (default 50)")
+    xmatch.add_argument("--radius", type=_positive_float, default=DEFAULT_MATCH_RADIUS_ARCSEC,
+                        help="Counterpart radius, arcsec (default 2)")
+    xmatch.add_argument("--host-radius", type=_nonnegative_float, default=DEFAULT_HOST_RADIUS_ARCSEC,
+                        help="Host-galaxy cone radius, arcsec (default 60; 0 disables the host search)")
+    common(xmatch)
 
     parser.set_defaults(handler=cli_handler)

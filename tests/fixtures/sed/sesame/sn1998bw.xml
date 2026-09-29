@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>SN 1998bw</name>
+  <!-- Q8483487 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 0ms [0] -->
+    <INFO>from cache</INFO>
+    <oid>3484059</oid>
+    <otype>SN*</otype>
+    <jpos>19:35:03.16 -52:50:46.1</jpos>
+    <jradeg>293.76320833</jradeg>
+    <jdedeg>-52.84613889</jdedeg>
+    <refPos>2008yCat.2283....0B</refPos>
+    <z><v>0.0085</v><q>D</q><r>1998IAUC.6896Q...1T</r></z>
+    <spType>SNIc</spType><spNum>0.00501A00.0000.0000000000000000</spNum>
+    <oname>SN 1998bw</oname>
+    <alias>SN 1998bw</alias>
+    <alias>GRB 980425</alias>
+    <alias>Trigger 6707</alias>
+    <alias>XRF 980425</alias>
+    <alias>[STK2001] 10928c</alias>
+    <alias>AAVSO 1927-53</alias>
+    <nrefs>1961</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ====Done (2026-Sep-29,05:01:59z)==== -->

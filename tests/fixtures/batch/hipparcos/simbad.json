@@ -1,0 +1,118 @@
+{
+  "case": "hipparcos",
+  "catalog": "simbad",
+  "radius_arcsec": 5.0,
+  "targets": [
+    {
+      "id": "Barnard",
+      "ra": 269.4520769586187,
+      "dec": 4.693364966576667
+    },
+    {
+      "id": "61 Cyg A",
+      "ra": 316.7247482895925,
+      "dec": 38.74941731943694
+    },
+    {
+      "id": "Arcturus",
+      "ra": 213.915300294925,
+      "dec": 19.1824091615312
+    },
+    {
+      "id": "Sirius",
+      "ra": 101.28715533333335,
+      "dec": -16.71611586111111
+    },
+    {
+      "id": "Procyon",
+      "ra": 114.82549790798149,
+      "dec": 5.224987557059477
+    },
+    {
+      "id": "Altair",
+      "ra": 297.69582729638694,
+      "dec": 8.868321196436963
+    },
+    {
+      "id": "HD 209458",
+      "ra": 330.79488644388,
+      "dec": 18.88431927594
+    },
+    {
+      "id": "Barnard@pm",
+      "ra": 269.4520769586187,
+      "dec": 4.693364966576667,
+      "epoch": 2000.0,
+      "pm_ra_masyr": -801.551,
+      "pm_dec_masyr": 10362.394
+    },
+    {
+      "id": "61 Cyg A@pm",
+      "ra": 316.7247482895925,
+      "dec": 38.74941731943694,
+      "epoch": 2000.0,
+      "pm_ra_masyr": 4164.209,
+      "pm_dec_masyr": 3249.614
+    },
+    {
+      "id": "Arcturus@pm",
+      "ra": 213.915300294925,
+      "dec": 19.1824091615312,
+      "epoch": 2000.0,
+      "pm_ra_masyr": -1093.39,
+      "pm_dec_masyr": -2000.06
+    },
+    {
+      "id": "Sirius@pm",
+      "ra": 101.28715533333335,
+      "dec": -16.71611586111111,
+      "epoch": 2000.0,
+      "pm_ra_masyr": -546.01,
+      "pm_dec_masyr": -1223.07
+    },
+    {
+      "id": "Procyon@pm",
+      "ra": 114.82549790798149,
+      "dec": 5.224987557059477,
+      "epoch": 2000.0,
+      "pm_ra_masyr": -714.59,
+      "pm_dec_masyr": -1036.8
+    },
+    {
+      "id": "Altair@pm",
+      "ra": 297.69582729638694,
+      "dec": 8.868321196436963,
+      "epoch": 2000.0,
+      "pm_ra_masyr": 536.23,
+      "pm_dec_masyr": 385.29
+    },
+    {
+      "id": "HD 209458@pm",
+      "ra": 330.79488644388,
+      "dec": 18.88431927594,
+      "epoch": 2000.0,
+      "pm_ra_masyr": 29.766,
+      "pm_dec_masyr": -17.976
+    }
+  ],
+  "strategy": "upload",
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://simbad.cds.unistra.fr/simbad/sim-tap/sync",
+      "request_content_type": "multipart/form-data",
+      "fields": {
+        "REQUEST": "doQuery",
+        "LANG": "ADQL",
+        "QUERY": "SELECT tu.t_idx, b.main_id, b.ra, b.dec, b.coo_err_maj, b.coo_err_min, b.coo_err_angle, b.coo_qual, b.coo_wavelength, b.coo_bibcode, b.otype, b.sp_type, b.rvz_redshift, b.plx_value, b.pmra, b.pmdec, f.V, f.G, f.K FROM basic AS b LEFT OUTER JOIN allfluxes AS f ON f.oidref = b.oid, TAP_UPLOAD.targets AS tu WHERE 1 = CONTAINS(POINT('ICRS', b.ra, b.dec), CIRCLE('ICRS', tu.t_ra, tu.t_dec, tu.t_rad))",
+        "UPLOAD": "targets,param:targets",
+        "MAXREC": "200000",
+        "FORMAT": "json",
+        "targets": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<VOTABLE version=\"1.3\" xmlns=\"http://www.ivoa.net/xml/VOTable/v1.3\">\n<RESOURCE type=\"results\"><TABLE name=\"targets\">\n<FIELD name=\"t_idx\" datatype=\"int\"/>\n<FIELD name=\"t_ra\" datatype=\"double\" unit=\"deg\"/>\n<FIELD name=\"t_dec\" datatype=\"double\" unit=\"deg\"/>\n<FIELD name=\"t_rad\" datatype=\"double\" unit=\"deg\"/>\n<DATA><TABLEDATA>\n<TR><TD>0</TD><TD>269.4520769586187</TD><TD>4.693364966576667</TD><TD>0.001388888888888889</TD></TR>\n<TR><TD>1</TD><TD>316.7247482895925</TD><TD>38.74941731943694</TD><TD>0.001388888888888889</TD></TR>\n<TR><TD>2</TD><TD>213.915300294925</TD><TD>19.1824091615312</TD><TD>0.001388888888888889</TD></TR>\n<TR><TD>3</TD><TD>101.28715533333335</TD><TD>-16.71611586111111</TD><TD>0.001388888888888889</TD></TR>\n<TR><TD>4</TD><TD>114.82549790798149</TD><TD>5.224987557059477</TD><TD>0.001388888888888889</TD></TR>\n<TR><TD>5</TD><TD>297.69582729638694</TD><TD>8.868321196436963</TD><TD>0.001388888888888889</TD></TR>\n<TR><TD>6</TD><TD>330.79488644388</TD><TD>18.88431927594</TD><TD>0.001388888888888889</TD></TR>\n<TR><TD>7</TD><TD>269.4520769586187</TD><TD>4.693364966576667</TD><TD>0.001388888888888889</TD></TR>\n<TR><TD>8</TD><TD>316.7247482895925</TD><TD>38.74941731943694</TD><TD>0.001388888888888889</TD></TR>\n<TR><TD>9</TD><TD>213.915300294925</TD><TD>19.1824091615312</TD><TD>0.001388888888888889</TD></TR>\n<TR><TD>10</TD><TD>101.28715533333335</TD><TD>-16.71611586111111</TD><TD>0.001388888888888889</TD></TR>\n<TR><TD>11</TD><TD>114.82549790798149</TD><TD>5.224987557059477</TD><TD>0.001388888888888889</TD></TR>\n<TR><TD>12</TD><TD>297.69582729638694</TD><TD>8.868321196436963</TD><TD>0.001388888888888889</TD></TR>\n<TR><TD>13</TD><TD>330.79488644388</TD><TD>18.88431927594</TD><TD>0.001388888888888889</TD></TR>\n</TABLEDATA></DATA></TABLE></RESOURCE></VOTABLE>\n"
+      },
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8"
+    }
+  ]
+}

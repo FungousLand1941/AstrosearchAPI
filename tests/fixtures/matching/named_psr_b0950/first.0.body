@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<VOTABLE xmlns="http://www.ivoa.net/xml/VOTable/v1.3" xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.4">
+ <RESOURCE type="results">
+  <INFO name="QUERY_STATUS" value="OK">No errors detected in query preprocessing</INFO>
+  <TABLE>
+   <DESCRIPTION>Query result for:&#xA;SELECT TOP 224 name, ra, dec, flux_20_cm, int_flux_20_cm, flux_20_cm_error, fit_major_axis, fit_minor_axis, sidelobe_prob, mean_epoch, DISTANCE(POINT(&apos;ICRS&apos;, ra, dec), POINT(&apos;ICRS&apos;, 148.288799160, 7.926934264)) AS match_dist FROM first WHERE 1 = CONTAINS(POINT(&apos;ICRS&apos;, ra, dec), CIRCLE(&apos;ICRS&apos;, 148.288799160, 7.926934264, 0.0014639546)) ORDER BY match_dist ASC</DESCRIPTION>
+   <FIELD datatype="char" arraysize="*" ucd="meta.id;meta.main" name="name">
+    <DESCRIPTION>FIRST Source Designation</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="deg" datatype="double" ucd="pos.eq.ra;meta.main" precision="F6" name="ra">
+    <DESCRIPTION>Right Ascension</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="deg" datatype="double" ucd="pos.eq.dec;meta.main" precision="F6" name="dec">
+    <DESCRIPTION>Declination</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="mJy" datatype="double" ucd="phot.flux.density;em.radio.750-1500MHz" precision="F2" name="flux_20_cm" width="8">
+    <DESCRIPTION>Peak Flux Density at 1.4GHz (mJy)</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="mJy" datatype="double" ucd="phot.flux.density;em.radio.750-1500MHz" precision="F2" name="int_flux_20_cm" width="9">
+    <DESCRIPTION>Integrated Flux Density at 1.4GHz (mJy)</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="mJy" datatype="double" ucd="stat.error;phot.flux.density;em.radio.750-1500MHz" precision="F3" name="flux_20_cm_error" width="7">
+    <DESCRIPTION>Local Noise Estimate of Source (mJy)</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="arcsec" datatype="double" ucd="phys.size.smajAxis" precision="F2" name="fit_major_axis" width="6">
+    <DESCRIPTION>Fitted Major Axis before Deconvolution (arcsecs)</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="arcsec" datatype="double" ucd="phys.size.sminAxis" precision="F2" name="fit_minor_axis" width="6">
+    <DESCRIPTION>Fitted Minor Axis before Deconvolution (arcsecs)</DESCRIPTION>
+   </FIELD>
+   <FIELD datatype="double" ucd="stat.probability" precision="F3" name="sidelobe_prob" width="5">
+    <DESCRIPTION>Probability That Source Is a Sidelobe</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="d" datatype="double" ucd="time.epoch;stat.mean;obs" precision="F1" name="mean_epoch">
+    <DESCRIPTION>Mean Observation Epoch</DESCRIPTION>
+   </FIELD>
+   <FIELD datatype="double" name="match_dist"/>
+   <DATA>
+    <BINARY>
+     <STREAM encoding="base64">
+AAAAFkZJUlNUIEowOTUzMDkuMiswNzU1MzVAYok89lAo4kAftOO801qGQFTOFHrh
+R65AVQrhR64Uez/DlYEGJN0vQBXMzMzMzM1AFaPXCj1wpD+MrAgxJul5QOku
+bMzMzL8/M+SpmPdSjQ==
+     </STREAM>
+    </BINARY>
+   </DATA>
+  </TABLE>
+ </RESOURCE>
+</VOTABLE>

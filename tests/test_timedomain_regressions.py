@@ -10,7 +10,6 @@ import csv
 import io
 import json
 import math
-import time
 from typing import Any
 
 import httpx
@@ -483,7 +482,8 @@ def test_ztf_identity_is_a_match_tolerance_not_the_nearest_object() -> None:
     ]
     same, others = td.select_ztf_objects(rows, 269.452077, 4.693365)
     assert same == [] and [r["oid"] for r in others] == ["1", "2", "3"]  # nothing within 1.5": no target
-    assert float(others[0]["_sep"]) == pytest.approx(4.15, abs=0.01)
+    # A 4.15" offset in the RA *coordinate* is 4.15" x cos(dec) on the sky.
+    assert float(others[0]["_sep"]) == pytest.approx(4.15 * math.cos(math.radians(4.693365)), abs=0.002)
     # The target's own object (0.2") without good epochs is still the target; a neighbour with data is not.
     rows = [{"oid": "7", "ra": "269.452077", "dec": f"{4.693365 + 0.2 / 3600:.7f}", "filtercode": "zg", "ngoodobs": "0"},
             {"oid": "8", "ra": "269.452077", "dec": f"{4.693365 + 25 / 3600:.7f}", "filtercode": "zg", "ngoodobs": "400"}]
@@ -495,7 +495,7 @@ async def test_ztf_saturated_target_returns_no_series_and_names_neighbours() -> 
     objects = ("oid,ra,dec,filtercode,field,ccdid,qid,ngoodobs\n"
                f"7,269.452077,{4.693365 + 0.2 / 3600:.7f},zg,1,1,1,0\n"
                f"8,269.452077,{4.693365 + 25 / 3600:.7f},zg,1,1,1,400\n")
-    with respx.mock(assert_all_mocked=True) as router:
+    with respx.mock(assert_all_mocked=True, assert_all_called=False) as router:
         tap = router.post(td.IRSA_TAP_SYNC_URL).mock(return_value=httpx.Response(200, text=objects))
         lc = router.get(td.ZTF_LIGHTCURVE_URL).mock(side_effect=AssertionError("no light curve of a neighbour"))
         async with httpx.AsyncClient() as c:
@@ -563,9 +563,9 @@ def test_bin_uniform_is_linear_time_and_correct() -> None:
     t = np.arange(n) * (2 / 1440)
     rng = np.random.default_rng(24)
     y = 1 + rng.normal(0, 0.001, n)
-    started = time.perf_counter()
+    # Linear scaling is asserted without a wall-clock limit in
+    # test_timedomain_review.py::test_bin_uniform_scales_linearly (limits were flaky on loaded machines).
     pts = td.bin_uniform(t, y, np.full(n, 0.001), 10 / 1440)
-    assert time.perf_counter() - started < 2.0
     assert len(pts) == n // 5 and all(p.n == 5 for p in pts[:100])
     assert pts[0].value == pytest.approx(float(np.mean(y[:5])))
     assert pts[0].error == pytest.approx(0.001 / math.sqrt(5))
@@ -585,8 +585,8 @@ def test_skybot_parser_is_vectorised_and_consistent() -> None:
         sec = ((ra_h - h) * 60 - m) * 60
         payload.append({"Num": str(i + 1), "Name": f"A{i}", "RA (hms)": f"{h:02d} {m:02d} {sec:07.4f}",
                         "DEC (dms)": "+05 00 00.00", "Class": "MB>Middle", "VMag (mag)": "18.0"})
-    started = time.perf_counter()
+    # Vectorisation (one position conversion for all rows) is asserted without a wall-clock limit in
+    # test_timedomain_review.py::test_skybot_parser_converts_positions_in_one_call.
     objects = td.parse_skybot_json(payload, 15.0, 5.0)
-    assert time.perf_counter() - started < 1.5
     assert len(objects) == 3000 and objects[0].name == "A0" and objects[0].separation_arcsec < 0.01
     assert objects[-1].ra == pytest.approx((1.0 + 2999e-5) * 15.0, abs=1e-7)

@@ -1,0 +1,630 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-29T07:46:59 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-29T07:46:59">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-source=II%2F371%2Fdes_dr2&amp;-meta.all=">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+
+<RESOURCE ID="yCat_2371_1" name="II/371/des_dr2" type="meta">
+  <INFO name="nrows" value="691483608">Number of rows of the table</INFO>
+  <DESCRIPTION>
+    The Dark Energy Survey (DES): Data Release 2 (Abbott+, 2021)
+    *the Dark Energy Survey (DES) DR2 main catalog (1000 among 691,483,608 sources)
+  </DESCRIPTION>
+
+<!-- The Dark Energy Survey (DES) DR2 main catalog (\originalcolumnnames) -->
+  <PARAM name="-c" datatype="char" arraysize="32*" value="">
+    <DESCRIPTION>Query from a celestial position according to ASU syntax:
+      {RA{+|-}Dec|object_name}[,eq=equinox][,ep=epoch][,rm=[min/]max]
+      (see http://vizier.cds.unistra.fr/doc/asu.html)
+    </DESCRIPTION>
+  </PARAM>
+  <LINK content-role="query" action="votable?-source=II/371/des_dr2&amp;">
+    Action to Query the current RESOURCE, to be completed by PARAMs and FIELDs contents
+  </LINK>
+
+  <TABLE name="II/371/des_dr2" nrows="691483608">
+    <COOSYS ID="H" system="ICRS"/>
+    <!-- Definitions of GROUPs and FIELDs -->
+    <FIELD name="DES" ucd="meta.id;meta.main" display="1" datatype="char" arraysize="23*"><!-- ucd="ID_MAIN" -->
+      <DESCRIPTION>Identifier based on IAU format (DES JHHMMSS.ss+DDMMSS.s); column added by CDS</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RA_ICRS" ucd="pos.eq.ra;meta.main" ref="H" display="1" datatype="double" width="10" precision="6" unit="deg"><!-- ucd="POS_EQ_RA_MAIN" -->
+      <DESCRIPTION>Right ascension (ICRS) (ALPHAWIN_J2000)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DE_ICRS" ucd="pos.eq.dec;meta.main" ref="H" display="1" datatype="double" width="10" precision="6" unit="deg"><!-- ucd="POS_EQ_DEC_MAIN" -->
+      <DESCRIPTION>Declination (ICRS) (DELTAWIN_J2000)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="CoadID" ucd="meta.id" display="1" datatype="long" width="10"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>Unique identifier for the co-added objects (COADD_OBJECT_ID)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Tile" ucd="obs.field" display="0" datatype="char" arraysize="12*"><!-- ucd="ID_FIELD" -->
+      <DESCRIPTION>Identifier of each one of the tiles on which the survey is gridded (DESHHMM+DDMM) (TILENAME)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Hpix32" ucd="meta.id" display="0" datatype="int" width="5"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>Healpix identifier for its NSIDE grid size in a NESTED schema (HPIX_32)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Hpix64" ucd="meta.id" display="0" datatype="int" width="5"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>Healpix identifier for its NSIDE grid size in a NESTED schema (HPIX_64)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Hpix1024" ucd="meta.id" display="0" datatype="int" width="8"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>Healpix identifier for its NSIDE grid size in a NESTED schema (HPIX_1024)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Hpix4069" ucd="meta.id" display="0" datatype="int" width="9"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>Healpix identifier for its NSIDE grid size in a NESTED schema (HPIX_4096)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Hpix16384" ucd="meta.id" display="0" datatype="long" width="10"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>Healpix identifier for its NSIDE grid size in a NESTED schema (HPIX_16384)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="GLON" ucd="pos.galactic.lon" display="0" datatype="double" width="13" precision="9" unit="deg"><!-- ucd="POS_GAL_LON" -->
+      <DESCRIPTION>Galactic longitude (GALACTIC_L)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="GLAT" ucd="pos.galactic.lat" display="0" datatype="double" width="13" precision="9" unit="deg"><!-- ucd="POS_GAL_LAT" -->
+      <DESCRIPTION>Galactic latitude (GALACTIC_B)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Aimg" ucd="phys.size" display="1" datatype="double" width="8" precision="3" unit="pix"><!-- ucd="PHYS_SIZE_MAJ" -->
+      <DESCRIPTION>[0.49/1903] Major axis size based on an isophotal model (A_IMAGE)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_Aimg" ucd="stat.error" display="0" datatype="float" width="6" precision="3" unit="pix"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[/7] Uncertainty in major axis size from isophotal model (ERRA_IMAGE)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Bimg" ucd="phys.size" display="1" datatype="double" width="7" precision="3" unit="pix"><!-- ucd="PHYS_SIZE_MIN" -->
+      <DESCRIPTION>[0.12/358] Minor axis size based on an isophotal model (B_IMAGE)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_Bimg" ucd="stat.error" display="0" datatype="float" width="6" precision="3" unit="pix"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[/0.9] Uncertainty in minor axis size from isophotal model (ERRB_IMAGE)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="PA" ucd="pos.posAng" display="1" datatype="double" width="7" precision="3" unit="deg"><!-- ucd="POS_POS-ANG" -->
+      <DESCRIPTION>[-90/90] Position angle of source in J2000 coordinates from non-windowed measurement (THETA_J2000)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_PA" ucd="stat.error" display="0" datatype="double" width="7" precision="3" unit="deg"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-90/90] Uncertainty in position angle from isophotal model (ERRTHETA_IMAGE)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="KRad" ucd="phys.angSize" display="0" datatype="float" width="6" precision="3" unit="pix"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>[0/50.5] Kron radius measured from detection image (KRON_RADIUS)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="EBV" ucd="phot.color.excess" display="0" datatype="float" width="7" precision="4" unit="mag"><!-- ucd="PHOT_COLOR_EXCESS" -->
+      <DESCRIPTION>[3.8e-4/0.24] E(B-V) reddening coefficient from Schlegel+ 1998ApJ....500..55S (EBV_SFD98)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="gmag0" ucd="phot.mag;em.opt.B" display="0" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_SDSS_G" -->
+      <DESCRIPTION>[7.2/]? Dereddened g-band (AB) magnitude estimation (MAG_AUTO_G_DERED)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="rmag0" ucd="phot.mag;em.opt.R" display="0" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_SDSS_R" -->
+      <DESCRIPTION>[7/]? Dereddened r-band (AB) magnitude estimation (MAG_AUTO_R_DERED)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="imag0" ucd="phot.mag;em.opt.I" display="0" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_SDSS_I" -->
+      <DESCRIPTION>[7.7/]? Dereddened i-band (AB) magnitude estimation (MAG_AUTO_I_DERED)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="zmag0" ucd="phot.mag;em.opt.I" display="0" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_MAG_I" -->
+      <DESCRIPTION>[6.6/]? Dereddened z-band (AB) magnitude estimation (MAG_AUTO_Z_DERED)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Ymag0" ucd="phot.mag;em.IR.J" display="0" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_MAG_Y" -->
+      <DESCRIPTION>[4.8/]? Dereddened Y-band (AB) magnitude estimation (MAG_AUTO_Y_DERED)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="gmag0avg" ucd="phot.mag;em.opt.B" display="0" datatype="double" width="8" precision="4" unit="mag"><!-- ucd="PHOT_SDSS_G" -->
+      <DESCRIPTION>[-42/28]? Dereddened weighted average g-band (AB) magnitude of PSF fit single epoch detections (WAVG_MAG_PSF_G_DERED)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="rmag0avg" ucd="phot.mag;em.opt.R" display="0" datatype="double" width="8" precision="4" unit="mag"><!-- ucd="PHOT_SDSS_R" -->
+      <DESCRIPTION>[-45/28]? Weighted average r-band (AB) magnitude of PSF fit single epoch detections (WAVG_MAG_PSF_R_DERED)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="imag0avg" ucd="phot.mag;em.opt.I" display="0" datatype="double" width="8" precision="4" unit="mag"><!-- ucd="PHOT_SDSS_I" -->
+      <DESCRIPTION>[-41/27]? Weighted average i-band (AB) magnitude of PSF fit single epoch detections (WAVG_MAG_PSF_I_DERED)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="zmag0avg" ucd="phot.mag;em.opt.I" display="0" datatype="double" width="8" precision="4" unit="mag"><!-- ucd="PHOT_MAG_I" -->
+      <DESCRIPTION>[-42/26]? Weighted average z-band (AB) magnitude of PSF fit single epoch detections (WAVG_MAG_PSF_Z_DERED)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Ymag0avg" ucd="phot.mag;em.IR.J" display="0" datatype="double" width="8" precision="4" unit="mag"><!-- ucd="PHOT_MAG_Y" -->
+      <DESCRIPTION>[-44/25]? Weighted average Y-band (AB) magnitude of PSF fit single epoch detections (WAVG_MAG_PSF_Y_DERED)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ClCoad" ucd="src.class.starGalaxy" display="1" datatype="short" width="2"><!-- ucd="CLASS_STAR/GALAXY" -->
+      <DESCRIPTION>? Classification from Sextractor quantities (EXTENDED_CLASS_COADD) (1)</DESCRIPTION>
+      <VALUES null="-32768" />
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR?-6N&amp;-info=XML&amp;-out.add=.&amp;&amp;lt;&amp;quot;Note&amp;quot;&amp;catid=2371&amp;notid=2&amp;-out.emph=${ClCoad}"/>
+    </FIELD>
+    <FIELD name="ClWavg" ucd="src.class.starGalaxy" display="1" datatype="short" width="2"><!-- ucd="CLASS_STAR/GALAXY" -->
+      <DESCRIPTION>? Classification from Weighted average PSF magnitudes (EXTENDED_CLASS_WAVG) (1)</DESCRIPTION>
+      <VALUES null="-32768" />
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR?-6N&amp;-info=XML&amp;-out.add=.&amp;&amp;lt;&amp;quot;Note&amp;quot;&amp;catid=2371&amp;notid=2&amp;-out.emph=${ClWavg}"/>
+    </FIELD>
+    <FIELD name="gFlag" ucd="meta.code" display="1" datatype="short" width="3"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/153] Cautionary flag for g-band (&lt;4=well behaved objects) (FLAGS_G)</DESCRIPTION>
+
+<!-- No link in: \showFlag{Sextractor}{${}} -->
+    </FIELD>
+    <FIELD name="gIsoFl" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/1] Flag identifying sources with missing/flagged pixels considering all single epoch images in g-band (1=unreliable photometry) (IMAFLAGS_ISO_G)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Ngep" ucd="meta.number" display="0" datatype="short" width="2"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>[0/20] Number of epochs the source is detected in single epoch g-band images (NEPOCHS_G)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="rFlag" ucd="meta.code" display="1" datatype="short" width="3"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/153] Cautionary flag for r-band (&lt;4=well behaved objects) (FLAGS_R)</DESCRIPTION>
+
+<!-- No link in: \showFlag{Sextractor}{${}} -->
+    </FIELD>
+    <FIELD name="rIsoFl" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/1] Flag identifying sources with missing/flagged pixels considering all single epoch images in r-band (1=unreliable photometry) (IMAFLAGS_ISO_R)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Nrep" ucd="meta.number" display="0" datatype="short" width="2"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>[0/20] Number of epochs the source is detected in single epoch r-band images (NEPOCHS_R)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="iFlag" ucd="meta.code" display="1" datatype="short" width="3"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/153] Cautionary flag for i-band (&lt;4=well behaved objects) (FLAGS_I)</DESCRIPTION>
+
+<!-- No link in: \showFlag{Sextractor}{${}} -->
+    </FIELD>
+    <FIELD name="iIsoFl" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/1] Flag identifying sources with missing/flagged pixels considering all single epoch images in i-band (1=unreliable photometry) (IMAFLAGS_ISO_I)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Niep" ucd="meta.number" display="0" datatype="short" width="2"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>[0/22] Number of epochs the source is detected in single epoch i-band images (NEPOCHS_I)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="zFlag" ucd="meta.code" display="1" datatype="short" width="3"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/157] Cautionary flag for z-band (&lt;4=well behaved objects) (FLAGS_Z)</DESCRIPTION>
+
+<!-- No link in: \showFlag{Sextractor}{${}} -->
+    </FIELD>
+    <FIELD name="zIsoFl" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/1] Flag identifying sources with missing/flagged pixels considering all single epoch images in z-band (1=unreliable photometry) (IMAFLAGS_ISO_Z)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Nzep" ucd="meta.number" display="0" datatype="short" width="2"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>[0/21] Number of epochs the source is detected in single epoch z-band images (NEPOCHS_Z)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="yFlag" ucd="meta.code" display="1" datatype="short" width="3"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/153] Cautionary flag for Y-band (&lt;4=well behaved objects) (FLAGS_Y)</DESCRIPTION>
+
+<!-- No link in: \showFlag{Sextractor}{${}} -->
+    </FIELD>
+    <FIELD name="YIsoFl" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/1] Flag identifying sources with missing/flagged pixels considering all single epoch images in Y-band (1=unreliable photometry) (IMAFLAGS_ISO_Y)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Nyep" ucd="meta.number" display="0" datatype="short" width="2"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>[0/18] Number of epochs the source is detected in single epoch Y-band images (NEPOCHS_Y)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="amajg" ucd="phys.size" display="0" datatype="double" width="8" precision="3" unit="pix"><!-- ucd="PHYS_SIZE_MAJ" -->
+      <DESCRIPTION>[0.28/1855] Major-axis size from second-order windowed moment measurements in g-band (AWIN_IMAGE_G)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="amajr" ucd="phys.size" display="0" datatype="double" width="8" precision="3" unit="pix"><!-- ucd="PHYS_SIZE_MAJ" -->
+      <DESCRIPTION>Major-axis size from second-order windowed moment measurements in r-band (AWIN_IMAGE_R)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="amaji" ucd="phys.size" display="0" datatype="double" width="8" precision="3" unit="pix"><!-- ucd="PHYS_SIZE_MAJ" -->
+      <DESCRIPTION>Major-axis size from second-order windowed moment measurements in i-band (AWIN_IMAGE_I)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="amajz" ucd="phys.size" display="0" datatype="double" width="8" precision="3" unit="pix"><!-- ucd="PHYS_SIZE_MAJ" -->
+      <DESCRIPTION>Major-axis size from second-order windowed moment measurements in z-band (AWIN_IMAGE_Z)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="amajY" ucd="phys.size" display="0" datatype="double" width="8" precision="3" unit="pix"><!-- ucd="PHYS_SIZE_MAJ" -->
+      <DESCRIPTION>Major-axis size from second-order windowed moment measurements in Y-band (AWIN_IMAGE_Y)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="bming" ucd="phys.size" display="0" datatype="double" width="7" precision="3" unit="pix"><!-- ucd="PHYS_SIZE_MIN" -->
+      <DESCRIPTION>[0.015/344] Minor-axis size from second-order windowed moment measurements in g-band (BWIN_IMAGE_G)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="bminr" ucd="phys.size" display="0" datatype="double" width="7" precision="3" unit="pix"><!-- ucd="PHYS_SIZE_MIN" -->
+      <DESCRIPTION>Minor-axis size from second-order windowed moment measurements in r-band (BWIN_IMAGE_R)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="bmini" ucd="phys.size" display="0" datatype="double" width="7" precision="3" unit="pix"><!-- ucd="PHYS_SIZE_MIN" -->
+      <DESCRIPTION>Minor-axis size from second-order windowed moment measurements in i-band (BWIN_IMAGE_I)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="bminz" ucd="phys.size" display="0" datatype="double" width="7" precision="3" unit="pix"><!-- ucd="PHYS_SIZE_MIN" -->
+      <DESCRIPTION>Minor-axis size from second-order windowed moment measurements in z-band (BWIN_IMAGE_Z)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="bminY" ucd="phys.size" display="0" datatype="double" width="7" precision="3" unit="pix"><!-- ucd="PHYS_SIZE_MIN" -->
+      <DESCRIPTION>Minor-axis size from second-order windowed moment measurements in Y-band (BWIN_IMAGE_Y)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="PAg" ucd="pos.posAng;instr.det" display="0" datatype="float" width="6" precision="2" unit="deg"><!-- ucd="POS_POS-ANG" -->
+      <DESCRIPTION>[-90/90] Position angle of source for converged windowed measurement grow from x to y in g-band (THETAWIN_IMAGE_G)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="PAr" ucd="pos.posAng;instr.det" display="0" datatype="float" width="6" precision="2" unit="deg"><!-- ucd="POS_POS-ANG" -->
+      <DESCRIPTION>[-90/90] Position angle of source for converged windowed measurement grow from x to y in r-band (THETAWIN_IMAGE_R)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="PAi" ucd="pos.posAng;instr.det" display="0" datatype="float" width="6" precision="2" unit="deg"><!-- ucd="POS_POS-ANG" -->
+      <DESCRIPTION>[-90/90] Position angle of source for converged windowed measurement grow from x to y in i-band (THETAWIN_IMAGE_I)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="PAz" ucd="pos.posAng;instr.det" display="0" datatype="float" width="6" precision="2" unit="deg"><!-- ucd="POS_POS-ANG" -->
+      <DESCRIPTION>[-90/90] Position angle of source for converged windowed measurement grow from x to y in z-band (THETAWIN_IMAGE_Z)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="PAY" ucd="pos.posAng;instr.det" display="0" datatype="float" width="6" precision="2" unit="deg"><!-- ucd="POS_POS-ANG" -->
+      <DESCRIPTION>[-90/90] Position angle of source for converged windowed measurement grow from x to y in Y-band (THETAWIN_IMAGE_Y)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_amajg" ucd="stat.error" display="0" datatype="double" width="7" precision="3" unit="pix"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[/166] amajg uncertainty (ERRAWIN_IMAGE_G)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_amajr" ucd="stat.error" display="0" datatype="double" width="7" precision="3" unit="pix"><!-- ucd="ERROR" -->
+      <DESCRIPTION>amajr uncertainty (ERRAWIN_IMAGE_R)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_amaji" ucd="stat.error" display="0" datatype="double" width="7" precision="3" unit="pix"><!-- ucd="ERROR" -->
+      <DESCRIPTION>amaji uncertainty (ERRAWIN_IMAGE_I)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_amajz" ucd="stat.error" display="0" datatype="double" width="7" precision="3" unit="pix"><!-- ucd="ERROR" -->
+      <DESCRIPTION>amajz uncertainty (ERRAWIN_IMAGE_Z)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_amajY" ucd="stat.error" display="0" datatype="double" width="7" precision="3" unit="pix"><!-- ucd="ERROR" -->
+      <DESCRIPTION>amajY uncertainty (ERRAWIN_IMAGE_Y)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_bming" ucd="stat.error" display="0" datatype="double" width="7" precision="3" unit="pix"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[/105] bming uncertainty (ERRBWIN_IMAGE_G)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_bminr" ucd="stat.error" display="0" datatype="double" width="7" precision="3" unit="pix"><!-- ucd="ERROR" -->
+      <DESCRIPTION>bminr uncertainty (ERRBWIN_IMAGE_R)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_bmini" ucd="stat.error" display="0" datatype="double" width="7" precision="3" unit="pix"><!-- ucd="ERROR" -->
+      <DESCRIPTION>bmini uncertainty (ERRBWIN_IMAGE_I)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_bminz" ucd="stat.error" display="0" datatype="double" width="7" precision="3" unit="pix"><!-- ucd="ERROR" -->
+      <DESCRIPTION>bminz uncertainty (ERRBWIN_IMAGE_Z)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_bminY" ucd="stat.error" display="0" datatype="double" width="7" precision="3" unit="pix"><!-- ucd="ERROR" -->
+      <DESCRIPTION>bminY uncertainty (ERRBWIN_IMAGE_Y)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_PAg" ucd="stat.error" display="0" datatype="float" width="6" precision="2" unit="deg"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-90/90] Uncertainty in source position angle from converged windowed measurement in g-band (ERRTHETAWIN_IMAGE_G)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_PAr" ucd="stat.error" display="0" datatype="float" width="6" precision="2" unit="deg"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-90/90] Uncertainty in source position angle from converged windowed measurement in r-band (ERRTHETAWIN_IMAGE_R)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_PAi" ucd="stat.error" display="0" datatype="float" width="6" precision="2" unit="deg"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-90/90] Uncertainty in source position angle from converged windowed measurement in i-band (ERRTHETAWIN_IMAGE_I)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_PAz" ucd="stat.error" display="0" datatype="float" width="6" precision="2" unit="deg"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-90/90] Uncertainty in source position angle from converged windowed measurement in z-band (ERRTHETAWIN_IMAGE_Z)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_PAY" ucd="stat.error" display="0" datatype="float" width="6" precision="2" unit="deg"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-90/90] Uncertainty in source position angle from converged windowed measurement in Y-band (ERRTHETAWIN_IMAGE_Y)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="gRe" ucd="phys.size.radius" display="0" datatype="double" width="13" precision="3" unit="pix"><!-- ucd="PHYS_SIZE_RADIUS_GENERAL" -->
+      <DESCRIPTION>[-5e7/7826] Half-light g-band radius for the object (FLUX_RADIUS_G)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="rRe" ucd="phys.size.radius" display="0" datatype="double" width="14" precision="3" unit="pix"><!-- ucd="PHYS_SIZE_RADIUS_GENERAL" -->
+      <DESCRIPTION>Half-light r-band radius for the object (FLUX_RADIUS_R)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="iRe" ucd="phys.size.radius" display="0" datatype="double" width="14" precision="3" unit="pix"><!-- ucd="PHYS_SIZE_RADIUS_GENERAL" -->
+      <DESCRIPTION>Half-light i-band radius for the object (FLUX_RADIUS_I)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="zRe" ucd="phys.size.radius" display="0" datatype="double" width="12" precision="3" unit="pix"><!-- ucd="PHYS_SIZE_RADIUS_GENERAL" -->
+      <DESCRIPTION>Half-light z-band radius for the object (FLUX_RADIUS_Z)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="YRe" ucd="phys.size.radius" display="0" datatype="double" width="14" precision="3" unit="pix"><!-- ucd="PHYS_SIZE_RADIUS_GENERAL" -->
+      <DESCRIPTION>? Half-light Y-band radius for the object (FLUX_RADIUS_Y)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="gFWHM" ucd="phys.angSize" display="0" datatype="double" width="8" precision="3" unit="pix"><!-- ucd="EXTENSION_FWHM_CIRC" -->
+      <DESCRIPTION>[-546/2602] g-band FWHM measured from the isophotal area (FWHM_IMAGE_G)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="rFWHM" ucd="phys.angSize" display="0" datatype="double" width="8" precision="3" unit="pix"><!-- ucd="EXTENSION_FWHM_CIRC" -->
+      <DESCRIPTION>r-band FWHM measured from the isophotal area (FWHM_IMAGE_R)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="iFWHM" ucd="phys.angSize" display="0" datatype="double" width="8" precision="3" unit="pix"><!-- ucd="EXTENSION_FWHM_CIRC" -->
+      <DESCRIPTION>i-band FWHM measured from the isophotal area (FWHM_IMAGE_I)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="zFWHM" ucd="phys.angSize" display="0" datatype="double" width="8" precision="3" unit="pix"><!-- ucd="EXTENSION_FWHM_CIRC" -->
+      <DESCRIPTION>z-band FWHM measured from the isophotal area (FWHM_IMAGE_Z)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="YFWHM" ucd="phys.angSize" display="0" datatype="double" width="10" precision="3" unit="pix"><!-- ucd="EXTENSION_FWHM_CIRC" -->
+      <DESCRIPTION>Y-band FWHM measured from the isophotal area (FWHM_IMAGE_Y)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="gArea" ucd="phys.area" display="0" datatype="int" width="7" unit="pixel**2"><!-- ucd="INST_AREA" -->
+      <DESCRIPTION>[0/1580183] Isophotal area of the coadded source in g-band (ISOAREA_IMAGE_G)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="rArea" ucd="phys.area" display="0" datatype="int" width="7" unit="pixel**2"><!-- ucd="INST_AREA" -->
+      <DESCRIPTION>Isophotal area of the coadded source in r-band (ISOAREA_IMAGE_R)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="iArea" ucd="phys.area" display="0" datatype="int" width="7" unit="pixel**2"><!-- ucd="INST_AREA" -->
+      <DESCRIPTION>Isophotal area of the coadded source in i-band (ISOAREA_IMAGE_I)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="zArea" ucd="phys.area" display="0" datatype="int" width="7" unit="pixel**2"><!-- ucd="INST_AREA" -->
+      <DESCRIPTION>Isophotal area of the coadded source in z-band (ISOAREA_IMAGE_Z)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="YArea" ucd="phys.area" display="0" datatype="int" width="7" unit="pixel**2"><!-- ucd="INST_AREA" -->
+      <DESCRIPTION>Isophotal area of the coadded source in Y-band (ISOAREA_IMAGE_Y)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="gBckg" ucd="instr.background;em.opt.B" display="0" datatype="double" width="9" precision="4" unit="mag"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>[-207/1244] g-band (AB) background level by CCD-amplifier (BACKGROUND_G)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="rBckg" ucd="instr.background;em.opt.R" display="0" datatype="double" width="8" precision="4" unit="mag"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>[-7/691] r-band (AB) background level by CCD-amplifier (BACKGROUND_R)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="iBckg" ucd="instr.background;em.opt.I" display="0" datatype="double" width="8" precision="4" unit="mag"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>[-40/437] i-band (AB) background level by CCD-amplifier (BACKGROUND_I)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="zBckg" ucd="instr.background;em.opt.I" display="0" datatype="double" width="8" precision="4" unit="mag"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>[-31/556] z-band (AB) background level by CCD-amplifier (BACKGROUND_Z)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="YBckg" ucd="instr.background;em.IR" display="0" datatype="double" width="9" precision="4" unit="mag"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>[-26/6110] Y-band (AB) background level by CCD-amplifier (BACKGROUND_Y)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Ng" ucd="meta.number" display="0" datatype="short" width="4"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>[0/1000] Number of iterations in model fitting g-band photometric measurements (NITER_MODEL_G)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Nr" ucd="meta.number" display="0" datatype="short" width="4"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of iterations in model fitting r-band photometric measurements (NITER_MODEL_R)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Ni" ucd="meta.number" display="0" datatype="short" width="4"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of iterations in model fitting i-band photometric measurements (NITER_MODEL_I)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Nz" ucd="meta.number" display="0" datatype="short" width="4"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of iterations in model fitting z-band photometric measurements (NITER_MODEL_Z)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="NY" ucd="meta.number" display="0" datatype="short" width="4"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of iterations in model fitting Y-band photometric measurements (NITER_MODEL_Y)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="KRadg" ucd="phys.angSize" display="0" datatype="float" width="6" precision="3" unit="pix"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>[0/50.3] Kron radius measured from coadded image in g-band (KRON_RADIUS_G)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="KRadr" ucd="phys.angSize" display="0" datatype="float" width="6" precision="3" unit="pix"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>Kron radius measured from coadded image in r-band (KRON_RADIUS_R)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="KRadi" ucd="phys.angSize" display="0" datatype="float" width="6" precision="3" unit="pix"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>Kron radius measured from coadded image in i-band (KRON_RADIUS_I)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="KRadz" ucd="phys.angSize" display="0" datatype="float" width="6" precision="3" unit="pix"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>Kron radius measured from coadded image in z-band (KRON_RADIUS_Z)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="KRadY" ucd="phys.angSize" display="0" datatype="float" width="6" precision="3" unit="pix"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>Kron radius measured from coadded image in Y-band (KRON_RADIUS_Y)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="gmag" ucd="phot.mag;em.opt.B" display="1" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_SDSS_G" -->
+      <DESCRIPTION>[7.29/]? g-band (AB) magnitude estimation (MAG_AUTO_G) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="rmag" ucd="phot.mag;em.opt.R" display="1" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_SDSS_R" -->
+      <DESCRIPTION>[7/]? r-band (AB) magnitude estimation (MAG_AUTO_R) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="imag" ucd="phot.mag;em.opt.I" display="1" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_SDSS_I" -->
+      <DESCRIPTION>[7.8/]? i-band (AB) magnitude estimation (MAG_AUTO_I) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="zmag" ucd="phot.mag;em.opt.I" display="1" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_MAG_I" -->
+      <DESCRIPTION>[6.6/]? z-band (AB) magnitude estimation (MAG_AUTO_Z) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Ymag" ucd="phot.mag;em.IR.J" display="1" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_MAG_Y" -->
+      <DESCRIPTION>[4.9/]? Y-band (AB) magnitude estimation (MAG_AUTO_Y) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_gmag" ucd="stat.error;phot.mag" display="1" datatype="double" width="8" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[/100]? gmag uncertainty (MAGERR_AUTO_G) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_rmag" ucd="stat.error;phot.mag" display="1" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[/100]? rmag uncertainty (MAGERR_AUTO_R) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_imag" ucd="stat.error;phot.mag" display="1" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[/100]? imag uncertainty (MAGERR_AUTO_I) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_zmag" ucd="stat.error;phot.mag" display="1" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[/100]? zmag uncertainty (MAGERR_AUTO_Z) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Ymag" ucd="stat.error;phot.mag;em.IR" display="1" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[/100]? Ymag uncertainty (MAGERR_AUTO_Y) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="gmagPSF" ucd="phot.mag;em.opt.B" display="0" datatype="double" width="8" precision="4" unit="mag"><!-- ucd="PHOT_SDSS_G" -->
+      <DESCRIPTION>[-42/28.1]? Weighted average g-band (AB) magnitude of PSF fit single epoch detections (WAVG_MAG_PSF_G)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="rmagPSF" ucd="phot.mag;em.opt.R" display="0" datatype="double" width="8" precision="4" unit="mag"><!-- ucd="PHOT_SDSS_R" -->
+      <DESCRIPTION>[-45/28]? Weighted average r-band (AB) magnitude of PSF fit single epoch detections (WAVG_MAG_PSF_R)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="imagPSF" ucd="phot.mag;em.opt.I" display="0" datatype="double" width="8" precision="4" unit="mag"><!-- ucd="PHOT_SDSS_I" -->
+      <DESCRIPTION>[-41/27]? Weighted average i-band (AB) magnitude of PSF fit single epoch detections (WAVG_MAG_PSF_I)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="zmagPSF" ucd="phot.mag;em.opt.I" display="0" datatype="double" width="8" precision="4" unit="mag"><!-- ucd="PHOT_MAG_I" -->
+      <DESCRIPTION>[-42/26]? Weighted average z-band (AB) magnitude of PSF fit single epoch detections (WAVG_MAG_PSF_Z)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="YmagPSF" ucd="phot.mag;em.IR.J" display="0" datatype="double" width="8" precision="4" unit="mag"><!-- ucd="PHOT_MAG_Y" -->
+      <DESCRIPTION>[-44/25]? Weighted average Y-band (AB) magnitude of PSF fit single epoch detections (WAVG_MAG_PSF_Y)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_gmagPSF" ucd="stat.error" display="0" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[/14]? gmagPSF uncertainty (WAVG_MAGERR_PSF_G)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_rmagPSF" ucd="stat.error" display="0" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[/18]? rmagPSF uncertainty (WAVG_MAGERR_PSF_R)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_imagPSF" ucd="stat.error" display="0" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[/21]? imagPSF uncertainty (WAVG_MAGERR_PSF_I)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_zmagPSF" ucd="stat.error" display="0" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[/2.2]? zmagPSF uncertainty (WAVG_MAGERR_PSF_Z)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_YmagPSF" ucd="stat.error;phot.mag;em.IR" display="0" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[/1.1]? YmagPSF uncertainty (WAVG_MAGERR_PSF_Y)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="gFlux" ucd="phot.flux.density;em.opt.B" display="0" datatype="double" width="12" precision="E5"><!-- ucd="PHOT_FLUX_B" -->
+      <DESCRIPTION>[-3.8e7/1.3e9] g-band flux measurement for an elliptical model based on the Kron radius in ADU units (FLUX_AUTO_G)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="rFlux" ucd="phot.flux.density;em.opt.R" display="0" datatype="double" width="12" precision="E5"><!-- ucd="PHOT_FLUX_R" -->
+      <DESCRIPTION>r-band flux measurement for an elliptical model based on the Kron radius in ADU units (FLUX_AUTO_R)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="iFlux" ucd="phot.flux.density;em.opt.I" display="0" datatype="double" width="12" precision="E5"><!-- ucd="PHOT_FLUX_I" -->
+      <DESCRIPTION>i-band flux measurement for an elliptical model based on the Kron radius in ADU units (FLUX_AUTO_I)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="zFlux" ucd="phot.flux.density;em.opt.I" display="0" datatype="double" width="12" precision="E5"><!-- ucd="PHOT_FLUX_I" -->
+      <DESCRIPTION>z-band flux measurement for an elliptical model based on the Kron radius in ADU units (FLUX_AUTO_Z)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="YFlux" ucd="phot.flux.density;em.IR.J" display="0" datatype="double" width="12" precision="E5"><!-- ucd="PHOT_FLUX_IR_J" -->
+      <DESCRIPTION>? Y-band flux measurement for an elliptical model based on the Kron radius in ADU units (FLUX_AUTO_Y)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_gFlux" ucd="stat.error" display="0" datatype="double" width="12" precision="E5"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0/14971] gFlux uncertainty (FLUXERR_AUTO_G)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_rFlux" ucd="stat.error" display="0" datatype="double" width="12" precision="E5"><!-- ucd="ERROR" -->
+      <DESCRIPTION>rFlux uncertainty (FLUXERR_AUTO_R)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_iFlux" ucd="stat.error" display="0" datatype="double" width="12" precision="E5"><!-- ucd="ERROR" -->
+      <DESCRIPTION>iFlux uncertainty (FLUXERR_AUTO_I)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_zFlux" ucd="stat.error" display="0" datatype="double" width="12" precision="E5"><!-- ucd="ERROR" -->
+      <DESCRIPTION>zFlux uncertainty (FLUXERR_AUTO_Z)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_YFlux" ucd="stat.error" display="0" datatype="double" width="12" precision="E5"><!-- ucd="ERROR" -->
+      <DESCRIPTION>YFlux uncertainty (FLUXERR_AUTO_Y)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="gFluxPSF" ucd="phot.flux.density;em.opt.B" display="0" datatype="double" width="12" precision="E5"><!-- ucd="PHOT_FLUX_B" -->
+      <DESCRIPTION>[5.9/4.3e28]? Weighted averaged g-band flux of PSF fit single epoch detections in ADU units (WAVG_FLUX_PSF_G)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="rFluxPSF" ucd="phot.flux.density;em.opt.R" display="0" datatype="double" width="12" precision="E5"><!-- ucd="PHOT_FLUX_R" -->
+      <DESCRIPTION>? Weighted averaged r-band flux of PSF fit single epoch detections in ADU units (WAVG_FLUX_PSF_R)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="iFluxPSF" ucd="phot.flux.density;em.opt.I" display="0" datatype="double" width="12" precision="E5"><!-- ucd="PHOT_FLUX_I" -->
+      <DESCRIPTION>? Weighted averaged i-band flux of PSF fit single epoch detections in ADU units (WAVG_FLUX_PSF_I)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="zFluxPSF" ucd="phot.flux.density;em.opt.I" display="0" datatype="double" width="12" precision="E5"><!-- ucd="PHOT_FLUX_I" -->
+      <DESCRIPTION>? Weighted averaged z-band flux of PSF fit single epoch detections in ADU units (WAVG_FLUX_PSF_Z)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="YFluxPSF" ucd="phot.flux.density;em.IR.J" display="0" datatype="double" width="12" precision="E5"><!-- ucd="PHOT_FLUX_IR_J" -->
+      <DESCRIPTION>? Weighted averaged Y-band flux of PSF fit single epoch detections in ADU units (WAVG_FLUX_PSF_Y)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_gFluxPSF" ucd="stat.error" display="0" datatype="double" width="12" precision="E5"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[9/1.4e27]? gFluxPSF uncertainty (WAVG_FLUXERR_PSF_G)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_rFluxPSF" ucd="stat.error" display="0" datatype="double" width="12" precision="E5"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? rFluxPSF uncertainty (WAVG_FLUXERR_PSF_R)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_iFluxPSF" ucd="stat.error" display="0" datatype="double" width="12" precision="E5"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? iFluxPSF uncertainty (WAVG_FLUXERR_PSF_I)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_zFluxPSF" ucd="stat.error" display="0" datatype="double" width="12" precision="E5"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? zFluxPSF uncertainty (WAVG_FLUXERR_PSF_Z)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_YFluxPSF" ucd="stat.error" display="0" datatype="double" width="12" precision="E5"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? YFluxPSF uncertainty (WAVG_FLUXERR_PSF_Y)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="S/Gg" ucd="src.class.starGalaxy" display="0" datatype="float" width="6" precision="3"><!-- ucd="CLASS_STAR/GALAXY" -->
+      <DESCRIPTION>Extended source flag (0=galaxy; 1=star) (CLASS_STAR_G)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="S/Gr" ucd="src.class.starGalaxy" display="0" datatype="float" width="6" precision="3"><!-- ucd="CLASS_STAR/GALAXY" -->
+      <DESCRIPTION>Extended source flag (0=galaxy; 1=star) (CLASS_STAR_R)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="S/Gi" ucd="src.class.starGalaxy" display="0" datatype="float" width="6" precision="3"><!-- ucd="CLASS_STAR/GALAXY" -->
+      <DESCRIPTION>Extended source flag (0=galaxy; 1=star) (CLASS_STAR_I)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="S/Gz" ucd="src.class.starGalaxy" display="0" datatype="float" width="6" precision="3"><!-- ucd="CLASS_STAR/GALAXY" -->
+      <DESCRIPTION>Extended source flag (0=galaxy; 1=star) (CLASS_STAR_Z)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="S/GY" ucd="src.class.starGalaxy" display="0" datatype="float" width="6" precision="3"><!-- ucd="CLASS_STAR/GALAXY" -->
+      <DESCRIPTION>Extended source flag (0=galaxy; 1=star) (CLASS_STAR_Y)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Exg" ucd="src.class.starGalaxy" display="0" datatype="double" width="19" precision="3"><!-- ucd="CLASS_STAR/GALAXY" -->
+      <DESCRIPTION>[-3.2/2.4e12]? Morphology based classifier in g-band (0=star; larger values=galaxy) (SPRAD_MODEL_G)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Exr" ucd="src.class.starGalaxy" display="0" datatype="double" width="17" precision="3"><!-- ucd="CLASS_STAR/GALAXY" -->
+      <DESCRIPTION>? Morphology based classifier in r-band (0=star; larger values=galaxy) (SPREAD_MODEL_R)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Exi" ucd="src.class.starGalaxy" display="0" datatype="double" width="16" precision="3"><!-- ucd="CLASS_STAR/GALAXY" -->
+      <DESCRIPTION>Morphology based classifier in i-band (0=star; larger values=galaxy) (SPREAD_MODEL_I)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Exz" ucd="src.class.starGalaxy" display="0" datatype="double" width="16" precision="3"><!-- ucd="CLASS_STAR/GALAXY" -->
+      <DESCRIPTION>? Morphology based classifier in z-band (0=star; larger values=galaxy) (SPREAD_MODEL_Z)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ExY" ucd="src.class.starGalaxy" display="0" datatype="double" width="22" precision="3"><!-- ucd="CLASS_STAR/GALAXY" -->
+      <DESCRIPTION>? Morphology based classifier in Y-band (0=star; larger values=galaxy) (SPREAD_MODEL_Y)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="SModg" ucd="src.class.starGalaxy" display="0" datatype="double" width="7" precision="3"><!-- ucd="CLASS_STAR/GALAXY" -->
+      <DESCRIPTION>[-39.1/1]? SPREAD MODEL using the weighted averaged g-band values from single epoch detections (WAVG_SPREAD_MODEL_G) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="SModr" ucd="src.class.starGalaxy" display="0" datatype="float" width="6" precision="3"><!-- ucd="CLASS_STAR/GALAXY" -->
+      <DESCRIPTION>? SPREAD MODEL using the weighted averaged r-band values from single epoch detections (WAVG_SPREAD_MODEL_R) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="SModi" ucd="src.class.starGalaxy" display="0" datatype="float" width="6" precision="3"><!-- ucd="CLASS_STAR/GALAXY" -->
+      <DESCRIPTION>? SPREAD MODEL using the weighted averaged i-band values from single epoch detections (WAVG_SPREAD_MODEL_I)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="SModz" ucd="src.class.starGalaxy" display="0" datatype="float" width="6" precision="3"><!-- ucd="CLASS_STAR/GALAXY" -->
+      <DESCRIPTION>[-0.4/2.4]? SPREAD MODEL using the weighted averaged z-band values from single epoch detections (WAVG_SPREAD_MODEL_Z)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="SModY" ucd="src.class.starGalaxy" display="0" datatype="float" width="6" precision="3"><!-- ucd="CLASS_STAR/GALAXY" -->
+      <DESCRIPTION>[-0.6/0.2]? SPREAD MODEL using the weighted averaged Y-band values from single epoch detections (WAVG_SPREAD_MODEL_Y)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Exg" ucd="stat.error" display="0" datatype="double" width="18" precision="3"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0/3.5e13] Exg uncertainty (SPREADERR_MODEL_G)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_Exr" ucd="stat.error" display="0" datatype="double" width="17" precision="3"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Exr uncertainty (SPREADERR_MODEL_R)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_Exi" ucd="stat.error" display="0" datatype="double" width="17" precision="3"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Exi uncertainty (SPREADERR_MODEL_I)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_Exz" ucd="stat.error" display="0" datatype="double" width="16" precision="3"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Exz uncertainty (SPREADERR_MODEL_Z)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_ExY" ucd="stat.error" display="0" datatype="double" width="23" precision="3"><!-- ucd="ERROR" -->
+      <DESCRIPTION>ExY uncertainty (SPREADERR_MODEL_Y)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_SModg" ucd="stat.error" display="0" datatype="double" width="12" precision="3"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0/5.9e7]? SModg uncertainty (WAVG_SPREADERR_MODEL_G)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_SModr" ucd="stat.error" display="0" datatype="double" width="8" precision="3"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? SModr uncertainty (WAVG_SPREADERR_MODEL_R)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_SModi" ucd="stat.error" display="0" datatype="float" width="6" precision="3"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? SModi uncertainty (WAVG_SPREADERR_MODEL_I)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_SModz" ucd="stat.error" display="0" datatype="double" width="7" precision="3"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? SModz uncertainty (WAVG_SPREADERR_MODEL_Z)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_SModY" ucd="stat.error" display="0" datatype="float" width="6" precision="3"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? SModY uncertainty (WAVG_SPREADERR_MODEL_Y)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+  </TABLE>
+<INFO name="matches" value="2">matching records</INFO>
+</RESOURCE>
+</VOTABLE>

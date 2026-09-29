@@ -7,6 +7,9 @@ answers, parse failures, enrichment exceptions and wrong astrophysics fail.
 
 from __future__ import annotations
 
+import math
+import random
+import re
 from pathlib import Path
 from typing import Any
 
@@ -15,8 +18,10 @@ import pytest
 from astropy import units as u
 
 from alerts import (
+    C_KMS,
     FINK_ZTF_CLASS_SCORES,
     UNREACHABLE_ERROR_TYPES,
+    AlerceBroker,
     Alert,
     AlertEnricher,
     AlertEnrichment,
@@ -49,14 +54,22 @@ def skip_if_unreachable(exc: BrokerError, what: str) -> None:
         pytest.skip(f"{what} unreachable: {exc}")
 
 
-async def live_fetch(broker: str, since: float, until: float, limit: int, options: dict[str, Any]) -> FetchResult:
+SUPERSEDED_WARNING = re.compile(r"^alerce: \d+ object\(s\) dropped: their newest \S+ version ranks another class")
+
+
+async def live_fetch(broker: str, since: float, until: float, limit: int, options: dict[str, Any], *,
+                     superseded_ok: bool = False) -> FetchResult:
+    """A live fetch that must answer without warnings -- except, with ``superseded_ok``, ALeRCE's report of
+    objects dropped because their newest classifier version ranks another class first (live streams
+    classified by superseded versions: lc_classifier lastmjd windows)."""
     async with httpx.AsyncClient(timeout=120.0, follow_redirects=True) as client:
         try:
             result = await fetch_alerts(client, broker, since_mjd=since, until_mjd=until, limit=limit, options=options)
         except BrokerError as exc:
             skip_if_unreachable(exc, broker)
             raise
-    assert result.warnings == [], result.warnings
+    unexpected = [w for w in result.warnings if not (superseded_ok and SUPERSEDED_WARNING.match(w))]
+    assert unexpected == [], unexpected
     return result
 
 
@@ -145,16 +158,35 @@ async def test_fink_lsst_tag_without_api_support_is_invalid_input_live() -> None
 
 
 async def pick_window(broker: str, options: dict[str, Any], limit: int) -> tuple[float, float, list[str]]:
-    """A recent real window holding more than `limit` (and at most 15) objects: (since, until, ids)."""
+    """A recent real window holding more than `limit` (and at most 15) objects: (since, until, ids).
+
+    Windows end just after one of the recent alerts -- the newest first, then earlier ones: a
+    broker's newest alert can follow a gap of several days (ZTF weather or maintenance; Fink SN
+    candidates on 2026-09-29: 5.8 days), so no window ending there holds enough objects. The
+    14-day listing picks the candidate windows (only where it is complete); each is then
+    fetched on its own and must hold the objects without truncation.
+    """
     now = now_mjd()
     recent = await live_fetch(broker, now - 14.0, now, 100, options)
     if not recent.alerts:
         pytest.fail(f"{broker}: no alerts in the last 14 days to build a window from")
-    end = max(a.first_mjd if broker == "alerce" else a.mjd for a in recent.alerts) + 0.001
-    for days in (0.1, 0.2, 0.3, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 5.0):
-        found = await live_fetch(broker, end - days, end, 100, options)
-        if limit < len(found.alerts) <= 15 and not found.truncated:
-            return end - days, end, sorted(a.alert_id for a in found.alerts)
+    times = sorted((a.first_mjd if broker == "alerce" else a.mjd for a in recent.alerts), reverse=True)
+    # A truncated listing holds the newest objects only: windows reaching further back are not counted.
+    complete_from = times[-1] if recent.truncated else now - 14.0
+    fetched = 0
+    for anchor in dict.fromkeys(times):
+        end = anchor + 0.001
+        for days in (0.1, 0.2, 0.3, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 5.0):
+            if end - days < complete_from:
+                break
+            if not limit < sum(1 for t in times if end - days <= t <= end) <= 15:
+                continue
+            found = await live_fetch(broker, end - days, end, 100, options)
+            if limit < len(found.alerts) <= 15 and not found.truncated:
+                return end - days, end, sorted(a.alert_id for a in found.alerts)
+            fetched += 1
+            if fetched >= 8:  # polite: the listing and the broker disagree repeatedly
+                pytest.fail(f"{broker}: {fetched} candidate windows held a different number of objects when fetched")
     pytest.fail(f"{broker}: no window with {limit + 1}-15 objects in the last 14 days")
 
 
@@ -207,7 +239,8 @@ async def test_poll_and_crossmatch_one_real_alert_live(tmp_path: Path) -> None:
         assert set(enrichment["catalog_status"]) == {"gaia_dr3", "simbad", "ned"}
         assert enrichment["is_new"] in (True, False)
         assert enrichment["is_new"] == (not enrichment["counterparts"])
-        assert enrichment["host_status"] in {"found", "none_within_radius", "not_applicable_star", "ambiguous_transient_entry"}
+        assert enrichment["host_status"] in {"found", "none_within_radius", "unassociated", "not_applicable_star",
+                                             "ambiguous_transient_entry"}
         assert enrichment["host_search_complete"] is True
         # Re-polling the same window is idempotent.
         again = await svc.poll("alerce", since_mjd=result.since_mjd, until_mjd=result.until_mjd, limit=1)
@@ -249,6 +282,10 @@ async def test_at2018cow_host_enrichment_live() -> None:
     assert "CGCG 137-068" in names_of(host) or "Z 137-68" in names_of(host)
     assert host["redshift"] == pytest.approx(0.0141, abs=0.0003)
     assert 4.0 < host["separation_arcsec"] < 7.0 and 1.2 < host["projected_offset_kpc"] < 2.0
+    # z = 0.0141 > 0.01: a Hubble-flow distance on the Cosmicflows-4 scale (H0 = 74.6), ~56 Mpc for
+    # cz_CMB ~ 4.2e3 km/s (Planck's H0 = 67.66 would give ~62 Mpc, a 10% jump from CF4 distances).
+    assert host["distance_method"] == "hubble_flow" and host["hubble_constant_kms_mpc"] == pytest.approx(74.6)
+    assert host["distance_mpc"] == pytest.approx(C_KMS * host["redshift_cmb"] / 74.6 / (1 + host["redshift"]), rel=0.03)
 
 
 async def test_m31n_2008_12a_is_extragalactic_live() -> None:
@@ -365,6 +402,13 @@ NUCLEI_LIVE = {
     "NGC 3783": ((174.7571236746, -37.73861378972), {"NGC 3783"}),
     "NGC 7469": ((345.8151, 8.8739), {"NGC 7469"}),
     "NGC 4395": ((186.45359712911997, 33.54686115781999), {"NGC 4395"}),
+    # Further Seyfert nuclei with spurious >= 5 sigma Gaia proper motions (NGC 1566 10 sigma, NGC 3227
+    # 5.7 sigma, M58 8.0 sigma, NGC 5033 7.8 sigma; live sweep of 26 Seyferts and 58 HyperLEDA galaxy
+    # centres, 2026-09-28: none is flagged as a Galactic star).
+    "NGC 1566": ((65.00165353052, -54.93795130799), {"NGC 1566"}),
+    "NGC 3227": ((155.87740214554, 19.86507839075), {"NGC 3227"}),
+    "NGC 4579": ((189.43165612500002, 11.818090000000002), {"M 58", "Messier 058", "NGC 4579"}),
+    "NGC 5033": ((198.36472916666668, 36.593650000000004), {"NGC 5033"}),
 }
 
 
@@ -417,32 +461,213 @@ async def test_blazar_is_known_variable_and_agn_live() -> None:
     assert res.known_variable is True and res.known_agn is True and res.known_star is False
 
 
+# ---------------------------------------------------------------------------
+# Review round 3 (live): AGN hosts, '*' entries of galaxy nuclei, light radii, Local Group dwarfs
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(("name", "position", "z", "not_host"), [
+    ("3C 273", (187.27791594049, 2.05238823055), 0.158, "[RGG2003] new galaxy"),  # a z = 0.0053 dwarf 10.8" away
+    ("BL Lac", (330.68038064033993, 42.27777206022), 0.0655, "2MASX J22024434+4216304"),
+    ("PKS 2155-304", (329.71693843745, -30.225588457719997), 0.116, "[FGM91] G1"),
+])
+async def test_agn_alerts_are_hosted_by_their_own_active_galaxy_live(name: str, position: tuple[float, float], z: float,
+                                                                     not_host: str) -> None:
+    res = await enrich_live(*position, name)
+    host = res.host
+    assert res.known_agn is True and host is not None and host["method"] == "agn_nucleus"
+    assert host["separation_arcsec"] < 1.0 and host["redshift"] == pytest.approx(z, abs=0.002)
+    assert host["name"] != not_host and not_host not in names_of(host)
+    assert res.transient_redshift == pytest.approx(z, abs=0.002)
+
+
+@pytest.mark.parametrize(("name", "position"), [
+    ("LEDA 1798300", (192.96265666372997, 27.118380852369995)),
+    ("2MASS J09480288+1319111", (147.01196897129, 13.319751523210002)),
+])
+async def test_simbad_star_entries_of_galaxy_nuclei_are_not_galactic_stars_live(name: str,
+                                                                                position: tuple[float, float]) -> None:
+    res = await enrich_live(*position, name)
+    assert any(c["catalog"] == "simbad" and c["source_id"] == name and c["object_type"] == "*" for c in res.counterparts)
+    assert res.known_star is False and res.host is not None and res.host_status == "found"
+    assert res.host["redshift"] is not None and res.host["redshift"] > 0.02
+    assert any(name in e and "another catalogue entry of the galaxy's nucleus" in e for e in res.evidence)
+
+
+async def test_blank_point_near_a_low_redshift_dwarf_gets_no_host_live() -> None:
+    res = await enrich_live(187.26112, 2.05167, "blank 50\" from [RGG2003] new galaxy")
+    assert res.host is None and res.host_status == "unassociated"
+    assert any("[RGG2003] new galaxy" in e and "does not make it the host" in e for e in res.evidence)
+
+
+async def test_sculptor_rr_lyrae_is_an_extragalactic_star_live() -> None:
+    res = await enrich_live(14.83046939535, -33.6108759036, "EV* SclG V0214")
+    assert res.known_variable is True and res.stellar_counterpart is True and res.known_star is False
+    assert any("Local Group dwarf Sculptor" in e for e in res.evidence)
+
+
 async def test_alerce_rows_per_classifier_version_are_deduplicated_live(tmp_path: Path) -> None:
     """ALeRCE lc_classifier AGN answers repeat objects once per classifier version: ids must be unique,
     repeated objects must take their newest version, and re-polling must change nothing."""
     until = now_mjd()
     options = {"classifier": "lc_classifier", "class_name": "AGN", "mjd_field": "lastmjd"}
-    result = await live_fetch("alerce", until - 3.0, until, 15, options)
+    result = await live_fetch("alerce", until - 3.0, until, 15, options, superseded_ok=True)
     assert result.alerts, "ALeRCE returned no lc_classifier AGN objects detected in the last 3 days"
     ids = [a.object_id for a in result.alerts]
     assert len(ids) == len(set(ids))
     for alert in result.alerts:
         check_common(alert, "alerce", until - 3.0 - 1e-6, until)
-        if len(alert.extra.get("classifier_rows") or []) > 1:
-            assert alert.extra["classifier_choice"] == "newest_version"
-            assert alert.probability == alert.extra["classifier_versions"][alert.extra["classifier_version"]]
+        # Every stored object -- repeated or not -- is classified by its newest classifier version.
+        assert alert.classification == "AGN" and alert.extra["classifier_choice"] == "newest_version"
+        assert alert.probability == alert.extra["classifier_versions"][alert.extra["classifier_version"]]
     store = AlertStore(MetadataStore(f"sqlite:///{(tmp_path / 'dups.sqlite3').as_posix()}"))
     async with httpx.AsyncClient(timeout=120.0, follow_redirects=True) as client:
         svc = AlertService(store, client, None)
         try:
             first = await svc.poll("alerce", since_mjd=until - 3.0, until_mjd=until, limit=15, crossmatch=False,
                                    options=options)
+            before = {r["id"]: r for r in store.get_many(first.alert_ids)}
             second = await svc.poll("alerce", since_mjd=until - 3.0, until_mjd=until, limit=15, crossmatch=False,
                                     options=options)
         except BrokerError as exc:
             skip_if_unreachable(exc, "ALeRCE")
             raise
     assert len(first.alert_ids) == len(set(first.alert_ids)) == first.inserted
-    # Objects detected again between the polls legitimately update; nothing else changes.
-    assert second.inserted <= 1 and second.unchanged >= len(second.alert_ids) - 2
+    assert len(second.alert_ids) == len(set(second.alert_ids)) == second.fetched
+    # ALeRCE is live: an object detected again between the polls leaves the fixed window (its lastmjd
+    # passes `until`) and the next object enters it, and a late-processed detection inside the window
+    # updates its object. A same-detection update is legitimate when its cause is visible -- ALeRCE re-scored
+    # the object (the stored probability is its newest version's), its photometry arrived or changed (a
+    # /detections request failed in poll 1, or a new candid), or poll 1's version lookup failed for it --
+    # but a repeated classifier-version row must never "reclassify" an object (the bug made n_updates reach
+    # 5 per repeated object, flipping between the versions' probabilities).
+    assert second.inserted == len(set(second.alert_ids) - set(first.alert_ids))
+    rows = {r["id"]: r for r in store.get_many(second.alert_ids)}
+    for alert_id in set(second.alert_ids) & set(first.alert_ids):
+        row, old = rows[alert_id], before[alert_id]
+        extra, old_extra = row["extra"], old["extra"]
+        oid = alert_id.split(":", 1)[1]
+        warned = any(oid in w for w in first.warnings + second.warnings)
+        if not warned:  # both version lookups answered: the stored probability is the newest version's
+            assert row["classification"] == "AGN" and extra["classifier_choice"] == "newest_version"
+            assert row["probability"] == extra["classifier_versions"][extra["classifier_version"]], (alert_id, extra)
+        if row["n_updates"] == 0 or row["mjd"] > old["mjd"]:
+            continue
+        rescored = extra.get("classifier_choice") == "newest_version" and (
+            row["probability"] != old["probability"] or extra.get("classifier_version") != old_extra.get("classifier_version"))
+        rephotometered = old["magpsf"] is None or extra.get("candid") != old_extra.get("candid")
+        assert rescored or rephotometered or warned, (alert_id, old, row)
+    assert second.updated == sum(1 for i in set(second.alert_ids) & set(first.alert_ids) if rows[i]["n_updates"] > 0)
 
+
+
+# ---------------------------------------------------------------------------
+# Review round 2 (live): Galactic-star verdicts, host association, ALeRCE classifier versions
+# ---------------------------------------------------------------------------
+
+# Gaia DR3 (J2016) positions.
+DECISIVE_STARS = {  # Gaia DSC-extragalactic or galaxy candidates, with decisive astrometry
+    "WD 1647493723250083584": (232.72187939379668, 69.04262554294488),
+    "UV Per": (32.53473412720054, 57.189166068564425),
+    "[LF82] d (on M31)": (10.675847289712872, 41.26275007396792),
+}
+BRIGHT_M31_STARS = {  # SIMBAD stars on M31's disc with huge Gaia excess noise, M_G < -10 at M31's distance
+    "[WWV2004] J0043124+404639": (10.801861658055273, 40.77813034081048),
+    "GSC 02805-02180": (10.645509790548862, 41.34538678030782),
+}
+
+
+@pytest.mark.parametrize("name", sorted(DECISIVE_STARS))
+async def test_decisive_astrometry_outweighs_gaia_dsc_live(name: str) -> None:
+    res = await enrich_live(*DECISIVE_STARS[name], name)
+    gaia = min((c for c in res.counterparts if c["catalog"] == "gaia_dr3"), key=lambda c: c["separation_arcsec"])
+    assert (gaia["dsc_p_extragalactic"] or 0.0) > 0.5 or gaia["in_galaxy_candidates"] is True
+    assert res.known_star is True and res.host is None and res.host_status == "not_applicable_star"
+    assert not any("looks like a galaxy nucleus" in e for e in res.evidence)
+
+
+@pytest.mark.parametrize("name", sorted(BRIGHT_M31_STARS))
+async def test_bright_stars_on_m31_are_foreground_live(name: str) -> None:
+    res = await enrich_live(*BRIGHT_M31_STARS[name], name)
+    assert res.known_star is True and res.host is None
+    assert any("M_G = " in e and "-> Galactic foreground star" in e for e in res.evidence), res.evidence
+
+
+async def test_binary_near_ngc5078_is_galactic_live() -> None:
+    res = await enrich_live(199.85616010770747, -27.374244054046667, "EB 6189441739218449664")
+    assert res.known_star is True and res.host is None
+    ngc5078 = next((g for g in res.d25_galaxies if g["pgc"] == 46490), None)
+    assert ngc5078 is None or ngc5078["d_dlr"] > 2.0  # its current D25 (2.6'), not the 2003 one (51')
+
+
+@pytest.mark.parametrize(("name", "position", "wrong_pgc"), [
+    ("PTF 10hv", (210.98408333333336, 54.45863888888889), 50063),  # z = 0.052 SN on M101
+    ("PTF 11dws", (184.7785, 47.355805555555555), 39600),  # z = 0.15 SN on M106
+    ("SN 2008hz", (10.827583333333333, 42.170611111111114), 2557),  # z = 0.0795 SN on M31
+])
+async def test_background_supernovae_on_nearby_giants_live(name: str, position: tuple[float, float],
+                                                           wrong_pgc: int) -> None:
+    res = await enrich_live(*position, name)
+    assert res.transient_redshift is not None and res.transient_redshift > 0.04
+    assert res.host is None or res.host.get("pgc") != wrong_pgc
+    if res.host is not None:
+        assert res.host["redshift"] is None or abs(res.host["redshift"] - res.transient_redshift) < 0.02
+
+
+async def test_sn2016bam_host_is_ngc2445_live() -> None:
+    res = await enrich_live(116.71966666666667, 39.02272222222222, "SN 2016bam")
+    assert res.host is not None and "NGC 2445" in names_of(res.host) and res.host["object_type"] != "QSO"
+    assert res.host["projected_offset_kpc"] < 20
+
+
+async def test_ned_point_source_does_not_make_sn2002gn_galactic_live() -> None:
+    res = await enrich_live(29.22733333333333, -1.113611111111111, "SN 2002gn")
+    assert res.known_star is not True and res.host is not None and res.host_status == "found"
+
+
+async def test_random_blank_positions_rarely_get_a_host_live() -> None:
+    """Random positions at |b| > 30 deg with no transient: an adopted host must pass the association criteria
+    (a likely chance alignment is 'unassociated'), and most positions get none."""
+    from astropy.coordinates import SkyCoord
+
+    rng = random.Random(29)
+    positions: list[tuple[float, float]] = []
+    while len(positions) < 6:
+        ra, dec = rng.uniform(0.0, 360.0), math.degrees(math.asin(rng.uniform(-0.5, 1.0)))
+        if abs(SkyCoord(ra * u.deg, dec * u.deg).galactic.b.deg) > 30.0:
+            positions.append((ra, dec))
+    found = 0
+    for i, (ra, dec) in enumerate(positions):
+        res = await enrich_live(ra, dec, f"random{i}")
+        if res.host is not None:
+            found += 1
+            host = res.host
+            assert host["method"] in {"nearest", "d25_ellipse", "dlr_outside_d25", "agn_nucleus"}
+            if host["method"] == "nearest":  # no transient redshift: only a small chance coincidence counts
+                assert host["p_chance"] <= 0.1, host
+            elif host["method"] == "agn_nucleus":
+                assert host["separation_arcsec"] <= res.match_radius_arcsec and res.known_agn is True
+            else:
+                assert host["d_dlr"] <= 2.0
+        else:
+            assert res.host_status in {"none_within_radius", "unassociated", "not_applicable_star"}
+    assert found <= 3
+
+
+async def test_alerce_objects_are_classified_by_their_newest_version_live() -> None:
+    """lc_classifier SNIa objects by lastmjd: every object kept is SNIa in its newest classifier version;
+    objects whose AGN/SNIa row came from a superseded version are dropped (and reported)."""
+    until = now_mjd()
+    options = {"classifier": "lc_classifier", "class_name": "SNIa", "mjd_field": "lastmjd"}
+    result = await live_fetch("alerce", until - 3.0, until, 20, options, superseded_ok=True)
+    assert result.alerts, "ALeRCE returned no lc_classifier SNIa objects detected in the last 3 days"
+    async with httpx.AsyncClient(timeout=120.0, follow_redirects=True) as client:
+        for alert in result.alerts[:5]:  # independent check of the newest version's top class
+            assert alert.classification == "SNIa" and alert.extra["classifier_choice"] == "newest_version"
+            answer = await client.get(f"https://api.alerce.online/ztf/v1/objects/{alert.object_id}/probabilities",
+                                      params={"classifier": "lc_classifier"})
+            if answer.status_code >= 500:
+                pytest.skip(f"ALeRCE unreachable: HTTP {answer.status_code}")
+            first = [p for p in answer.json() if p["ranking"] == 1]
+            newest = max(first, key=lambda p: AlerceBroker.version_key(p["classifier_version"]))
+            assert newest["class_name"] == "SNIa" and newest["classifier_version"] == alert.extra["classifier_version"]

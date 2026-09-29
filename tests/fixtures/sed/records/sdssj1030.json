@@ -1507,7 +1507,21 @@
   "query_radius_arcsec": 10.0
  },
  "resolved_object": {
-  "aliases": [],
+  "aliases": [
+   "2XMM J103027.1+052455",
+   "KODIAQ J103027+052455",
+   "PSO J157.6129+05.4152",
+   "QSO B1027+0540",
+   "QSO J1030+0524",
+   "SDSS J103027.09+052455.1",
+   "SDSS J103027.10+052455.0",
+   "SQUAD DR1 J103027+052455",
+   "WISE J103027.11+052454.6",
+   "[NGV2020] XID21",
+   "[VV2003] J103027.1+052455",
+   "[VV2006] J103027.1+052455",
+   "[VV2010] J103027.1+052455"
+  ],
   "canonical_name": "SDSS J103027.09+052455.0",
   "dec_deg": 5.415284,
   "epoch": 2000.0,
@@ -1519,13 +1533,29 @@
   "redshift": 6.308,
   "resolver": "cds_sesame",
   "resolver_metadata": {
-   "endpoint": "https://cds.unistra.fr/cgi-bin/nph-sesame/-oxp/SNV",
+   "endpoint": "https://cds.unistra.fr/cgi-bin/nph-sesame/-oxpI/SNV",
    "epoch_source": "SIMBAD positions are ICRS at epoch J2000",
    "extragalactic": true,
    "parallax_mas": null,
    "proper_motion_applicable": false,
    "radial_velocity_kms": null,
    "raw_fields": {
+    "alias": [
+     "QSO B1027+0540",
+     "KODIAQ J103027+052455",
+     "PSO J157.6129+05.4152",
+     "QSO J1030+0524",
+     "SDSS J103027.10+052455.0",
+     "SDSS J103027.09+052455.1",
+     "SDSS J103027.09+052455.0",
+     "SQUAD DR1 J103027+052455",
+     "WISE J103027.11+052454.6",
+     "2XMM J103027.1+052455",
+     "[NGV2020] XID21",
+     "[VV2003] J103027.1+052455",
+     "[VV2006] J103027.1+052455",
+     "[VV2010] J103027.1+052455"
+    ],
     "jdedeg": [
      "5.415284"
     ],

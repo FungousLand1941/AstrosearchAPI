@@ -10,7 +10,9 @@ Pipeline
    association may split one object over several groups (high proper-motion stars, a Gaia nucleus in its own
    group, a group of name-resolver rows at 0 arcsec); rows used from other groups, and in-tolerance rows passed
    over, are reported in ``notes``. SIMBAD rows: the Sesame-resolved identifier first, planets ('Pl') never
-   replace their host; NED rows: object-level entries before absorbers/sub-components.
+   replace their host; NED rows: object-level entries before absorbers/sub-components. A 2MASS/AllWISE/Gaia DR3 row
+   whose designation ('2MASS J...', 'WISEA J...', 'Gaia DR3 ...') is a name of the object resolved by Sesame is the
+   object even beyond the positional tolerance (proper-motion offsets between mislabelled catalogue epochs).
 3. Extract every photometric measurement present in those members (Gaia DR3 G/BP/RP, 2MASS JHKs,
    AllWISE W1-W4, Pan-STARRS1 grizy, SDSS ugriz, GALEX FUV/NUV, SIMBAD literature V, radio flux densities
    from FIRST/NVSS/VLASS/LoTSS, X-ray fluxes from ROSAT/Chandra/XMM-Newton) and convert them to flux
@@ -90,7 +92,11 @@ QSO`` -> qso, ``G > AGN`` -> agn, ``G`` -> galaxy, ``*`` -> star), never by the 
 are transients (not class-specific), 'Sy?' is a symbiotic-star candidate. A NED stellar type on a row whose own
 redshift exceeds 1017 km/s is ignored. SDSS morphology of saturated objects (type 3 of saturated stars) is not used,
 and the WISE W1-W2 AGN colour is not applied to objects with a significant parallax/proper motion (brown dwarfs).
-For extended counterparts the X-ray/optical ratio uses the total optical light. Every piece of
+For extended counterparts the X-ray/optical ratio uses the total optical light, and a quasar/blazar catalogue type
+counts as a quasar only when the nucleus can be quasar-luminous at the adopted redshift (otherwise as an AGN in its
+host: Cygnus A, NGC 1275); the ratio is not AGN evidence for a star with a Gaia or SIMBAD parallax/proper motion, and an
+X-ray row that a brighter neighbouring Gaia source is closer to (after proper-motion propagation over the X-ray
+observations) is flagged. Every piece of
 evidence is reported with its weight; scores are a softmax over summed weights, so the output is a
 transparent heuristic, not a calibrated probability; ties are reported and resolved explicitly: an extended
 counterpart prefers galaxy/agn (unless the adopted redshift is a quasar's and a galaxy at it would exceed the quasar
@@ -102,7 +108,22 @@ Redshift
 --------
 Kinds are never guessed: SDSS SpecObj (zWarning = 0 is reliable, a null zWarning is unknown), NED zflag
 (S = spec, P = photo, other codes = unknown technique but NED-vetted), SIMBAD rvz_nature ('s*' = spec,
-'p' = photo; quality E = unreliable) fetched from SIMBAD TAP. See :data:`_REDSHIFT_PRIORITY`.
+'p' = photo; a radial velocity with a null nature = spec; quality A-D reliable, E unreliable whatever the nature)
+fetched from SIMBAD TAP. See :data:`_REDSHIFT_PRIORITY`: a photometric redshift never outranks a catalogue-vetted
+value. Every non-photometric value not flagged by its catalogue -- vetted, or of unknown quality because its lookup
+failed -- is cross-checked (|dz|/(1+z) > 0.01 is a discordance): a vetted value corroborated by a second catalogue or
+an SDSS zWarning = 0 spectrum, or else the only vetted value consistent with the redshift-independent classification
+(a small or negative cz is never ruled out for a galaxy), is adopted; otherwise the redshift is reported as a conflict
+(reliable = False), with every discordant value listed in ``redshift.discordant`` (``vetted`` False: its quality
+could not be checked). Gaia/SIMBAD TAP lookups retry transient failures (3 attempts, as providers.py); rate limits
+(HTTP 429, Retry-After) back the archive off.
+
+Identification
+--------------
+Names are resolved with Sesame '-oxpI' (all identifiers; the configured $SESAME_ENDPOINT with the 'I' option added): a
+2MASS/AllWISE/Gaia DR3 row whose designation is one of the object's names is the object even beyond the positional
+tolerance (fast-moving stars at mismatched epochs). A record resolved without identifiers (the app's own '-oxp'
+crossmatch) gets them from Sesame before the members are chosen.
 """
 
 from __future__ import annotations
@@ -110,6 +131,7 @@ from __future__ import annotations
 import argparse
 import asyncio
 import contextlib
+import email.utils
 import functools
 import io
 import json
@@ -141,8 +163,12 @@ from models import (
     InvalidCoordinateError,
     ObjectResolutionError,
     UnifiedRecord,
+    haversine_arcsec,
     parse_json_table,
+    propagate_radec,
+    resolution_failure_status,
     resolved_target,
+    tangent_offset_arcsec,
     validate_target,
 )
 
@@ -170,12 +196,16 @@ class SEDUpstreamError(SEDError):
 
     ``failures`` holds the crossmatch failure dicts (catalog, error_type, ...) when the error comes from a
     crossmatch in which no catalog answered, so callers can tell outages (network, timeout, rate limit, 5xx)
-    from parse/query regressions.
+    from parse/query regressions. ``status_code`` and ``retry_after`` (seconds, from a Retry-After header) are set
+    when an archive answered with an HTTP error, so a rate limit (429) can be backed off (:func:`backoff_seconds_for`).
     """
 
-    def __init__(self, message: str, failures: Sequence[Mapping[str, Any]] = ()) -> None:
+    def __init__(self, message: str, failures: Sequence[Mapping[str, Any]] = (), *, status_code: int | None = None,
+                 retry_after: float | None = None) -> None:
         super().__init__(message)
         self.failures: list[dict[str, Any]] = [dict(f) for f in failures]
+        self.status_code = status_code
+        self.retry_after = retry_after
 
 
 SVO_FPS_URL = "https://svo2.cab.inta-csic.es/theory/fps/fps.php"
@@ -184,6 +214,9 @@ GAIA_TAP_URL = "https://gea.esac.esa.int/tap-server/tap/sync"
 SIMBAD_TAP_URL = "https://simbad.cds.unistra.fr/simbad/sim-tap/sync"
 SUPPLEMENTARY_REQUEST_TIMEOUT_SECONDS = 60.0  # ceiling of one supplementary HTTP request
 SUPPLEMENTARY_BACKOFF_SECONDS = 120.0  # back-off of a host after a timeout (see HostBackoff)
+SUPPLEMENTARY_REFUSED_BACKOFF_SECONDS = 60.0  # back-off after refused connections / other slow failures
+SUPPLEMENTARY_SLOW_FAILURE_SECONDS = 5.0  # a failure that took longer than this is backed off whatever its type
+SUPPLEMENTARY_MAX_RETRY_AFTER_SECONDS = 600.0  # cap of a back-off taken from an archive's Retry-After header
 
 DEFAULT_RADIUS_ARCSEC = 10.0
 MAX_RADIUS_ARCSEC = 60.0
@@ -489,8 +522,12 @@ class FilterCatalog:
 
     A request never waits more than ``deadline_seconds`` for SVO in total (the embedded copies are verified, so
     blocking on SVO buys nothing): fetches still running at the deadline keep going in the background when the
-    caller's client stays open (their answers are cached when they arrive) and are cancelled otherwise.
-    Concurrent prefetches on one event loop share the in-flight fetch of a filter.
+    caller's client stays open (``background=True`` with a caller-supplied client: their answers are cached when they
+    arrive) and are cancelled otherwise. Concurrent prefetches on one event loop and the SAME client share the
+    in-flight fetch of a filter; a prefetch that is interrupted (its caller cancelled, or the supplementary deadline
+    of :func:`_run_supplementary`) cancels the fetches no other prefetch is waiting for, so no fetch outlives its
+    caller's client. Answers are written to the disk cache once per batch (when no fetch is in flight any more, and at
+    the end of each prefetch), not once per filter.
     """
 
     def __init__(
@@ -518,6 +555,11 @@ class FilterCatalog:
         self._memory: dict[str, tuple[dict[str, Any], str]] = {}  # only validated SVO answers (live or disk cache)
         self._retry_at: dict[str, float] = {}  # filter -> time.monotonic() before which SVO is not retried
         self._inflight: dict[str, asyncio.Task[dict[str, Any]]] = {}  # filter -> running fetch (one event loop)
+        self._fetch_client: dict[asyncio.Task[dict[str, Any]], httpx.AsyncClient] = {}  # the client a fetch uses
+        self._waiters: dict[asyncio.Task[dict[str, Any]], int] = {}  # prefetch calls waiting for a fetch
+        # Why a fetch was cancelled: 'deadline' (this catalog's), 'supplementary' (the request's), 'interrupted'.
+        self._stopped: dict[asyncio.Task[dict[str, Any]], str] = {}
+        self._dirty = False  # SVO answers not yet written to the disk cache
         self._disk_loaded = False
         self.errors: dict[str, str] = {}  # latest unresolved failure per filter (cleared on success)
 
@@ -546,17 +588,28 @@ class FilterCatalog:
             self._memory[str(fid)] = (entry, "svo-cache")
 
     def _save_disk(self) -> None:
+        """Write the validated SVO answers atomically (temporary file + os.replace). A failed write removes its
+        temporary file and leaves the cache dirty, so the next batch retries it (on Windows a freshly written cache
+        can be held open by a virus scanner or indexer, and os.replace then fails with a sharing violation)."""
         entries = {fid: params for fid, (params, origin) in self._memory.items() if origin in {"svo", "svo-cache"}}
+        self._dirty = False
         if not entries:
             return
+        tmp: str | None = None
         try:
             self.cache_path.parent.mkdir(parents=True, exist_ok=True)
             fd, tmp = tempfile.mkstemp(dir=str(self.cache_path.parent), suffix=".tmp")
             with os.fdopen(fd, "w", encoding="utf-8") as handle:
                 json.dump({"endpoint": self.endpoint, "filters": entries}, handle, indent=1, sort_keys=True)
             os.replace(tmp, self.cache_path)
+            tmp = None
         except OSError as exc:
+            self._dirty = True
             logger.warning("Could not write SVO filter cache %s: %s", self.cache_path, exc)
+        finally:
+            if tmp is not None:
+                with contextlib.suppress(OSError):
+                    os.unlink(tmp)
 
     # -- network ------------------------------------------------------------
     async def _fetch(self, client: httpx.AsyncClient, filter_id: str, semaphore: asyncio.Semaphore) -> dict[str, Any]:
@@ -575,27 +628,54 @@ class FilterCatalog:
         logger.warning("SVO FPS lookup failed for %s: %s", filter_id, message)
 
     def _on_fetch_done(self, filter_id: str, task: asyncio.Task[dict[str, Any]]) -> None:
-        """Store the outcome of a fetch (runs even when no caller is waiting for it any more)."""
+        """Store the outcome of a fetch (runs even when no caller is waiting for it any more).
+
+        A fetch cancelled because its caller went away ('interrupted') or failing because the caller's client was
+        closed under it is not an SVO failure: nothing is recorded and the next prefetch asks SVO again. A fetch
+        cancelled at a deadline is an SVO timeout (retried after ``retry_after_seconds``)."""
         if self._inflight.get(filter_id) is task:
             del self._inflight[filter_id]
+        self._fetch_client.pop(task, None)
+        self._waiters.pop(task, None)
+        stopped = self._stopped.pop(task, "deadline")
         if task.cancelled():
-            self._record_failure(filter_id, f"TimeoutError: no SVO answer within the {self.deadline_seconds:g} s deadline")
-            return
-        exc = task.exception()
-        if exc is not None:
-            self._record_failure(filter_id, f"{type(exc).__name__}: {exc}")
-            return
-        self._memory[filter_id] = (task.result(), "svo")
-        self.errors.pop(filter_id, None)
-        self._retry_at.pop(filter_id, None)
-        self._save_disk()
+            if stopped == "interrupted":
+                logger.debug("SVO FPS fetch of %s cancelled with its caller", filter_id)
+            elif stopped == "supplementary":
+                self._record_failure(filter_id, "TimeoutError: no SVO answer within the request's supplementary deadline")
+            else:
+                self._record_failure(filter_id,
+                                     f"TimeoutError: no SVO answer within the {self.deadline_seconds:g} s deadline")
+        else:
+            exc = task.exception()
+            if exc is not None and _closed_client_error(exc):
+                logger.debug("SVO FPS fetch of %s ended with its caller's client: %s", filter_id, exc)
+            elif exc is not None:
+                self._record_failure(filter_id, f"{type(exc).__name__}: {exc}")
+            else:
+                self._memory[filter_id] = (task.result(), "svo")
+                self.errors.pop(filter_id, None)
+                self._retry_at.pop(filter_id, None)
+                self._dirty = True
+        if self._dirty and not self._inflight:
+            self._save_disk()
 
-    async def prefetch(self, filter_ids: Iterable[str], client: httpx.AsyncClient | None = None) -> dict[str, str]:
+    def unresolved(self, filter_ids: Iterable[str]) -> list[str]:
+        """The filters among ``filter_ids`` without a validated SVO answer (they use the embedded table)."""
+        self._load_disk()
+        return sorted({fid for fid in filter_ids if fid not in self._memory})
+
+    async def prefetch(
+        self, filter_ids: Iterable[str], client: httpx.AsyncClient | None = None, *, background: bool = True,
+    ) -> dict[str, str]:
         """Resolve the requested filters (fetching missing ones from SVO concurrently, within the deadline).
 
         Returns ``{filter_id: error}`` for the filters of THIS call that will use embedded values (a failed
         fetch now, no answer within ``deadline_seconds``, or a failure less than ``retry_after_seconds`` ago).
         Offline catalogs never fetch and return no errors (embedded values are their documented source).
+        ``background``: fetches still running at the deadline continue on the caller's ``client`` (it must stay
+        open); with False, or without a client (a private one is closed here), they are cancelled. An interrupted
+        prefetch (cancelled by its caller) always cancels the fetches no other prefetch waits for.
         """
         self._load_disk()
         missing = sorted({fid for fid in filter_ids if fid not in self._memory})
@@ -607,28 +687,58 @@ class FilterCatalog:
         waiting: dict[str, asyncio.Task[dict[str, Any]]] = {}
         owned = client is None
         active = client or httpx.AsyncClient(timeout=self.timeout, follow_redirects=True)
+        keep = background and not owned  # our private client closes below: nothing may keep using it
+        stop = "deadline"
         try:
             semaphore = asyncio.Semaphore(self.max_concurrency)
             for fid in missing:
                 task = self._inflight.get(fid)
-                if task is not None and not task.done() and task.get_loop() is loop:
-                    waiting[fid] = task  # shared with a concurrent request
+                if (task is not None and not task.done() and task.get_loop() is loop
+                        and self._fetch_client.get(task) is active):
+                    pass  # shared with a concurrent request on the same client
                 elif self._retry_at.get(fid, 0.0) > now:
                     failures[fid] = f"{self.errors.get(fid, 'earlier failure')} (retry pending)"
+                    continue
                 else:
                     task = loop.create_task(self._fetch(active, fid, semaphore))
+                    self._fetch_client[task] = active
                     task.add_done_callback(functools.partial(self._on_fetch_done, fid))
                     self._inflight[fid] = task
-                    waiting[fid] = task
+                self._waiters[task] = self._waiters.get(task, 0) + 1
+                waiting[fid] = task
             if waiting:
-                _done, pending = await asyncio.wait(set(waiting.values()), timeout=self.deadline_seconds)
-                if pending and owned:  # our private client closes below: nothing may keep using it
-                    for task in pending:
-                        task.cancel()
-                    await asyncio.wait(pending)
+                await asyncio.wait(set(waiting.values()), timeout=self.deadline_seconds)
+        except asyncio.CancelledError as exc:
+            # The supplementary deadline (an SVO timeout) or the caller going away (not SVO's fault).
+            stop = "supplementary" if exc.args[:1] == (SUPPLEMENTARY_DEADLINE_CANCEL,) else "interrupted"
+            keep = False
+            raise
+        except BaseException:
+            stop, keep = "interrupted", False
+            raise
         finally:
-            if owned:
-                await active.aclose()
+            try:
+                abandoned = []
+                for task in set(waiting.values()):
+                    left = self._waiters.get(task, 1) - 1
+                    if task.done():
+                        continue
+                    if left > 0:
+                        self._waiters[task] = left  # another prefetch still waits for it
+                        continue
+                    self._waiters.pop(task, None)
+                    if not keep:
+                        self._stopped[task] = stop
+                        task.cancel()
+                        abandoned.append(task)
+                if abandoned:
+                    # Shielded from a repeated cancellation; the fetches are cancelled, so this returns promptly.
+                    await asyncio.shield(asyncio.gather(*abandoned, return_exceptions=True))
+            finally:
+                if owned:
+                    await active.aclose()
+                if self._dirty:
+                    self._save_disk()
         for fid, task in waiting.items():
             if not task.done():
                 failures[fid] = (f"TimeoutError: no SVO answer within the {self.deadline_seconds:g} s deadline "
@@ -659,6 +769,11 @@ class FilterCatalog:
     async def get(self, filter_id: str, client: httpx.AsyncClient | None = None) -> FilterInfo:
         await self.prefetch([filter_id], client)
         return self.info(filter_id)
+
+
+def _closed_client_error(exc: BaseException) -> bool:
+    """httpx's error for a request on a closed client (the caller closed it under a background fetch)."""
+    return isinstance(exc, RuntimeError) and "client has been closed" in str(exc)
 
 
 def _angstrom_to_um(value: Any) -> float | None:
@@ -1026,6 +1141,9 @@ class MemberChoice:
     components: list[dict[str, Any]] = field(default_factory=list, repr=False)
     notes: list[str] = field(default_factory=list)
     group_id: str | None = None  # crossmatch group the row came from
+    designation: str | None = None  # the object's name that identifies this row (see select_members)
+    # Quality warnings of the row as a whole: every point extracted from it carries them (quality_warning).
+    warnings: list[str] = field(default_factory=list)
 
     def summary(self) -> dict[str, Any]:
         out: dict[str, Any] = {
@@ -1033,10 +1151,14 @@ class MemberChoice:
             "separation_arcsec": self.separation_arcsec, "tolerance_arcsec": self.tolerance_arcsec,
             "used": self.used, "reason": self.reason, "wavelength": self.wavelength, "group_id": self.group_id,
         }
+        if self.designation:
+            out["designation"] = self.designation
         if self.components:
             out["components"] = [{k: c[k] for k in ("source_id", "separation_arcsec", "role")} for c in self.components]
         if self.notes:
             out["notes"] = list(self.notes)
+        if self.warnings:
+            out["warnings"] = list(self.warnings)
         return out
 
 
@@ -1057,6 +1179,43 @@ def _record_dict(record: UnifiedRecord | Mapping[str, Any]) -> dict[str, Any]:
     if isinstance(record, Mapping):
         return dict(record)
     raise SEDInputError("record must be a UnifiedRecord or its dict form")
+
+
+def _expect_mapping(value: Any, path: str, *, optional: bool = True) -> None:
+    if value is None and optional:
+        return
+    if not isinstance(value, Mapping):
+        raise SEDInputError(f"record {path} must be an object (mapping), not {type(value).__name__}")
+
+
+def _expect_list(value: Any, path: str) -> Sequence[Any]:
+    if value is None:
+        return ()
+    if isinstance(value, str | bytes | Mapping) or not isinstance(value, Sequence):
+        raise SEDInputError(f"record {path} must be a list, not {type(value).__name__}")
+    return value
+
+
+def validate_record_shape(record: Mapping[str, Any]) -> None:
+    """:class:`SEDInputError` naming the offending path unless the record has the shape sed_from_record reads:
+    ``target``, ``resolved_object`` and ``provenance`` objects (or null); ``resolved_object.aliases`` a list of
+    names; ``crossmatch_groups`` a list of objects whose ``members`` are lists of objects with ``data``,
+    ``metadata`` and ``position_at_epoch`` objects (or null); ``failures`` a list of objects."""
+    for key in ("target", "resolved_object", "provenance"):
+        _expect_mapping(record.get(key), key)
+    resolved = record.get("resolved_object") or {}
+    for index, alias in enumerate(_expect_list(resolved.get("aliases"), "resolved_object.aliases")):
+        if not isinstance(alias, str):
+            raise SEDInputError(f"record resolved_object.aliases[{index}] must be a string, not {type(alias).__name__}")
+    for index, failure in enumerate(_expect_list(record.get("failures"), "failures")):
+        _expect_mapping(failure, f"failures[{index}]", optional=False)
+    for gi, group in enumerate(_expect_list(record.get("crossmatch_groups"), "crossmatch_groups")):
+        _expect_mapping(group, f"crossmatch_groups[{gi}]", optional=False)
+        for mi, member in enumerate(_expect_list(group.get("members"), f"crossmatch_groups[{gi}].members")):
+            path = f"crossmatch_groups[{gi}].members[{mi}]"
+            _expect_mapping(member, path, optional=False)
+            for key in ("data", "metadata", "position_at_epoch"):
+                _expect_mapping(member.get(key), f"{path}.{key}")
 
 
 def _ci_get(data: Mapping[str, Any], *names: str) -> Any:
@@ -1147,15 +1306,222 @@ def select_record_members(
         for member in group.get("members") or []:
             pooled.append({**member, "group_id": gid})
     primary_id = str(primary.get("group_id") or f"group-{groups.index(primary) + 1}")
-    canonical = str(((record.get("resolved_object") or {}).get("canonical_name")) or "").strip() or None
-    members = select_members({"members": pooled}, centre, primary_group_id=primary_id, canonical_name=canonical)
+    resolved = record.get("resolved_object") or {}
+    canonical = str(resolved.get("canonical_name") or "").strip() or None
+    names = [resolved.get("query"), resolved.get("canonical_name"), *(resolved.get("aliases") or [])]
+    members = select_members({"members": pooled}, centre, primary_group_id=primary_id, canonical_name=canonical,
+                             object_names=[str(n) for n in names if n])
     notes: list[str] = []
     elsewhere = [f"{m.catalog} ({m.group_id})" for m in members if m.used and m.group_id not in (None, primary_id)
                  and m.catalog not in RADIO_SPECS]
     if elsewhere:
         notes.append(f"members taken from crossmatch groups other than the target group {primary_id} (within each "
-                     f"catalog's tolerance): {', '.join(elsewhere)}")
+                     f"catalog's tolerance, or identified by designation): {', '.join(elsewhere)}")
+    beyond = [f"{m.catalog} {m.source_id} ({_fmt_sep(m.separation_arcsec, 2)} arcsec > {m.tolerance_arcsec:.2f} arcsec)"
+              for m in members if m.used and m.designation and m.separation_arcsec is not None
+              and m.separation_arcsec > m.tolerance_arcsec]
+    if beyond:
+        notes.append("members beyond the positional tolerance, identified by designation (a name of the object): "
+                     + ", ".join(beyond))
+    flagged = flag_moving_stacked_xray(members, pooled, target_proper_motion(record, members))
+    if flagged:
+        notes.append("stacked X-ray catalogue flux of a moving source flagged (not used by the classification): "
+                     + ", ".join(flagged))
+    competing = flag_competing_xray_counterparts(members, pooled, record)
+    if competing:
+        notes.append("X-ray source closer to another optical source than to the target flagged (not used by the "
+                     "classification): " + ", ".join(competing))
     return members, primary, notes
+
+
+# X-ray catalogues whose rows are unique sources fitted at ONE fixed position over every observation of the field:
+# the 5XMM stacked catalogue (HEASARC xmmssc: EPIC flux fitted over n_contrib overlapping observations, first/last
+# observation MJD in time/end_time) and CSC 2.1 master sources. A source that moves by more than the tolerance over those observations is split into several unique
+# sources, each with a flux averaged over observations in which the source was elsewhere: Proxima Cen has three 5XMM
+# unique sources (2001.8, 2009.2, 2017.1 positions) with ep_flux 4.2e-12, 6.9e-15 and 1.5e-15 erg/s/cm2, the
+# 6.9e-15 one with ep_det_ml = 1.7e6 (impossible for a 7e-15 source observed once).
+STACKED_XRAY_CATALOGS = frozenset({"xmm", "chandra"})
+STACKED_XRAY_SPAN_COLUMNS: dict[str, tuple[str, str]] = {"xmm": ("time", "end_time")}  # MJD of first/last observation
+STACKED_XRAY_MAX_SPAN_YEARS = 25.0  # Chandra/XMM-Newton archives since 1999: bound when a row states no span
+# On-axis PSF FWHM (arcsec): a source that moved less than this over the stacked observations loses little flux in a
+# fixed-position fit (XMM-Newton Users Handbook 3.2.1: EPIC 4-6 arcsec; Chandra ACIS ~0.5-0.8 arcsec on axis).
+STACKED_XRAY_PSF_FWHM_ARCSEC: dict[str, float] = {"xmm": 6.0, "chandra": 0.8}
+DAYS_PER_YEAR = 365.25
+
+
+def target_proper_motion(
+    record: Mapping[str, Any], members: Sequence[MemberChoice],
+) -> tuple[float, str] | None:
+    """Total proper motion (mas/yr) of the target and its origin: the record target's (name resolution), else the
+    used Gaia DR3 member's; None when unknown."""
+    target = record.get("target") or {}
+    pmra, pmdec = _num(target.get("pm_ra_masyr")), _num(target.get("pm_dec_masyr"))
+    if pmra is not None and pmdec is not None:
+        return math.hypot(pmra, pmdec), "target proper motion"
+    gaia = next((m for m in members if m.used and m.catalog == "gaia_dr3"), None)
+    if gaia is not None:
+        pmra, pmdec = _num(_ci_get(gaia.data, "pmra")), _num(_ci_get(gaia.data, "pmdec"))
+        if pmra is not None and pmdec is not None:
+            return math.hypot(pmra, pmdec), f"Gaia DR3 {gaia.source_id}"
+    return None
+
+
+def stacked_xray_span_years(catalog: str, data: Mapping[str, Any]) -> float | None:
+    """Years between the first and last observation contributing to a stacked X-ray row, when the row states them."""
+    columns = STACKED_XRAY_SPAN_COLUMNS.get(catalog)
+    if columns is None:
+        return None
+    first, last = (_num(_ci_get(data, c)) for c in columns)
+    if first is None or last is None or last < first:
+        return None
+    return (last - first) / DAYS_PER_YEAR
+
+
+def flag_moving_stacked_xray(
+    members: Sequence[MemberChoice], rows: Sequence[Mapping[str, Any]], proper_motion: tuple[float, str] | None,
+) -> list[str]:
+    """Flag (``MemberChoice.warnings``) the used rows of stacked X-ray catalogues (:data:`STACKED_XRAY_CATALOGS`) of a
+    target that moved by more than max(row tolerance, PSF FWHM) over the observations stacked into it: over the span
+    the row states (5XMM time/end_time), or -- when it states none -- whenever several unique sources of that
+    catalogue lie within tolerance (the catalogue split the moving source) and the target moves more than that within
+    :data:`STACKED_XRAY_MAX_SPAN_YEARS`. Returns '<catalog> <source_id>' of the flagged rows."""
+    if proper_motion is None:
+        return []
+    pm_masyr, origin = proper_motion
+    flagged = []
+    for choice in members:
+        if not choice.used or choice.catalog not in STACKED_XRAY_CATALOGS:
+            continue
+        within = [m for m in rows if str(m.get("catalog")) == choice.catalog and _within_tolerance(m)]
+        split = len({str(m.get("source_id")) for m in within} | {choice.source_id})
+        span = stacked_xray_span_years(choice.catalog, choice.data)
+        limit = max(choice.tolerance_arcsec, STACKED_XRAY_PSF_FWHM_ARCSEC.get(choice.catalog, 0.0))
+        if span is not None:
+            moved = pm_masyr / 1000.0 * span
+            if moved <= limit:
+                continue
+            why = (f"the target ({pm_masyr:.0f} mas/yr, {origin}) moved {moved:.1f} arcsec (> {limit:.1f} arcsec, the "
+                   f"tolerance or PSF FWHM) over the {span:.1f} yr of observations stacked into this row")
+        elif split > 1 and pm_masyr / 1000.0 * STACKED_XRAY_MAX_SPAN_YEARS > limit:
+            why = (f"the target moves {pm_masyr:.0f} mas/yr ({origin}) and {split} {choice.catalog} unique sources lie "
+                   "within tolerance (the catalogue split the moving source)")
+        else:
+            continue
+        if split > 1 and span is not None:
+            why += f"; {split} {choice.catalog} unique sources within tolerance are this object at different epochs"
+        choice.warnings.append(
+            f"{choice.catalog} flux of a moving source in a stacked catalogue: {why}. Unique-source fluxes are fitted "
+            "at one fixed position over all observations, so observations in which the source was elsewhere dilute "
+            "them (5XMM rows of Proxima Cen differ by a factor 600); flux unreliable")
+        flagged.append(f"{choice.catalog} {choice.source_id}")
+    return flagged
+
+
+def _closest_approach_arcsec(
+    point: tuple[float, float], ra: float, dec: float, epoch: float | None, pm: tuple[float, float] | None,
+    span: tuple[float, float] | None,
+) -> float:
+    """Closest approach (arcsec) to the fixed ``point`` of a source at (ra, dec, epoch) moving linearly with ``pm``
+    (mas/yr) over the years ``span``; the plain separation when the motion or the span is unknown."""
+    if pm is None or epoch is None or span is None:
+        return haversine_arcsec(point[0], point[1], ra, dec)
+    ax, ay = tangent_offset_arcsec(point[0], point[1], *propagate_radec(ra, dec, pm[0], pm[1], epoch, span[0]))
+    bx, by = tangent_offset_arcsec(point[0], point[1], *propagate_radec(ra, dec, pm[0], pm[1], epoch, span[1]))
+    dx, dy = bx - ax, by - ay
+    length2 = dx * dx + dy * dy
+    t = 0.0 if length2 == 0.0 else max(0.0, min(1.0, -(ax * dx + ay * dy) / length2))
+    return math.hypot(ax + t * dx, ay + t * dy)
+
+
+def _xray_epoch_span(row: Mapping[str, Any]) -> tuple[float, float] | None:
+    """Years of the observations behind an X-ray row: its ``epoch_range`` (crossmatch), else its single epoch."""
+    span = row.get("epoch_range")
+    if isinstance(span, list | tuple) and len(span) == 2:
+        lo, hi = _num(span[0]), _num(span[1])
+        if lo is not None and hi is not None and hi >= lo:
+            return lo, hi
+    epoch = _num(row.get("epoch"))
+    return None if epoch is None else (epoch, epoch)
+
+
+def _target_track(
+    record: Mapping[str, Any], members: Sequence[MemberChoice],
+) -> tuple[float, float, float | None, tuple[float, float] | None] | None:
+    """(ra, dec, epoch, proper motion) of the target: the record target with its proper motion (name resolution),
+    else the used Gaia DR3 member at its epoch, else the static record target."""
+    target = record.get("target") or {}
+    ra, dec = _num(target.get("ra")), _num(target.get("dec"))
+    pmra, pmdec, epoch = _num(target.get("pm_ra_masyr")), _num(target.get("pm_dec_masyr")), _num(target.get("epoch"))
+    if ra is not None and dec is not None and pmra is not None and pmdec is not None and epoch is not None:
+        return ra, dec, epoch, (pmra, pmdec)
+    gaia = next((m for m in members if m.used and m.catalog == "gaia_dr3" and m.ra is not None and m.dec is not None),
+                None)
+    if gaia is not None:
+        g_pm = (_num(_ci_get(gaia.data, "pmra")), _num(_ci_get(gaia.data, "pmdec")))
+        g_epoch = _num(_ci_get(gaia.data, "ref_epoch")) or 2016.0
+        return gaia.ra, gaia.dec, g_epoch, (None if None in g_pm else g_pm)  # type: ignore[return-value]
+    if ra is None or dec is None:
+        return None
+    return ra, dec, None, None
+
+
+def flag_competing_xray_counterparts(
+    members: Sequence[MemberChoice], rows: Sequence[Mapping[str, Any]], record: Mapping[str, Any],
+) -> list[str]:
+    """Flag (``MemberChoice.warnings``) used X-ray rows that belong to another optical source.
+
+    An X-ray row within its tolerance of the target can still be a neighbour's: Gl 229B (a T7 dwarf, X-ray dark) got
+    the Chandra flux of its M1V primary Gl 229A 7.7 arcsec away. Every Gaia DR3 row that is not the target's own
+    counterpart (not the used Gaia member and farther from the target than its tolerance) and is brighter than the
+    target's Gaia counterpart (when it has one) competes: positions of both the target and the competitor are
+    propagated over the X-ray observations (:func:`_closest_approach_arcsec`), and a competitor within the X-ray row's
+    tolerance that comes closer to the X-ray position than the target by more than the row's 1-sigma error (at least
+    0.5 arcsec) takes the flux. Returns '<catalog> <source_id>' of the flagged rows."""
+    track = _target_track(record, members)
+    if track is None:
+        return []
+    gaia_member = next((m for m in members if m.used and m.catalog == "gaia_dr3"), None)
+    target_g = _num(_ci_get(gaia_member.data, "phot_g_mean_mag")) if gaia_member is not None else None
+    competitors = [r for r in rows if str(r.get("catalog")) == "gaia_dr3"
+                   and (gaia_member is None or str(r.get("source_id")) != gaia_member.source_id)
+                   and _num(r.get("ra")) is not None and _num(r.get("dec")) is not None
+                   and _num(r.get("separation_arcsec")) is not None and not _within_tolerance(r)]
+    flagged: list[str] = []
+    for choice in members:
+        if not choice.used or choice.catalog not in XRAY_SPECS or choice.ra is None or choice.dec is None:
+            continue
+        row = next((r for r in rows if str(r.get("catalog")) == choice.catalog
+                    and str(r.get("source_id")) == choice.source_id), {})
+        span = _xray_epoch_span(row)
+        xpos = (choice.ra, choice.dec)
+        target_sep = _closest_approach_arcsec(xpos, track[0], track[1], track[2], track[3], span)
+        margin = max(_member_sigma_arcsec(row) or 0.0, 0.5)
+        best: tuple[float, Mapping[str, Any]] | None = None
+        for comp in competitors:
+            g_mag = _num(_ci_get(comp.get("data") or {}, "phot_g_mean_mag"))
+            if target_g is not None and (g_mag is None or g_mag >= target_g):
+                continue  # only a brighter neighbour than the target's own counterpart takes the flux
+            data = comp.get("data") or {}
+            pm = (_num(_ci_get(data, "pmra")), _num(_ci_get(data, "pmdec")))
+            epoch = _num(_ci_get(data, "ref_epoch")) or _num(comp.get("epoch")) or 2016.0
+            sep = _closest_approach_arcsec(xpos, float(comp["ra"]), float(comp["dec"]), epoch,
+                                           None if None in pm else pm, span)  # type: ignore[arg-type]
+            if sep <= choice.tolerance_arcsec and sep + margin < target_sep and (best is None or sep < best[0]):
+                best = (sep, comp)
+        if best is None:
+            continue
+        sep, comp = best
+        g_mag = _num(_ci_get(comp.get("data") or {}, "phot_g_mean_mag"))
+        when = (f" over the X-ray observations ({span[0]:.1f}-{span[1]:.1f})" if span and span[1] > span[0]
+                else (f" at the X-ray epoch {span[0]:.1f}" if span else ""))
+        choice.warnings.append(
+            f"{choice.catalog} source {choice.source_id} comes within {sep:.1f} arcsec of Gaia DR3 {comp.get('source_id')}"
+            + (f" (G = {g_mag:.2f})" if g_mag is not None else "")
+            + f", another source {_fmt_sep(comp.get('separation_arcsec'))} arcsec from the target, but only within "
+            f"{target_sep:.1f} arcsec of the target (positions propagated with their proper motions{when}): the X-ray "
+            "flux is probably that source's; not attributed to the target")
+        flagged.append(f"{choice.catalog} {choice.source_id}")
+    return flagged
 
 
 # Fitted major-axis FWHM columns (arcsec) of radio components: the centroid of an extended source (core +
@@ -1352,6 +1718,44 @@ def _choose_simbad_row(
     return best, passed
 
 
+# Survey designations (IAU-style names built from the catalogue identifier) under which SIMBAD, NED and Sesame list
+# an object: '2MASS J04151954-0935066' is 2MASS PSC row 04151954-0935066, 'WISEA J041521.26-093500.4' is AllWISE row
+# J041521.26-093500.4, 'Gaia DR3 4034171629042489088' is that Gaia DR3 source.
+DESIGNATION_PREFIXES: dict[str, tuple[str, ...]] = {
+    "twomass_psc": ("2MASS J", "2MASS "),
+    "allwise": ("WISEA ",),
+    "gaia_dr3": ("Gaia DR3 ",),
+}
+
+
+def _norm_name(name: Any) -> str:
+    return " ".join(str(name or "").split()).upper()
+
+
+def catalog_designations(catalog: str, source_id: Any) -> set[str]:
+    """Normalised designations of a catalogue row (empty for catalogues without designations)."""
+    sid = " ".join(str(source_id or "").split())
+    if not sid:
+        return set()
+    return {_norm_name(prefix + sid) for prefix in DESIGNATION_PREFIXES.get(catalog, ())}
+
+
+def _designated_row(
+    members: Sequence[Mapping[str, Any]], catalog: str, names: Mapping[str, str],
+) -> tuple[Mapping[str, Any], str] | None:
+    """The row whose designation is a name of the object (nearest if several), with that name as given.
+
+    ``names`` maps normalised names (:func:`_norm_name`) to their original spelling."""
+    hits = []
+    for member in members:
+        if _num(member.get("separation_arcsec")) is None:
+            continue
+        match = sorted(catalog_designations(catalog, member.get("source_id")) & names.keys())
+        if match:
+            hits.append((member, names[match[0]]))
+    return min(hits, key=lambda hit: _separation_key(hit[0])) if hits else None
+
+
 def _choose_row(members: Sequence[Mapping[str, Any]], primary_group_id: str | None) -> Mapping[str, Any]:
     """Nearest row within tolerance, preferring the target group's row; the nearest row when none is within."""
     ordered = sorted(members, key=_separation_key)
@@ -1368,6 +1772,7 @@ def select_members(
     *,
     primary_group_id: str | None = None,
     canonical_name: str | None = None,
+    object_names: Iterable[str] = (),
 ) -> list[MemberChoice]:
     """Best row per catalog among ``group['members']``, flagged ``used`` when its separation is within tolerance.
 
@@ -1377,6 +1782,14 @@ def select_members(
     :func:`_choose_simbad_row` (``canonical_name`` = Sesame's main identifier first, planets last). Other rows of the
     catalog that are within tolerance but not used are reported in the member notes.
 
+    Identification by designation: a 2MASS/AllWISE/Gaia DR3 row whose designation (:data:`DESIGNATION_PREFIXES`) is
+    one of ``object_names`` (the Sesame query, main identifier and aliases: the object the user asked for) IS the object
+    and is used even beyond the positional tolerance. Catalogue positions of fast-moving stars can be offset by their
+    proper motion times an epoch mismatch (SIMBAD lists the T8 dwarf '2MASSI J0415195-093506' at its 2MASS epoch-1998.9
+    position labelled J2000: at 2.26 arcsec/yr its own 2MASS row comes out 2.5 arcsec away after epoch propagation).
+    The identifier of the chosen SIMBAD/NED entry (itself a positional match) only decides between rows that are
+    within tolerance.
+
     Radio catalogs (FIRST/NVSS/VLASS/LoTSS) collect *components*: every row within tolerance is summed, and
     a pair of components on opposite sides of ``centre`` (the target position) is accepted as a lobe pair
     even beyond the tolerance, so extended double sources (e.g. Cygnus A) keep their radio emission.
@@ -1385,14 +1798,26 @@ def select_members(
     by_catalog: dict[str, list[Mapping[str, Any]]] = {}
     for member in group.get("members") or []:
         by_catalog.setdefault(str(member.get("catalog")), []).append(member)
+    names = {_norm_name(n): " ".join(str(n).split()) for n in object_names if _norm_name(n)}
+    entry_names: dict[str, str] = {}  # identifiers of the chosen SIMBAD/NED entries
     choices: list[MemberChoice] = []
-    for catalog, members in by_catalog.items():
-        members = sorted(members, key=_separation_key)  # rows without a separation go last
+    # SIMBAD and NED first: the identifiers of their chosen entries are names of the object (designations below).
+    for catalog in sorted(by_catalog, key=lambda c: c not in RESOLVER_CATALOGS):
+        members = sorted(by_catalog[catalog], key=_separation_key)  # rows without a separation go last
         skipped: list[str] = []
+        designated: tuple[Mapping[str, Any], str] | None = None
+        authoritative = False  # named by Sesame (the object asked for), not by a positionally matched entry
+        if catalog in DESIGNATION_PREFIXES:
+            designated = _designated_row(members, catalog, names)
+            authoritative = designated is not None
+            if designated is None:
+                designated = _designated_row([m for m in members if _within_tolerance(m)], catalog, entry_names)
         if catalog == "ned":
             nearest, skipped = _choose_ned_row(members)
         elif catalog == "simbad":
             nearest, skipped = _choose_simbad_row(members, canonical_name)
+        elif designated is not None:
+            nearest = designated[0]
         else:
             nearest = _choose_row(members, primary_group_id)
         sep = _num(nearest.get("separation_arcsec"))
@@ -1400,18 +1825,28 @@ def select_members(
         size_col = RADIO_SIZE_COLUMNS.get(catalog)
         major = _num(_ci_get(nearest.get("data") or {}, size_col)) if size_col else None
         tol = _row_tolerance(nearest)
-        used = sep is not None and sep <= tol
+        designation = designated[1] if designated is not None and nearest is designated[0] else None
+        by_name = designation is not None
+        # A designation beyond the tolerance can only be authoritative: entry names were matched within tolerance.
+        used = sep is not None and (sep <= tol or by_name)
         raw_gid = nearest.get("group_id")
         gid = None if raw_gid is None else str(raw_gid)
         if sep is None:
             reason = f"nearest {catalog} row has no separation: not used"
+        elif by_name:
+            within = f"<= tolerance {tol:.2f} arcsec" if sep <= tol else (
+                f"> tolerance {tol:.2f} arcsec (a positional offset, e.g. proper motion across mismatched catalogue "
+                "epochs; the name identifies the row)")
+            source = ("a name of the object resolved by Sesame" if authoritative
+                      else "the name of the chosen SIMBAD/NED entry")
+            reason = (f"{catalog} row identified by designation: '{designation}' is {source}; {sep:.3f} arcsec {within}")
         elif used:
             reason = f"nearest {catalog} source, {sep:.3f} arcsec <= tolerance {tol:.2f} arcsec"
         else:
             reason = f"nearest {catalog} source is {sep:.3f} arcsec away (> tolerance {tol:.2f} arcsec)"
         if catalog == "ned" and skipped:
             reason = reason.replace(f"nearest {catalog} source", "nearest NED object-level entry", 1)
-            reason += f"; nearer NED sub-component row(s) skipped: {', '.join(skipped)}"
+            reason += f"; nearer NED row(s) skipped (sub-components, or without an object-level type): {', '.join(skipped)}"
         if catalog == "simbad" and skipped:
             reason = reason.replace(f"nearest {catalog} source", "SIMBAD entry of the object", 1)
             reason += f"; co-located SIMBAD row(s) passed over (planets, or not the resolved name): {', '.join(skipped)}"
@@ -1419,12 +1854,16 @@ def select_members(
             reason += f" (extended radio source, fitted major axis {major:.1f} arcsec)"
         if used and primary_group_id is not None and gid not in (None, primary_group_id) and catalog not in RADIO_SPECS:
             reason += (f"; from crossmatch group {gid}, not the target group {primary_group_id} (the association "
-                       "assigned it to another object, but it is within this catalog's tolerance of the target)")
+                       "assigned it to another object, but " + ("its designation identifies it as the target)" if by_name
+                                                                 else "it is within this catalog's tolerance of the target)"))
         choice = MemberChoice(
             catalog=catalog, source_id=str(nearest.get("source_id")), ra=_num(nearest.get("ra")),
             dec=_num(nearest.get("dec")), separation_arcsec=sep, tolerance_arcsec=tol, used=used,
             reason=reason, wavelength=wavelength, data=dict(nearest.get("data") or {}), group_id=gid,
+            designation=designation,
         )
+        if catalog in RESOLVER_CATALOGS and used and _norm_name(choice.source_id):
+            entry_names.setdefault(_norm_name(choice.source_id), " ".join(choice.source_id.split()))
         if catalog in RADIO_SPECS:
             _collect_radio_components(choice, members, centre)
         else:
@@ -1971,6 +2410,9 @@ def extract_points(
                         point.warn(note)
                     else:
                         point.notes.append(note)
+        for note in member.warnings:
+            for point in points[start:]:
+                point.warn(note)
         for gspec in GALEX_BANDS:
             if _ci_get(data, *gspec.mag_cols) is not None:
                 add(magnitude_point(gspec, "GALEX", cat, sid, data, filters.info(gspec.filter_id)))
@@ -2066,17 +2508,66 @@ def gaia_extra_adql(source_id: str) -> str:
             f"WHERE g.source_id = {source_id}")
 
 
+def retry_after_seconds(response: httpx.Response) -> float | None:
+    """The Retry-After header of an answer in seconds (delta-seconds or an HTTP date, RFC 9110 10.2.3), or None."""
+    raw = str(response.headers.get("retry-after") or "").strip()
+    if not raw:
+        return None
+    number = _num(raw)
+    if number is not None:
+        return max(0.0, number)
+    try:
+        when = email.utils.parsedate_to_datetime(raw)
+    except (TypeError, ValueError, IndexError):
+        return None
+    if when.tzinfo is None:
+        when = when.replace(tzinfo=UTC)
+    return max(0.0, (when - datetime.now(UTC)).total_seconds())
+
+
+# Transient failures of one TAP query are retried (the policy of providers.py for the crossmatch catalogs): 3
+# attempts, 0.25 s and 0.5 s apart (a Retry-After of at most TAP_RETRY_AFTER_MAX_SECONDS is honoured instead), for
+# dropped/refused connections and HTTP 429/5xx. Timeouts are not retried: they already used the request's time and
+# put the host in back-off (:func:`backoff_seconds_for`). Everything stays within the supplementary deadline.
+TAP_RETRY_DELAYS = (0.25, 0.5)
+TAP_RETRY_STATUS = frozenset({429, 500, 502, 503, 504})
+TAP_RETRY_EXCEPTIONS = (httpx.ConnectError, httpx.ReadError, httpx.WriteError, httpx.RemoteProtocolError)
+TAP_RETRY_AFTER_MAX_SECONDS = 5.0
+
+
+async def _tap_query(client: httpx.AsyncClient, url: str, adql: str, *, timeout: float, label: str) -> httpx.Response:
+    """POST one synchronous ADQL query (JSON output), retrying transient failures (:data:`TAP_RETRY_DELAYS`).
+
+    Raises the last transport error, or :class:`SEDUpstreamError` with ``status_code``/``retry_after`` for an HTTP
+    error answer."""
+    data = {"REQUEST": "doQuery", "LANG": "ADQL", "FORMAT": "json", "QUERY": adql}
+    response: httpx.Response | None = None
+    for delay in (*TAP_RETRY_DELAYS, None):
+        try:
+            response = await client.post(url, data=data, timeout=timeout)
+        except TAP_RETRY_EXCEPTIONS:
+            if delay is None:
+                raise
+            await asyncio.sleep(delay)
+            continue
+        if response.status_code not in TAP_RETRY_STATUS or delay is None:
+            break
+        wait = retry_after_seconds(response)
+        await asyncio.sleep(delay if wait is None else min(wait, TAP_RETRY_AFTER_MAX_SECONDS))
+    assert response is not None  # the last attempt either answered or raised
+    if response.status_code >= 400:
+        wait = retry_after_seconds(response)
+        raise SEDUpstreamError(f"{label} HTTP {response.status_code}"
+                               + (f" (Retry-After {wait:.0f} s)" if wait is not None else ""),
+                               status_code=response.status_code, retry_after=wait)
+    return response
+
+
 async def fetch_gaia_extra(
     client: httpx.AsyncClient, source_id: str, *, timeout: float = SUPPLEMENTARY_REQUEST_TIMEOUT_SECONDS,
 ) -> dict[str, Any] | None:
     """Proper-motion errors, flux S/N and DSC class probabilities (all five classes) for one Gaia DR3 source."""
-    response = await client.post(
-        GAIA_TAP_URL,
-        data={"REQUEST": "doQuery", "LANG": "ADQL", "FORMAT": "json", "QUERY": gaia_extra_adql(source_id)},
-        timeout=timeout,
-    )
-    if response.status_code >= 400:
-        raise SEDUpstreamError(f"Gaia TAP HTTP {response.status_code}")
+    response = await _tap_query(client, GAIA_TAP_URL, gaia_extra_adql(source_id), timeout=timeout, label="Gaia TAP")
     rows = parse_json_table(response.content).rows
     return dict(rows[0]) if rows else None
 
@@ -2118,15 +2609,20 @@ def default_supplementary_deadline() -> float:
 
 
 class HostBackoff:
-    """Per-host back-off after a *slow* failure (timeout or deadline) of a supplementary lookup.
+    """Per-host back-off after a costly failure of a supplementary lookup (see :func:`backoff_seconds_for`).
 
-    A hanging archive would otherwise cost every later SED request the whole deadline. Fast failures (HTTP errors,
-    refused connections) cost nothing and are retried on the next request. Hosts are keyed by hostname; the clock is
+    A hanging or refusing archive would otherwise cost every later SED request the deadline or the connection
+    retries: timeouts back off for ``retry_after_seconds``, refused connections (the host is down or refusing; the
+    lookup already retried, see :func:`_sdss_rows`) and any failure slower than
+    :data:`SUPPLEMENTARY_SLOW_FAILURE_SECONDS` for ``refused_retry_after_seconds``. Fast failures (an HTTP error
+    answered at once) cost nothing and are retried on the next request. Hosts are keyed by hostname; the clock is
     ``time.monotonic``.
     """
 
-    def __init__(self, retry_after_seconds: float = SUPPLEMENTARY_BACKOFF_SECONDS) -> None:
+    def __init__(self, retry_after_seconds: float = SUPPLEMENTARY_BACKOFF_SECONDS,
+                 refused_retry_after_seconds: float = SUPPLEMENTARY_REFUSED_BACKOFF_SECONDS) -> None:
         self.retry_after_seconds = retry_after_seconds
+        self.refused_retry_after_seconds = refused_retry_after_seconds
         self._until: dict[str, tuple[float, str]] = {}
 
     def pending(self, host: str | None) -> str | None:
@@ -2140,9 +2636,10 @@ class HostBackoff:
             return None
         return f"{why}; back-off, retried in {remaining:.0f} s"
 
-    def record_failure(self, host: str | None, why: str) -> None:
+    def record_failure(self, host: str | None, why: str, retry_after_seconds: float | None = None) -> None:
         if host:
-            self._until[host] = (time.monotonic() + self.retry_after_seconds, why)
+            wait = self.retry_after_seconds if retry_after_seconds is None else retry_after_seconds
+            self._until[host] = (time.monotonic() + wait, why)
 
     def record_success(self, host: str | None) -> None:
         if host:
@@ -2170,20 +2667,59 @@ def _is_slow_failure(exc: BaseException) -> bool:
     return isinstance(exc, httpx.TimeoutException | TimeoutError)
 
 
+def backoff_seconds_for(backoff: HostBackoff, exc: BaseException, elapsed: float) -> float | None:
+    """How long a failed lookup's host is skipped: timeouts :attr:`HostBackoff.retry_after_seconds`; a rate limit
+    (HTTP 429, or any HTTP error answer carrying Retry-After, e.g. 503 during maintenance) the Retry-After time capped
+    at :data:`SUPPLEMENTARY_MAX_RETRY_AFTER_SECONDS` (:attr:`HostBackoff.refused_retry_after_seconds` for a 429
+    without it); refused connections (``httpx.ConnectError``, after the lookup's own retries) and failures slower than
+    :data:`SUPPLEMENTARY_SLOW_FAILURE_SECONDS` :attr:`HostBackoff.refused_retry_after_seconds`; None (no back-off)
+    for other fast failures."""
+    if isinstance(exc, SEDUpstreamError) and exc.status_code is not None:
+        if exc.retry_after is not None:
+            return min(exc.retry_after, SUPPLEMENTARY_MAX_RETRY_AFTER_SECONDS)
+        if exc.status_code == 429:
+            return backoff.refused_retry_after_seconds
+    if _is_slow_failure(exc):
+        return backoff.retry_after_seconds
+    if isinstance(exc, httpx.ConnectError) or elapsed > SUPPLEMENTARY_SLOW_FAILURE_SECONDS:
+        return backoff.refused_retry_after_seconds
+    return None
+
+
 # SkyServer often refuses a second simultaneous connection ("All connection attempts failed"): SDSS queries of one
 # SED run are serialised (``lock``) and a refused connection (nothing was sent) is retried after a short pause.
 SDSS_CONNECT_RETRY_DELAYS = (1.0, 3.0)
+
+
+class SkyServerLock(asyncio.Lock):
+    """Serialises the SkyServer queries of one SED run and remembers a refusal that outlasted the retries: later
+    queries of the same run then fail at once instead of paying the retries again."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.refused: str | None = None
 
 
 async def _sdss_rows(
     client: httpx.AsyncClient, sql: str, timeout: float, lock: asyncio.Lock | None = None,
 ) -> list[dict[str, Any]]:
     async with lock or contextlib.nullcontext():
+        refused = getattr(lock, "refused", None)
+        if refused:
+            raise httpx.ConnectError(f"not retried in this run: {refused}")
         for delay in (*SDSS_CONNECT_RETRY_DELAYS, None):
             try:
                 response = await client.get(SDSS_SQL_URL, params={"cmd": sql, "format": "json"}, timeout=timeout)
                 break
-            except httpx.ConnectError:
+            except httpx.ConnectError as exc:
+                if delay is None:
+                    if isinstance(lock, SkyServerLock):
+                        lock.refused = (f"{type(exc).__name__} after {len(SDSS_CONNECT_RETRY_DELAYS) + 1} attempts"
+                                        + (f": {exc}" if str(exc) else ""))
+                    raise
+                await asyncio.sleep(delay)
+            except (httpx.ReadError, httpx.RemoteProtocolError):
+                # A dropped connection (the read-only query is safe to repeat); not a refusal of the host.
                 if delay is None:
                     raise
                 await asyncio.sleep(delay)
@@ -2241,13 +2777,8 @@ async def fetch_simbad_extra(
     client: httpx.AsyncClient, main_id: str, *, timeout: float = SUPPLEMENTARY_REQUEST_TIMEOUT_SECONDS,
 ) -> dict[str, Any] | None:
     """SIMBAD ``rvz_nature`` ('s'/'se'/'sa' spectroscopic, 'p' photometric), ``rvz_qual`` (A-E) and flux errors."""
-    response = await client.post(
-        SIMBAD_TAP_URL,
-        data={"REQUEST": "doQuery", "LANG": "ADQL", "FORMAT": "json", "QUERY": simbad_extra_adql(main_id)},
-        timeout=timeout,
-    )
-    if response.status_code >= 400:
-        raise SEDUpstreamError(f"SIMBAD TAP HTTP {response.status_code}")
+    response = await _tap_query(client, SIMBAD_TAP_URL, simbad_extra_adql(main_id), timeout=timeout,
+                                label="SIMBAD TAP")
     rows = parse_json_table(response.content).rows
     if not rows:
         return None
@@ -2270,15 +2801,28 @@ def _zwarning(value: Any) -> int | None:
 async def fetch_sdss_redshifts(
     client: httpx.AsyncClient, ra: float, dec: float, *, radius_arcsec: float = 2.0,
     include_photoz: bool = True, timeout: float = SUPPLEMENTARY_REQUEST_TIMEOUT_SECONDS,
-    lock: asyncio.Lock | None = None,
+    lock: asyncio.Lock | None = None, notes: list[str] | None = None,
 ) -> list[dict[str, Any]]:
     """Redshift candidates from SDSS DR18 SpecObj (spectroscopic) and Photoz (Beck et al. 2016).
 
-    The queries run one after the other (SkyServer refuses simultaneous connections, see :func:`_sdss_rows`).
+    The queries run one after the other (SkyServer refuses simultaneous connections, see :func:`_sdss_rows`). A
+    failed SpecObj query fails the lookup; a failed Photoz query after it does not: the SpecObj candidates (the most
+    reliable redshifts, and the zWarning = 0 corroboration of the cross-check) are returned and the Photoz failure is
+    appended to ``notes`` (logged when no list is given).
     """
     results = [await _sdss_rows(client, sdss_specobj_sql(ra, dec, radius_arcsec), timeout, lock)]
     if include_photoz:
-        results.append(await _sdss_rows(client, sdss_photoz_sql(ra, dec, radius_arcsec), timeout, lock))
+        started = time.monotonic()
+        try:
+            results.append(await _sdss_rows(client, sdss_photoz_sql(ra, dec, radius_arcsec), timeout, lock))
+        except (httpx.HTTPError, SEDError, ValueError) as exc:  # ValueError: undecodable JSON answer
+            detail = str(exc).strip()
+            message = (f"SDSS Photoz query failed ({type(exc).__name__} after {time.monotonic() - started:.1f} s"
+                       + (f": {detail}" if detail else "") + "); SpecObj redshifts kept, no SDSS photo-z")
+            if notes is None:
+                logger.warning("%s", message)
+            else:
+                notes.append(message)
     candidates: list[dict[str, Any]] = []
     for row in results[0]:
         z = _num(row.get("z"))
@@ -2321,14 +2865,29 @@ def ned_redshift_kind(zflag: Any) -> str | None:
     return None
 
 
-def simbad_redshift_kind(nature: Any) -> str | None:
-    """SIMBAD basic.rvz_nature: 's', 'se', 'sa' = spectroscopic; 'p' = photometric; missing = unknown (None)."""
+def simbad_redshift_kind(nature: Any, rvz_type: Any = None) -> str | None:
+    """SIMBAD basic.rvz_nature: 's', 'se', 'sa' = spectroscopic; 'p' = photometric. SIMBAD leaves rvz_nature null
+    for radial velocities (rvz_type 'v', e.g. Sirius, Proxima Cen, Sco X-1): a radial velocity is measured from
+    spectral lines, so it is spectroscopic. Otherwise a missing nature is unknown (None)."""
     text = str(nature or "").strip().lower()
     if text.startswith("s"):
         return "spec"
     if text.startswith("p"):
         return "photo"
+    if not text and str(rvz_type or "").strip().lower() == "v":
+        return "spec"
     return None
+
+
+SIMBAD_RELIABLE_QUALITIES = frozenset({"A", "B", "C", "D"})  # rvz_qual E: unreliable
+
+
+def simbad_redshift_reliable(quality: Any) -> bool | None:
+    """SIMBAD rvz_qual A-D = reliable, E = not reliable, missing = unknown (None); whatever rvz_nature says."""
+    text = str(quality or "").strip().upper()
+    if not text:
+        return None
+    return text in SIMBAD_RELIABLE_QUALITIES
 
 
 def _same_z(a: float | None, b: float | None, tol: float = 1e-5) -> bool:
@@ -2345,8 +2904,9 @@ def member_redshift_candidates(
     """Redshifts carried by the members, with their kind and reliability never assumed.
 
     * NED: kind from zflag; NED's own values are taken as reliable.
-    * SIMBAD: kind from rvz_nature and reliability from rvz_qual (A-D reliable, E not) via ``simbad_extra``;
-      without it the kind and reliability are unknown (None).
+    * SIMBAD: kind from rvz_nature (a radial velocity with a null nature is spectroscopic, see
+      :func:`simbad_redshift_kind`) and reliability from rvz_qual whatever the nature (A-D reliable, E not, see
+      :func:`simbad_redshift_reliable`) via ``simbad_extra``; without it the kind and reliability are unknown (None).
     * SDSS member specz (registry join on bestObjID, no zWarning filter): reliable only when the same spectrum
       has zWarning = 0 in ``sdss_extra`` spectra or in the SpecObj cone query; otherwise unknown (None).
     * SDSS member photoz: reliable when photoErrorClass = 1 (``sdss_extra``), otherwise unknown.
@@ -2372,14 +2932,14 @@ def member_redshift_candidates(
                                     "id": member.source_id}
             if simbad_extra:
                 qual = str(simbad_extra.get("rvz_qual") or "").strip().upper() or None
-                kind = simbad_redshift_kind(simbad_extra.get("rvz_nature"))
+                kind = simbad_redshift_kind(simbad_extra.get("rvz_nature"), simbad_extra.get("rvz_type"))
                 err = _num(simbad_extra.get("rvz_err"))
                 cand.update({
                     "kind": kind, "nature": simbad_extra.get("rvz_nature"), "quality": qual,
                     "bibcode": simbad_extra.get("rvz_bibcode"), "rvz_type": simbad_extra.get("rvz_type"),
                     "error": (err if str(simbad_extra.get("rvz_type") or "").lower() == "z" else
                               (err / C_KMS if err is not None else None)),
-                    "reliable": None if kind is None else (qual in {"A", "B", "C", "D"}),
+                    "reliable": simbad_redshift_reliable(qual),
                 })
             candidates.append(cand)
         elif member.catalog == "sdss":
@@ -2415,10 +2975,15 @@ def member_redshift_candidates(
     return candidates
 
 
-# (source, kind, reliable) in order of preference. Unverified or flagged spectra rank below reliable photo-z.
-# NED values whose zflag does not state the technique (e.g. 'UUN', which NED gives for M87, NGC 4151, NGC 4472,
-# Cygnus A) keep kind=None but are NED's vetted preferred redshifts: they rank above every flagged or unverified
-# value (SIMBAD quality E, SDSS zWarning != 0, photo-z without photoErrorClass = 1).
+# (source, kind, reliable) in order of preference. Reliable spectra > unverified spectra > catalogue-vetted values
+# of unstated technique > reliable photo-z > SIMBAD values of unknown technique and quality (its TAP lookup failed) >
+# flagged spectra > unverified photo-z > the rest. NED values whose zflag does not state the technique (e.g. 'UUN',
+# which NED gives for M87, NGC 4151, NGC 4472, Cygnus A) keep kind=None but are NED's vetted preferred redshifts, and
+# SIMBAD values of null rvz_nature with quality A-D are vetted too: a photometric redshift never outranks them (SDSS
+# photo-z scatter is ~0.02-0.03 in (1+z) even for photoErrorClass = 1, Beck et al. 2016, so a photo-z of 0.134 must
+# not replace the 0.155 of Hercules A that NED and SIMBAD agree on). A SIMBAD value whose quality could not be
+# fetched is not known to be bad (51 Peg's radial velocity), so it outranks every value its catalogue flags (SIMBAD
+# quality E, SDSS zWarning != 0, photoErrorClass != 1) and photo-z of unknown quality.
 _REDSHIFT_PRIORITY: tuple[tuple[str, str | None, bool | None], ...] = (
     ("sdss_specobj", "spec", True),
     ("sdss", "spec", True),
@@ -2426,31 +2991,160 @@ _REDSHIFT_PRIORITY: tuple[tuple[str, str | None, bool | None], ...] = (
     ("simbad", "spec", True),
     ("sdss_specobj", "spec", None),
     ("sdss", "spec", None),
+    ("simbad", "spec", None),
+    ("ned", None, True),
+    ("simbad", None, True),
     ("ned", "photo", True),
     ("sdss_photoz", "photo", True),
     ("simbad", "photo", True),
-    ("ned", None, True),
+    ("simbad", None, None),
     ("sdss_specobj", "spec", False),
     ("sdss", "spec", False),
     ("simbad", "spec", False),
     ("sdss_photoz", "photo", None),
+    ("simbad", "photo", None),
     ("sdss_photoz", "photo", False),
     ("simbad", "photo", False),
-    ("simbad", None, None),
+    ("simbad", None, False),
 )
+
+
+# Two vetted redshifts of one object (catalogue rounding, cz <-> z conversions: |dz|/(1+z) ~ 1e-4-1e-3) agree within
+# this fraction; a larger spread means at least one catalogue describes another object or is wrong (NED lists the
+# z = 0.36 quasar PKS 1510-089 at z = 0.0068).
+REDSHIFT_DISCORD_TOLERANCE = 0.01
+
+
+def _redshift_rank(cand: Mapping[str, Any]) -> int | None:
+    for index, (source, kind, reliable) in enumerate(_REDSHIFT_PRIORITY):
+        if cand.get("source") == source and cand.get("kind") == kind and cand.get("reliable") is reliable:
+            return index
+    return None
+
+
+def _redshift_family(source: Any) -> str:
+    """Independent origin of a redshift: the SDSS member specz and the SpecObj row are the same spectrum."""
+    return "sdss" if source in {"sdss", "sdss_specobj"} else str(source)
+
+
+def _vetted_redshift(cand: Mapping[str, Any]) -> bool:
+    """A value its catalogue vouches for: reliable, and spectroscopic or of unstated technique (not a photo-z)."""
+    return cand.get("reliable") is True and cand.get("kind") != "photo" and _num(cand.get("value")) is not None
+
+
+def _checkable_redshift(cand: Mapping[str, Any]) -> bool:
+    """A value that takes part in the cross-check: not a photo-z and not flagged by its catalogue, i.e. vetted
+    (:func:`_vetted_redshift`) or of unknown quality (``reliable`` None: a SIMBAD value whose TAP lookup failed or was
+    skipped, an SDSS spectrum whose zWarning could not be fetched). A value that could not be vetted still disagrees:
+    the SIMBAD row of PKS 1510-089 says z = 0.356 whether or not its quality could be fetched."""
+    return cand.get("reliable") is not False and cand.get("kind") != "photo" and _num(cand.get("value")) is not None
+
+
+def _redshift_result(cand: Mapping[str, Any] | None, candidates: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    if cand is None:
+        return {"value": None, "error": None, "kind": None, "source": None, "reliable": None,
+                "candidates": [dict(c) for c in candidates]}
+    return {"value": cand["value"], "error": cand.get("error"), "kind": cand.get("kind"), "source": cand.get("source"),
+            "reliable": cand.get("reliable"), "candidates": [dict(c) for c in candidates]}
+
+
+def _redshifts_agree(z: float, z0: float) -> bool:
+    """|z - z0| / (1 + z0) <= :data:`REDSHIFT_DISCORD_TOLERANCE` (z0: the reference, best-ranked value)."""
+    return abs(z - z0) / (1.0 + max(z0, 0.0)) <= REDSHIFT_DISCORD_TOLERANCE
+
+
+def redshift_clusters(candidates: Sequence[Mapping[str, Any]]) -> list[list[Mapping[str, Any]]]:
+    """Cross-checked candidates (:func:`_checkable_redshift`: vetted or of unknown quality) grouped by value
+    (:func:`_redshifts_agree` with the group's best-ranked value), each group and the groups in priority order."""
+    checkable = sorted((c for c in candidates if _checkable_redshift(c) and _redshift_rank(c) is not None),
+                       key=lambda c: _redshift_rank(c))  # type: ignore[arg-type,return-value]
+    clusters: list[list[Mapping[str, Any]]] = []
+    for cand in checkable:
+        z = float(cand["value"])
+        for cluster in clusters:
+            if _redshifts_agree(z, float(cluster[0]["value"])):
+                cluster.append(cand)
+                break
+        else:
+            clusters.append([cand])
+    return clusters
+
+
+def _cluster_vetted(cluster: Sequence[Mapping[str, Any]]) -> bool:
+    """A group holding at least one vetted value: only such a group can be adopted from a discordance."""
+    return any(_vetted_redshift(c) for c in cluster)
+
+
+def _cluster_corroboration(cluster: Sequence[Mapping[str, Any]]) -> str | None:
+    """Independent support of a group of agreeing redshifts holding a vetted value: two catalogues (the other one
+    may be of unknown quality), or an SDSS spectrum with zWarning = 0. None for a group without a vetted value."""
+    if not _cluster_vetted(cluster):
+        return None
+    families = sorted({_redshift_family(c.get("source")) for c in cluster})
+    if len(families) >= 2:
+        return f"agreement of {' and '.join(families)}"
+    if any(_redshift_family(c.get("source")) == "sdss" and c.get("z_warning") == 0 for c in cluster):
+        return "an SDSS spectrum with zWarning = 0"
+    return None
+
+
+def _describe_cluster(cluster: Sequence[Mapping[str, Any]]) -> str:
+    return f"z = {float(cluster[0]['value']):.5g} (" + ", ".join(
+        f"{c.get('source')}" + (f" {c.get('id')}" if c.get("id") else "")
+        + (", quality unknown" if c.get("reliable") is None else "") for c in cluster) + ")"
+
+
+def _group_candidate(group: Mapping[str, Any], candidates: Sequence[Mapping[str, Any]]) -> Mapping[str, Any] | None:
+    """The best-ranked vetted candidate of a discordant group (an entry of ``redshift['discordant']``)."""
+    z0 = float(group["value"])
+    members = [c for c in candidates if _vetted_redshift(c) and _redshift_rank(c) is not None
+               and str(c.get("source")) in group["sources"] and _redshifts_agree(float(c["value"]), z0)]
+    return min(members, key=lambda c: _redshift_rank(c)) if members else None  # type: ignore[arg-type,return-value]
 
 
 def choose_redshift(candidates: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
     """Best redshift by :data:`_REDSHIFT_PRIORITY`: reliable spectra (SDSS zWarning = 0 > NED 'S' > SIMBAD 's*'
-    with quality A-D) > unverified SDSS spectra > reliable photo-z > NED values of unstated technique > flagged
-    spectra > unverified photo-z > the rest."""
-    for source, kind, reliable in _REDSHIFT_PRIORITY:
-        for cand in candidates:
-            if cand.get("source") == source and cand.get("kind") == kind and cand.get("reliable") is reliable:
-                return {"value": cand["value"], "error": cand.get("error"), "kind": kind, "source": source,
-                        "reliable": reliable, "candidates": [dict(c) for c in candidates]}
-    return {"value": None, "error": None, "kind": None, "source": None, "reliable": None,
-            "candidates": [dict(c) for c in candidates]}
+    with quality A-D) > unverified spectra > NED/SIMBAD vetted values of unstated technique > reliable photo-z >
+    SIMBAD values of unknown quality > flagged spectra > unverified photo-z > the rest.
+
+    Every non-photometric value not flagged by its catalogue -- vetted, or of unknown quality because its lookup
+    failed (:func:`_checkable_redshift`) -- is cross-checked (:func:`redshift_clusters`). When they disagree (|dz|/(1+z)
+    > :data:`REDSHIFT_DISCORD_TOLERANCE`), ``discordant`` lists every group (``vetted`` False: no value of the group
+    could be vetted) and the priority order alone never decides: the one group holding a vetted value that is
+    corroborated by a second catalogue or an SDSS zWarning = 0 spectrum (:func:`_cluster_corroboration`) is adopted
+    (its best vetted value), so an unverified spectrum never outranks a corroborated value; otherwise
+    ``needs_resolution`` is set and :func:`resolve_discordant_redshift` checks each value against the
+    classification, or reports the conflict. Photo-z and flagged values never make a discordance.
+    """
+    ranked = sorted((c for c in candidates if _num(c.get("value")) is not None and _redshift_rank(c) is not None),
+                    key=lambda c: _redshift_rank(c))  # type: ignore[arg-type,return-value]
+    result = _redshift_result(ranked[0] if ranked else None, candidates)
+    clusters = redshift_clusters(candidates)
+    if len(clusters) < 2:
+        return result
+    support = [_cluster_corroboration(cluster) for cluster in clusters]
+    result["discordant"] = [
+        {"value": float(cluster[0]["value"]), "sources": [str(c.get("source")) for c in cluster],
+         "ids": [c.get("id") for c in cluster], "corroboration": why, "vetted": _cluster_vetted(cluster)}
+        for cluster, why in zip(clusters, support, strict=True)
+    ]
+    listing = "; ".join(_describe_cluster(cluster) for cluster in clusters)
+    head = ("discordant redshifts" if all(_cluster_vetted(c) for c in clusters) else
+            "discordant redshifts, some of unknown quality (not vetted: their catalogue lookup failed or was skipped)")
+    corroborated = [i for i, why in enumerate(support) if why is not None]
+    if len(corroborated) == 1:
+        chosen = clusters[corroborated[0]]
+        best = next(c for c in chosen if _vetted_redshift(c))
+        result.update(_redshift_result(best, candidates))
+        others = "; ".join(_describe_cluster(c) for i, c in enumerate(clusters) if i != corroborated[0])
+        result["resolution"] = (f"{head} ({listing}): z = {float(best['value']):.5g} ({best.get('source')}) adopted, "
+                                f"corroborated by {support[corroborated[0]]}; not corroborated: {others}")
+    else:
+        result["needs_resolution"] = True
+        result["resolution"] = (f"{head} ({listing}): "
+                                + ("each is corroborated" if corroborated else "none is corroborated by a second "
+                                   "catalogue or an SDSS zWarning = 0 spectrum"))
+    return result
 
 
 # ---------------------------------------------------------------------------
@@ -2673,6 +3367,12 @@ def optical_extent(members: Sequence[MemberChoice]) -> tuple[bool | None, str]:
 # the Maccacaro et al. 1988 X-ray/optical ratio (a band approximation when the flux is PS1/SDSS i, see notes).
 JOHNSON_V_ZERO_POINT_JY = float(EMBEDDED_FILTERS["Generic/Johnson.V"]["ZeroPoint"])
 STERN_W2_LIMIT = 15.05  # Stern et al. 2012: W1 - W2 >= 0.8 selects AGN for W2 < 15.05 (Vega)
+# Mid-IR/radio correlation of star formation: q24 = log10(S_24um / S_1.4GHz) = 0.84 +/- 0.28 (Appleton et al. 2004,
+# ApJS 154, 147), and q22 with WISE W4 alike. Radio-loud AGN lie far below (OJ 287: q22 = -0.99, NGC 1316: -0.24);
+# dusty starbursts on it (Arp 220: 1.15, Mrk 231: 1.32) have radio emission from star formation, and their radio
+# excess over the *optical* comes from dust extinction of the optical light. A radio-loudness R > 1 counts as AGN
+# evidence only with a radio excess over the correlation, q22 < Q22_RADIO_EXCESS.
+Q22_RADIO_EXCESS = 0.5
 I_BAND_UM = 0.75  # PS1 i / SDSS i effective wavelength (SVO: 0.7503 / 0.7458 um)
 
 
@@ -2782,7 +3482,6 @@ def gather_evidence(
     ev: list[Evidence] = []
     gaia = _member(members, "gaia_dr3")
     gaia_astrometry_used = False
-    significant_parallax = False
     stellar_astrometry = False  # a significant parallax or a large proper motion: a Galactic object
     extended, extent_reason = optical_extent(members)
 
@@ -2816,7 +3515,7 @@ def gather_evidence(
         elif poe is not None:
             gaia_astrometry_used = True
             if poe > 5.0:
-                significant_parallax = stellar_astrometry = True
+                stellar_astrometry = True
                 ev.append(Evidence(f"Gaia DR3 parallax/error = {poe:.1f} > 5: significant parallax (Galactic star)",
                                    {"star": 4.0, "qso": -2.0, "galaxy": -2.0, "agn": -2.0}))
             if pm_sig is not None and pm_sig > 5.0 and pmra is not None and pmdec is not None:
@@ -2922,6 +3621,31 @@ def gather_evidence(
     radio_order = (nvss, first) if extended else (first, nvss)
     radio = next((p for p in radio_order if _usable(p)), None)
     optical_i, optical_label, rejected = select_optical_i(points, extended)
+    w4 = _point(points, "WISE", "W4")
+
+    def radio_excess(loud_text: str, weights: dict[str, float]) -> Evidence:
+        """The R > 1 evidence, counted only with a radio excess over the mid-IR/radio correlation (q22)."""
+        if radio is None:
+            raise ValueError("radio_excess needs a radio point")
+        if _wise_ok(w4) and w4 is not None and w4.flux_jy > 0:
+            q22 = math.log10(w4.flux_jy / radio.flux_jy)
+            if q22 >= Q22_RADIO_EXCESS:
+                return Evidence(f"{loud_text}, but q22 = log10(F_W4/F_1.4GHz) = {q22:.2f} >= {Q22_RADIO_EXCESS:g}: on the "
+                                "star-forming mid-IR/radio correlation (q24 = 0.84 +/- 0.28, Appleton et al. 2004), so the "
+                                "radio emission can come from star formation and the radio excess over the optical from "
+                                "dust extinction: not counted as radio-loud AGN evidence", {})
+            return Evidence(f"{loud_text}; q22 = log10(F_W4/F_1.4GHz) = {q22:.2f} < {Q22_RADIO_EXCESS:g}: radio excess over "
+                            "the star-forming mid-IR/radio correlation (Appleton et al. 2004): radio-loud AGN", weights)
+        if (_wise_ok(w1) and _wise_ok(w2) and _wise_ok(w3) and w1 is not None and w2 is not None and w3 is not None
+                and w1.magnitude is not None and w2.magnitude is not None and w3.magnitude is not None
+                and w1.magnitude - w2.magnitude < 0.8 and w2.magnitude - w3.magnitude >= 1.5):
+            half = {cls: round(0.5 * w, 3) for cls, w in weights.items()}
+            return Evidence(f"{loud_text}; q22 not available (no usable W4), and WISE W2-W3 = "
+                            f"{w2.magnitude - w3.magnitude:.2f} >= 1.5 is on the dusty star-forming locus: the radio "
+                            "excess over the optical may come from dust extinction (half weight)", half)
+        return Evidence(f"{loud_text}; q22 not available (no usable W4): radio excess over the mid-IR/radio "
+                        "correlation not checked", weights)
+
     if radio is not None and extended:
         total = total_optical_flux(points, members)
         if total is None:
@@ -2931,10 +3655,10 @@ def gather_evidence(
             flux, label = total
             r_tot = math.log10(radio.flux_jy / flux)
             if r_tot > 1.0:
-                ev.append(Evidence(f"radio loudness R = log10(F_1.4GHz/F_opt,total) = {r_tot:.2f} > 1 ({radio.facility} "
-                                   f"{radio.flux_jy:.3g} Jy, {label}; extended counterpart, {extent_reason}): radio-loud "
-                                   "(Ivezic et al. 2002 criterion is defined for point sources: down-weighted)",
-                                   {"agn": 1.0, "galaxy": 0.3, "star": -0.5}))
+                ev.append(radio_excess(f"radio loudness R = log10(F_1.4GHz/F_opt,total) = {r_tot:.2f} > 1 ({radio.facility} "
+                                       f"{radio.flux_jy:.3g} Jy, {label}; extended counterpart, {extent_reason}): radio-loud "
+                                       "(Ivezic et al. 2002 criterion is defined for point sources: down-weighted)",
+                                       {"agn": 1.0, "galaxy": 0.3, "star": -0.5}))
             else:
                 ev.append(Evidence(f"radio loudness R = log10(F_1.4GHz/F_opt,total) = {r_tot:.2f} <= 1 ({label}; extended "
                                    f"counterpart, {extent_reason}): radio-quiet or star-forming", {}))
@@ -2942,9 +3666,9 @@ def gather_evidence(
         r_i = math.log10(radio.flux_jy / optical_i)
         skipped = f"; {'; '.join(rejected)}" if rejected else ""
         if r_i > 1.0:
-            ev.append(Evidence(f"radio loudness R = log10(F_1.4GHz/F_i) = {r_i:.2f} > 1 ({radio.facility} "
-                               f"{radio.flux_jy:.3g} Jy, {optical_label}{skipped}): radio-loud (Ivezic et al. 2002)",
-                               {"agn": 1.5, "qso": 1.0, "galaxy": 0.3, "star": -1.0}))
+            ev.append(radio_excess(f"radio loudness R = log10(F_1.4GHz/F_i) = {r_i:.2f} > 1 ({radio.facility} "
+                                   f"{radio.flux_jy:.3g} Jy, {optical_label}{skipped}): radio-loud (Ivezic et al. 2002)",
+                                   {"agn": 1.5, "qso": 1.0, "galaxy": 0.3, "star": -1.0}))
         else:
             ev.append(Evidence(f"radio loudness R = {r_i:.2f} <= 1 ({optical_label}{skipped}): radio-quiet or star-forming "
                                "(Ivezic et al. 2002)", {}))
@@ -2980,9 +3704,12 @@ def gather_evidence(
         fx = band_flux * xray_band_scale(spec.e_lo_kev, spec.e_hi_kev, 0.3, 3.5)
         ratio = math.log10(fx) + v_mag / 2.5 + 5.37
         skipped = f"; flagged, not used: {', '.join(flagged_xray)}" if flagged_xray else ""
-        if significant_parallax:
+        if stellar_astrometry:
+            # Gaia or SIMBAD parallax/proper motion: a Galactic star (e.g. Procyon B, known to SIMBAD only, whose ROSAT
+            # blend with Procyon A gives an 'AGN-like' ratio against the white dwarf's V).
             ev.append(Evidence(f"log(fX/fV) = {ratio:.2f} ({xray.facility}, {v_label}{skipped}): not diagnostic for a source with a "
-                               "significant parallax (coronal or hot white-dwarf X-rays)", {}))
+                               "significant parallax or a large proper motion (coronal or hot white-dwarf X-rays, or "
+                               "the X-rays of a companion blended in the X-ray PSF)", {}))
         elif ratio > -1.0:
             ev.append(Evidence(f"log(fX/fV) = {ratio:.2f} > -1 ({xray.facility}, 0.3-3.5 keV, {v_label}{skipped}): "
                                "AGN-like X-ray/optical ratio (Maccacaro et al. 1988; Stocke et al. 1991)",
@@ -2992,12 +3719,23 @@ def gather_evidence(
                                "coronae or normal galaxies, not diagnostic", {}))
 
     # --- Catalogued object types ----------------------------------------------
+    # A quasar/blazar type of an EXTENDED counterpart counts as a quasar only when its nucleus can be quasar-luminous
+    # at the adopted redshift; otherwise it is an active nucleus in a resolved host galaxy (Cygnus A and NGC 1275 are
+    # typed 'Bla' by SIMBAD: an FR II and a cD galaxy, not quasars). Without a usable redshift nothing is changed.
+    nucleus_ok, nucleus_why = (nuclear_quasar_luminosity(points, members, redshift)
+                               if extended and use_redshift else (None, ""))
+    host_dominated = nucleus_ok is False
     if simbad is not None:
         otype = _ci_get(simbad.data, "otype")
         cls, factor = simbad_type_class(otype)
         path = simbad_type_path(otype)
         where = f" (otypedef path '{path}')" if path else ""
-        if cls is not None:
+        if cls == "qso" and host_dominated:
+            ev.append(Evidence(f"SIMBAD object type '{otype}'{where} -> qso, but the counterpart is extended "
+                               f"({extent_reason}) and its nucleus is not quasar-luminous ({nucleus_why}): counted as an "
+                               "active nucleus in its host galaxy (agn)",
+                               {"agn": 3.0 * factor, "qso": 1.0 * factor, "galaxy": 1.0 * factor}))
+        elif cls is not None:
             weights = {cls: 3.0 * factor}
             if cls in {"qso", "agn"}:
                 weights[{"qso": "agn", "agn": "qso"}[cls]] = 1.0 * factor
@@ -3018,6 +3756,10 @@ def gather_evidence(
             ev.append(Evidence(f"NED preferred type '{ptype}' ignored: the same NED row ({ned.source_id}) has z = {ned_z:.5g} "
                                f"(cz = {ned_z * C_KMS:.0f} km/s > 1017 km/s, S5-HVS1), inconsistent with a star "
                                "(internally inconsistent NED entry)", {}))
+        elif cls == "qso" and host_dominated:
+            ev.append(Evidence(f"NED preferred type '{ptype}' -> qso, but the counterpart is extended ({extent_reason}) "
+                               f"and its nucleus is not quasar-luminous ({nucleus_why}): counted as an active nucleus "
+                               "in its host galaxy (agn)", {"agn": 2.5}))
         elif cls is not None:
             ev.append(Evidence(f"NED preferred type '{ptype}' -> {cls}", {cls: 2.5}))
 
@@ -3151,6 +3893,48 @@ def _total_absolute_magnitude(
     return absolute_magnitude(jy_to_ab_mag(total[0]), z), f"{total[1]} at z = {z:.4g}"
 
 
+def nuclear_quasar_luminosity(
+    points: Sequence[SEDPoint], members: Sequence[MemberChoice], redshift: Mapping[str, Any],
+) -> tuple[bool | None, str]:
+    """Can the nucleus of an EXTENDED counterpart be quasar-luminous (M_i < -22, Schneider et al. 2010) at the adopted
+    redshift? (verdict, reason).
+
+    The nuclear flux is bounded from above by the unsaturated PSF photometry of the counterpart (PS1 iMeanPSFMag, SDSS
+    psfMag_i: the point-source flux includes the host light under the PSF), by the Gaia G of the counterpart (windowed
+    photometry of the nucleus region), and by its total optical light (:func:`total_optical_flux`); the faintest
+    bound is used (i and G taken alike, a band approximation). False when even that bound is fainter than M_i = -22
+    (the nucleus cannot be a quasar: Cygnus A's PS1 iPSF at z = 0.056), True when it is brighter (a quasar nucleus is
+    possible, e.g. a lensed quasar or a quasar in a bright host), None without a usable redshift (spectroscopic or of
+    unstated technique, not flagged, cz > 1017 km/s) or magnitude (Planck18, no K-correction)."""
+    z = _num(redshift.get("value"))
+    if z is None or z <= S5_HVS1_Z or redshift.get("reliable") is False or redshift.get("kind") == "photo":
+        return None, "no usable redshift"
+    bounds: list[tuple[float, str]] = []
+    ps1 = _member(members, "panstarrs_dr2")
+    psf = _num(_ci_get(ps1.data, "iMeanPSFMag")) if ps1 is not None else None
+    if psf is not None and PS1_SATURATION_MAG["i"] <= psf < 90:
+        bounds.append((ab_mag_to_jy(psf)[0], f"PS1 iPSF = {psf:.2f}"))
+    sdss = _member(members, "sdss")
+    sdss_psf = _num(_ci_get(sdss.data, "psfMag_i")) if sdss is not None else None
+    if sdss is not None and sdss_psf is not None and SDSS_SATURATION_MAG <= sdss_psf < 90 and not sdss_saturation(sdss.data):
+        bounds.append((sdss_asinh_mag_to_jy(sdss_psf, "i")[0], f"SDSS psfMag_i = {sdss_psf:.2f}"))
+    gaia_g = _point(points, "Gaia", "G")
+    if _usable(gaia_g) and gaia_g is not None and gaia_g.magnitude is not None:
+        # Gaia's windowed photometry of the counterpart within 1 arcsec of the target (the nucleus plus the host
+        # light in the window; Cen A's obscured nucleus shows only a G = 21 knot).
+        bounds.append((gaia_g.flux_jy, f"Gaia G = {gaia_g.magnitude:.2f}"))
+    total = total_optical_flux(points, members)
+    if total is not None:
+        bounds.append((total[0], f"total light {total[1]}"))
+    if not bounds:
+        return None, "no unsaturated PSF or total optical magnitude"
+    flux, label = min(bounds)
+    abs_mag = absolute_magnitude(jy_to_ab_mag(flux), z)
+    ok = abs_mag < QSO_ABS_MAG_LIMIT
+    return ok, (f"nuclear M_i >= {abs_mag:.1f} ({label} at z = {z:.4g}), "
+                + ("so a quasar nucleus is possible" if ok else f"fainter than the quasar limit {QSO_ABS_MAG_LIMIT:g}"))
+
+
 def redshift_source_class(redshift: Mapping[str, Any], members: Sequence[MemberChoice]) -> tuple[str | None, str]:
     """Class of the catalogue entry whose redshift was adopted: the SIMBAD/NED member's type or the SDSS spectral
     class. (None, '') when unknown."""
@@ -3172,6 +3956,125 @@ def redshift_source_class(redshift: Mapping[str, Any], members: Sequence[MemberC
                 mapped = {"STAR": "star", "GALAXY": "galaxy", "QSO": "qso"}.get(str(cand["spec_class"]).upper())
                 return mapped, f"SDSS spectrum class {cand['spec_class']}"
     return None, ""
+
+
+def redshift_class_consistency(
+    z: float, label: str, points: Sequence[SEDPoint], members: Sequence[MemberChoice],
+    position: tuple[float, float] | None = None,
+) -> tuple[bool | None, str]:
+    """Is redshift ``z`` possible for an object of class ``label``? (verdict, reason); None when it cannot be told.
+
+    star: |cz| within the fastest known field/hypervelocity star (S5-HVS1; anything near Sgr A*). galaxy/agn: possible
+    for cz > 1017 km/s; impossible for a blueshift beyond 1017 km/s (no galaxy approaches that fast: Local Group and
+    Virgo-cluster galaxies reach a few hundred km/s); cannot be told for |cz| <= 1017 km/s, where the Local Volume
+    galaxies lie (M31 at cz = -300 km/s, M81, M82, NGC 253, NGC 4395, Cen A at 547 km/s): the S5-HVS1 speed is a
+    ceiling on stellar velocities, not a floor on galaxy redshifts (SIMBAD: NGC 4395 z = 0.00110586, cz = 332 km/s).
+    qso: extragalactic and quasar-luminous at z,
+    M_i < -22 (Schneider et al. 2010) from the i-band magnitude of a point-like counterpart or the total optical light
+    of an extended one (Planck18, no K-correction).
+    """
+    cz = z * C_KMS
+    if label == "star":
+        ok = abs(z) <= S5_HVS1_Z or near_galactic_centre(position)
+        return ok, f"|cz| = {abs(cz):.0f} km/s {'<=' if ok else '>'} 1017 km/s (S5-HVS1) for a star"
+    if label in {"galaxy", "agn"}:
+        if z > S5_HVS1_Z:
+            return True, f"cz = {cz:.0f} km/s > 1017 km/s: extragalactic"
+        if z < -S5_HVS1_Z:
+            return False, (f"cz = {cz:.0f} km/s: a blueshift beyond 1017 km/s, faster than any galaxy approaches "
+                           "(Local Group and Virgo-cluster galaxies reach a few hundred km/s)")
+        return None, (f"|cz| = {abs(cz):.0f} km/s <= 1017 km/s: possible for a Local Volume galaxy (M31 -300 km/s, "
+                      "NGC 4395 +332 km/s), so it cannot be ruled out")
+    if label != "qso":
+        return None, f"class '{label}' does not constrain the redshift"
+    if z <= S5_HVS1_Z:
+        return False, (f"cz = {cz:.0f} km/s <= 1017 km/s: a quasar (M_i < -22) that near (within ~15 Mpc) would be "
+                       "brighter than m_i ~ 9, far brighter than any known quasar (3C 273: V = 12.9)")
+    extended, extent_reason = optical_extent(members)
+    if extended:
+        total = _total_absolute_magnitude(points, members, {"value": z, "reliable": True})
+        if total is None:
+            return None, f"no total optical magnitude of the extended counterpart ({extent_reason})"
+        abs_mag, label_text = total[0], f"total optical light, {total[1]}"
+    else:
+        optical_i, optical_label, _rejected = select_optical_i(points, extended)
+        if optical_i is None or optical_label == "Gaia G":
+            return None, "no usable i-band magnitude"
+        abs_mag = absolute_magnitude(jy_to_ab_mag(optical_i), z)
+        label_text = f"m_i = {jy_to_ab_mag(optical_i):.2f} AB from {optical_label}"
+    ok = abs_mag < QSO_ABS_MAG_LIMIT
+    return ok, (f"M_i = {abs_mag:.1f} {'<' if ok else '>='} {QSO_ABS_MAG_LIMIT:g} at z = {z:.5g} ({label_text}): "
+                + ("quasar-luminous" if ok else "too faint for a quasar"))
+
+
+def resolve_discordant_redshift(
+    redshift: Mapping[str, Any],
+    points: Sequence[SEDPoint],
+    members: Sequence[MemberChoice],
+    gaia_extra: Mapping[str, Any] | None = None,
+    *,
+    position: tuple[float, float] | None = None,
+) -> dict[str, Any]:
+    """Settle discordant redshifts that no catalogue corroborates (``needs_resolution``, see :func:`choose_redshift`)
+    with the classification from the redshift-independent evidence: the one group whose value is possible for that
+    class (:func:`redshift_class_consistency`) while every other group's is impossible is adopted (``reliable`` True,
+    corroborated by the classification) -- provided it holds a vetted value: a value whose quality could not be checked
+    (its lookup failed) can reject the others but is never adopted. Otherwise the priority choice is kept with
+    ``reliable`` False and ``conflict`` True (never a silent pick; the note says when the cross-check was incomplete).
+    Other redshifts are returned unchanged."""
+    out = dict(redshift)
+    if not out.pop("needs_resolution", False):
+        return out
+    groups = [dict(g) for g in out.get("discordant") or []]
+    out["discordant"] = groups
+    extended, _reason = optical_extent(members)
+    evidence = gather_evidence(points, members, out, gaia_extra, use_redshift=False, position=position)
+    label, _confidence, _scores, tied = _score(evidence, EXTENDED_TIE_ORDER if extended else CLASSES)
+    verdicts: list[tuple[dict[str, Any], bool | None, str]] = []
+    if label != "unknown" and not tied:
+        for group in groups:
+            ok, why = redshift_class_consistency(float(group["value"]), label, points, members, position)
+            group["consistency"] = why
+            verdicts.append((group, ok, why))
+    possible = [v for v in verdicts if v[1] is True]
+    unvetted = [g for g in groups if g.get("vetted") is False]
+    single = (bool(verdicts) and len(possible) == 1
+              and all(v[1] is False for v in verdicts if v is not possible[0]))
+    cand = _group_candidate(possible[0][0], out.get("candidates") or []) if single else None
+    if single and cand is not None:
+        chosen, _ok, why = possible[0]
+        out.update({"value": cand["value"], "error": cand.get("error"), "kind": cand.get("kind"),
+                    "source": cand.get("source"), "reliable": True})
+        rejected = "; ".join(f"z = {float(g['value']):.5g} ({', '.join(g['sources'])}): {w}"
+                             for g, ok, w in verdicts if g is not chosen)
+        out["resolution"] = (f"{out.get('resolution')}; z = {float(chosen['value']):.5g} ({', '.join(chosen['sources'])}) "
+                             f"adopted, consistent with the '{label}' classification from the redshift-independent "
+                             f"evidence ({why}); rejected: {rejected}")
+        return out
+    if label == "unknown" or tied:
+        reason = "the redshift-independent evidence gives no single class"
+    elif single:
+        reason = (f"only z = {float(possible[0][0]['value']):.5g} ({', '.join(possible[0][0]['sources'])}) is consistent "
+                  f"with the '{label}' classification, but its catalogue quality could not be checked")
+    elif not possible:
+        reason = f"no value is consistent with the '{label}' classification"
+    elif len(possible) > 1:
+        reason = f"several values are consistent with the '{label}' classification"
+    else:
+        reason = f"the '{label}' classification cannot rule out the other values"
+    details = "; ".join(f"z = {float(g['value']):.5g}: {w}" for g, _ok, w in verdicts)
+    out["reliable"] = False
+    out["conflict"] = True
+    out["resolution"] = f"{out.get('resolution')}; unresolved: {reason}" + (f" ({details})" if details else "")
+    incomplete = ""
+    if unvetted:
+        incomplete = ("; cross-check incomplete: " + ", ".join(
+            f"z = {float(g['value']):.5g} ({', '.join(g['sources'])})" for g in unvetted)
+            + " could not be vetted (catalogue quality unknown: its lookup failed or was skipped)")
+    out["note"] = (f"discordant redshifts from different catalogues, none independently corroborated: "
+                   f"z = {float(out['value']):.5g} ({out.get('source')}) is reported by priority only and marked "
+                   f"unreliable (see redshift.discordant){incomplete}")
+    return out
 
 
 def classify(
@@ -3274,6 +4177,11 @@ WISE_COLOUR_CORRECTION_ASSUMPTION = (
     "also need the ~8-10% W4 red-source reduction (Explanatory Supplement IV.4.h, Eq. 3)")
 
 
+# Message of the cancellation of a lookup still running at the supplementary deadline (as opposed to the caller's
+# own cancellation): :meth:`FilterCatalog.prefetch` records the former as an SVO timeout, the latter as nothing.
+SUPPLEMENTARY_DEADLINE_CANCEL = "supplementary deadline"
+
+
 def _mark_finished(finished: dict[str, float], key: str, _task: asyncio.Future[Any]) -> None:
     finished.setdefault(key, time.monotonic())
 
@@ -3284,12 +4192,19 @@ async def _run_supplementary(
     deadline: float,
     backoff: HostBackoff,
     notes: list[str],
+    labels: Mapping[str, str] | None = None,
 ) -> dict[str, Any]:
     """Run the supplementary lookups concurrently within ONE overall deadline.
 
-    Hosts in back-off are skipped; lookups still running at the deadline are cancelled (their host enters
-    back-off); failures are reported in ``notes`` with the exception type, host and elapsed time. Returns
-    ``{key: result}`` for the lookups that succeeded.
+    ``jobs`` maps a key to (back-off host or None, coroutine factory); ``labels`` optionally names the host a job
+    talks to in the notes when it is not backed off here (the SVO filter lookups have their own retry policy).
+    Hosts in back-off are skipped; lookups still running at the deadline are cancelled (with the message
+    :data:`SUPPLEMENTARY_DEADLINE_CANCEL`; their host enters back-off); failures are reported in ``notes`` with the
+    exception type, host and elapsed time, and costly ones (timeouts, rate limits, refused connections, slow failures:
+    :func:`backoff_seconds_for`) put their host in back-off; a success clears its host's back-off. If the caller is
+    cancelled (or anything else interrupts the wait), every lookup is cancelled and awaited before the exception
+    propagates: no lookup outlives the call (or its HTTP client). Returns ``{key: result}`` for the lookups that
+    succeeded.
     """
     started = time.monotonic()
     finished: dict[str, float] = {}
@@ -3305,19 +4220,29 @@ async def _run_supplementary(
         tasks[key], hosts[key] = task, host
     if not tasks:
         return {}
-    _done, pending = await asyncio.wait(set(tasks.values()), timeout=deadline)
-    for task in pending:
-        task.cancel()
-    if pending:
-        await asyncio.wait(pending)
+    try:
+        _done, pending = await asyncio.wait(set(tasks.values()), timeout=deadline)
+        for task in pending:
+            task.cancel(msg=SUPPLEMENTARY_DEADLINE_CANCEL)
+        if pending:
+            await asyncio.wait(pending)
+    except BaseException:
+        for task in tasks.values():
+            task.cancel()
+        # Shielded from a repeated cancellation; the lookups are already cancelled, so this returns promptly.
+        await asyncio.shield(asyncio.gather(*tasks.values(), return_exceptions=True))
+        raise
     results: dict[str, Any] = {}
+    failed_hosts: set[str | None] = set()
+    succeeded_hosts: set[str | None] = set()
     for key, task in tasks.items():
         host = hosts[key]
-        where = host or "local"
-        if task in pending:
+        where = host or (labels or {}).get(key) or "local"
+        if task in pending or task.cancelled():
             notes.append(f"{key} lookup failed: TimeoutError (no answer from {where} within the {deadline:g} s "
                          "supplementary deadline; cancelled)")
             backoff.record_failure(host, f"TimeoutError after the {deadline:g} s deadline")
+            failed_hosts.add(host)
             continue
         exc = task.exception()
         if exc is not None:
@@ -3325,12 +4250,65 @@ async def _run_supplementary(
             detail = str(exc).strip()
             notes.append(f"{key} lookup failed: {type(exc).__name__} ({where} after {elapsed:.1f} s)"
                          + (f": {detail}" if detail else ""))
-            if _is_slow_failure(exc):
-                backoff.record_failure(host, f"{type(exc).__name__} after {elapsed:.0f} s")
+            wait = backoff_seconds_for(backoff, exc, elapsed)
+            if wait is not None:
+                if isinstance(exc, SEDUpstreamError) and exc.status_code is not None:
+                    why = f"HTTP {exc.status_code}" + (f" (Retry-After {exc.retry_after:.0f} s)"
+                                                      if exc.retry_after is not None else "")
+                else:
+                    why = f"{type(exc).__name__} after {elapsed:.0f} s"
+                backoff.record_failure(host, why, wait)
+                failed_hosts.add(host)
             continue
-        backoff.record_success(host)
+        succeeded_hosts.add(host)
         results[key] = task.result()
+    # A host that answered clears a back-off recorded meanwhile (e.g. by a concurrent request), unless another lookup
+    # of this run on the same host failed costly: that failure is the newer evidence.
+    for host in succeeded_hosts - failed_hosts:
+        backoff.record_success(host)
     return results
+
+
+async def _with_sesame_aliases(
+    rec: dict[str, Any], client: httpx.AsyncClient, *, deadline: float, backoff: HostBackoff, notes: list[str],
+    timeout: float,
+) -> dict[str, Any]:
+    """``rec`` with ``resolved_object.aliases`` filled from Sesame '-oxpI' when the record was resolved by name without
+    asking for identifiers (its resolver endpoint lacks the 'I' option and it lists no alias). The canonical name
+    (Sesame's main identifier) is resolved again, else the query; the result is used only when it is the same object
+    (within 1 arcsec of the recorded resolution). The lookup gets at most half of the supplementary ``deadline`` (a
+    hanging Sesame must not starve the other lookups; its host is backed off like theirs). Failures are reported in
+    ``notes`` and leave the record unchanged."""
+    resolved = rec.get("resolved_object")
+    if not isinstance(resolved, Mapping) or resolved.get("aliases"):
+        return rec
+    endpoint = (resolved.get("resolver_metadata") or {}).get("endpoint")
+    if endpoint and sesame_asks_aliases(endpoint):
+        return rec  # identifiers were asked for: the object has none besides its names
+    name = str(resolved.get("canonical_name") or resolved.get("query") or "").strip()
+    if not name:
+        return rec
+    url = sesame_aliases_endpoint()
+    outcome = await _run_supplementary(
+        {"aliases": (_host(url), lambda: resolve_name(name, client, endpoint=url))},
+        deadline=min(deadline / 2.0, timeout), backoff=backoff, notes=notes)  # never all of the lookups' budget
+    info = outcome.get("aliases")
+    if not isinstance(info, dict):
+        return rec
+    fresh = info["resolved"]
+    ra, dec = _num(resolved.get("ra_deg")), _num(resolved.get("dec_deg"))
+    if ra is not None and dec is not None and haversine_arcsec(ra, dec, fresh["ra_deg"], fresh["dec_deg"]) > 1.0:
+        notes.append(f"identifiers of '{name}' not used: Sesame '-oxpI' resolved it {haversine_arcsec(ra, dec, fresh['ra_deg'], fresh['dec_deg']):.1f} "
+                     "arcsec from the record's resolution")
+        return rec
+    aliases = [str(a) for a in fresh.get("aliases") or []]
+    if not aliases:
+        return rec
+    out = dict(rec)
+    out["resolved_object"] = {**dict(resolved), "aliases": aliases}
+    notes.append(f"identifiers of '{name}' fetched from Sesame '-oxpI' ({len(aliases)} aliases) for identification by "
+                 "designation: the record's resolution" + (f" ({endpoint})" if endpoint else "") + " did not list them")
+    return out
 
 
 async def sed_from_record(
@@ -3343,6 +4321,7 @@ async def sed_from_record(
     radius_arcsec: float | None = None,
     deadline_seconds: float | None = None,
     backoff: HostBackoff | None = None,
+    background_filter_fetches: bool | None = None,
 ) -> dict[str, Any]:
     """Build the object passport (SED + classification + redshift) from a crossmatch record.
 
@@ -3354,8 +4333,15 @@ async def sed_from_record(
     each failure is reported in ``notes`` and the SED is still built (embedded filter table, missing Gaia errors,
     member columns only, redshift kinds/reliabilities left unknown rather than guessed). ``radius_arcsec`` is reported
     as the search radius when the record's provenance does not state it.
+
+    A record resolved by name without the object's identifiers (the app's own crossmatch resolves with Sesame '-oxp',
+    which lists none) gets them first from Sesame '-oxpI' (:func:`_with_sesame_aliases`, within the same deadline), so
+    survey rows are still identified by designation. ``background_filter_fetches`` lets SVO fetches still running at
+    the filter deadline finish (and be cached) after the call; the default allows it only on a caller-supplied
+    client, which is assumed to stay open (pass False when the client is closed right after the call).
     """
     rec = _record_dict(record)
+    validate_record_shape(rec)
     target = dict(rec.get("target") or {})
     centre = _target_position(target)
     filters = filters or default_filter_catalog()
@@ -3364,37 +4350,48 @@ async def sed_from_record(
         raise SEDInputError("deadline_seconds must be finite and > 0")
     backoff = backoff or default_backoff()
     request_timeout = min(SUPPLEMENTARY_REQUEST_TIMEOUT_SECONDS, deadline)
+    if background_filter_fetches is None:
+        background_filter_fetches = client is not None
     notes: list[str] = []
-    members, group, selection_notes = select_record_members(rec, centre)
-    if not group:
-        notes.append("no catalog source within the search radius")
-    notes.extend(selection_notes)
-    for member in members:
-        notes.extend(member.notes)
-
-    gaia, sdss, simbad = _member(members, "gaia_dr3"), _member(members, "sdss"), _member(members, "simbad")
-    ref_ra, ref_dec = _reference_position(members, centre)
     owned = client is None and supplementary
     active = client or (httpx.AsyncClient(timeout=request_timeout, follow_redirects=True) if supplementary else None)
     gaia_extra: dict[str, Any] | None = None
     sdss_extra: dict[str, Any] | None = None
     simbad_extra: dict[str, Any] | None = None
     sdss_candidates: list[dict[str, Any]] = []
+    sdss_notes: list[str] = []  # partial SkyServer failures (a Photoz query refused after a successful SpecObj query)
     svo_failures: dict[str, str] = {}
+    filters_failed = False
     try:
+        started = time.monotonic()
+        if supplementary and active is not None:
+            rec = await _with_sesame_aliases(rec, active, deadline=deadline, backoff=backoff, notes=notes,
+                                             timeout=request_timeout)
+        remaining = max(deadline - (time.monotonic() - started), 1e-3)
+        members, group, selection_notes = select_record_members(rec, centre)
+        if not group:
+            notes.append("no catalog source within the search radius")
+        notes.extend(selection_notes)
+        for member in members:
+            notes.extend(member.notes)
+        gaia, sdss, simbad = _member(members, "gaia_dr3"), _member(members, "sdss"), _member(members, "simbad")
+        ref_ra, ref_dec = _reference_position(members, centre)
         needed = required_filters(members)
         if supplementary and active is not None:
             http = active
-            sdss_lock = asyncio.Lock()  # one SkyServer connection at a time
+            sdss_lock = SkyServerLock()  # one SkyServer connection at a time; one round of connect retries
             jobs: dict[str, tuple[str | None, Callable[[], Coroutine[Any, Any, Any]]]] = {
-                "filters": (None, lambda: filters.prefetch(needed, http)),  # SVO: own deadline and retry policy
+                # SVO: own deadline and retry policy (no host back-off here); fetches outlive the call only on a
+                # client that stays open (background_filter_fetches).
+                "filters": (None, lambda: filters.prefetch(needed, http, background=bool(background_filter_fetches))),
             }
             if gaia is not None and re.fullmatch(r"\d{1,20}", gaia.source_id):
                 gaia_id = gaia.source_id
                 jobs["gaia"] = (_host(GAIA_TAP_URL), lambda: fetch_gaia_extra(http, gaia_id, timeout=request_timeout))
             if group:
                 jobs["sdss"] = (_host(SDSS_SQL_URL), lambda: fetch_sdss_redshifts(
-                    http, ref_ra, ref_dec, include_photoz=sdss is None, timeout=request_timeout, lock=sdss_lock))
+                    http, ref_ra, ref_dec, include_photoz=sdss is None, timeout=request_timeout, lock=sdss_lock,
+                    notes=sdss_notes))
             if sdss is not None and re.fullmatch(r"\d{1,20}", sdss.source_id):
                 sdss_id = sdss.source_id
                 jobs["sdss_object"] = (_host(SDSS_SQL_URL), lambda: fetch_sdss_object(
@@ -3403,9 +4400,11 @@ async def sed_from_record(
                 simbad_id = simbad.source_id
                 jobs["simbad"] = (_host(SIMBAD_TAP_URL), lambda: fetch_simbad_extra(
                     http, simbad_id, timeout=request_timeout))
-            outcome = await _run_supplementary(jobs, deadline=deadline, backoff=backoff, notes=notes)
+            outcome = await _run_supplementary(jobs, deadline=remaining, backoff=backoff, notes=notes,
+                                               labels={"filters": _host(filters.endpoint) or filters.endpoint})
             got_filters, got_gaia = outcome.get("filters"), outcome.get("gaia")
             got_sdss, got_object, got_simbad = outcome.get("sdss"), outcome.get("sdss_object"), outcome.get("simbad")
+            filters_failed = "filters" not in outcome
             if isinstance(got_filters, dict):
                 svo_failures = got_filters
             if isinstance(got_gaia, dict):
@@ -3420,6 +4419,12 @@ async def sed_from_record(
     finally:
         if owned and active is not None:
             await active.aclose()
+    if filters_failed and not filters.offline:
+        # The whole SVO job failed or was cancelled at the deadline: name the filters that fall back.
+        for fid in filters.unresolved(needed):
+            svo_failures.setdefault(fid, filters.errors.get(fid)
+                                    or "no SVO answer before the filters lookup ended (see its note)")
+    notes.extend(sdss_notes)
     for fid, err in sorted(svo_failures.items()):
         notes.append(f"SVO FPS lookup for {fid} failed ({err}); embedded SVO values used")
     if sdss is not None and sdss_extra:
@@ -3430,7 +4435,10 @@ async def sed_from_record(
     points = extract_points(members, filters, gaia_extra, sdss_extra=sdss_extra, simbad_extra=simbad_extra)
     member_candidates = member_redshift_candidates(members, sdss_extra=sdss_extra, simbad_extra=simbad_extra,
                                                    specobj_candidates=sdss_candidates)
-    redshift = choose_redshift(sdss_candidates + member_candidates)
+    redshift = resolve_discordant_redshift(choose_redshift(sdss_candidates + member_candidates), points, members,
+                                           gaia_extra, position=(ref_ra, ref_dec))
+    if redshift.get("discordant"):
+        notes.append(f"discordant redshifts cross-checked: {redshift.get('resolution')}")
     classification = classify(points, members, redshift, gaia_extra, position=(ref_ra, ref_dec))
     if redshift.get("value") is not None and classification["label"] == "star":
         if classification.get("redshift_conflict"):
@@ -3440,7 +4448,7 @@ async def sed_from_record(
                                 "hypervelocity star (S5-HVS1, 1017 km/s) but the object is classified as a star: probable "
                                 "misassociation or erroneous catalogue redshift (heuristic; not applied near Sgr A*)")
             notes.append("redshift conflicts with the stellar classification (see redshift.note)")
-        else:
+        elif not redshift.get("conflict"):
             redshift["note"] = "Doppler shift from the radial velocity of a Galactic star, not a cosmological redshift"
 
     resolved = rec.get("resolved_object") or None
@@ -3485,11 +4493,67 @@ async def sed_from_record(
     }
 
 
-async def resolve_name(name: str, client: httpx.AsyncClient | None = None) -> dict[str, Any]:
-    """Resolve a name with CDS Sesame; returns target kwargs (ra, dec, epoch, pm) and the resolution."""
+# Sesame with the 'I' option: the answer lists every identifier of the object (<alias>), which
+# :func:`select_record_members` uses to identify survey rows by designation. Without it (providers' default '-oxp')
+# the aliases are always empty and e.g. '2MASSI J0415195-093506' (SIMBAD's main identifier of a T8 dwarf) would not
+# name its own 2MASS row '2MASS J04151954-0935066'. This is the default; the endpoint actually used is the configured
+# resolver (Settings.resolver_endpoint, $SESAME_ENDPOINT, e.g. a CDS mirror) with the 'I' option added
+# (:func:`sesame_aliases_endpoint`).
+SESAME_ALIASES_ENDPOINT = "https://cds.unistra.fr/cgi-bin/nph-sesame/-oxpI/SNV"
+_SESAME_OPTIONS = re.compile(r"-o[A-Za-z0-9]*")
+
+
+def sesame_asks_aliases(endpoint: Any) -> bool:
+    """Does a Sesame endpoint URL request all identifiers (an '-o...' output-option segment containing 'I')?"""
+    from urllib.parse import urlsplit
+
+    segments = urlsplit(str(endpoint or "")).path.split("/")
+    return any(_SESAME_OPTIONS.fullmatch(seg) and "I" in seg[2:] for seg in segments)
+
+
+def sesame_aliases_endpoint(endpoint: str | None = None) -> str:
+    """The Sesame endpoint for SED name resolution: ``endpoint``, else the app's configured resolver
+    (``models.Settings().resolver_endpoint``, i.e. $SESAME_ENDPOINT, default CDS '-oxp'), with the 'I' output option
+    (all identifiers) added to its '-o...' path segment ('.../nph-sesame/-oxp/SNV' -> '.../nph-sesame/-oxpI/SNV');
+    '-oxpI' is inserted after 'nph-sesame' when the URL has no option segment. A URL that is not recognisably Sesame's
+    (a local test resolver) is used as configured."""
+    from urllib.parse import urlsplit, urlunsplit
+
+    if endpoint is None:
+        try:
+            from models import Settings
+
+            endpoint = Settings().resolver_endpoint
+        except (ValueError, TypeError):  # invalid environment: the documented default
+            return SESAME_ALIASES_ENDPOINT
+    parts = urlsplit(endpoint)
+    segments = parts.path.split("/")
+    for index, segment in enumerate(segments):
+        if _SESAME_OPTIONS.fullmatch(segment):
+            if "I" not in segment[2:]:
+                segments[index] = segment + "I"
+            break
+    else:
+        at = next((i for i, s in enumerate(segments) if s.startswith("nph-sesame")), None)
+        if at is None:
+            return endpoint
+        segments.insert(at + 1, "-oxpI")
+    return urlunsplit(parts._replace(path="/".join(segments)))
+
+
+async def resolve_name(name: str, client: httpx.AsyncClient | None = None, *, endpoint: str | None = None) -> dict[str, Any]:
+    """Resolve a name with CDS Sesame (with all identifiers, :func:`sesame_aliases_endpoint` of ``endpoint`` or of the
+    configured resolver); returns target kwargs (ra, dec, epoch, pm) and the resolution (``resolved['aliases']``: the
+    object's other names)."""
     from providers import SesameResolver
 
-    resolved = await SesameResolver(client).resolve(name)
+    owned = client is None
+    active = client or httpx.AsyncClient(timeout=30.0, follow_redirects=True)
+    try:
+        resolved = await SesameResolver(active, endpoint=sesame_aliases_endpoint(endpoint)).resolve(name)
+    finally:
+        if owned:
+            await active.aclose()
     target = resolved_target(resolved)
     return {
         "ra": target.ra, "dec": target.dec, "epoch": target.epoch,
@@ -3509,8 +4573,12 @@ async def build_sed(
     filters: FilterCatalog | None = None,
     supplementary: bool = True,
 ) -> dict[str, Any]:
-    """Crossmatch a position (or resolved name) and return its SED passport (see :func:`sed_from_record`)."""
+    """Crossmatch a position or a resolved name (not both) and return its SED passport (see :func:`sed_from_record`)."""
     radius = validate_radius(radius_arcsec)
+    try:
+        _check_position_arguments(name, ra, dec)
+    except ValueError as exc:
+        raise SEDInputError(str(exc)) from exc
     owned = client is None
     active = client or httpx.AsyncClient(timeout=60.0, follow_redirects=True)
     try:
@@ -3521,7 +4589,7 @@ async def build_sed(
             ra, dec, epoch = info["ra"], info["dec"], info["epoch"]
             pm_ra, pm_dec, resolved = info["pm_ra_masyr"], info["pm_dec_masyr"], info["resolved"]
         if ra is None or dec is None:
-            raise SEDInputError("Either name or both ra and dec are required")
+            raise SEDInputError(f"name {name!r} resolved without coordinates")
         target = validate_target(ra, dec)
         if service is None:
             from main import build_service
@@ -3538,8 +4606,9 @@ async def build_sed(
             failures = list(rec.get("failures") or [])
             raise SEDUpstreamError("every catalog query failed: " + "; ".join(
                 f"{f.get('catalog')}: {f.get('error_type')}" for f in failures), failures)
+        # A client created here is closed right after: SVO fetches must not outlive the call on it.
         return await sed_from_record(rec, client=active, filters=filters, supplementary=supplementary, name=name,
-                                     radius_arcsec=radius)
+                                     radius_arcsec=radius, background_filter_fetches=not owned)
     finally:
         if owned:
             await active.aclose()
@@ -3761,20 +4830,6 @@ class _SEDRoute(APIRoute):
 router = APIRouter(prefix="/api/v1", tags=["sed"], route_class=_SEDRoute)
 
 
-def _upstream_resolution_failure(exc: ObjectResolutionError) -> bool:
-    """True when Sesame itself failed (502), False when the name is empty or unknown (422).
-
-    providers.SesameResolver raises 'Sesame request failed: ...' for transport/HTTP errors and
-    'Sesame response could not be parsed: ...' both for malformed answers (e.g. an HTML maintenance page:
-    upstream failure) and for a valid answer without coordinates ('No coordinates found for object ...':
-    unknown name).
-    """
-    message = str(exc)
-    if message.startswith("Sesame request failed"):
-        return True
-    return message.startswith("Sesame response could not be parsed") and "No coordinates found" not in message
-
-
 async def _sed_for_request(request: Request, *, ra: float | None, dec: float | None, radius: float, name: str | None) -> dict[str, Any]:
     state = request.app.state
     client = getattr(state, "client", None)
@@ -3783,8 +4838,10 @@ async def _sed_for_request(request: Request, *, ra: float | None, dec: float | N
     try:
         return await build_sed(ra, dec, radius_arcsec=radius, name=name, service=service, client=client, filters=filters)
     except ObjectResolutionError as exc:
-        status = 502 if _upstream_resolution_failure(exc) else 422
-        raise HTTPException(status_code=status, detail=f"Name resolution failed: {exc}") from exc
+        # 404 unknown name, 503 resolver down, 502 unusable resolver answer, 422 empty name.
+        status = resolution_failure_status(exc)
+        raise HTTPException(status_code=status, detail=f"Name resolution failed: {exc}",
+                            headers={"Retry-After": "30"} if status == 503 else None) from exc
     except (SEDInputError, InvalidCoordinateError) as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     except SEDUpstreamError as exc:
@@ -3865,6 +4922,9 @@ def format_sed_table(sed: Mapping[str, Any]) -> str:
 
 def run_cli(args: argparse.Namespace) -> int:
     """Handler for ``astrosearch sed``; returns a process exit code."""
+    if args.name and (args.ra is not None or args.dec is not None):
+        print("Error: specify --name or both --ra and --dec, not both.")
+        return 2
     if not args.name and (args.ra is None or args.dec is None):
         print("Error: specify --name or both --ra and --dec.")
         return 2
@@ -3882,6 +4942,9 @@ def run_cli(args: argparse.Namespace) -> int:
             out = plot_sed(sed, args.plot)
         except ImportError:
             print("Error: matplotlib is required for --plot (pip install matplotlib)")
+            return 1
+        except (OSError, ValueError) as exc:  # unwritable path / unsupported image format
+            print(f"Error: cannot write plot {args.plot!r}: {exc}")
             return 1
         print(f"SED plot written to {out}")
     return 0

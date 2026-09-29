@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<VOTABLE xmlns="http://www.ivoa.net/xml/VOTable/v1.3" xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.4">
+ <RESOURCE type="results">
+  <INFO name="QUERY_STATUS" value="OK">No errors detected in query preprocessing</INFO>
+  <TABLE>
+   <DESCRIPTION>Query result for:&#xA;SELECT TOP 2001 srcid, name, ra, dec, error_radius, error_ell_major, error_ell_minor, ep_flux, ep_flux_error, ep_det_ml, sum_flag, n_obs, n_contrib, extent, &quot;time&quot;, end_time, DISTANCE(POINT(&apos;ICRS&apos;, ra, dec), POINT(&apos;ICRS&apos;, 316.743291070, 38.760699237)) AS match_dist FROM xmmssc WHERE 1 = CONTAINS(POINT(&apos;ICRS&apos;, ra, dec), CIRCLE(&apos;ICRS&apos;, 316.743291070, 38.760699237, 0.0211184183)) ORDER BY match_dist ASC</DESCRIPTION>
+   <FIELD datatype="char" arraysize="*" ucd="meta.id;src" name="srcid">
+    <DESCRIPTION>Unique Source Identifier</DESCRIPTION>
+   </FIELD>
+   <FIELD datatype="char" arraysize="*" ucd="meta.id;meta.main" name="name">
+    <DESCRIPTION>Source Designation (IAU)</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="deg" datatype="double" ucd="pos.eq.ra;meta.main" precision="F6" name="ra">
+    <DESCRIPTION>Corrected Right Ascension of the Source</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="deg" datatype="double" ucd="pos.eq.dec;meta.main" precision="F6" name="dec">
+    <DESCRIPTION>Corrected Declination of the Source</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="arcsec" datatype="double" ucd="stat.error;pos;stat.mean" precision="F5" name="error_radius">
+    <DESCRIPTION>Positional Uncertainty (arcsec)</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="arcsec" datatype="double" ucd="phys.angSize.smajAxis;pos.errorEllipse" precision="E6" name="error_ell_major">
+    <DESCRIPTION>Semi-Major Axis of the Positional Error Ellipse</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="arcsec" datatype="double" ucd="phys.angSize.sminAxis;pos.errorEllipse" precision="E6" name="error_ell_minor">
+    <DESCRIPTION>Semi-Minor Axis of the Positional Error Ellipse</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="erg/cm^2/s" datatype="double" ucd="phot.flux;em.X-ray.soft" precision="E6" name="ep_flux">
+    <DESCRIPTION>EPIC Total Band Flux (erg/cm^2/s)</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="erg/cm^2/s" datatype="double" ucd="phot.flux;em.X-ray.soft" precision="E6" name="ep_flux_error">
+    <DESCRIPTION>Uncertainty in EPIC Total Band Flux (erg/cm^2/s)</DESCRIPTION>
+   </FIELD>
+   <FIELD datatype="double" ucd="stat.likelihood;instr.bandpass" precision="E5" name="ep_det_ml">
+    <DESCRIPTION>EPIC Total Band Detection Likelihood</DESCRIPTION>
+   </FIELD>
+   <FIELD datatype="short" ucd="meta.code.qual" name="sum_flag">
+    <DESCRIPTION>Summary Flag of the Source: 0=Good, 1=Warning, 2=Possibly Spurious</DESCRIPTION>
+    <VALUES null="-32768"/>
+   </FIELD>
+   <FIELD datatype="int" ucd="meta.number;obs" name="n_obs" width="8">
+    <DESCRIPTION>Total Number of Observations per Stack</DESCRIPTION>
+    <VALUES null="-2147483648"/>
+   </FIELD>
+   <FIELD datatype="int" ucd="meta.number" name="n_contrib" width="8">
+    <DESCRIPTION>Number of Observations with Which the Source Was Fitted</DESCRIPTION>
+    <VALUES null="-2147483648"/>
+   </FIELD>
+   <FIELD unit="arcsec" datatype="double" ucd="phys.angSize" precision="E5" name="extent">
+    <DESCRIPTION>Extent Radius (arcsec)</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="d" datatype="double" ucd="time.start;obs" precision="F4" name="time">
+    <DESCRIPTION>Date of Earliest Observation Containing a Detection of the Unique Source</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="d" datatype="double" ucd="time.end;obs" precision="F4" name="end_time">
+    <DESCRIPTION>Date of Latest Observation Containing a Detection of a Unique Source</DESCRIPTION>
+   </FIELD>
+   <FIELD datatype="double" name="match_dist"/>
+   <DATA>
+    <BINARY>
+     <STREAM encoding="base64">
+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
+lxAadA2sQOzjwTfYjpY/j4cSERqW5w==
+     </STREAM>
+    </BINARY>
+   </DATA>
+  </TABLE>
+ </RESOURCE>
+</VOTABLE>

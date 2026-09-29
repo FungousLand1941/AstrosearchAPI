@@ -1,0 +1,19 @@
+{
+  "catalog": "chandra",
+  "target": "named_m82",
+  "search": {
+    "name": "M82",
+    "sesame": "m82",
+    "radius_arcsec": 5.0
+  },
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://heasarc.gsfc.nasa.gov/xamin/vo/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+name%2C+ra%2C+dec%2C+error_ellipse_r0%2C+error_ellipse_r1%2C+error_ellipse_angle%2C+significance%2C+b_flux_ap%2C+b_flux_ap_lo%2C+b_flux_ap_hi%2C+hardness_ratio_hs%2C+hardness_ratio_hm%2C+var_flag%2C+conf_flag%2C+extent_flag%2C+sat_src_flag%2C+pileup_flag%2C+acis_num%2C+hrc_num%2C+DISTANCE%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+POINT%28%27ICRS%27%2C+148.968458330%2C+69.679702780%29%29+AS+match_dist+FROM+csc+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+148.968458330%2C+69.679702780%2C+0.0013888889%29%29+ORDER+BY+match_dist+ASC",
+      "status_code": 200,
+      "content_type": "text/xml",
+      "match": []
+    }
+  ]
+}

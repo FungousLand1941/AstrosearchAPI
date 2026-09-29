@@ -783,11 +783,12 @@ function handleRecord(record, signal) {
   loadCitations(record, signal);
 }
 
-// Position plus, when the search resolved them, the proper motion and its epoch (the
-// cutout stack uses them to follow fast stars such as Barnard's star to each survey's epoch).
+// Position plus, when the search resolved them, the proper motion, its epoch and the parallax
+// (the cutout stack and the light curves use them to follow fast stars such as Barnard's star
+// to each survey's epoch).
 function targetInfo(source) {
   const target = { ra: Number(source.ra), dec: Number(source.dec) };
-  for (const key of ['pm_ra_masyr', 'pm_dec_masyr', 'epoch']) {
+  for (const key of ['pm_ra_masyr', 'pm_dec_masyr', 'epoch', 'parallax_mas']) {
     if (source[key] !== null && source[key] !== undefined && Number.isFinite(Number(source[key]))) target[key] = Number(source[key]);
   }
   return target;
@@ -1114,9 +1115,7 @@ async function loadLightcurves(target, radius, signal) {
   panelLoading(panel);
   const cone = serviceRadius(Math.max(radius, 1), LIGHTCURVE_MAX_RADIUS_ARCSEC);
   try {
-    state.lcData = await api('lightcurves', {
-      params: { ra: target.ra, dec: target.dec, radius_arcsec: cone.radius, surveys: 'ztf,neowise,gaia' }, signal,
-    });
+    state.lcData = await api('lightcurves', { params: lightcurveParams(target, cone.radius), signal });
     state.lcData.clampNote = cone.clamped ? { requested: Number(radius), used: cone.radius } : null;
     const units = [...new Set((state.lcData.series || []).map((s) => s.unit))];
     state.lcView = { unit: units.includes('mag') ? 'mag' : units[0] || null, folded: false };
@@ -1125,6 +1124,22 @@ async function loadLightcurves(target, radius, signal) {
     state.lcData = null;
     panelError(panel, err, 'The light-curve service');
   }
+}
+
+// Light-curve query for a target: its position and, when known, the epoch of that position with
+// the proper motion (each survey's cone then follows a fast star to that survey's epoch, as the
+// cutout stack does) and the parallax (it widens the per-epoch identity tolerance of nearby stars).
+// A proper motion without the epoch of the position cannot be applied and is not sent.
+function lightcurveParams(target, radius) {
+  const params = { ra: target.ra, dec: target.dec, radius_arcsec: radius, surveys: 'ztf,neowise,gaia' };
+  const finite = (value) => value !== null && value !== undefined && Number.isFinite(Number(value));
+  if (finite(target.epoch) && finite(target.pm_ra_masyr) && finite(target.pm_dec_masyr)) {
+    Object.assign(params, { epoch: Number(target.epoch), pm_ra_masyr: Number(target.pm_ra_masyr),
+      pm_dec_masyr: Number(target.pm_dec_masyr) });
+  }
+  const plx = Number(target.parallax_mas);
+  if (finite(target.parallax_mas) && plx >= 0 && plx < 1000) params.parallax_mas = plx;
+  return params;
 }
 
 function renderLightcurves() {
@@ -1608,7 +1623,7 @@ export {
   ENDPOINTS, sseEvents, powerOfTen, sexagesimal, searchBodyFromAdvanced, nuFnu,
   ApiError, errorKind, errorMessage, panelError, searchRecord, streamSearch, parseSearchInput,
   foldPhase, lightcurveEpoch, lightcurveDatasets, serviceRadius, loadCutouts, cutoutStatus, endpointUrl,
-  cutoutStackParams, targetInfo, fitsButton, knownTarget, onTargetKnown, state,
+  cutoutStackParams, lightcurveParams, targetInfo, fitsButton, knownTarget, onTargetKnown, state,
   SED_MAX_RADIUS_ARCSEC, LIGHTCURVE_MAX_RADIUS_ARCSEC,
 };
 

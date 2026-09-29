@@ -79,6 +79,7 @@ import asyncio
 import contextlib
 import functools
 import hashlib
+import html
 import importlib.metadata
 import inspect
 import json
@@ -98,10 +99,11 @@ from typing import Any, ClassVar, Literal
 import httpx
 from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import PlainTextResponse
-from pydantic import BaseModel, ConfigDict, Field, ValidationError
+from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_validator
 
 from crossmatch import AdvancedQuery, CrossmatchService, QueryValidator, validate_profile
 from models import (
+    MAX_SEARCH_RADIUS_ARCSEC,
     CatalogDefinition,
     CatalogRegistry,
     InvalidCoordinateError,
@@ -1619,11 +1621,13 @@ def association_inputs(record: Mapping[str, Any]) -> dict[str, float]:
     ``crossmatch.CrossmatchService.crossmatch`` takes ``target_uncertainty_arcsec`` (the
     1-sigma per-axis target position error; default ``association_config``, 0.1") and
     ``target_pm_error_masyr`` (that of a *given* proper motion); the streaming name
-    search sets both from the Sesame answer. They change every match confidence
-    (Budavari & Szalay 2008 posterior), so they are part of the question. The record
-    carries them as ``provenance.association.target_sigma_arcsec`` and
-    ``provenance.target_proper_motion.pm_error_masyr``; an error of an *adopted* motion
-    is derived by the crossmatch (part of the answer) and is not returned.
+    search, ``POST /api/v1/search`` and ``astrosearch search`` set both from the Sesame
+    answer. They change every match confidence (Budavari & Szalay 2008 posterior), so they
+    are part of the question. The record carries them as
+    ``provenance.association.target_sigma_arcsec`` and
+    ``provenance.association.target_pm_error_masyr`` (older records:
+    ``provenance.target_proper_motion.pm_error_masyr``); an error of an *adopted* motion is
+    derived by the crossmatch (part of the answer) and is not returned.
     """
     prov = record.get("provenance") or {}
     out: dict[str, float] = {}
@@ -1632,7 +1636,9 @@ def association_inputs(record: Mapping[str, Any]) -> dict[str, float]:
     if isinstance(sigma, (int, float)) and not isinstance(sigma, bool) and math.isfinite(sigma) and sigma > 0:
         out["target_sigma_arcsec"] = float(sigma)
     pm_info = prov.get("target_proper_motion") if isinstance(prov, Mapping) else None
-    pm_error = pm_info.get("pm_error_masyr") if isinstance(pm_info, Mapping) else None
+    pm_error = assoc.get("target_pm_error_masyr") if isinstance(assoc, Mapping) else None
+    if pm_error is None and isinstance(pm_info, Mapping):
+        pm_error = pm_info.get("pm_error_masyr")
     if (given_pm_source(record) is not None and isinstance(pm_error, (int, float)) and not isinstance(pm_error, bool)
             and math.isfinite(pm_error) and pm_error >= 0):
         out["target_pm_error_masyr"] = float(pm_error)
@@ -2523,6 +2529,10 @@ async def replay_manifest(
         if old.query.get("target_pm_error_masyr") is not None and _accepts(replay_service.crossmatch,
                                                                             "target_pm_error_masyr"):
             extra["target_pm_error_masyr"] = old.query["target_pm_error_masyr"]
+        # A name search passed the resolver's answer to the engine (its catalogue row is the
+        # target's identity, and it sets the target class): the replay does too.
+        if old.resolved_object and _accepts(replay_service.crossmatch, "resolved_object"):
+            extra["resolved_object"] = dict(old.resolved_object)
         started = datetime.now(UTC)
         if query is not None:
             record = await replay_service.crossmatch(t["ra"], t["dec"], query=query, **extra)
@@ -2587,6 +2597,10 @@ class Reference:
     url: str | None = None
     note: str | None = None
     more_authors: bool = False
+    howpublished: str | None = None
+    #: False for a reference parsed from free text (a registry citation) and not yet resolved
+    #: through ADS/doi.org; the curated REFERENCES and resolved ones are True.
+    verified: bool = True
 
     @property
     def ads_url(self) -> str | None:
@@ -3356,6 +3370,184 @@ def unverified_dois(text: str | None) -> list[str]:
     return sorted({d for d in _DOI_TEXT.findall(text or "") if d.lower() not in verified})
 
 
+# A 19-character ADS bibcode (YYYYJJJJJVVVVMPPPPA) inside free text, e.g. the registry citation
+# 'Gaia Collaboration 2018, A&A 616, A1 (2018A&A...616A...1G); VizieR I/345 ...' that
+# `vizier add` writes from the VizieR/IVOA registry metadata.
+_BIBCODE_IN_TEXT = re.compile(r"(?<![\w&.])((?:1[89]|20)\d\d[A-Za-z&][A-Za-z&.]{4}[A-Za-z0-9.]{4}[A-Za-z.][A-Za-z0-9.]{4}[A-Z.])"
+                              r"(?![\w&])")
+# What precedes '(bibcode)' in such a citation: '<authors> <year>, <journal> <volume>, <page>'.
+_CITATION_HEAD = re.compile(r"(?P<authors>[^;()]+?)\s+(?P<year>(?:1[89]|20)\d\d)[a-z]?\s*,\s*(?P<where>[^;()]*?)\s*\($")
+#: Key under which `vizier add` stores the references it resolved through ADS/doi.org in a
+#: registry entry's ``parameters`` (see :func:`lookup_reference`).
+REGISTRY_REFERENCES_KEY = "citation_references"
+
+
+def bibcodes_in(text: str | None) -> list[str]:
+    """The ADS bibcodes named in free text, in order, without repeats."""
+    return list(dict.fromkeys(_BIBCODE_IN_TEXT.findall(text or "")))
+
+
+def reference_from_citation_text(bibcode: str, text: str) -> Reference:
+    """An unverified reference for ``bibcode`` from the citation text that names it: authors and
+    'journal volume, page' as written there, year from the bibcode. BibTeX ``@misc`` (no title is
+    known offline); :func:`lookup_reference` resolves the full record through ADS and doi.org."""
+    known = REFERENCES.get(bibcode)
+    if known is not None:
+        return known
+    authors: tuple[str, ...] = ()
+    where = ""
+    position = text.find(bibcode)
+    if position > 0:
+        head = _CITATION_HEAD.search(text[:position])
+        if head:
+            who = head.group("authors").strip().rstrip(",")
+            more = who.endswith(" et al.")
+            who = who.removesuffix(" et al.").strip()
+            authors = tuple("{" + part.strip() + "}" for part in re.split(r",\s*|\s+&\s+|\s+and\s+", who) if part.strip())
+            where = head.group("where").strip().rstrip(",")
+            if more:
+                return Reference(key=bibcode, entry_type="misc", authors=authors, title="", year=int(bibcode[:4]),
+                                 bibcode=bibcode, howpublished=where or None, more_authors=True, verified=False,
+                                 note="unverified: parsed from the catalog registry citation (resolve it with "
+                                      "'astrosearch cite --verify' or /api/v1/citations?verify=true)")
+    return Reference(key=bibcode, entry_type="misc", authors=authors, title="", year=int(bibcode[:4]),
+                     bibcode=bibcode, howpublished=where or f"ADS {bibcode}", verified=False,
+                     note="unverified: parsed from the catalog registry citation (resolve it with "
+                          "'astrosearch cite --verify' or /api/v1/citations?verify=true)")
+
+
+def _csl_person(person: Mapping[str, Any]) -> str | None:
+    family = str(person.get("family") or "").strip()
+    given = str(person.get("given") or "").strip()
+    if family:
+        initials = " ".join(f"{part[0]}." for part in re.split(r"[\s.]+", given) if part) if given else ""
+        return f"{family}, {initials}".strip().rstrip(",")
+    literal = str(person.get("literal") or person.get("name") or "").strip()
+    return "{" + literal + "}" if literal else None
+
+
+def reference_from_csl(bibcode: str | None, doi: str, csl: Mapping[str, Any]) -> Reference:
+    """A verified reference from a DOI's CSL-JSON (doi.org): at most four authors listed (then
+    'and others'), as the curated references."""
+    people = [name for name in (_csl_person(p) for p in csl.get("author") or [] if isinstance(p, Mapping)) if name]
+    issued = (csl.get("issued") or csl.get("published-print") or csl.get("published-online") or {}).get("date-parts") or [[None]]
+    year = issued[0][0] if issued and issued[0] and issued[0][0] else (int(bibcode[:4]) if bibcode else 0)
+
+    def text(value: Any) -> str | None:
+        """Plain text of a CSL string (Crossref titles carry JATS/HTML markup and entities)."""
+        if isinstance(value, list):
+            value = value[0] if value else None
+        if value in (None, ""):
+            return None
+        plain = html.unescape(re.sub(r"<[^>]+>", "", str(value)))
+        return re.sub(r"\s+", " ", plain).strip() or None
+
+    kind = str(csl.get("type") or "")
+    entry_type = "article" if kind in ("journal-article", "article-journal", "article") else (
+        "inproceedings" if kind in ("proceedings-article", "paper-conference") else "misc")
+    journal = text(csl.get("container-title"))
+    title = text(csl.get("title")) or ""
+    subtitle = text(csl.get("subtitle"))
+    if title and subtitle and subtitle.lower() not in title.lower():
+        title = f"{title}. {subtitle}"
+    if entry_type == "article" and not journal:
+        entry_type = "misc"
+    if entry_type == "inproceedings" and not journal:
+        entry_type = "misc"
+    return Reference(
+        key=bibcode or doi, entry_type=entry_type, authors=tuple(people[:4]), title=re.sub(r"\s+", " ", title),
+        year=int(year), bibcode=bibcode, journal=journal if entry_type == "article" else None,
+        booktitle=journal if entry_type == "inproceedings" else None, volume=text(csl.get("volume")),
+        pages=text(csl.get("page")) or text(csl.get("article-number")), doi=doi, more_authors=len(people) > 4,
+        publisher=text(csl.get("publisher")) if entry_type == "misc" else None,
+        howpublished=None if title else journal,
+    )
+
+
+async def lookup_reference(client: httpx.AsyncClient, bibcode: str) -> Reference | None:
+    """Resolve a bibcode to a verified reference through the verification path: the ADS link
+    gateway gives the publisher DOI, whose CSL-JSON (doi.org) gives authors, title, journal,
+    volume, pages and year. None when ADS gives no DOI or the DOI is not registered; network
+    errors propagate (httpx.HTTPError)."""
+    if bibcode in REFERENCES:
+        return REFERENCES[bibcode]
+    probe = Reference(key=bibcode, entry_type="misc", authors=(), title="", year=int(bibcode[:4]), bibcode=bibcode)
+    check = await verify_reference(client, probe, check_metadata=False)
+    if not check.exists or not check.doi_from_ads:
+        return None
+    csl = await fetch_csl(client, check.doi_from_ads)
+    if csl is None:
+        return None
+    return reference_from_csl(bibcode, check.doi_from_ads, csl)
+
+
+def reference_to_registry(ref: Reference) -> dict[str, Any]:
+    """A resolved reference as stored in a registry entry (``parameters[REGISTRY_REFERENCES_KEY]``)."""
+    return {k: v for k, v in asdict(ref).items() if v not in (None, "", False) or k in ("year",)} | {
+        "authors": list(ref.authors), "verified": ref.verified}
+
+
+def reference_from_registry(data: Mapping[str, Any]) -> Reference | None:
+    """The reference :func:`reference_to_registry` stored, or None when it is malformed."""
+    try:
+        fields_ = {f: data[f] for f in Reference.__dataclass_fields__ if f in data}
+        fields_["authors"] = tuple(str(a) for a in data.get("authors") or ())
+        fields_["year"] = int(data["year"])
+        return Reference(**fields_)
+    except (KeyError, TypeError, ValueError):
+        return None
+
+
+def registry_references(definition: CatalogDefinition) -> list[Reference]:
+    """The papers a registry catalog's citation names: the references `vizier add` resolved
+    through ADS/doi.org when it registered the table (verified), else those parsed from the
+    citation text (curated ones verified, others marked unverified)."""
+    stored = (definition.parameters or {}).get(REGISTRY_REFERENCES_KEY)
+    resolved = {ref.bibcode: ref for ref in (reference_from_registry(item) for item in stored or []
+                                            if isinstance(item, Mapping)) if ref is not None and ref.bibcode}
+    refs: list[Reference] = []
+    for bibcode in bibcodes_in(definition.citation):
+        refs.append(resolved.get(bibcode) or reference_from_citation_text(bibcode, definition.citation or ""))
+    for bibcode, ref in resolved.items():  # stored but no longer named in the text: still cited
+        if all(r.bibcode != bibcode for r in refs):
+            refs.append(ref)
+    return refs
+
+
+async def resolve_unverified(client: httpx.AsyncClient, bundle: CitationBundle) -> list[str]:
+    """Replace the bundle's unverified references (parsed from registry citations) by records
+    resolved through ADS/doi.org (:func:`lookup_reference`). Returns a note per reference that
+    stayed unverified."""
+    notes: list[str] = []
+    for n, ref in enumerate(list(bundle.references)):
+        if ref.verified or not ref.bibcode:
+            continue
+        try:
+            found = await lookup_reference(client, ref.bibcode)
+        except (httpx.HTTPError, UnparsableAnswerError) as exc:
+            notes.append(f"{ref.bibcode}: not resolved ({exc.__class__.__name__}: {exc})")
+            continue
+        if found is None:
+            notes.append(f"{ref.bibcode}: ADS gives no DOI for it (kept unverified)")
+            continue
+        bundle.references[n] = found
+        for ack in bundle.acknowledgements:
+            if ref.bibcode in (ack.get("bibcodes") or []):
+                ack["references"] = [found.short if r == ref.short else r for r in ack.get("references") or []]
+                ack["references_verified"] = all(r.verified for r in bundle.references if r.bibcode in ack["bibcodes"])
+                if found.doi and found.doi not in (ack.get("dois") or []):
+                    ack.setdefault("dois", []).append(found.doi)
+    return notes
+
+
+def _without_vizier_ack(text: str) -> str:
+    """A registry acknowledgement without its VizieR sentence (the curated 'vizier' archive entry,
+    added for every VizieR catalog, carries CDS's own wording)."""
+    kept = [sentence for sentence in _SENTENCE_SPLIT.split(text.strip())
+            if not re.search(r"VizieR catalogue access tool", sentence)]
+    return " ".join(s.strip() for s in kept if s.strip())
+
+
 def citations_for(names: Iterable[str], registry: CatalogRegistry | None = None, *,
                   strict: bool = True) -> CitationBundle:
     """Acknowledgement texts and verified references for catalogs/services ``names``.
@@ -3378,6 +3570,7 @@ def citations_for(names: Iterable[str], registry: CatalogRegistry | None = None,
         raise UnknownCitationError(f"no citation entry for {unknown}; known: {known_citation_keys()}")
     acks: list[dict[str, Any]] = []
     ref_keys: list[str] = []
+    extra_refs: list[Reference] = []
     reg = registry.catalogs if registry is not None else {}
     for key in keys:
         entry = CITATION_ENTRIES.get(key)
@@ -3412,16 +3605,36 @@ def citations_for(names: Iterable[str], registry: CatalogRegistry | None = None,
             })
             ref_keys.extend(entry.references)
         elif definition is not None:
+            papers = registry_references(definition)
+            extra_refs.extend(papers)
+            verified = all(ref.verified for ref in papers) if papers else None
+            text = definition.acknowledgement or ""
+            if "vizier" in keys:
+                text = _without_vizier_ack(text)
+            if papers:
+                note = ("no curated entry: the paper(s) named in the registry citation"
+                        + (" (resolved through ADS/doi.org)" if verified else
+                           " (not all verified: resolve them with 'astrosearch cite --verify' or verify=true)"))
+            else:
+                note = "no curated entry: registry citation text only (it names no bibcode; not verified)"
             acks.append({
                 "key": key, "catalog": key, "name": definition.description or key, "kind": "catalog",
-                "text": definition.acknowledgement or "", "references": [], "bibcodes": [], "dois": [],
-                "source_url": None, "note": "no curated entry: registry citation text only (not verified)",
+                "text": text, "references": [ref.short for ref in papers],
+                "bibcodes": [ref.bibcode for ref in papers if ref.bibcode],
+                "dois": [ref.doi for ref in papers if ref.doi],
+                "references_verified": verified,
+                "source_url": None, "note": note,
                 "registry_citation": registry_citation,
                 "registry_citation_verified": False if registry_citation else None,
                 "registry_citation_unverified_dois": unverified_dois(registry_citation),
                 "registry_acknowledgement": definition.acknowledgement,
             })
     refs = [REFERENCES[k] for k in dict.fromkeys(ref_keys)]
+    known = {ref.key for ref in refs}
+    for ref in extra_refs:
+        if ref.key not in known:
+            known.add(ref.key)
+            refs.append(ref)
     return CitationBundle(keys=keys, acknowledgements=acks, references=refs, unknown=unknown)
 
 
@@ -3493,7 +3706,13 @@ def _bib_field(name: str, value: str) -> str:
 def reference_to_bibtex(ref: Reference) -> str:
     """One BibTeX entry (key = bibcode, as ADS exports) with LaTeX-safe field values."""
     authors = [latex_escape(a) for a in ref.authors] + (["others"] if ref.more_authors else [])
-    fields: list[tuple[str, str]] = [("author", " and ".join(authors)), ("title", "{" + latex_escape(ref.title) + "}")]
+    fields: list[tuple[str, str]] = []
+    if authors:
+        fields.append(("author", " and ".join(authors)))
+    if ref.title:
+        fields.append(("title", "{" + latex_escape(ref.title) + "}"))
+    if ref.howpublished:
+        fields.append(("howpublished", latex_escape(ref.howpublished)))
     if ref.journal:
         fields.append(("journal", latex_escape(ref.journal)))
     if ref.booktitle:
@@ -3791,9 +4010,22 @@ def _compare_csl(ref: Reference, csl: Mapping[str, Any]) -> tuple[bool, list[str
     if ref.volume and csl.get("volume") and str(csl["volume"]).strip() != ref.volume:
         problems.append(f"volume {csl['volume']} != {ref.volume}")
     csl_page = _first_page(csl.get("page") or csl.get("article-number"))
-    if ref.pages and csl_page and csl_page != _first_page(ref.pages):
+    if (ref.pages and csl_page and csl_page != _first_page(ref.pages)
+            and not _article_number_in_doi(ref.pages, csl.get("DOI") or ref.doi)):
         problems.append(f"first page {csl_page} != {_first_page(ref.pages)}")
     return not problems, problems, meta
+
+
+def _article_number_in_doi(pages: str, doi: str | None) -> bool:
+    """True when ``pages`` is an article number (elocation id) that the DOI itself ends with.
+
+    Journals with article numbers (SPIE JATIS, AIP, APS, IOP) register a page range *inside*
+    the article with Crossref (live 2026-09-29: 10.1117/1.JATIS.1.1.014003 has page '1-10'),
+    while ADS and the citation use the article number 014003; the DOI suffix settles it."""
+    number = str(pages).strip()
+    if not doi or not re.fullmatch(r"[A-Za-z]?\d{4,}", number):
+        return False
+    return bool(re.search(rf"(?<![0-9A-Za-z]){re.escape(number)}$", str(doi).strip(), re.IGNORECASE))
 
 
 async def verify_reference(client: httpx.AsyncClient, ref: Reference, *, check_metadata: bool = True) -> ReferenceCheck:
@@ -3897,7 +4129,18 @@ router = APIRouter(prefix="/api/v1", tags=["provenance"])
 
 
 class UpstreamServiceError(RuntimeError):
-    """A service needed to build the query (the CDS Sesame name resolver) failed."""
+    """A service needed to build the query (the CDS Sesame name resolver) failed.
+
+    ``status_code`` is the HTTP status the routes answer: 503 when the resolver could not be
+    reached, 502 when it (or every archive) answered unusably."""
+
+    def __init__(self, message: str, status_code: int = 502) -> None:
+        super().__init__(message)
+        self.status_code = status_code
+
+
+class UnknownObjectNameError(ValueError):
+    """The name resolver knows no object of this name (HTTP 404, as on every route)."""
 
 
 class SearchFields(BaseModel):
@@ -3910,10 +4153,11 @@ class SearchFields(BaseModel):
     """
 
     model_config = ConfigDict(extra="forbid")
-    ra: float | None = Field(None, description="Right ascension in degrees")
-    dec: float | None = Field(None, description="Declination in degrees")
+    ra: float | None = Field(None, description="Right ascension in degrees, [0, 360)", ge=0, lt=360)
+    dec: float | None = Field(None, description="Declination in degrees, [-90, 90]", ge=-90, le=90)
     name: str | None = Field(None, description="Astronomical object name (will be resolved)")
-    radius_arcsec: float = Field(3.0, description="Search radius in arcseconds", gt=0)
+    radius_arcsec: float = Field(3.0, description="Search radius in arcseconds (at most 3600, one degree)", gt=0,
+                                 le=MAX_SEARCH_RADIUS_ARCSEC)
     profile: str | None = Field(None, description="Catalog profile: optical, infrared, radio, etc.")
     epoch: float | None = Field(None, ge=1800, le=2200, description="Julian epoch of ra/dec for proper motion correction")
     pm_ra_masyr: float | None = Field(None, description="Target proper motion in RA*cos(Dec), mas/yr (with pm_dec_masyr)")
@@ -3929,11 +4173,23 @@ class SearchFields(BaseModel):
     time_period: dict[str, Any] | None = None
     spatial_constraints: dict[str, Any] | None = None
     search_mode: Literal["cone", "shell", "cylinder"] = "cone"
-    min_radius_arcsec: float = Field(0.0, ge=0)
+    min_radius_arcsec: float = Field(0.0, ge=0, le=MAX_SEARCH_RADIUS_ARCSEC)
     proper_motion: bool = True
     adaptive_radius: bool = False
     min_distance_pc: float | None = Field(None, gt=0)
     max_distance_pc: float | None = Field(None, gt=0)
+
+    @model_validator(mode="after")
+    def _check_motion_and_shell(self) -> SearchFields:
+        """Proper-motion components come together and stay below 20"/yr (as
+        models.validate_target requires); a shell's inner radius is below its outer one."""
+        if (self.pm_ra_masyr is None) != (self.pm_dec_masyr is None):
+            raise ValueError("pm_ra_masyr and pm_dec_masyr must be given together")
+        if self.pm_ra_masyr is not None and self.pm_dec_masyr is not None                 and math.hypot(self.pm_ra_masyr, self.pm_dec_masyr) > 20_000.0:
+            raise ValueError("proper motion exceeds 20 arcsec/yr; check units (mas/yr expected)")
+        if self.min_radius_arcsec and self.min_radius_arcsec >= self.radius_arcsec:
+            raise ValueError("min_radius_arcsec must be smaller than radius_arcsec")
+        return self
 
 
 class ManifestRequest(SearchFields):
@@ -4064,7 +4320,10 @@ async def manifest_endpoint(req: ManifestRequest, request: Request) -> dict[str,
             try:
                 record = await run_api_search(service, req.search_fields(), resolver=SesameResolver(client))
             except UpstreamServiceError as exc:
-                raise HTTPException(status_code=502, detail=f"upstream service error: {exc}") from exc
+                raise HTTPException(status_code=exc.status_code, detail=f"upstream service error: {exc}",
+                                    headers={"Retry-After": "30"} if exc.status_code == 503 else None) from exc
+            except UnknownObjectNameError as exc:
+                raise HTTPException(status_code=404, detail=f"Object name could not be resolved: {exc}") from exc
             except (ValueError, InvalidCoordinateError) as exc:
                 raise HTTPException(status_code=422, detail=str(exc)) from exc
             except httpx.HTTPError as exc:
@@ -4088,12 +4347,18 @@ async def manifest_endpoint(req: ManifestRequest, request: Request) -> dict[str,
 
 
 def _resolution_error(exc: Exception) -> Exception:
-    """Sesame failures: unreachable / unparsable answers are upstream errors (502); an
-    unknown or empty name is the caller's input error (422)."""
+    """Sesame failures, classified as every route does (models.resolution_failure_status): an
+    unknown name is UnknownObjectNameError (404), an empty one a ValueError (422), an
+    unreachable resolver an UpstreamServiceError with status 503, an unusable answer 502."""
+    from models import resolution_failure_status
+
     text = str(exc)
-    if "No coordinates found" in text or "must not be empty" in text:
+    code = resolution_failure_status(exc)
+    if code == 404:
+        return UnknownObjectNameError(text)
+    if code == 422:
         return ValueError(text)
-    return UpstreamServiceError(text)
+    return UpstreamServiceError(text, status_code=code)
 
 
 async def _resolve(resolver: Any, name: str) -> tuple[Any, Target]:
@@ -4113,59 +4378,64 @@ SEARCH_DEFAULTS: dict[str, Any] = {name: f.default for name, f in SearchFields.m
                                    if f.default is not None}
 
 
-def api_search_query(fields: Mapping[str, Any], resolved_target_: Target | None = None) -> AdvancedQuery:
-    """The AdvancedQuery ``POST /api/v1/search`` (``api._search``) builds from its fields.
+def _search_fields(fields: Mapping[str, Any]) -> dict[str, Any]:
+    """api.SearchRequest fields with its defaults for the ones left out."""
+    return {**dict.fromkeys(SEARCH_FIELDS), **SEARCH_DEFAULTS,
+            **{k: v for k, v in fields.items() if v is not None or k in ("ra", "dec")}}
 
-    Mirrors api._search line for line: a name-resolved target takes the resolver
-    position and epoch; when the caller gave no proper motion, the resolver proper
-    motion (``pm_source`` "resolver") and, when no parallax was given, the resolver
-    parallax are used; a caller proper motion is labelled "input".
-    ``resolved_target_`` is :func:`models.resolved_target` of the Sesame answer.
+
+def api_search_query(fields: Mapping[str, Any], resolved_target_: Target | None = None, *,
+                     spec: Mapping[str, Any] | None = None, resolved: Any = None) -> AdvancedQuery:
+    """The AdvancedQuery ``POST /api/v1/search`` builds from its fields (``main.search_query``,
+    the code the endpoint itself runs).
+
+    For a name search pass ``spec`` (:func:`crossmatch.resolved_search_target` of the Sesame
+    answer) and ``resolved`` (the answer); ``resolved_target_`` (:func:`models.resolved_target`
+    of the answer, the former interface) is still accepted and taken as the resolver's
+    position, epoch, motion and parallax.
     """
-    f = {**SEARCH_DEFAULTS, **{k: v for k, v in fields.items() if v is not None or k in ("ra", "dec")}}
-    epoch, pm_ra, pm_dec, parallax = f.get("epoch"), f.get("pm_ra_masyr"), f.get("pm_dec_masyr"), f.get("parallax_mas")
-    pm_source = "input" if pm_ra is not None else None
-    if resolved_target_ is not None:
-        ra, dec = resolved_target_.ra, resolved_target_.dec
-        if resolved_target_.epoch is not None:
-            epoch = resolved_target_.epoch
-            if resolved_target_.proper_motion is not None and pm_ra is None and pm_dec is None:
-                pm_ra, pm_dec = resolved_target_.pm_ra_masyr, resolved_target_.pm_dec_masyr
-                pm_source = "resolver"
-                if parallax is None:
-                    parallax = resolved_target_.parallax_mas
-    else:
-        if f.get("ra") is None or f.get("dec") is None:
-            raise ValueError("Either name or both ra and dec are required")
-        ra, dec = f["ra"], f["dec"]
-    return AdvancedQuery.from_dict({
-        "ra": ra, "dec": dec, "epoch": epoch, "pm_ra_masyr": pm_ra, "pm_dec_masyr": pm_dec, "parallax_mas": parallax,
-        "radius_arcsec": f["radius_arcsec"], "profiles": [f["profile"]] if f.get("profile") else None,
-        "object_types": f.get("object_types"), "spectral_types": f.get("spectral_types"), "morphology": f.get("morphology"),
-        "min_confidence": f["min_confidence"], "max_results": f.get("max_results"), "catalogs": f.get("catalogs"),
-        "time_period": f.get("time_period"), "spatial_constraints": f.get("spatial_constraints"),
-        "search_mode": f["search_mode"], "min_radius_arcsec": f["min_radius_arcsec"], "proper_motion": f["proper_motion"],
-        "adaptive_radius": f["adaptive_radius"], "min_distance_pc": f.get("min_distance_pc"),
-        "max_distance_pc": f.get("max_distance_pc"), "metadata": {"pm_source": pm_source} if pm_source else None,
-    })
+    from main import search_query  # lazy: main imports this module for its CLI
+
+    if spec is None and resolved_target_ is not None:
+        t = resolved_target_
+        f = _search_fields(fields)
+        motion = t.proper_motion is not None and f.get("pm_ra_masyr") is None and f.get("pm_dec_masyr") is None
+        spec = {"ra": t.ra, "dec": t.dec, "epoch": t.epoch if t.epoch is not None else f.get("epoch"),
+                "pm_ra_masyr": t.pm_ra_masyr if motion else f.get("pm_ra_masyr"),
+                "pm_dec_masyr": t.pm_dec_masyr if motion else f.get("pm_dec_masyr"),
+                "parallax_mas": (t.parallax_mas if motion and f.get("parallax_mas") is None else f.get("parallax_mas")),
+                "pm_source": "resolver" if motion else ("input" if f.get("pm_ra_masyr") is not None else None)}
+    info = resolved.as_dict() if hasattr(resolved, "as_dict") else resolved
+    return search_query(_search_fields(fields), spec, info)
 
 
 async def run_api_search(service: CrossmatchService, fields: Mapping[str, Any], *, resolver: Any | None = None) -> UnifiedRecord:
-    """Run a search exactly as ``POST /api/v1/search`` does (without its response cache).
+    """Run a search exactly as ``POST /api/v1/search`` does (``main.api_search``, without the
+    endpoint's response cache).
 
     ``fields`` are api.SearchRequest fields (missing ones take its defaults);
     ``resolver`` (default: a :class:`providers.SesameResolver` on the service's client)
     resolves ``fields["name"]``. Unknown names raise ValueError, resolver outages
     :class:`UpstreamServiceError`.
     """
-    resolved = tgt = None
+    from main import api_search  # lazy: main imports this module for its CLI
+
+    active = None
     if fields.get("name"):
-        resolved, tgt = await _resolve(resolver or SesameResolver(_client_of(service)), str(fields["name"]))
-    query = api_search_query(fields, tgt)
-    record = await service.crossmatch(query.target.ra, query.target.dec, query=query)
-    if resolved is not None:
-        record.resolved_object = resolved.as_dict()
-    return record
+        active = _CheckedResolver(resolver or SesameResolver(_client_of(service)))
+    return await api_search(service, _search_fields(fields), active)
+
+
+class _CheckedResolver:
+    """A resolver whose failures are this module's errors (unknown name: ValueError; outage:
+    UpstreamServiceError), as :func:`_resolve` reports them."""
+
+    def __init__(self, resolver: Any) -> None:
+        self.resolver = resolver
+
+    async def resolve(self, name: str) -> Any:
+        resolved, _target = await _resolve(self.resolver, str(name))
+        return resolved
 
 
 async def run_basic_search(
@@ -4183,15 +4453,10 @@ async def run_basic_search(
     name: resolver position, epoch, proper motion and parallax; ``main.crossmatch`` for
     coordinates): the basic crossmatch path, every in-radius row kept."""
     if name:
-        resolved, tgt = await _resolve(resolver or SesameResolver(_client_of(service)), name)
-        record = await service.crossmatch(
-            tgt.ra, tgt.dec, radius_arcsec=radius_arcsec, epoch=tgt.epoch, profile=profile,
-            pm_ra_masyr=tgt.pm_ra_masyr, pm_dec_masyr=tgt.pm_dec_masyr,
-            pm_source="resolver" if tgt.proper_motion is not None else None, parallax_mas=tgt.parallax_mas,
-        )
-        record.resolved_object = resolved.as_dict()
-        record.provenance["resolver"] = resolved.resolver
-        return record
+        from main import crossmatch_resolved  # lazy: main imports this module for its CLI
+
+        resolved, _tgt = await _resolve(resolver or SesameResolver(_client_of(service)), name)
+        return await crossmatch_resolved(service, resolved, radius_arcsec=radius_arcsec, profile=profile)
     if ra is None or dec is None:
         raise ValueError("give a name, or ra and dec")
     return await service.crossmatch(ra, dec, radius_arcsec=radius_arcsec, epoch=epoch, profile=profile)
@@ -4230,11 +4495,17 @@ async def citations_endpoint(
     request: Request,
     catalogs: str = Query(..., min_length=1, description="Comma-separated catalog/service names, e.g. gaia_dr3,simbad,hips2fits"),
     format: Literal["json", "bibtex"] = Query("json", description="'bibtex' returns the .bib text only"),
+    verify: bool = Query(False, description="Resolve papers named only in a registry citation (a table registered "
+                                            "with vizier add before its references were stored) through ADS/doi.org"),
 ):
     """Acknowledgement texts and BibTeX (ADS-verified bibcodes) for the given catalogs/services.
 
     Names without a citation entry are listed in ``unknown`` (and in the
     ``X-Unknown-Citations`` header of the BibTeX response); 422 only when none is known.
+    A registry catalog without a curated entry (a VizieR table registered with ``vizier add``)
+    is cited with the paper(s) its registry citation names: the records ``vizier add`` resolved
+    through ADS/doi.org, else entries parsed from the citation text and marked unverified
+    (``verify=true`` resolves those now; ``X-Unverified-References`` lists what stays unverified).
     """
     names = [c for c in (s.strip() for s in catalogs.split(",")) if c]
     if not names:
@@ -4247,10 +4518,25 @@ async def citations_endpoint(
         bundle = citations_for(names, registry, strict=False)
     except UnknownCitationError as exc:  # none of the names is known
         raise HTTPException(status_code=422, detail=str(exc.args[0])) from exc
+    resolution_notes: list[str] = []
+    if verify and any(not ref.verified for ref in bundle.references):
+        client = _state(request, "client")
+        if client is not None:
+            resolution_notes = await resolve_unverified(client, bundle)
+        else:
+            async with httpx.AsyncClient(timeout=60.0) as own:
+                resolution_notes = await resolve_unverified(own, bundle)
+    unverified = [ref.key for ref in bundle.references if not ref.verified]
     if format == "bibtex":
-        headers = {"X-Unknown-Citations": ",".join(bundle.unknown)} if bundle.unknown else None
-        return PlainTextResponse(bundle.bibtex, media_type="application/x-bibtex", headers=headers)
-    return bundle.as_dict()
+        headers = {"X-Unknown-Citations": ",".join(bundle.unknown)} if bundle.unknown else {}
+        if unverified:
+            headers["X-Unverified-References"] = ",".join(unverified)
+        return PlainTextResponse(bundle.bibtex, media_type="application/x-bibtex", headers=headers or None)
+    out = bundle.as_dict()
+    out["unverified_references"] = unverified
+    if resolution_notes:
+        out["resolution_notes"] = resolution_notes
+    return out
 
 
 @router.get("/citations/sources")
@@ -4400,6 +4686,19 @@ def cite_command(args: argparse.Namespace) -> int:
         return 2
     if bundle.unknown:
         print(f"Warning: no citation entry for {bundle.unknown} (not cited); known: {known_citation_keys()}",
+              file=sys.stderr)
+    if args.verify and any(not ref.verified for ref in bundle.references):
+        # Papers named only in a registry citation: resolved through ADS/doi.org before the
+        # BibTeX is written, then verified with the others below.
+        async def resolve() -> list[str]:
+            async with httpx.AsyncClient(timeout=60.0) as client:
+                return await resolve_unverified(client, bundle)
+
+        for note in asyncio.run(resolve()):
+            print(_console(f"Warning: {note}"), file=sys.stderr)
+    elif any(not ref.verified for ref in bundle.references):
+        print("Note: " + ", ".join(ref.key for ref in bundle.references if not ref.verified)
+              + " parsed from a registry citation (unverified); --verify resolves them through ADS/doi.org",
               file=sys.stderr)
     if args.json:
         _print_json(bundle.as_dict())
@@ -4556,7 +4855,7 @@ __all__ = [
     "FLOAT32_RTOL", "MANIFEST_SCHEMA", "REFERENCES", "RELEASE_TIME_WINDOW_SECONDS", "SCIENCE_SCHEMA", "SEARCH_FIELDS",
     "UNVERIFIED_RELEASE_PREFIX", "BibEntry", "BibTeXError", "CatalogRequest", "CitationBundle", "CitationEntry",
     "ManifestError", "ManifestRequest", "ProvenanceManifest", "Reference", "ReferenceCheck", "ReplayResult",
-    "ReplayUnavailableError", "SearchFields", "UnknownCitationError", "UnparsableAnswerError", "UpstreamServiceError",
+    "ReplayUnavailableError", "SearchFields", "UnknownCitationError", "UnknownObjectNameError", "UnparsableAnswerError", "UpstreamServiceError",
     "api_search_query", "association_inputs", "build_manifest", "canonical_json", "canonicalize", "catalogs_in",
     "citations_for", "code_digests", "compact_science", "content_hash", "curated_citation", "diff_requests",
     "diff_science", "exact", "given_parallax_source", "given_pm_source", "input_target", "js_number_value",

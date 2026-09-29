@@ -67,8 +67,54 @@ class ObjectResolutionError(AstroSearchError):
     """Raised when an astronomical object name cannot be resolved to coordinates."""
 
 
+class ResolverUnavailableError(ObjectResolutionError):
+    """The name resolver itself failed (network error, HTTP 5xx): the name may well be
+    valid. A subclass of ObjectResolutionError, so existing handlers keep working; HTTP
+    routes report it as 503 rather than 404."""
+
+
 class RegistryError(AstroSearchError, ValueError):
     """Raised when a catalog registry file cannot be parsed or fails strict validation."""
+
+
+def every_catalog_failed(record: UnifiedRecord | Mapping[str, Any]) -> bool:
+    """True when a search queried at least one catalog and every one of them failed (a total
+    outage, not an empty sky): the CLI search and stream commands then exit 1."""
+    data = record.as_dict() if isinstance(record, UnifiedRecord) else record
+    queried = int(data.get("catalogs_queried") or 0)
+    failed = {str(f.get("catalog")) for f in data.get("failures") or [] if isinstance(f, Mapping)}
+    return queried > 0 and len(failed) >= queried
+
+
+# Largest cone of POST /api/v1/search (and its batch, saved-query and manifest forms) and of
+# the streamed search: one degree. A wider cone makes every archive scan huge sky areas.
+MAX_SEARCH_RADIUS_ARCSEC = 3600.0
+
+
+def resolution_failure_status(exc: BaseException) -> int:
+    """The HTTP status every route uses for a failed name resolution.
+
+    * 503 -- the resolver could not be reached or answered HTTP 5xx/429
+      (:class:`ResolverUnavailableError`): the name may well be valid, retry later;
+    * 502 -- the resolver answered, but not with a usable document (an HTML maintenance
+      page, truncated XML, an HTTP 4xx of the service itself);
+    * 422 -- an empty name;
+    * 404 -- a well-formed answer that knows no object of that name.
+    """
+    from xml.etree.ElementTree import ParseError
+
+    if isinstance(exc, ResolverUnavailableError):
+        return 503
+    text = str(exc)
+    if "must not be empty" in text:
+        return 422
+    if text.startswith("Sesame request failed"):
+        return 502
+    if isinstance(exc.__cause__, ParseError):
+        return 502
+    if text.startswith("Sesame response could not be parsed") and "No coordinates found" not in text:
+        return 502
+    return 404
 
 
 # ---------------------------------------------------------------------------
@@ -361,13 +407,16 @@ def validate_target(
 
 # Object types (SIMBAD otype codes and NED prefphytype values, lower case) of
 # extragalactic objects: any proper motion measured for them (e.g. a Gaia solution of
-# a galaxy nucleus or quasar) is noise, so they are treated as stationary.
+# a galaxy nucleus or quasar) is noise, so they are treated as stationary. (SIMBAD's
+# 'Sy?' is a symbiotic-star candidate and 'Lev' a microlensing event, both Galactic.)
 EXTRAGALACTIC_OTYPES: frozenset[str] = frozenset({
     # SIMBAD
     "g", "gig", "gic", "bic", "ig", "pag", "sbg", "syg", "sy1", "sy2", "agn", "lin", "sfg", "bcg",
     "lsb", "emg", "h2g", "rg", "qso", "bla", "bll", "grg", "clg", "cgg", "scg", "pcg", "lei", "leq",
     "leg", "lya", "dla", "mal", "lls", "bal", "als", "agn?", "qso?", "g?", "bla?", "bll?", "rg?",
-    "grg?", "clg?", "sy?", "lev",
+    "grg?", "clg?",
+    # current SIMBAD codes of candidates, pairs and lensed objects
+    "gip", "ag?", "q?", "bz?", "bl?", "c?g", "gr?", "sc?", "gls", "gle", "ls?", "le?", "li?",
     # NED
     "gclstr", "ggroup", "gpair", "gtrpl", "qgroup", "g_lens", "q_lens", "qsolens",
 })
@@ -1422,8 +1471,10 @@ def resolve_epoch_range(
     * A catalog with no epoch (``epoch: null``) and ``parameters.epoch_range``: every row
       was observed at some unrecorded time in that span (Chandra CSC master sources,
       LoTSS, NVSS, the 1RXS catalogue).
-    Rows of per-row-epoch catalogs that lack a value stay unknown (None): a missing
-    epoch there is a data problem, not a known span.
+    * A row of a per-row-epoch catalog (an epoch column: AllWISE ``w1mjdmean``, 2MASS
+      ``jdate``) whose value is missing: it was still observed during the survey, so the
+      catalog's ``parameters.epoch_range`` bounds it (AllWISE leaves w1mjdmean empty for
+      some saturated stars, e.g. Aldebaran; its span is 2010.0-2011.2).
     """
     if isinstance(catalog.epoch, Mapping):
         spec = catalog.epoch
@@ -1439,7 +1490,7 @@ def resolve_epoch_range(
         if value is None:
             return _as_span(spec.get("default_range"))
         return _as_span(value)
-    if catalog.epoch is None:
+    if catalog.epoch is None or isinstance(catalog.epoch, (str, list, tuple)):
         return _as_span(catalog.parameters.get("epoch_range"))
     return None
 
@@ -1963,9 +2014,12 @@ DEFAULT_CATALOGS: dict[str, dict[str, Any]] = {
                              "pm_error_ratio": {"2016.0": 1.4, "2015.5": 2.1}},
             # coo_qual when coo_err_* is null. SIMBAD user guide (coordinate quality):
             # A = Hipparcos/Gaia-class with proper motion (mas), B 0.01-0.1", C 0.1-1",
-            # D 1-10", E >= 10". Values are representative 1-sigma errors inside each range.
+            # D 1-10", E >= 10". Values are representative 1-sigma errors inside each range;
+            # E is open-ended (positions rounded to 0.1-1 deg occur, e.g. HVC 104.2-48-168
+            # at exactly (0.0, 13.0)): 1' is listed, and the association treats E rows as
+            # extended, non-point identities (crossmatch.is_extended_identity).
             "fallback_column": "coo_qual",
-            "fallback_values": {"A": 0.005, "B": 0.05, "C": 0.5, "D": 5.0, "E": 20.0},
+            "fallback_values": {"A": 0.005, "B": 0.05, "C": 0.5, "D": 5.0, "E": 60.0},
         },
         "citation": "Wenger et al. 2000, A&AS 143, 9 (2000A&AS..143....9W)",
         "acknowledgement": "This research has made use of the SIMBAD database, operated at CDS, Strasbourg, France.",

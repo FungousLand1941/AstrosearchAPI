@@ -1798,7 +1798,19 @@
   "query_radius_arcsec": 10.0
  },
  "resolved_object": {
-  "aliases": [],
+  "aliases": [
+   "** LUH 16",
+   "2MASS J10491891-5319100",
+   "CNS5 2653",
+   "DENIS J104919.0-531910",
+   "Gaia DR3 5353626573555863424",
+   "NAME WISE J1049-5319AB",
+   "TIC 119862115",
+   "UCAC4 184-061368",
+   "WDS J10493-5319AB",
+   "WISE J104915.57-531906.1",
+   "WISEA J104915.52-531906.1"
+  ],
   "canonical_name": "NAME Luhman 16",
   "dec_deg": -53.319466,
   "epoch": 2000.0,
@@ -1810,18 +1822,35 @@
   "redshift": null,
   "resolver": "cds_sesame",
   "resolver_metadata": {
-   "endpoint": "https://cds.unistra.fr/cgi-bin/nph-sesame/-oxp/SNV",
+   "endpoint": "https://cds.unistra.fr/cgi-bin/nph-sesame/-oxpI/SNV",
    "epoch_source": "SIMBAD positions are ICRS at epoch J2000",
    "extragalactic": false,
    "parallax_mas": 501.557,
    "proper_motion_applicable": true,
    "radial_velocity_kms": null,
    "raw_fields": {
+    "alias": [
+     "UCAC4 184-061368",
+     "** LUH 16",
+     "CNS5 2653",
+     "DENIS J104919.0-531910",
+     "2MASS J10491891-5319100",
+     "NAME WISE J1049-5319AB",
+     "NAME Luhman 16",
+     "TIC 119862115",
+     "WDS J10493-5319AB",
+     "WISEA J104915.52-531906.1",
+     "WISE J104915.57-531906.1",
+     "Gaia DR3 5353626573555863424"
+    ],
     "errdemas": [
      "60"
     ],
     "errramas": [
      "60"
+    ],
+    "info": [
+     "from cache"
     ],
     "jdedeg": [
      "-53.319466"

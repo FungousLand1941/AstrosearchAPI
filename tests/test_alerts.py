@@ -514,8 +514,9 @@ def test_host_names_avoid_transient_labels_and_subcomponents() -> None:
 def test_projected_offset_distances() -> None:
     from astropy.cosmology import Planck18
 
-    # z = 0.05: Planck 2018 angular-diameter distance (not the luminosity distance, (1+z)^2 = 1.10 larger).
-    d_a = Planck18.angular_diameter_distance(0.05).to(u.kpc).value
+    # z = 0.05: angular-diameter distance (not the luminosity distance, (1+z)^2 = 1.10 larger) of a flat
+    # LCDM with the Planck 2018 densities and the Cosmicflows-4 H0 = 74.6 km/s/Mpc.
+    d_a = Planck18.clone(H0=74.6).angular_diameter_distance(0.05).to(u.kpc).value
     assert projected_offset_kpc(10.0, 0.05) == pytest.approx(d_a * math.radians(10.0 / 3600.0), rel=1e-6)
     # Below cz = 1500 km/s a redshift distance is meaningless (Local Group: M31 at -300 km/s, the LMC at +262 km/s).
     assert projected_offset_kpc(4133.7, 0.000875) is None and projected_offset_kpc(100.0, -0.001) is None
@@ -526,7 +527,8 @@ def test_projected_offset_distances() -> None:
     # CF4 is used for z < 0.01 only; beyond, the Hubble flow (z = 0.0141, AT 2018cow's host).
     assert projected_offset_kpc(5.0, 0.0141, (35.0, 0.1)) == pytest.approx(projected_offset_kpc(5.0, 0.0141), rel=1e-9)
     near = alerts.host_distance(0.006)
-    assert near["method"] == "hubble_flow_planck18" and near["fractional_uncertainty"] == pytest.approx(300 / (0.006 * 299792.458))
+    assert near["method"] == "hubble_flow" and near["fractional_uncertainty"] == pytest.approx(300 / (0.006 * 299792.458))
+    assert near["hubble_constant_kms_mpc"] == pytest.approx(74.6)
 
 
 def test_hyperleda_pa_is_precessed_from_b1950() -> None:
@@ -676,7 +678,8 @@ def test_at2019dsg_host_is_named_after_the_galaxy(famous: dict[str, AlertEnrichm
     assert "AT 2019dsg" in names_of(host)  # NED's host entry under the transient's name, kept as an alias
     assert host["redshift"] == pytest.approx(0.0512, abs=0.001)  # Stein et al. 2021: z = 0.0512
     assert "AT 2019dsg" in res.transient_designations
-    # Projected offset at the Planck 2018 angular-diameter distance (to 1%; the luminosity distance
+    # Projected offset at the Hubble-flow angular-diameter distance (Planck 2018 densities, CF4 H0 = 74.6;
+    # to 1%; the luminosity distance
     # would be (1+z)^2 = 10.5% larger) of the CMB-frame redshift: the Sun moves at 369.82 km/s towards
     # Galactic (264.021, 48.253) (Planck 2020), 146 deg from AT 2019dsg, so cz_CMB < cz_helio by ~307 km/s.
     from astropy.cosmology import Planck18
@@ -686,12 +689,13 @@ def test_at2019dsg_host_is_named_after_the_galaxy(famous: dict[str, AlertEnrichm
     z_cmb = (1 + host["redshift"]) / (1 - v_r / 299792.458) - 1
     assert -320 < v_r < -290 and host["redshift_cmb"] == pytest.approx(z_cmb, rel=1e-6)
     assert host["velocity_frame"] == "cmb"
-    d_a = Planck18.comoving_transverse_distance(z_cmb).to(u.kpc).value / (1 + host["redshift"])
+    cosmo = Planck18.clone(H0=74.6)
+    d_a = cosmo.comoving_transverse_distance(z_cmb).to(u.kpc).value / (1 + host["redshift"])
     expected = d_a * math.radians(host["separation_arcsec"] / 3600.0)
     assert host["projected_offset_kpc"] == pytest.approx(expected, rel=1e-6)
-    assert host["distance_method"] == "hubble_flow_planck18"
+    assert host["distance_method"] == "hubble_flow" and host["hubble_constant_kms_mpc"] == pytest.approx(74.6)
     # Heliocentric would be 1.9% too far.
-    helio = Planck18.angular_diameter_distance(host["redshift"]).to(u.kpc).value * math.radians(host["separation_arcsec"] / 3600.0)
+    helio = cosmo.angular_diameter_distance(host["redshift"]).to(u.kpc).value * math.radians(host["separation_arcsec"] / 3600.0)
     assert helio / host["projected_offset_kpc"] == pytest.approx(1.019, abs=0.004)
 
 
@@ -917,7 +921,11 @@ def record_of(ra: float, dec: float, catalogs: list[str], *, failed: dict[str, s
 
 
 def enricher_with(answer: Any, d25: tuple[list[dict[str, Any]], dict[str, Any] | None, bool] = ([], None, False),
-                  cf4: dict[int, tuple[float, float]] | Exception | None = None) -> AlertEnricher:
+                  cf4: dict[int, tuple[float, float]] | Exception | None = None,
+                  groups: dict[int, dict[str, Any]] | Exception | None = None) -> AlertEnricher:
+    """AlertEnricher whose archive answers are synthetic: ``answer(ra, dec, catalogs)`` for the cones, ``d25``
+    for HyperLEDA, ``cf4`` for the Cosmicflows-4 distances and ``groups`` for the Tully (2015) group lookup
+    (by PGC; a missing PGC is in no group, an exception makes the lookup fail)."""
     enricher = AlertEnricher(fake_service(answer))
     # The counterpart, host cone and identity lookups all use the same fake.
     enricher.match_service = enricher.host_service = enricher.service
@@ -930,8 +938,14 @@ def enricher_with(answer: Any, d25: tuple[list[dict[str, Any]], dict[str, Any] |
             raise cf4
         return (cf4 or {}).get(pgc)
 
+    async def fake_group(pgc: int, ra: float, dec: float):
+        if isinstance(groups, Exception):
+            raise groups
+        return (groups or {}).get(pgc)
+
     enricher._d25 = fake_d25  # type: ignore[method-assign]
     enricher._cf4_distance = fake_cf4  # type: ignore[method-assign]
+    enricher._cf4_group = fake_group  # type: ignore[method-assign]
     return enricher
 
 
@@ -983,7 +997,7 @@ async def test_stellar_counterpart_inside_a_galaxy(z: float | None, expected: bo
 
     d25 = ([_d25_galaxy(galaxy["ra"], galaxy["dec"], ALERT, 60.0)], None, False)
     res = await enricher_with(answer, d25).enrich(ALERT)
-    assert res.stellar_counterpart is True and res.known_star is expected
+    assert res.status == "done" and res.stellar_counterpart is True and res.known_star is expected
     if expected is True:  # a foreground star: no host
         assert res.host is None and res.host_status == "not_applicable_star"
     else:
@@ -1002,7 +1016,7 @@ async def test_gaia_parallax_needs_good_ruwe_inside_a_galaxy() -> None:
 
     d25 = ([_d25_galaxy(galaxy["ra"], galaxy["dec"], ALERT, 30.0)], None, False)
     inside = await enricher_with(answer, d25).enrich(ALERT)
-    assert inside.known_star is False and inside.host is not None
+    assert inside.status == "done" and inside.known_star is False and inside.host is not None
     assert any("parallax not used" in e for e in inside.evidence)
     outside = await enricher_with(answer).enrich(ALERT)  # no D25 galaxy: a binary star's RUWE is no reason to doubt
     assert outside.known_star is True and outside.host is None
@@ -1048,7 +1062,7 @@ async def test_gaia_foreground_criteria_inside_a_galaxy(data: dict[str, Any], ex
 
     d25 = ([_d25_galaxy(galaxy["ra"], galaxy["dec"], ALERT, 30.0)], None, False)
     res = await enricher_with(answer, d25, cf4={1: (25.0, 0.05)}).enrich(ALERT)
-    assert res.known_star is expected
+    assert res.status == "done" and res.known_star is expected
     if why is not None:
         assert any(why in e for e in res.evidence), res.evidence
     if expected:
@@ -1072,7 +1086,7 @@ async def test_bright_catalogued_star_on_a_galaxy_is_foreground() -> None:
         return lambda ra, dec, cats: record_of(ra, dec, cats, sources=sources if "gaia_dr3" in cats else {"simbad": [galaxy]})
 
     res = await enricher_with(answer_with({"gaia_dr3": [gaia], "simbad": [star]}), d25, cf4={1: (29.0, 0.1)}).enrich(ALERT)
-    assert res.known_star is True and any("M_G = -15.0" in e for e in res.evidence)
+    assert res.status == "done" and res.known_star is True and any("M_G = -15.0" in e for e in res.evidence)
     res = await enricher_with(answer_with({"gaia_dr3": [gaia]}), d25, cf4={1: (29.0, 0.1)}).enrich(ALERT)
     assert res.known_star is False and res.host is not None
 
@@ -1146,8 +1160,10 @@ async def test_galaxy_named_only_by_a_transient_designation_is_not_adopted() -> 
     """Synthetic (the NED situation of ZTF18aaawtyh): NED's only galaxy at the position is 'AT 2017abr'."""
     at = {"source_id": "AT 2017abr", "ra": ALERT.ra, "dec": ALERT.dec + 0.2 / 3600, "separation_arcsec": 0.2,
           "data": {"prefphytype": "G", "z": 0.206904}}
-    far_galaxy = {"source_id": "WISEA J100000.00+020030.0", "ra": ALERT.ra, "dec": ALERT.dec + 30 / 3600,
-                  "separation_arcsec": 30.0, "data": {"prefphytype": "G", "z": 0.08}}
+    # A z = 0.08 galaxy 4" away (0.7 typical light radii of 8 kpc; chance coincidence 1 - exp(-(4/60)^2) = 0.004:
+    # the entry named after a transient is not a galaxy of the cone).
+    far_galaxy = {"source_id": "WISEA J100000.00+020004.0", "ra": ALERT.ra, "dec": ALERT.dec + 4 / 3600,
+                  "separation_arcsec": 4.0, "data": {"prefphytype": "G", "z": 0.08}}
 
     def answer_with(host_rows):
         def answer(ra, dec, cats):
@@ -1161,7 +1177,15 @@ async def test_galaxy_named_only_by_a_transient_designation_is_not_adopted() -> 
     assert only.host is None and only.host_status == "ambiguous_transient_entry"
     assert any("named only by a transient designation" in e for e in only.evidence)
     other = await enricher_with(answer_with([at, far_galaxy])).enrich(ALERT)
-    assert other.host is not None and other.host["name"] == "WISEA J100000.00+020030.0"
+    assert other.host is not None and other.host["name"] == "WISEA J100000.00+020004.0" and other.status == "done"
+    assert other.host["method"] == "nearest" and other.host["p_chance"] == pytest.approx(1 - math.exp(-((4 / 60) ** 2)))
+    # 30" away the same galaxy is 9 typical light radii off: not a host (Gupta et al. 2016: d_DLR < 4 second-moment
+    # radii ~ 2 D25 radii), and the host search says galaxies were found but none is associated.
+    far = {**far_galaxy, "source_id": "WISEA J100000.00+020030.0", "dec": ALERT.dec + 30 / 3600, "separation_arcsec": 30.0}
+    distant = await enricher_with(answer_with([at, far])).enrich(ALERT)
+    assert distant.host is None and distant.host_status == "unassociated" and distant.host_search_complete is True
+    assert any("WISEA J100000.00+020030.0 at 30.0\" not adopted" in e and "typical light radii" in e
+               for e in distant.evidence), distant.evidence
 
 
 async def test_all_catalogs_failing_marks_enrichment_failed(store: AlertStore) -> None:
@@ -1205,7 +1229,9 @@ async def test_failed_recrossmatch_keeps_the_previous_enrichment(store: AlertSto
     after = store.get(ALERT.alert_id)
     for key in ("crossmatch_status", "host_name", "host_redshift", "is_new", "known_star", "enrichment"):
         assert after[key] == before[key], key
-    assert "CatalogUnavailableError" in after["last_crossmatch_error"] and after["crossmatch_attempts"] == 2
+    # An outage (every archive unreachable) is recorded, but is not counted as an attempt.
+    assert "CatalogUnavailableError" in after["last_crossmatch_error"]
+    assert (after["crossmatch_attempts"], after["crossmatch_outages"]) == (1, 1)
     # A partial re-run does not replace a complete one either.
     partial = enricher_with(lambda ra, dec, cats: record_of(ra, dec, cats, failed={"gaia_dr3": "QueryTimeoutError"}))
     assert (await AlertService(store, offline_client(), partial).enrich_alert(ALERT))[1] == "kept_previous"
@@ -1221,49 +1247,91 @@ async def test_partial_rows_are_retried_by_later_polls(store: AlertStore, monkey
         return FetchResult([Alert.from_dict(ALERT.as_dict())] if since_mjd < 61306.5 else [])
 
     monkeypatch.setattr(alerts, "fetch_alerts", fake_fetch)
-    svc = AlertService(store, offline_client(), enricher, clock=lambda: 61307.0)
+    now = {"t": 61307.0}
+    svc = AlertService(store, offline_client(), enricher, clock=lambda: now["t"])
     first = await svc.poll("fink", since_mjd=61306.0)
     assert (first.inserted, first.crossmatch_partial, first.retried) == (1, 1, 0)
-    assert store.crossmatch_status(ALERT.alert_id) == "partial"
+    row = store.get(ALERT.alert_id)
+    assert row["crossmatch_status"] == "partial"
+    # A Gaia timeout is an outage: not an attempt, but the retry backs off (5 minutes after the first).
+    assert (row["crossmatch_attempts"], row["crossmatch_outages"]) == (0, 1)
+    assert row["next_crossmatch_mjd"] == pytest.approx(61307.0 + alerts.RETRY_BACKOFF_SECONDS / 86400)
     gaia_down["value"] = False
+    assert (await svc.poll("fink", since_mjd=61306.6)).retried == 0  # a poll a moment later: not due yet
+    now["t"] += 600 / 86400
     # A window without the alert: the retry sweep re-enriches the stored partial row.
     second = await svc.poll("fink", since_mjd=61306.6)
     assert (second.fetched, second.retried, second.crossmatched) == (0, 1, 1)
     row = store.get(ALERT.alert_id)
     assert row["crossmatch_status"] == "done" and row["known_star"] is False and row["is_new"] is True
-    assert row["crossmatch_attempts"] == 2 and row["last_crossmatch_error"] is None
-    assert store.incomplete(broker="fink") == []  # done rows are not retried
+    assert (row["crossmatch_attempts"], row["crossmatch_outages"]) == (1, 1) and row["last_crossmatch_error"] is None
+    assert row["next_crossmatch_mjd"] is None
+    assert store.incomplete(broker="fink", now_mjd=now["t"] + 10) == []  # done rows are not retried
 
 
-async def test_partial_rows_stop_being_retried_after_max_attempts(store: AlertStore,
-                                                                 monkeypatch: pytest.MonkeyPatch) -> None:
-    """Regression: an alert that stays in the (overlapping) poll window while NED keeps timing out
-    was re-crossmatched on every watch cycle; now at most MAX_CROSSMATCH_ATTEMPTS times."""
+async def test_outage_attempts_back_off_and_do_not_use_up_the_attempt_cap(store: AlertStore,
+                                                                         monkeypatch: pytest.MonkeyPatch) -> None:
+    """Regression: every watch cycle re-crossmatched the alerts of the overlap window while NED timed out, so a
+    30-minute outage used up MAX_CROSSMATCH_ATTEMPTS (in 25 minutes) and the rows stayed partial forever."""
+    ned = {"down": True}
     calls = {"n": 0}
 
-    def ned_down(ra, dec, cats):
+    def answer(ra, dec, cats):
         calls["n"] += 1
-        return record_of(ra, dec, cats, failed={"ned": "QueryTimeoutError"})
+        return record_of(ra, dec, cats, failed={"ned": "QueryTimeoutError"} if ned["down"] else {})
 
     async def fake_fetch(client, broker, *, since_mjd, until_mjd, limit=20, options=None):
         return FetchResult([Alert.from_dict(ALERT.as_dict())])  # the alert is in every window
 
     monkeypatch.setattr(alerts, "fetch_alerts", fake_fetch)
     now = {"t": 61306.35}
-    svc = AlertService(store, offline_client(), enricher_with(ned_down), clock=lambda: now["t"])
+    svc = AlertService(store, offline_client(), enricher_with(answer), clock=lambda: now["t"])
     results = []
-    for _ in range(12):  # watch cycles 5 minutes apart
+    for cycle in range(24):  # 2 h of watch cycles 5 minutes apart; NED is back after 30 minutes
+        ned["down"] = cycle < 6
         results.append(await svc.poll("fink", limit=5))
         now["t"] += 300 / 86400
     row = store.get(ALERT.alert_id)
+    assert row["crossmatch_status"] == "done" and row["crossmatch_attempts"] == 1
+    # Attempts at 0, 5, 15 and 35 minutes (backoff 5, 10, 20 min): the 35-minute one, after the outage, succeeds.
+    assert [r.crossmatch_partial + r.crossmatched for r in results[:8]] == [1, 1, 0, 1, 0, 0, 0, 1]
+    assert row["crossmatch_outages"] == 3 and calls["n"] == 2 * 4
+    assert all(r.crossmatch_capped == 0 for r in results)
+    assert sum(r.crossmatch_backoff for r in results) == 4
+    assert any("retry backs off" in w for w in results[2].warnings)
+
+
+async def test_partial_rows_stop_being_retried_after_max_attempts(store: AlertStore,
+                                                                 monkeypatch: pytest.MonkeyPatch) -> None:
+    """An incomplete crossmatch that is not an outage (NED answers an error) is retried at most
+    MAX_CROSSMATCH_ATTEMPTS times by the polls, then once a day by the sweep."""
+    calls = {"n": 0}
+
+    def ned_broken(ra, dec, cats):
+        calls["n"] += 1
+        return record_of(ra, dec, cats, failed={"ned": "CatalogQueryError"})
+
+    async def fake_fetch(client, broker, *, since_mjd, until_mjd, limit=20, options=None):
+        return FetchResult([Alert.from_dict(ALERT.as_dict())])  # the alert is in every window
+
+    monkeypatch.setattr(alerts, "fetch_alerts", fake_fetch)
+    now = {"t": 61306.35}
+    svc = AlertService(store, offline_client(), enricher_with(ned_broken), clock=lambda: now["t"])
+    results = []
+    for _ in range(8):  # polls 2 hours apart: every backoff (at most 80 minutes before the cap) has passed
+        results.append(await svc.poll("fink", limit=5))
+        now["t"] += 2 / 24
+    row = store.get(ALERT.alert_id)
     cap = alerts.MAX_CROSSMATCH_ATTEMPTS
-    assert row["crossmatch_status"] == "partial" and row["crossmatch_attempts"] == cap
+    assert row["crossmatch_status"] == "partial" and row["crossmatch_attempts"] == cap and row["crossmatch_outages"] == 0
     assert calls["n"] == 2 * cap  # counterpart + host cone per attempt
-    assert [r.crossmatch_partial for r in results] == [1] * cap + [0] * (12 - cap)
+    assert [r.crossmatch_partial for r in results] == [1] * cap + [0] * (8 - cap)
     assert all(r.crossmatch_capped == 1 and any("attempts already made" in w for w in r.warnings) for r in results[cap:])
-    # The retry sweep is capped as well.
-    assert store.incomplete(broker="fink") == []
-    # A moved alert (new position) starts again.
+    # The retry sweep is capped as well -- for a day after the last attempt.
+    assert store.incomplete(broker="fink", now_mjd=now["t"]) == []
+    last = row["next_crossmatch_mjd"] - alerts.CAPPED_RETRY_DAYS
+    assert [a.alert_id for a in store.incomplete(broker="fink", now_mjd=last + 1.01)] == [ALERT.alert_id]
+    # A moved alert (new position) starts again at once.
     moved = Alert.from_dict({**ALERT.as_dict(), "mjd": ALERT.mjd + 1.0, "dec": ALERT.dec + 5.0 / 3600})
 
     async def fetch_moved(client, broker, *, since_mjd, until_mjd, limit=20, options=None):
@@ -1420,14 +1488,14 @@ async def test_poll_persists_crossmatches_and_repoll_is_idempotent(store: AlertS
             assert first.truncated and "window truncated at limit=3" in first.warnings[0]
             assert f"until_mjd={first.boundary_mjd:.6f}" in first.warnings[0]
             n_calls = len(replay.calls)
-            # objects + 3 detections; 3 alerts x (3 counterpart + 2 host-cone + 1 HyperLEDA) queries, plus
-            # the Cosmicflows-4 galaxy and group lookups for the host of ZTF26abxsxww (a PGC galaxy of unknown
-            # redshift, not in CF4 nor in a Tully 2015 group).
-            assert n_calls == 4 + 20 == 4 + len(meta("xmatch_alerce")["exchanges"])
+            # objects + 3 classifier versions + 3 detections; 3 alerts x (3 counterpart + 2 host-cone + 1 HyperLEDA)
+            # queries, plus the Cosmicflows-4 galaxy and group lookups for the host of ZTF26abxsxww (a PGC galaxy
+            # of unknown redshift, not in CF4 nor in a Tully 2015 group).
+            assert n_calls == 7 + 20 == 7 + len(meta("xmatch_alerce")["exchanges"])
             second = await svc.poll("alerce", since_mjd=p["since_mjd"], until_mjd=p["until_mjd"], limit=p["limit"],
                                     options=p["options"])
             assert (second.inserted, second.updated, second.unchanged, second.crossmatched, second.retried) == (0, 0, 3, 0, 0)
-            assert len(replay.calls) == n_calls + 4  # broker only: nothing is crossmatched twice
+            assert len(replay.calls) == n_calls + 7  # broker only: nothing is crossmatched twice
     rows = store.list()
     assert len(rows) == 3 and all(r["crossmatch_status"] == "done" and r["crossmatch_attempts"] == 1 for r in rows)
     new_one = store.get("alerce:ZTF26abxsxww")
@@ -1937,3 +2005,26 @@ async def test_fink_lsst_paging_boundary_is_utc() -> None:
         alerts.MAX_PAGES = old_max
     assert len(res.alerts) == 1 and res.truncated
     assert (61235.35 - res.boundary_mjd) * 86400.0 == pytest.approx(37.0, abs=1e-3)
+
+
+async def test_synthetic_hosts_take_the_cosmicflows4_group_distance_or_report_its_failure() -> None:
+    """Synthetic: a PGC host at z = 0.002 without a CF4 distance of its own takes its Tully (2015) group's CF4
+    distance; a failed group lookup (a VizieR timeout) leaves the enrichment partial, with that error type."""
+    galaxy = {"source_id": "NGC 1", "ra": ALERT.ra + 20 / 3600, "dec": ALERT.dec, "separation_arcsec": 20.0,
+              "data": {"otype": "G", "rvz_redshift": 0.002}}
+    d25 = ([_d25_galaxy(galaxy["ra"], galaxy["dec"], ALERT, 60.0)], None, False)
+
+    def answer(ra, dec, cats):
+        return record_of(ra, dec, cats, sources={} if "gaia_dr3" in cats else {"simbad": [galaxy]})
+
+    group = {"nest": 100002, "pgc1": 41220, "n_members": 5.0, "sigma_v_kms": 670.0, "r2t_mpc": 1.44, "dm": 31.048,
+             "e_dm": 0.008, "v3k_kms": 1479.0}
+    res = await enricher_with(answer, d25, groups={1: group}).enrich(ALERT)
+    assert res.status == "done" and res.host is not None and res.host["distance_method"] == "cosmicflows4_group"
+    assert res.host["distance_mpc"] == pytest.approx(10 ** (31.048 / 5 - 5) / 1.002 ** 2, rel=1e-9)
+    assert res.host["group"]["nest"] == 100002 and any("of its group 100002" in e for e in res.evidence)
+    down = await enricher_with(answer, d25, groups=alerts.CatalogLookupError("QueryTimeoutError", "VizieR")).enrich(ALERT)
+    assert down.status == "partial" and down.host["projected_offset_kpc"] is None
+    (failure,) = down.failures
+    assert failure["catalog"] == alerts.COSMICFLOWS4_GROUPS and failure["error_type"] == "QueryTimeoutError"
+    assert down.outage  # only an unreachable service: retried with a backoff, not counted as an attempt

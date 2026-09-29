@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>PSR B0950+08</name>
+  <!-- Q8505996 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 0ms [0] -->
+    <INFO>from cache</INFO>
+    <oid>1658587</oid>
+    <otype>Psr</otype>
+    <jpos>09:53:09.31 +07:55:36.9</jpos>
+    <jradeg>148.28880042</jradeg>
+    <jdedeg>7.92691667</jdedeg>
+    <refPos>2020MNRAS.494..228L</refPos>
+    <errRAmas>3</errRAmas><errDEmas>100</errDEmas>
+    <pm>
+      <v>29.53</v><e>0.11</e><q>D</q><r>2002A&amp;A...394..633Z</r>
+      <pa>355.9</pa>
+      <pmRA>-2.09</pmRA><epmRA>0.08</epmRA>
+      <pmDE>29.46</pmDE><epmDE>0.07</epmDE>
+    </pm>
+    <Vel><v>36.6</v><q>D</q><r>2008ARep...52..736S</r></Vel>
+    <plx><v>7.9</v><e>0.8</e><q>D</q><r>2002ApJ...571..906B</r></plx>
+    <oname>PSR B0950+08</oname>
+    <nrefs>815</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ====Done (2026-Sep-29,10:36:09z)==== -->

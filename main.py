@@ -1,54 +1,154 @@
-"""Master programmatic facade, command-line interface (CLI), and built-in offline verification suite."""
+"""Programmatic facade, command-line interface (CLI) and built-in offline verification suite.
+
+Every feature module plugs into the CLI through ``register_cli(subparsers)``, which adds its
+subcommands and sets ``handler`` (a function returning the exit status). The core commands
+(serve, search, dataset, catalogs, benchmark, verify) are defined here.
+
+The service factories used by the API (``api.py``), the CLI and the feature modules' own
+fallbacks live here too:
+
+* :func:`build_registry` -- the embedded catalog registry merged with the user registry YAML
+  that ``vizier add`` / ``POST /api/v1/vizier/register`` write (``vizier.load_registry``);
+* :func:`build_providers` -- the archive adapters, answering from the local sky cache first
+  for catalogs mirrored there (``skycache``), with the archive as fallback;
+* :func:`build_service` -- a :class:`crossmatch.CrossmatchService` over both.
+"""
 
 from __future__ import annotations
 
 import argparse
 import asyncio
-import io
+import functools
 import json
 import os
 import sys
 import tempfile
 import time
+from collections.abc import Callable, Mapping
 from pathlib import Path
 from typing import Any
 
 import httpx
 
+# Only the modules the service factories need are imported here; the CLI (cli.py) imports a
+# feature module when its command runs, so `import main` stays cheap.
+import cli
+import skycache
+import streaming
+import vizier
 from crossmatch import (
     AdvancedQuery,
     CrossmatchService,
-    QueryValidator,
     angular_separation_arcsec,
     match_score,
-    match_target,
+    resolved_search_target,
 )
 from datasets import DatasetEngine, DatasetWriter
 from models import (
     AstroSearchError,
     CatalogDefinition,
     CatalogRegistry,
-    CatalogSource,
     InvalidCoordinateError,
     Settings,
     Target,
     UnifiedRecord,
+    every_catalog_failed,
     normalize_source_record,
     parse_ipac_records,
-    parse_json_records,
-    resolved_target,
     validate_target,
 )
 from providers import (
+    CatalogProvider,
     EndpointGuard,
-    MASTProvider,
     SesameResolver,
     provider_map,
 )
 
+# Feature modules whose ``register_cli(subparsers)`` adds subcommands, in help order
+# (cli.FEATURE_COMMANDS lists their commands, so --help needs none of them imported).
+CLI_MODULE_NAMES = tuple(cli.FEATURE_COMMANDS)
+
 # ---------------------------------------------------------------------------
-# Public Programmatic API
+# Service factories
 # ---------------------------------------------------------------------------
+
+
+def build_registry(*, settings: Settings | None = None, registry_path: str | None = None) -> CatalogRegistry:
+    """The catalog registry the service queries: the embedded catalogs plus the user
+    catalogs registered with ``vizier add`` (``vizier.load_registry``; a registry file
+    without ``extends: embedded`` is read as a complete registry, as before).
+
+    Every registry problem is logged; CATALOG_REGISTRY_STRICT=true raises instead.
+    """
+    active = settings or Settings()
+    registry = vizier.load_registry(registry_path or active.catalog_registry_path or None)
+    registry.startup_check()
+    return registry
+
+
+def skycache_enabled() -> bool:
+    """SKYCACHE_ENABLED (default true): answer cones of mirrored catalogs from the local store."""
+    return os.getenv("SKYCACHE_ENABLED", "true").strip().lower() not in {"0", "false", "no", "off"}
+
+
+@functools.lru_cache(maxsize=8)
+def _store_at(path: str) -> skycache.SkyCache:
+    return skycache.SkyCache(path)
+
+
+def skycache_store(path: str | os.PathLike[str] | None = None) -> skycache.SkyCache:
+    """The sky cache at ``path`` (default ``$SKYCACHE_PATH`` or ``~/.astrosearch/skycache``),
+    one instance per directory per process, so every service shares its loaded partitions."""
+    root = Path(path).expanduser() if path else skycache.default_store_path()
+    return _store_at(str(root.resolve()))
+
+
+class MirrorFirstProvider(skycache.SkyCacheProvider):
+    """An archive adapter that answers from the local sky cache when the catalog is mirrored.
+
+    For a catalog present in the store, the local cone search runs first; a cone it does not
+    fully cover (or a stale / changed / damaged mirror) falls back to the archive, recorded
+    in ``meta['skycache']`` (see :class:`skycache.SkyCacheProvider`). A catalog that was
+    never mirrored goes straight to the archive, without a worker-thread hop or a
+    ``skycache`` entry, so a service without mirrors behaves exactly like the bare adapters.
+    The store is checked on every query, so a catalog mirrored while the API runs
+    (``POST /api/v1/skycache/mirror``) is used at once.
+
+    Attributes of the archive adapter (``client``, ``guards``, ``cache``, ``timeout``, ...)
+    are read through, so the batch router, the provenance replay and the monitoring
+    endpoint see the same endpoint guards and HTTP client. :func:`skycache.archive_providers`
+    unwraps it (mirroring always queries the archive).
+    """
+
+    def __getattr__(self, name: str) -> Any:
+        if name in {"remote", "local"}:  # not set yet (copy / unpickling): no recursion
+            raise AttributeError(name)
+        return getattr(self.remote, name)
+
+    async def query(self, catalog: CatalogDefinition, target: Target, radius_arcsec: float) -> Any:
+        if not self.local.store.has(catalog.name):
+            return await self.remote.query(catalog, target, radius_arcsec)
+        return await super().query(catalog, target, radius_arcsec)
+
+
+def build_providers(
+    *,
+    settings: Settings | None = None,
+    client: httpx.AsyncClient | None = None,
+    store: skycache.SkyCache | None = None,
+) -> dict[str, CatalogProvider]:
+    """Archive adapters on one HTTP client (one guard map and cache shared between them),
+    wrapped in :class:`MirrorFirstProvider` unless SKYCACHE_ENABLED=false."""
+    active = settings or Settings()
+    providers: dict[str, CatalogProvider] = provider_map(
+        client,
+        timeout=active.request_timeout_seconds,
+        max_response_bytes=active.max_response_bytes,
+    )
+    if skycache_enabled():
+        local = skycache.LocalProvider(store or skycache_store())
+        providers = {name: MirrorFirstProvider(provider, local) for name, provider in providers.items()}
+    return providers
 
 
 def build_service(
@@ -56,23 +156,136 @@ def build_service(
     settings: Settings | None = None,
     registry_path: str | None = None,
     client: httpx.AsyncClient | None = None,
+    registry: CatalogRegistry | None = None,
+    providers: Mapping[str, CatalogProvider] | None = None,
+    service_class: type[CrossmatchService] = CrossmatchService,
 ) -> CrossmatchService:
-    """Build a configured CrossmatchService instance."""
+    """A configured CrossmatchService: :func:`build_registry` (unless ``registry`` is given)
+    and :func:`build_providers` on ``client`` (unless ``providers`` is given)."""
     active_settings = settings or Settings()
-    registry = CatalogRegistry(registry_path or active_settings.catalog_registry_path)
-    registry.startup_check()  # logs problems; raises when CATALOG_REGISTRY_STRICT=true
-    providers = provider_map(
-        client,
-        timeout=active_settings.request_timeout_seconds,
-        max_response_bytes=active_settings.max_response_bytes,
-    )
-    return CrossmatchService(
-        registry,
-        providers,
+    if providers is None:
+        providers = build_providers(settings=active_settings, client=client)
+    return service_class(
+        registry if registry is not None else build_registry(settings=active_settings, registry_path=registry_path),
+        # The same mapping object (app.state.providers is the service's providers).
+        providers if isinstance(providers, dict) else dict(providers),
         radius_arcsec=active_settings.default_radius_arcsec,
         timeout=active_settings.request_timeout_seconds,
         timeout_cap=active_settings.catalog_timeout_cap_seconds,
     )
+
+
+def resolution_kwargs(spec: Mapping[str, Any], resolved: Any) -> dict[str, Any]:
+    """CrossmatchService.crossmatch keywords carrying a resolver's answer: the target's position
+    and proper-motion uncertainties (and where they came from) and the resolved object (its
+    catalogue row is the target's identity)."""
+    kwargs = {"target_uncertainty_arcsec": spec.get("target_uncertainty_arcsec"),
+              "target_pm_error_masyr": spec.get("target_pm_error_masyr"),
+              "target_uncertainty_source": spec.get("target_uncertainty_source"),
+              "resolved_object": resolved}
+    return {key: value for key, value in kwargs.items() if value is not None}
+
+
+def search_query(fields: Mapping[str, Any], spec: Mapping[str, Any] | None = None,
+                 resolved_info: Mapping[str, Any] | None = None) -> AdvancedQuery:
+    """The AdvancedQuery of ``POST /api/v1/search`` from api.SearchRequest ``fields`` (all present).
+
+    For a name search ``spec`` is :func:`crossmatch.resolved_search_target` of the resolver's
+    answer (position, epoch, motion, parallax and pm_source) and ``resolved_info`` that answer's
+    ``as_dict()``; otherwise the coordinates and motion are the fields' ("input" motion).
+    """
+    epoch, pm_ra, pm_dec, parallax = (fields.get("epoch"), fields.get("pm_ra_masyr"), fields.get("pm_dec_masyr"),
+                                      fields.get("parallax_mas"))
+    pm_source = "input" if pm_ra is not None else None
+    if spec is not None:
+        ra, dec, epoch = spec["ra"], spec["dec"], spec["epoch"]
+        pm_ra, pm_dec, parallax = spec["pm_ra_masyr"], spec["pm_dec_masyr"], spec["parallax_mas"]
+        pm_source = spec["pm_source"]
+    else:
+        if fields.get("ra") is None or fields.get("dec") is None:
+            raise ValueError("Either name or both ra and dec are required")
+        ra, dec = fields["ra"], fields["dec"]
+    metadata: dict[str, Any] = {}
+    if pm_source:
+        metadata["pm_source"] = pm_source
+    if resolved_info:
+        metadata["resolved_object"] = dict(resolved_info)
+    profile = fields.get("profile")
+    return AdvancedQuery.from_dict({
+        "ra": ra,
+        "dec": dec,
+        "epoch": epoch,
+        "pm_ra_masyr": pm_ra,
+        "pm_dec_masyr": pm_dec,
+        "parallax_mas": parallax,
+        "radius_arcsec": fields["radius_arcsec"],
+        "profiles": [profile] if profile else None,
+        "object_types": fields.get("object_types"),
+        "spectral_types": fields.get("spectral_types"),
+        "morphology": fields.get("morphology"),
+        "min_confidence": fields["min_confidence"],
+        "max_results": fields.get("max_results"),
+        "catalogs": fields.get("catalogs"),
+        "time_period": fields.get("time_period"),
+        "spatial_constraints": fields.get("spatial_constraints"),
+        "search_mode": fields["search_mode"],
+        "min_radius_arcsec": fields["min_radius_arcsec"],
+        "proper_motion": fields["proper_motion"],
+        "adaptive_radius": fields["adaptive_radius"],
+        "min_distance_pc": fields.get("min_distance_pc"),
+        "max_distance_pc": fields.get("max_distance_pc"),
+        "metadata": metadata or None,
+    })
+
+
+async def api_search(service: Any, fields: Mapping[str, Any], resolver: Any = None) -> UnifiedRecord:
+    """A search exactly as ``POST /api/v1/search`` runs it (without its response cache), shared
+    with provenance's ``run_api_search``: ``fields`` are the api.SearchRequest fields (all
+    present) and ``resolver`` resolves a name.
+
+    A name's resolver answer is the target: its position at the resolver epoch (J2000 for
+    SIMBAD) with its motion and parallax, its errors as the target uncertainty, and the object
+    itself (its catalogue row is the target's identity). A requested epoch moves the position
+    there with the requested (else the resolver's) proper motion.
+    """
+    spec: dict[str, Any] | None = None
+    resolved_info: dict[str, Any] | None = None
+    extra: dict[str, Any] = {}
+    if fields.get("name"):
+        resolved = await resolver.resolve(fields["name"])
+        resolved_info = resolved.as_dict()
+        spec = resolved_search_target(resolved, epoch=fields.get("epoch"), pm_ra_masyr=fields.get("pm_ra_masyr"),
+                                      pm_dec_masyr=fields.get("pm_dec_masyr"), parallax_mas=fields.get("parallax_mas"))
+        extra = resolution_kwargs(spec, resolved)
+    query = search_query(fields, spec, resolved_info)
+    ra, dec = (spec["ra"], spec["dec"]) if spec is not None else (fields["ra"], fields["dec"])
+    result = await service.crossmatch(ra, dec, query=query, **extra)
+    if spec is not None:
+        merge_resolution(result, spec)
+    if resolved_info:
+        result.resolved_object = resolved_info
+    return result
+
+
+def merge_resolution(record: UnifiedRecord, spec: Mapping[str, Any]) -> UnifiedRecord:
+    """Add the notes and warnings of :func:`crossmatch.resolved_search_target` (VizieR-only
+    resolver answers, several objects for one name, a position moved to another epoch) to a
+    record's provenance, as the streaming search does."""
+    provenance_block = record.provenance if isinstance(record.provenance, dict) else {}
+    warnings = provenance_block.setdefault("warnings", [])
+    if isinstance(warnings, list):
+        warnings.extend(w for w in spec.get("warnings") or [] if w not in warnings)
+    association = provenance_block.get("association")
+    if isinstance(association, dict):
+        notes = association.setdefault("notes", [])
+        if isinstance(notes, list):
+            notes.extend(n for n in spec.get("notes") or [] if n not in notes)
+    return record
+
+
+# ---------------------------------------------------------------------------
+# Public Programmatic API
+# ---------------------------------------------------------------------------
 
 
 async def crossmatch(
@@ -86,6 +299,7 @@ async def crossmatch(
     pm_ra_masyr: float | None = None,
     pm_dec_masyr: float | None = None,
     parallax_mas: float | None = None,
+    catalogs: list[str] | None = None,
 ) -> UnifiedRecord:
     """Execute a single coordinate crossmatch using a fresh client session.
 
@@ -96,7 +310,8 @@ async def crossmatch(
     async with httpx.AsyncClient(timeout=active_settings.request_timeout_seconds, follow_redirects=True) as client:
         service = build_service(settings=active_settings, client=client)
         return await service.crossmatch(ra, dec, radius_arcsec=radius_arcsec, epoch=epoch, profile=profile,
-                                        pm_ra_masyr=pm_ra_masyr, pm_dec_masyr=pm_dec_masyr, parallax_mas=parallax_mas)
+                                        pm_ra_masyr=pm_ra_masyr, pm_dec_masyr=pm_dec_masyr, parallax_mas=parallax_mas,
+                                        catalogs=catalogs)
 
 
 async def search_object(
@@ -106,36 +321,69 @@ async def search_object(
     profile: str | None = None,
     settings: Settings | None = None,
     resolver: SesameResolver | None = None,
+    catalogs: list[str] | None = None,
+    epoch: float | None = None,
+    pm_ra_masyr: float | None = None,
+    pm_dec_masyr: float | None = None,
+    parallax_mas: float | None = None,
 ) -> UnifiedRecord:
-    """Resolve an astronomical object name via CDS Sesame and execute the crossmatch pipeline."""
+    """Resolve an object name with CDS Sesame and crossmatch it.
+
+    The resolver's answer is the search target (:func:`crossmatch.resolved_search_target`):
+    its position at the resolver epoch (J2000 for SIMBAD) with its proper motion and parallax,
+    its position and motion errors as the target uncertainty, and the resolved object itself,
+    so the catalogue row of the resolved name is the target's identity. A requested ``epoch``
+    moves the resolved position there with the requested (or the resolver's) proper motion.
+    """
     active_settings = settings or Settings()
     async with httpx.AsyncClient(timeout=active_settings.request_timeout_seconds, follow_redirects=True) as client:
         active_resolver = resolver or SesameResolver(client, endpoint=active_settings.resolver_endpoint)
         resolved = await active_resolver.resolve(name)
-        # Carries the resolver epoch (J2000 for SIMBAD) and proper motion (Galactic
-        # objects) so every catalog cone follows the object to that catalog's epoch.
-        target = resolved_target(resolved)
         service = build_service(settings=active_settings, client=client)
-        result = await service.crossmatch(
-            target.ra,
-            target.dec,
-            radius_arcsec=radius_arcsec,
-            epoch=target.epoch,
-            profile=profile,
-            pm_ra_masyr=target.pm_ra_masyr,
-            pm_dec_masyr=target.pm_dec_masyr,
-            pm_source="resolver" if target.proper_motion is not None else None,
-            parallax_mas=target.parallax_mas,
-        )
-        result.resolved_object = resolved.as_dict()
-        result.provenance["resolver"] = resolved.resolver
-        return result
+        return await crossmatch_resolved(service, resolved, radius_arcsec=radius_arcsec, profile=profile,
+                                         catalogs=catalogs, epoch=epoch, pm_ra_masyr=pm_ra_masyr,
+                                         pm_dec_masyr=pm_dec_masyr, parallax_mas=parallax_mas)
+
+
+async def crossmatch_resolved(
+    service: Any,
+    resolved: Any,
+    *,
+    radius_arcsec: float | None = None,
+    profile: str | None = None,
+    catalogs: list[str] | None = None,
+    epoch: float | None = None,
+    pm_ra_masyr: float | None = None,
+    pm_dec_masyr: float | None = None,
+    parallax_mas: float | None = None,
+) -> UnifiedRecord:
+    """The basic crossmatch of a resolver answer, every in-radius row kept: what
+    ``astrosearch search --name`` runs (:func:`search_object`), shared with provenance's
+    ``run_basic_search`` so manifests of such searches are built from the same code."""
+    spec = resolved_search_target(resolved, epoch=epoch, pm_ra_masyr=pm_ra_masyr, pm_dec_masyr=pm_dec_masyr,
+                                  parallax_mas=parallax_mas)
+    result = await service.crossmatch(
+        spec["ra"],
+        spec["dec"],
+        radius_arcsec=radius_arcsec,
+        epoch=spec["epoch"],
+        profile=profile,
+        pm_ra_masyr=spec["pm_ra_masyr"],
+        pm_dec_masyr=spec["pm_dec_masyr"],
+        pm_source=spec["pm_source"],
+        parallax_mas=spec["parallax_mas"],
+        catalogs=catalogs,
+        **resolution_kwargs(spec, resolved),
+    )
+    merge_resolution(result, spec)
+    result.resolved_object = resolved.as_dict()
+    result.provenance["resolver"] = resolved.resolver
+    return result
 
 
 def catalog_definitions(*, settings: Settings | None = None) -> dict[str, Any]:
-    """Return dictionary of configured astronomical catalog definitions."""
-    active_settings = settings or Settings()
-    return CatalogRegistry(active_settings.catalog_registry_path).catalogs
+    """Configured catalog definitions (embedded + user-registered VizieR tables)."""
+    return build_registry(settings=settings).catalogs
 
 
 # ---------------------------------------------------------------------------
@@ -144,14 +392,15 @@ def catalog_definitions(*, settings: Settings | None = None) -> dict[str, Any]:
 
 
 def run_verification() -> bool:
-    """Run comprehensive offline test and verification suite across all 5 monoliths."""
+    """Run the offline self-test suite (no network): core maths, parsers, registry, exports,
+    the REST API with every feature router mounted, and the CLI registration."""
     print("=" * 70)
     print("AstroSearch Built-In Verification Suite (Offline)")
     print("=" * 70)
     passed = 0
     total = 0
 
-    def check(name: str, test_fn):
+    def check(name: str, test_fn: Callable[[], None]) -> None:
         nonlocal passed, total
         total += 1
         print(f"[{total:02d}] Testing {name:.<50} ", end="", flush=True)
@@ -160,10 +409,10 @@ def run_verification() -> bool:
             print("PASSED")
             passed += 1
         except Exception as exc:
-            print(f"FAILED: {exc}")
+            print(f"FAILED: {type(exc).__name__}: {exc}")
 
     # 1. Coordinate Validation & Normalization
-    def test_coords():
+    def test_coords() -> None:
         t = validate_target(361.0, 10.0)
         assert t.ra == 1.0 and t.dec == 10.0
         try:
@@ -175,14 +424,14 @@ def run_verification() -> bool:
     check("Coordinate normalization and bounds validation", test_coords)
 
     # 2. Angular Separation Math
-    def test_sep():
+    def test_sep() -> None:
         sep = angular_separation_arcsec(Target(0.0, 0.0), Target(0.0, 1.0))
         assert 3590 < sep < 3610
 
     check("Angular separation calculation (arcseconds)", test_sep)
 
     # 3. Probabilistic Match Scoring
-    def test_scoring():
+    def test_scoring() -> None:
         score_close = match_score(0.2, positional_error_arcsec=1.0)
         score_far = match_score(5.0, positional_error_arcsec=1.0)
         assert 0.0 <= score_far < score_close <= 1.0
@@ -190,7 +439,7 @@ def run_verification() -> bool:
     check("Probabilistic Gaussian match scoring", test_scoring)
 
     # 4. Normalization of Astronomical Field Aliases
-    def test_norm():
+    def test_norm() -> None:
         record = {
             "RAJ2000": 12.5,
             "DEJ2000": -4.2,
@@ -206,7 +455,7 @@ def run_verification() -> bool:
     check("Astrometric field normalization (aliases)", test_norm)
 
     # 5. IPAC ASCII Table Parser (IRSA Gator)
-    def test_ipac():
+    def test_ipac() -> None:
         payload = (
             "\\fixlen = T\n"
             "\\RowsRetrieved = 1\n"
@@ -221,8 +470,8 @@ def run_verification() -> bool:
 
     check("IPAC table parser (IRSA Gator)", test_ipac)
 
-    # 6. Embedded 19-Catalog Registry
-    def test_registry():
+    # 6. Embedded Catalog Registry
+    def test_registry() -> None:
         reg = CatalogRegistry()
         enabled = reg.enabled_catalogs()
         assert len(enabled) >= 15
@@ -231,10 +480,10 @@ def run_verification() -> bool:
         assert "allwise" in enabled
         assert "sdss" in enabled
 
-    check("Embedded 19-catalog registry loading", test_registry)
+    check("Embedded catalog registry loading", test_registry)
 
     # 7. CDS Sesame XML Parsing
-    def test_sesame():
+    def test_sesame() -> None:
         # Structure of a real Sesame -oxp answer (nested pm/z elements, Resolver name).
         xml_payload = """<?xml version="1.0" encoding="UTF-8"?>
         <Sesame><Target option="SNV"><name>Barnard's star</name>
@@ -255,7 +504,7 @@ def run_verification() -> bool:
     check("CDS Sesame XML resolver parser", test_sesame)
 
     # 8. Advanced Query DSL & Multi-Constraint Filters
-    def test_filters():
+    def test_filters() -> None:
         q = AdvancedQuery.from_dict({
             "ra": 10.0,
             "dec": 5.0,
@@ -288,7 +537,7 @@ def run_verification() -> bool:
     check("Advanced query filters (shell, cylinder, zones)", test_filters)
 
     # 9. EndpointGuard Circuit Breaker & Rate Limiter
-    def test_guard():
+    def test_guard() -> None:
         guard = EndpointGuard(requests_per_second=1000, failure_threshold=2, recovery_seconds=10)
         assert guard.state == "closed"
         asyncio.run(guard.fail())
@@ -301,7 +550,7 @@ def run_verification() -> bool:
     check("EndpointGuard rate limiter and circuit breaker", test_guard)
 
     # 10. Streaming Dataset Multi-Format Export (JSON, CSV, Parquet, FITS)
-    def test_dataset_export():
+    def test_dataset_export() -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             sample_source = {
                 "catalog": "gaia_dr3",
@@ -309,6 +558,8 @@ def run_verification() -> bool:
                 "ra": 187.25,
                 "dec": 2.05,
                 "confidence": 0.98,
+                "match_probability": 0.97,
+                "target_probability": 0.98,
                 "separation_arcsec": 0.5,
                 "physical": {"object_type": "star"},
             }
@@ -322,8 +573,9 @@ def run_verification() -> bool:
     check("Streaming dataset exports (JSON, CSV, Parquet, FITS)", test_dataset_export)
 
     # 11. FastAPI REST API Route Suite
-    def test_api_routes():
+    def test_api_routes() -> None:
         from fastapi.testclient import TestClient
+
         from api import app
 
         with TestClient(app) as client:
@@ -360,6 +612,33 @@ def run_verification() -> bool:
 
     check("FastAPI REST endpoints and lifecycle", test_api_routes)
 
+    # 12. Every feature router and the web UI are mounted
+    def test_feature_routes() -> None:
+        from api import route_table
+
+        paths = {path for path, _methods in route_table()}
+        expected = {
+            "/", "/api/v1/search/stream", "/api/v1/batch/crossmatch", "/api/v1/skycache/status",
+            "/api/v1/vizier/search", "/api/v1/sed", "/api/v1/lightcurves", "/api/v1/cutouts",
+            "/api/v1/ai/query", "/api/v1/provenance/manifest", "/vo/tap/sync", "/api/v1/alerts",
+        }
+        missing = expected - paths
+        assert not missing, f"routes not mounted: {sorted(missing)}"
+
+    check("Feature routers and web UI mounted", test_feature_routes)
+
+    # 13. Every feature CLI is registered
+    def test_cli_commands() -> None:
+        commands = {name for action in build_parser()._actions if isinstance(action, argparse._SubParsersAction)
+                    for name in action.choices}
+        expected = {"serve", "search", "dataset", "catalogs", "benchmark", "verify", "stream", "xmatch-calibrate",
+                    "batch", "mirror", "skycache", "vizier", "sed", "lightcurve", "solar-system", "cutout", "ask",
+                    "explain", "replay", "cite", "manifest", "vo", "alerts"}
+        missing = expected - commands
+        assert not missing, f"subcommands not registered: {sorted(missing)}"
+
+    check("Feature CLI subcommands registered", test_cli_commands)
+
     print("=" * 70)
     print(f"Verification Results: {passed}/{total} tests passed ({passed/total*100:.1f}%)")
     print("=" * 70)
@@ -371,163 +650,173 @@ def run_verification() -> bool:
 # ---------------------------------------------------------------------------
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser(
-        prog="astrosearch",
-        description="AstroSearch: High-performance astronomical catalog cross-matching and dataset engine.",
-    )
-    subparsers = parser.add_subparsers(dest="command", help="Available subcommands")
+def build_parser() -> argparse.ArgumentParser:
+    """The full ``astrosearch`` argument parser: the core commands plus every feature module's
+    (imports all of them; the console script builds only what the command needs, cli.main)."""
+    return cli.build_parser(full=True)
 
-    # Command: serve
-    serve_parser = subparsers.add_parser("serve", help="Launch the FastAPI REST server")
-    serve_parser.add_argument("--host", default="127.0.0.1", help="Host interface to bind (default: 127.0.0.1)")
-    serve_parser.add_argument("--port", type=int, default=8000, help="Port to bind (default: 8000)")
-    serve_parser.add_argument("--reload", action="store_true", help="Enable automatic code reloading")
 
-    # Command: search
-    search_parser = subparsers.add_parser("search", help="Execute single astronomical search")
-    search_parser.add_argument("--ra", type=float, help="Right ascension in degrees [0, 360)")
-    search_parser.add_argument("--dec", type=float, help="Declination in degrees [-90, 90]")
-    search_parser.add_argument("--name", type=str, help="Astronomical object name to resolve (e.g. M87, Vega)")
-    search_parser.add_argument("--radius", type=float, default=3.0, help="Search radius in arcseconds (default: 3.0)")
-    search_parser.add_argument("--profile", type=str, help="Catalog profile: optical, infrared, radio, xray, etc.")
-    search_parser.add_argument("--format", choices=["json", "summary"], default="summary", help="Output format")
+def _catalog_list(value: str | None) -> list[str] | None:
+    if value is None:
+        return None
+    names = [part.strip() for part in value.split(",") if part.strip()]
+    if not names:
+        raise ValueError("--catalogs must name at least one catalog")
+    return names
 
-    # Command: dataset
-    dataset_parser = subparsers.add_parser("dataset", help="Generate a filtered crossmatched dataset")
-    dataset_parser.add_argument("--name", required=True, help="Dataset identification name")
-    dataset_parser.add_argument("--profile", required=True, help="Catalog profile (e.g. stellar, optical)")
-    dataset_parser.add_argument("--radius", type=float, default=5.0, help="Search radius in arcseconds")
-    dataset_parser.add_argument("--targets", required=True, help="Path to JSON file containing array of targets")
-    dataset_parser.add_argument("--format", choices=["parquet", "csv", "json", "fits"], default="parquet")
-    dataset_parser.add_argument("--output", help="Explicit path to write the dataset export")
 
-    # Command: catalogs
-    catalogs_parser = subparsers.add_parser("catalogs", help="List and inspect configured catalog definitions")
-    catalogs_parser.add_argument("--name", help="Specific catalog to inspect")
+def _cmd_search(args: argparse.Namespace) -> int:
+    if not args.name and (args.ra is None or args.dec is None):
+        print("Error: Specify either --name or both --ra and --dec.", file=sys.stderr)
+        return 1
 
-    # Command: benchmark
-    bench_parser = subparsers.add_parser("benchmark", help="Benchmark streaming dataset export performance")
-    bench_parser.add_argument("--rows", type=int, default=50000, help="Number of synthetic records to stream")
-    bench_parser.add_argument("--format", choices=["parquet", "csv", "json", "fits"], default="parquet")
-
-    # Command: verify
-    subparsers.add_parser("verify", help="Run comprehensive offline self-test and verification suite")
-
-    args = parser.parse_args()
-
-    if args.command == "serve":
-        import uvicorn
-        print(f"Starting AstroSearch REST API on http://{args.host}:{args.port}")
-        uvicorn.run("api:app", host=args.host, port=args.port, reload=args.reload)
-
-    elif args.command == "search":
-        if not args.name and (args.ra is None or args.dec is None):
-            print("Error: Specify either --name or both --ra and --dec.")
-            sys.exit(1)
-
-        async def do_search():
-            try:
-                await run_search()
-            except (AstroSearchError, ValueError) as exc:
-                # An unresolvable name or an invalid profile/coordinate: a one-line
-                # error, not a traceback (and not a 'catalogs failed' message).
-                print(f"Error: {exc}", file=sys.stderr)
-                sys.exit(1)
-
-        async def run_search():
-            if args.name:
+    async def run_search() -> UnifiedRecord:
+        catalogs = _catalog_list(args.catalogs)
+        if args.name:
+            if args.format == "summary":  # never mixed into JSON output
                 print(f"Resolving '{args.name}' via CDS Sesame...")
-                res = await search_object(args.name, radius_arcsec=args.radius, profile=args.profile)
-            else:
-                res = await crossmatch(args.ra, args.dec, radius_arcsec=args.radius, profile=args.profile)
+            return await search_object(args.name, radius_arcsec=args.radius, profile=args.profile, catalogs=catalogs,
+                                       epoch=args.epoch, pm_ra_masyr=args.pm_ra, pm_dec_masyr=args.pm_dec,
+                                       parallax_mas=args.parallax)
+        return await crossmatch(args.ra, args.dec, radius_arcsec=args.radius, profile=args.profile, catalogs=catalogs,
+                                epoch=args.epoch, pm_ra_masyr=args.pm_ra, pm_dec_masyr=args.pm_dec,
+                                parallax_mas=args.parallax)
 
-            if args.format == "json":
-                print(json.dumps(res.as_dict(), indent=2))
-            else:
-                print("\n--- Crossmatch Summary ---")
-                print(f"Target: RA={res.target['ra']:.6f}, DEC={res.target['dec']:.6f}")
-                print(f"Catalogs Queried: {res.catalogs_queried}")
-                print(f"Physical Objects Grouped: {len(res.crossmatch_groups)}")
-                for wave, sources in res.counterparts.items():
-                    print(f"  [{wave.upper()}] {len(sources)} counterpart(s)")
-                if res.failures:
-                    print(f"Failures ({len(res.failures)}): {[f['catalog'] for f in res.failures]}")
+    try:
+        res = asyncio.run(run_search())
+    except (AstroSearchError, ValueError) as exc:
+        # An unresolvable name or an invalid profile/coordinate: a one-line
+        # error, not a traceback (and not a 'catalogs failed' message).
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
 
-        asyncio.run(do_search())
+    outage = every_catalog_failed(res)
+    if args.format == "json":
+        print(json.dumps(streaming.jsonable(res.as_dict()), indent=2))
+    else:
+        print("\n--- Crossmatch Summary ---")
+        print(f"Target: RA={res.target['ra']:.6f}, DEC={res.target['dec']:.6f}")
+        print(f"Catalogs Queried: {res.catalogs_queried}")
+        print(f"Physical Objects Grouped: {len(res.crossmatch_groups)}")
+        target_group = next((g for g in res.crossmatch_groups if g.get("contains_target")), None)
+        if target_group:
+            members = ", ".join(f"{m['catalog']}:{m['source_id']} (P={m.get('target_probability')})"
+                                for m in target_group.get("members", []))
+            print(f"Target counterparts: {members}")
+        for wave, sources in res.counterparts.items():
+            print(f"  [{wave.upper()}] {len(sources)} counterpart(s)")
+        if res.failures:
+            print(f"Failures ({len(res.failures)}): {[f['catalog'] for f in res.failures]}")
+    if outage:
+        # Exit 1: a script must tell a total outage from an empty sky (exit 0, no rows).
+        print(f"Error: every queried catalog failed ({len(res.failures)} failure(s)); no data was retrieved.",
+              file=sys.stderr)
+        return 1
+    return 0
 
-    elif args.command == "dataset":
-        targets_file = Path(args.targets)
-        if not targets_file.exists():
-            print(f"Error: Targets file '{args.targets}' not found.")
-            sys.exit(1)
+
+def _cmd_dataset(args: argparse.Namespace) -> int:
+    targets_file = Path(args.targets)
+    if not targets_file.exists():
+        print(f"Error: Targets file '{args.targets}' not found.", file=sys.stderr)
+        return 1
+    try:
         targets_data = json.loads(targets_file.read_text(encoding="utf-8"))
+        if not isinstance(targets_data, list):
+            raise ValueError("the targets file must hold a JSON array of {ra, dec[, epoch]} objects")
+        catalogs = _catalog_list(args.catalogs)
+    except (OSError, ValueError) as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 2
 
-        async def do_dataset():
-            engine = DatasetEngine()
+    async def do_dataset() -> dict[str, Any]:
+        settings = Settings()
+        async with httpx.AsyncClient(timeout=settings.request_timeout_seconds, follow_redirects=True) as client:
+            service = build_service(settings=settings, client=client)
+            engine = DatasetEngine(registry=service.registry, service=service)
+            if args.output:  # checked before any query runs (the CLI may write anywhere)
+                engine.check_export_path(args.output, args.format, any_path=True)
             print(f"Building dataset '{args.name}' across {len(targets_data)} targets...")
-            meta = await engine.create_dataset(
+            return await engine.create_dataset(
                 name=args.name,
                 profile=args.profile,
                 radius_arcsec=args.radius,
+                catalogs=catalogs,
+                count_threshold=args.count_threshold,
+                min_confidence=args.min_confidence,
                 output_format=args.format,
                 export_path=args.output,
                 targets=targets_data,
+                any_export_path=True,
             )
-            print(f"Dataset generated successfully: {meta['export_path']}")
-            print(f"Total sources written: {meta['total_sources']}")
 
-        asyncio.run(do_dataset())
+    try:
+        meta = asyncio.run(do_dataset())
+    except (AstroSearchError, ValueError, KeyError, TypeError) as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 2
+    print(f"Dataset generated successfully: {meta['export_path']}")
+    print(f"Total sources written: {meta['total_sources']} (method: {meta.get('method')})")
+    if meta.get("failures"):
+        print(f"Catalog failures: {len(meta['failures'])}")
+    return 0
 
-    elif args.command == "catalogs":
-        reg = CatalogRegistry()
-        if args.name:
-            try:
-                cat = reg.get(args.name)
-                print(json.dumps(cat.as_dict(), indent=2))
-            except KeyError:
-                print(f"Catalog '{args.name}' not found.")
-                sys.exit(1)
-        else:
-            print(f"{'Catalog':<24} {'Provider':<16} {'Wavelength':<14} {'Enabled'}")
-            print("-" * 65)
-            for name, cat in reg.catalogs.items():
-                print(f"{name:<24} {cat.provider:<16} {cat.wavelength:<14} {cat.enabled}")
 
-    elif args.command == "benchmark":
-        print(f"Benchmarking streaming {args.format.upper()} export with {args.rows} rows...")
-        with tempfile.TemporaryDirectory() as tmpdir:
-            out_file = Path(tmpdir) / f"bench.{args.format}"
-            sample = {
-                "catalog": "gaia_dr3",
-                "source_id": "gaia-bench",
-                "ra": 187.25,
-                "dec": 2.05,
-                "separation_arcsec": 0.5,
-                "confidence": 0.95,
-                "epoch": 2016.0,
-                "positional_error_arcsec": 0.05,
-                "physical": {"object_type": "star", "parallax": 12.3},
-                "data": {"phot_g_mean_mag": 15.2},
-                "metadata": {"wavelength": "optical"},
-                "provenance": {"provider": "tap"},
-                "links": {},
-            }
-            start = time.perf_counter()
-            with DatasetWriter(out_file, args.format) as writer:
-                for _ in range(args.rows):
-                    writer.write(sample)
-            elapsed = time.perf_counter() - start
-            size_mb = out_file.stat().st_size / (1024 * 1024)
-            print(f"Wrote {args.rows:,} rows in {elapsed:.2f}s ({args.rows/elapsed:,.0f} rows/s)")
-            print(f"Output size: {size_mb:.2f} MB ({size_mb/elapsed:.2f} MB/s)")
+def _cmd_catalogs(args: argparse.Namespace) -> int:
+    reg = build_registry()
+    if args.name:
+        try:
+            cat = reg.get(args.name)
+        except KeyError:
+            print(f"Catalog '{args.name}' not found.", file=sys.stderr)
+            return 1
+        print(json.dumps(cat.as_dict(), indent=2))
+        return 0
+    print(f"{'Catalog':<28} {'Provider':<16} {'Wavelength':<14} {'Enabled'}")
+    print("-" * 70)
+    for name, cat in reg.catalogs.items():
+        print(f"{name:<28} {cat.provider:<16} {cat.wavelength:<14} {cat.enabled}")
+    return 0
 
-    elif args.command == "verify":
-        success = run_verification()
-        sys.exit(0 if success else 1)
 
-    else:
-        parser.print_help()
+def _cmd_benchmark(args: argparse.Namespace) -> int:
+    print(f"Benchmarking streaming {args.format.upper()} export with {args.rows} rows...")
+    with tempfile.TemporaryDirectory() as tmpdir:
+        out_file = Path(tmpdir) / f"bench.{args.format}"
+        sample = {
+            "catalog": "gaia_dr3",
+            "source_id": "gaia-bench",
+            "ra": 187.25,
+            "dec": 2.05,
+            "separation_arcsec": 0.5,
+            "confidence": 0.95,
+            "match_probability": 0.95,
+            "target_probability": 0.95,
+            "epoch": 2016.0,
+            "positional_error_arcsec": 0.05,
+            "physical": {"object_type": "star", "parallax": 12.3},
+            "data": {"phot_g_mean_mag": 15.2},
+            "metadata": {"wavelength": "optical"},
+            "provenance": {"provider": "tap"},
+            "links": {},
+        }
+        start = time.perf_counter()
+        with DatasetWriter(out_file, args.format) as writer:
+            for _ in range(args.rows):
+                writer.write(sample)
+        elapsed = max(time.perf_counter() - start, 1e-9)
+        size_mb = out_file.stat().st_size / (1024 * 1024)
+        print(f"Wrote {args.rows:,} rows in {elapsed:.2f}s ({args.rows/elapsed:,.0f} rows/s)")
+        print(f"Output size: {size_mb:.2f} MB ({size_mb/elapsed:.2f} MB/s)")
+    return 0
+
+
+run_handler = cli.run_handler
+
+
+def main(argv: list[str] | None = None) -> None:
+    """The ``astrosearch`` command line (see :func:`cli.main`)."""
+    cli.main(argv)
 
 
 if __name__ == "__main__":

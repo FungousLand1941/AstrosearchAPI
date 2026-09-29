@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>51 Peg</name>
+  <!-- Q8483483 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 0ms [0] -->
+    <INFO>from cache</INFO>
+    <oid>1472090</oid>
+    <otype>PM*</otype>
+    <jpos>22:57:27.98 +20:46:07.7</jpos>
+    <jradeg>344.36658536</jradeg>
+    <jdedeg>20.76883251</jdedeg>
+    <refPos>2020yCat.1350....0G</refPos>
+    <errRAmas>0.0535</errRAmas><errDEmas>0.0543</errDEmas>
+    <pm>
+      <v>216.162</v><e>0.116</e><q>A</q><r>2020yCat.1350....0G</r>
+      <pa>73.56</pa>
+      <pmRA>207.328</pmRA><epmRA>0.088</epmRA>
+      <pmDE>61.164</pmDE><epmDE>0.075</epmDE>
+    </pm>
+    <Vel><v>-33.1392</v><e>0.00010</e><q>A</q><r>2026A&amp;A...710A.345C</r></Vel>
+    <plx><v>64.4048</v><e>0.0771</e><q>A</q><r>2020yCat.1350....0G</r></plx>
+    <spType>G2IV</spType><spNum>0.0001A400.0028.0000000000000000</spNum>
+    <oname>*  51 Peg</oname>
+    <alias>LTT 16750</alias>
+    <alias>* 51 Peg</alias>
+    <alias>** RBR 21A</alias>
+    <alias>AG+20 2595</alias>
+    <alias>AKARI-IRC-V1 J2257280+204608</alias>
+    <alias>ASCC 826013</alias>
+    <alias>BD+19 5036</alias>
+    <alias>CNS5 5664</alias>
+    <alias>CSV 102222</alias>
+    <alias>GC 32003</alias>
+    <alias>GCRV 14411</alias>
+    <alias>GEN# +1.00217014</alias>
+    <alias>GJ 882</alias>
+    <alias>HD 217014</alias>
+    <alias>HIC 113357</alias>
+    <alias>HIP 113357</alias>
+    <alias>HR 8729</alias>
+    <alias>IRAS 22550+2030</alias>
+    <alias>JP11 3558</alias>
+    <alias>LSPM J2257+2046</alias>
+    <alias>2MASS J22572795+2046077</alias>
+    <alias>N30 5052</alias>
+    <alias>NAME Helvetios</alias>
+    <alias>NLTT 55385</alias>
+    <alias>NSV 14374</alias>
+    <alias>PLX 5568</alias>
+    <alias>PLX 5568.00</alias>
+    <alias>PPM 114985</alias>
+    <alias>ROT 3341</alias>
+    <alias>SAO 90896</alias>
+    <alias>SKY# 43603</alias>
+    <alias>SPOCS 990</alias>
+    <alias>TD1 29480</alias>
+    <alias>TIC 139298196</alias>
+    <alias>TYC 1717-2193-1</alias>
+    <alias>UBV M 26734</alias>
+    <alias>UBV 19678</alias>
+    <alias>USNO-B1.0 1107-00589893</alias>
+    <alias>uvby98 100217014</alias>
+    <alias>WDS J22575+2046A</alias>
+    <alias>WEB 20165</alias>
+    <alias>YPAC 218</alias>
+    <alias>YZ 0 1227</alias>
+    <alias>YZ 20 9382</alias>
+    <alias>Gaia DR3 2835207319109249920</alias>
+    <alias>Gaia DR2 2835207319109249920</alias>
+    <nrefs>1227</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ====Done (2026-Sep-29,05:01:57z)==== -->

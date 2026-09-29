@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>NGC 1068</name>
+  <!-- Q8483449 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 0ms [0] -->
+    <INFO>from cache</INFO>
+    <oid>1378180</oid>
+    <otype>Sy2</otype>
+    <jpos>02:42:40.70 -00:00:47.8</jpos>
+    <jradeg>40.66962153</jradeg>
+    <jdedeg>-0.01329436</jdedeg>
+    <refPos>2020yCat.1350....0G</refPos>
+    <errRAmas>1.0630</errRAmas><errDEmas>1.3876</errDEmas>
+    <z><v>0.00348372</v><e>0.0005</e><q>C</q><r>2022ApJS..261....2K</r></z>
+    <MType>SAb</MType>
+    <oname>M  77</oname>
+    <alias>M 77</alias>
+    <alias>APG 37</alias>
+    <alias>AT20G J024240-000046</alias>
+    <alias>1AXG J024241-0000</alias>
+    <alias>BWE 0240-0013</alias>
+    <alias>3C 71</alias>
+    <alias>3C 71.0</alias>
+    <alias>4C -00.13</alias>
+    <alias>3CR 71</alias>
+    <alias>Cul 0240-002</alias>
+    <alias>DA 82</alias>
+    <alias>6dFGS gJ024240.7-000048</alias>
+    <alias>2E 649</alias>
+    <alias>2E 0240.1-0013</alias>
+    <alias>1ES 0240-00.2</alias>
+    <alias>1FGL J0242.7+0007</alias>
+    <alias>2FGL J0242.5+0006</alias>
+    <alias>3FGL J0242.7-0001</alias>
+    <alias>4FGL J0242.6-0000</alias>
+    <alias>3FHL J0242.7-0002</alias>
+    <alias>FIRST J024240.7-000046</alias>
+    <alias>FL8Y J0242.6-0000</alias>
+    <alias>GLEAM J024240-000041</alias>
+    <alias>GRA B0240-00</alias>
+    <alias>HIPASS J0242+00</alias>
+    <alias>INTREF 128</alias>
+    <alias>IRAS 02401-0013</alias>
+    <alias>IRAS F02401-0013</alias>
+    <alias>ISOSS J02426-0000</alias>
+    <alias>1Jy 0240-002</alias>
+    <alias>1Jy 0240-00</alias>
+    <alias>KUG 0240-002</alias>
+    <alias>LEDA 10266</alias>
+    <alias>LHE 67</alias>
+    <alias>2MASX J02424077-0000478</alias>
+    <alias>MCG+00-07-083</alias>
+    <alias>MITG J024240-0000</alias>
+    <alias>MRC 0240-002</alias>
+    <alias>MSH 02-0-14</alias>
+    <alias>NAICGB 0240-002</alias>
+    <alias>NAIC 0240-002</alias>
+    <alias>NGC 1068</alias>
+    <alias>NRAO 112</alias>
+    <alias>NVSS J024240-000047</alias>
+    <alias>OHIO D -067</alias>
+    <alias>PBC J0242.7-0000</alias>
+    <alias>PKS J0242-0000</alias>
+    <alias>PKS 0240-00</alias>
+    <alias>PKS 0240-002</alias>
+    <alias>PMN J0242-0000</alias>
+    <alias>PSCz Q02401-0013</alias>
+    <alias>QSO B0240-002</alias>
+    <alias>RAFGL 4220</alias>
+    <alias>RAFGL 4220S</alias>
+    <alias>RBS 348</alias>
+    <alias>1RXP J024240.9-000042</alias>
+    <alias>RX J024239-00000</alias>
+    <alias>RX J0242.6+0000</alias>
+    <alias>1RXS J024240.9-000046</alias>
+    <alias>S3 0240-00</alias>
+    <alias>SDSS J024240.70-000047.9</alias>
+    <alias>SINGG HIPASS J0242+00</alias>
+    <alias>SPASS J024245-000157</alias>
+    <alias>SRGA J024239.8-000103</alias>
+    <alias>SWIFT J0242.6+0000</alias>
+    <alias>SWIFT J0242.9-0000</alias>
+    <alias>TC 656</alias>
+    <alias>TGSSADR J024240.7-000047</alias>
+    <alias>TXS 0240-002</alias>
+    <alias>UGC 2188</alias>
+    <alias>UZC J024240.7-000048</alias>
+    <alias>VLSSr J024240.8-000044</alias>
+    <alias>VLSS J0242.6-0000</alias>
+    <alias>WB 0240-0013</alias>
+    <alias>WISE J024240.69-000047.7</alias>
+    <alias>2XMM J024240.7-000046</alias>
+    <alias>XSS J02445-0000</alias>
+    <alias>9Y-MST J0242+0001</alias>
+    <alias>Z 388-98</alias>
+    <alias>Z 0240.1-0013</alias>
+    <alias>[CAB95] IRAS F02401-0013</alias>
+    <alias>[CHM2007] HDC 163 J024240.77-0000478</alias>
+    <alias>[CHM2007] LDC 174 J024240.77-0000478</alias>
+    <alias>[DML87] 57</alias>
+    <alias>[HB91] 0240-002</alias>
+    <alias>[KRL2007b] 25</alias>
+    <alias>[M98c] 024006.5-001332</alias>
+    <alias>[NKB95] N1068</alias>
+    <alias>[OKM2018] SWIFT J0242.6+0000</alias>
+    <alias>[SLK2004] 333</alias>
+    <alias>[VV2000c] J024240.7-000047</alias>
+    <alias>[VV2003c] J024240.7-000047</alias>
+    <alias>[VV2006c] J024240.7-000047</alias>
+    <alias>[VV2010c] J024240.7-000047</alias>
+    <alias>[VV98c] J024240.7-000047</alias>
+    <alias>AAVSO 0237-00</alias>
+    <alias>Gaia DR3 2498700788995507712</alias>
+    <nrefs>4958</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ====Done (2026-Sep-29,05:01:41z)==== -->

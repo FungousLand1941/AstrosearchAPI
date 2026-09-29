@@ -2018,7 +2018,13 @@
   "query_radius_arcsec": 10.0
  },
  "resolved_object": {
-  "aliases": [],
+  "aliases": [
+   "AAVSO 1927-53",
+   "GRB 980425",
+   "Trigger 6707",
+   "XRF 980425",
+   "[STK2001] 10928c"
+  ],
   "canonical_name": "SN 1998bw",
   "dec_deg": -52.84613889,
   "epoch": 2000.0,
@@ -2030,13 +2036,24 @@
   "redshift": 0.0085,
   "resolver": "cds_sesame",
   "resolver_metadata": {
-   "endpoint": "https://cds.unistra.fr/cgi-bin/nph-sesame/-oxp/SNV",
+   "endpoint": "https://cds.unistra.fr/cgi-bin/nph-sesame/-oxpI/SNV",
    "epoch_source": "SIMBAD positions are ICRS at epoch J2000",
    "extragalactic": true,
    "parallax_mas": null,
    "proper_motion_applicable": false,
    "radial_velocity_kms": null,
    "raw_fields": {
+    "alias": [
+     "SN 1998bw",
+     "GRB 980425",
+     "Trigger 6707",
+     "XRF 980425",
+     "[STK2001] 10928c",
+     "AAVSO 1927-53"
+    ],
+    "info": [
+     "from cache"
+    ],
     "jdedeg": [
      "-52.84613889"
     ],

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>Betelgeuse</name>
+  <!-- Q8483472 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 0ms [0] -->
+    <INFO>from cache</INFO>
+    <oid>843879</oid>
+    <otype>s*r</otype>
+    <jpos>05:55:10.30 +07:24:25.4</jpos>
+    <jradeg>88.79293899</jradeg>
+    <jdedeg>7.407064</jdedeg>
+    <refPos>2007A&amp;A...474..653V</refPos>
+    <errRAmas>9.04</errRAmas><errDEmas>5.72</errDEmas>
+    <pm>
+      <v>29.77</v><e>1.22</e><q>A</q><r>2007A&amp;A...474..653V</r>
+      <pa>68</pa>
+      <pmRA>27.54</pmRA><epmRA>0.65</epmRA>
+      <pmDE>11.30</pmDE><epmDE>1.03</epmDE>
+    </pm>
+    <Vel><v>21.91</v><e>0.51</e><q>A</q><r>2005A&amp;A...430..165F</r></Vel>
+    <plx><v>6.55</v><e>0.83</e><q>A</q><r>2007A&amp;A...474..653V</r></plx>
+    <spType>M1-M2Ia-Iab</spType><spNum>0.01026700.0110.0000000000000000</spNum>
+    <oname>* alf Ori</oname>
+    <alias>* alf Ori</alias>
+    <alias>* 58 Ori</alias>
+    <alias>** H 639A</alias>
+    <alias>** KAR 1</alias>
+    <alias>ADS 4506 AP</alias>
+    <alias>AG+07 681</alias>
+    <alias>BD+07 1055</alias>
+    <alias>CCDM J05552+0724AP</alias>
+    <alias>CSI+07 1055 1</alias>
+    <alias>EIC 108</alias>
+    <alias>FK5 224</alias>
+    <alias>GC 7451</alias>
+    <alias>GCRV 3679</alias>
+    <alias>GEN# +1.00039801</alias>
+    <alias>GSC 00129-01873</alias>
+    <alias>HD 39801</alias>
+    <alias>HIC 27989</alias>
+    <alias>HIP 27989</alias>
+    <alias>HR 2061</alias>
+    <alias>IRAS 05524+0723</alias>
+    <alias>IRC +10100</alias>
+    <alias>JCMTSE J055510.1+072426</alias>
+    <alias>JCMTSF J055510.1+072426</alias>
+    <alias>JP11 1282</alias>
+    <alias>2MASS J05551028+0724255</alias>
+    <alias>N30 1266</alias>
+    <alias>NAME Betelgeuse</alias>
+    <alias>PLX 1362</alias>
+    <alias>PLX 1362.00</alias>
+    <alias>PMC 90-93 162</alias>
+    <alias>PPM 149643</alias>
+    <alias>RAFGL 836</alias>
+    <alias>SAO 113271</alias>
+    <alias>SKY# 9804</alias>
+    <alias>TD1 5587</alias>
+    <alias>TIC 269273552</alias>
+    <alias>TYC 129-1873-1</alias>
+    <alias>UBV 21314</alias>
+    <alias>V* alf Ori</alias>
+    <alias>WDS J05552+0724Aa,Ab</alias>
+    <alias>WDS J05552+0724Aa,Ac</alias>
+    <alias>WDS J05552+0724A</alias>
+    <alias>WEB 5485</alias>
+    <alias>YZ 7 2503</alias>
+    <alias>[LFO93] 0552+07</alias>
+    <alias>AAVSO 0549+07</alias>
+    <nrefs>1803</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ====Done (2026-Sep-29,05:01:52z)==== -->

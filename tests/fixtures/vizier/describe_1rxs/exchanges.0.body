@@ -1,0 +1,1 @@
+{"metadata":[{"name":"table_name","description":"the table name","datatype":"CHAR","arraysize":"64*","ucd":"Metadata"},{"name":"description","description":"description","datatype":"CHAR","arraysize":"255*","ucd":"Metadata"},{"name":"nrows","datatype":"LONG","ucd":"Metadata"}],"data":[["\"IX/10A/1rxs\"","The 1RXS catalogue ( Voges W., Aschenbach B., Boller T., et al.)",18806]]}

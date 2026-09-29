@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>Kapteyn's star</name>
+  <!-- Q8483481 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 0ms [0] -->
+    <INFO>from cache</INFO>
+    <oid>2966222</oid>
+    <otype>PM*</otype>
+    <jpos>05:11:40.58 -45:01:06.3</jpos>
+    <jradeg>77.91912433</jradeg>
+    <jdedeg>-45.01843382</jdedeg>
+    <refPos>2020yCat.1350....0G</refPos>
+    <errRAmas>0.0151</errRAmas><errDEmas>0.0164</errDEmas>
+    <pm>
+      <v>8644.319</v><e>0.028</e><q>A</q><r>2020yCat.1350....0G</r>
+      <pa>131.330</pa>
+      <pmRA>6491.223</pmRA><epmRA>0.018</epmRA>
+      <pmDE>-5708.614</pmDE><epmDE>0.021</epmDE>
+    </pm>
+    <Vel><v>245.234</v><e>0.0004</e><q>A</q><r>2018A&amp;A...616A...7S</r></Vel>
+    <plx><v>254.1986</v><e>0.0168</e><q>A</q><r>2020yCat.1350....0G</r></plx>
+    <spType>M1VIp</spType><spNum>0.00026200.0038.0000000000010000</spNum>
+    <oname>HD  33793</oname>
+    <alias>LHS 29</alias>
+    <alias>AC2000 3505363</alias>
+    <alias>CD-45 1841</alias>
+    <alias>Ci 20 319</alias>
+    <alias>CNS5 1304</alias>
+    <alias>CPC 0 2725</alias>
+    <alias>CPD-44 612</alias>
+    <alias>GC 6369</alias>
+    <alias>GCRV 3085</alias>
+    <alias>GEN# +1.00033793</alias>
+    <alias>GJ 191</alias>
+    <alias>GSC 07594-01580</alias>
+    <alias>GSC 08078-01749</alias>
+    <alias>HD 33793</alias>
+    <alias>HIC 24186</alias>
+    <alias>HIP 24186</alias>
+    <alias>IRAS 05100-4502</alias>
+    <alias>JP11 1005</alias>
+    <alias>LFT 395</alias>
+    <alias>LTT 2200</alias>
+    <alias>2MASS J05114046-4501051</alias>
+    <alias>NAME Kapteyn's star</alias>
+    <alias>NAME Kapteyn Star</alias>
+    <alias>NAME Kapteyn's</alias>
+    <alias>NLTT 14668</alias>
+    <alias>PLX 1181</alias>
+    <alias>PLX 1181.00</alias>
+    <alias>PM 05097-4500</alias>
+    <alias>PM J05116-4501</alias>
+    <alias>SAO 217223</alias>
+    <alias>TIC 200385493</alias>
+    <alias>TIC 471011170</alias>
+    <alias>TYC 8078-1749-1</alias>
+    <alias>UBV 4985</alias>
+    <alias>UBV M 10717</alias>
+    <alias>uvby98 100033793</alias>
+    <alias>V* VZ Pic</alias>
+    <alias>WEB 4691</alias>
+    <alias>Zkh 69</alias>
+    <alias>[RHG95] 887</alias>
+    <alias>Gaia DR3 4810594479418041856</alias>
+    <alias>Gaia DR2 4810594479417465600</alias>
+    <nrefs>373</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ====Done (2026-Sep-29,05:01:56z)==== -->

@@ -1,0 +1,53 @@
+{
+  "case": "describe_erass1",
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+1001+table_name%2C+description%2C+nrows+FROM+TAP_SCHEMA.tables+WHERE+table_name+%3D+%27%22J%2FA%2BA%2F682%2FA34%2Ferass1-m%22%27+OR+table_name+LIKE+%27%22J%2FA%2BA%2F682%2FA34%2Ferass1-m%2F%25%27&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+column_name%2C+description%2C+unit%2C+ucd%2C+datatype%2C+principal%2C+indexed+FROM+TAP_SCHEMA.columns+WHERE+table_name+%3D+%27%22J%2FA%2BA%2F682%2FA34%2Ferass1-m%22%27&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://vizier.cds.unistra.fr/viz-bin/votable?-source=J%2FA%2BA%2F682%2FA34&-meta=",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/x-votable+xml",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://vizier.cds.unistra.fr/viz-bin/votable?-source=J%2FA%2BA%2F682%2FA34%2Ferass1-m&-meta.all=",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/x-votable+xml",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MIN%28%22b_MJD%22%29+AS+lo0+FROM+%22J%2FA%2BA%2F682%2FA34%2Ferass1-m%22+WHERE+%28%22b_MJD%22+BETWEEN+-21000+AND+124000%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+MAX%28%22B_MJD%22%29+AS+hi1+FROM+%22J%2FA%2BA%2F682%2FA34%2Ferass1-m%22+WHERE+%28%22B_MJD%22+BETWEEN+-21000+AND+124000%29&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    }
+  ]
+}

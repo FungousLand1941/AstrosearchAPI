@@ -1804,7 +1804,17 @@
   "query_radius_arcsec": 10.0
  },
  "resolved_object": {
-  "aliases": [],
+  "aliases": [
+   "2MASS J04151954-0935066",
+   "2MASSW J0415195-093506",
+   "CNS5 1054",
+   "EQ J0415-0935",
+   "TIC 67773411",
+   "WISE J041521.21-093500.6",
+   "WISEA J041521.26-093500.4",
+   "WISEP J041521.20-093500.6",
+   "[B2006] J041519.5-093506"
+  ],
   "canonical_name": "2MASSI J0415195-093506",
   "dec_deg": -9.585187,
   "epoch": 2000.0,
@@ -1816,18 +1826,33 @@
   "redshift": null,
   "resolver": "cds_sesame",
   "resolver_metadata": {
-   "endpoint": "https://cds.unistra.fr/cgi-bin/nph-sesame/-oxp/SNV",
+   "endpoint": "https://cds.unistra.fr/cgi-bin/nph-sesame/-oxpI/SNV",
    "epoch_source": "SIMBAD positions are ICRS at epoch J2000",
    "extragalactic": false,
    "parallax_mas": 174.34,
    "proper_motion_applicable": true,
    "radial_velocity_kms": 49.6,
    "raw_fields": {
+    "alias": [
+     "2MASS J04151954-0935066",
+     "CNS5 1054",
+     "2MASSI J0415195-093506",
+     "2MASSW J0415195-093506",
+     "TIC 67773411",
+     "WISEA J041521.26-093500.4",
+     "WISEP J041521.20-093500.6",
+     "WISE J041521.21-093500.6",
+     "[B2006] J041519.5-093506",
+     "EQ J0415-0935"
+    ],
     "errdemas": [
      "110"
     ],
     "errramas": [
      "110"
+    ],
+    "info": [
+     "from cache"
     ],
     "jdedeg": [
      "-9.585187"

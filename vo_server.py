@@ -354,9 +354,10 @@ MATCHES_COLUMNS: tuple[VOColumn, ...] = (
          "lie far apart).",
          "pos.angDistance", "arcsec", principal=True, nullable=False, verb=2),
     _num("match_confidence", "double",
-         "Positional match score in [0, 1]: exp(-sep^2 / 2 sigma^2) with sigma the 1-sigma positional error "
-         "(quadrature, floor 0.1 arcsec), or a linear taper over 30 arcsec when no error is published "
-         "(crossmatch.match_score). A relative likelihood, not a Bayesian association probability.",
+         "Posterior probability in [0, 1] that the row is the counterpart of the object at the cone centre: "
+         "the crossmatch service's Bayesian N-way association (Budavari & Szalay 2008, ApJ 679, 301; NWAY, "
+         "Salvato et al. 2018, MNRAS 473, 4937) from the positional errors, proper motions, source densities "
+         "and counterpart priors. Field objects in the cone score about 0.",
          "stat.likelihood", principal=True, verb=2),
     _char("group_id", "Candidate counterpart set (see vo_server.assign_groups): at most one detection per catalog, "
           "each within k*sqrt(sigma^2 + sigma_group^2) of the set's inverse-variance mean position (k = 3.72, "
@@ -1304,10 +1305,12 @@ class CrossmatchCancellation:
 
 
 class _LoopBridgedExecutor:
-    """Executor proxy for a CrossmatchService running in a worker thread: its archive
-    requests (``execute``) run on the application's event loop, where the shared HTTP
-    client and providers live; everything else is delegated unchanged. Requests stop when
-    ``token`` is cancelled."""
+    """Executor proxy for a CrossmatchService running in a worker thread: every coroutine
+    method of the executor -- the archive requests (``execute``, and ``_run_plan`` /
+    ``_run_one``, which ``CrossmatchService.crossmatch`` and its density probes await) --
+    runs on the application's event loop, where the shared HTTP client and providers live
+    (their connections belong to that loop); plain methods and attributes are delegated
+    unchanged. Requests stop when ``token`` is cancelled."""
 
     def __init__(self, inner: Any, loop: asyncio.AbstractEventLoop, token: CrossmatchCancellation | None = None) -> None:
         self._inner = inner
@@ -1315,12 +1318,26 @@ class _LoopBridgedExecutor:
         self._token = token or CrossmatchCancellation()
 
     def __getattr__(self, name: str) -> Any:
-        return getattr(self._inner, name)
+        if name.startswith("__") or name in {"_inner", "_loop", "_token"}:
+            raise AttributeError(name)
+        attr = getattr(self._inner, name)
+        if not asyncio.iscoroutinefunction(attr):
+            return attr
+
+        async def on_application_loop(*args: Any, **kwargs: Any) -> Any:
+            return await self._bridge(attr(*args, **kwargs))
+
+        return on_application_loop
 
     async def execute(self, *args: Any, **kwargs: Any) -> Any:
+        return await self._bridge(self._inner.execute(*args, **kwargs))
+
+    async def _bridge(self, coroutine: Any) -> Any:
+        """Await ``coroutine`` on the application's loop from this worker thread's loop."""
         if self._token.cancelled:
+            coroutine.close()
             raise asyncio.CancelledError
-        future = asyncio.run_coroutine_threadsafe(self._inner.execute(*args, **kwargs), self._loop)
+        future = asyncio.run_coroutine_threadsafe(coroutine, self._loop)
         self._token.track(future)
         try:
             waiting = asyncio.wrap_future(future)
@@ -1339,8 +1356,9 @@ def _crossmatch_in_thread(service: Any, loop: asyncio.AbstractEventLoop, call: M
                           token: CrossmatchCancellation | None = None) -> Any:
     """Run ``service.crossmatch(**call)`` on a private event loop in this worker thread.
 
-    CrossmatchService.crossmatch awaits only ``self.executor.execute`` (the archive
-    requests), which :class:`_LoopBridgedExecutor` sends back to ``loop``; its CPU-bound
+    CrossmatchService.crossmatch awaits the network only through ``self.executor`` (its
+    catalogue queries and density probes), which :class:`_LoopBridgedExecutor` sends back
+    to ``loop``; its CPU-bound
     remainder (row classification, matching and crossmatch._group_matches, which is
     O(n^2)) runs here instead of stalling ``loop``. Cancelling ``token`` cancels the
     crossmatch and its outstanding archive requests.
@@ -4557,7 +4575,10 @@ async def tap_examples(request: Request) -> Response:
     return Response(content=examples_xhtml(_tap_base(request)), media_type="application/xhtml+xml")
 
 
-@router.api_route("/tap/sync", methods=["GET", "POST"], summary="TAP 1.1 synchronous query")
+# One route per method, each with its own OpenAPI operation id (a shared GET+POST route
+# gives both operations the same id, which OpenAPI forbids).
+@router.get("/tap/sync", summary="TAP 1.1 synchronous query (GET)", operation_id="vo_tap_sync_get")
+@router.post("/tap/sync", summary="TAP 1.1 synchronous query (POST)", operation_id="vo_tap_sync_post")
 async def tap_sync(request: Request) -> Response:
     try:
         params = await _request_params_or_error(request)
@@ -4895,10 +4916,21 @@ def cli_handler(args: Any) -> int:
             handle.write(body)
         print(f"Wrote {len(body)} bytes to {output}")
     else:
-        stream = sys.stdout if code == 0 else sys.stderr
+        write_bytes(sys.stdout if code == 0 else sys.stderr, body)
+    return code
+
+
+def write_bytes(stream: Any, body: bytes) -> None:
+    """Write ``body`` unchanged: to the binary buffer of a text stream when it has one (a
+    text-mode stdout on Windows would turn the CSV module's CRLF into CR CR LF), else decoded."""
+    stream.flush()
+    buffer = getattr(stream, "buffer", None)
+    if buffer is not None:
+        buffer.write(body)
+        buffer.flush()
+    else:  # a StringIO (pytest's capsys, an embedding application)
         stream.write(body.decode("utf-8", "replace"))
         stream.flush()
-    return code
 
 
 def register_cli(subparsers: Any) -> None:

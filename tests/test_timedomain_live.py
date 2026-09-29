@@ -74,6 +74,99 @@ PERSISTENCE_STD = (321.620483, -0.892541)  # Ivezic et al. 2007 standard, r = 14
 CYG61_A = (316.72475, 38.74942)  # 61 Cyg A (TIC 165602000)
 BARNARD_NAME = "Barnard" + chr(39) + "s star"
 BARNARD_GAIA_ID = "4472832130942575872"
+# Round-3 review targets:
+CM_DRA_PERIOD_DAYS = 1.26838965  # AAVSO VSX; detached EB of two equal M dwarfs (pm 1.6 "/yr)
+EA2_STAR = (12.077042, 62.975306)  # ZTFJ004818.49+625831.1 (Chen et al. 2020), EA with equal minima
+EA2_PERIOD_DAYS = 1.2128074  # Chen et al. 2020 (Gaia DR3 vari_eclipsing_binary 1.21293, ASAS-SN 1.2129)
+# Further Chen et al. (2020) EA systems whose Lomb-Scargle peak lies at P/2 or P/4 (review):
+EA_MORE: tuple[tuple[str, float, float, float], ...] = (
+    ("ZTFJ002817.81+590638.2", 7.074208, 59.110611, 1.9450768),
+    ("ZTFJ000720.05+674633.7", 1.833542, 67.776028, 1.491812),
+    ("ZTFJ004403.14+634418.9", 11.013083, 63.738583, 1.7500288),
+    ("ZTFJ001511.81+644858.2", 3.799208, 64.816167, 3.6804866),
+)
+V350_LYR_PERIOD_DAYS = 0.5942378  # AAVSO VSX (Kepler RRab); Gaia DR3 vari_rrlyrae pf 0.5942437
+V445_LYR_PERIOD_DAYS = 0.513075  # AAVSO VSX (Kepler RRab)
+ALGOL_PERIOD_DAYS = 2.867343  # AAVSO VSX
+QSO_J0747 = (116.987458, 45.757694)  # SDSS J074756.99+454527.7 (DR16Q quasar)
+TAU_CET_TIC = "419015728"
+# Gaia DR3 vari_agn sources for which the review found "reliable" Gaia-only periods (the
+# first five), or which kept one after the first round-3 fix (the last three).
+GAIA_AGN_IDS = ("3831352754950287360", "1009994308781760384", "3078743574088717440", "6613458777742792064",
+                "5502412727530020224", "6378923189372478592", "1481944178762850688", "3787945998686214272")
+# Round-4 review targets:
+# Saturated high proper-motion stars whose ZTF tracks cross unrelated stars (Barnard's star
+# r ~ 8.5, 10.4 "/yr; Groombridge 1830 V = 6.4, 7.1 "/yr): no ZTF light curve is theirs.
+GROOMBRIDGE_1830_NAME = "Groombridge 1830"
+# Landolt (1992) standard PG1323-086B (V = 13.406; J2000 position and pm of Landolt 2009):
+# seven catflags = 0 r epochs of MJD 58964-58965 are 0.5-1.7 mag faint with bad PSF fits.
+PG1323_086B = (201.46104583, -8.84863889)
+# Kepler Blazhko RRab V354 Lyr (Gaia DR3 vari_rrlyrae pf 0.5616916 d; Benko et al. 2010, MNRAS
+# 409, 1585: 0.5617 d) and the Blazhko RRc ZTFJ080626.57+343028.2 (Chen et al. 2020: 0.3183006 d;
+# Gaia DR3 p1_o 0.3183067 d): modulated pulsators whose periods must not be doubled.
+V354_LYR_PERIOD_DAYS = 0.5616916
+RRC_BLAZHKO = (121.61071, 34.50786)
+RRC_BLAZHKO_PERIOD_DAYS = 0.3183006
+# ZTF long-period variable ZTFJ125600.42+164558.5 (Gaia DR3 vari_long_period_variable 155.5 d;
+# AAVSO VSX 154.9 d): a real periodic variable with < 20 cycles in the baseline.
+LPV_ZTF = (194.00176, 16.76627)
+LPV_PERIOD_DAYS = 155.2
+# Gaia DR3 vari_rrlyrae RRab stars (LMC field) with Gaia-only light curves (J2016.0 positions).
+GAIA_RRAB = (70.7481574926497, -65.31461034529983)  # Gaia DR3 4663209996596648704
+GAIA_RRAB_ID = "4663209996596648704"
+GAIA_RRAB_PERIOD_DAYS = 0.5528192923231825  # pf
+# Gaia DR3 4663847575916438784 (RRab, pf 0.4937024 d): half of its 86 G transits fall in the first
+# 6 days (ecliptic-pole scanning), leaving a 0.22 phase gap in that half.
+GAIA_RRAB_EPSL = (74.71630889919842, -65.04350643535167)
+GAIA_RRAB_EPSL_PERIOD_DAYS = 0.49370240907711
+# WASP-12 b transits every 1.0914203 d (Collins et al. 2017, AJ 153, 78); 1.5 % deep.
+WASP12_PERIOD_DAYS = 1.0914203
+# Gaia DR3 vari_eclipsing_binary 4655469709637879296 (porb 2.021 d; LMC field, J2016.0): 31 G
+# transits, a few in eclipse; a chance frequency aligning them must not become a period.
+GAIA_SPARSE_EB = (73.56372079022016, -69.07427109450667)
+GAIA_SPARSE_EB_ID = "4655469709637879296"
+# Gaia DR3 vari_agn 6378923189372478592 (J2016.0): a 6.68-d red-noise peak (FAP 0.006) that stays
+# phase-coherent across 48 transits; unconfirmable Gaia-only periods need FAP < 1e-3.
+GAIA_AGN_COHERENT = (347.88483638384696, -74.04014531386096)
+# Round-5 review targets (positions: Gaia DR3 J2016.0, checked live 2026-09):
+# Gaia DR3 vari_eclipsing_binary sources with sparse G light curves whose LS peak is at P/2 and
+# whose secondary eclipse is visible in the G transits: the orbital period is P, never 2P.
+#  1974933547345251968 = ASASSN-V J215955.32+460714.3 (VSX 0.704444 d; Gaia 1/0.7044 d; ZTF 0.7044518 d)
+#  2637447302310594944 = CSS J232034.2-031415 (VSX 0.510527 d; Gaia frequency 1.95875 c/d)
+GAIA_EB_PARITY: dict[str, tuple[float, float, float]] = {
+    "1974933547345251968": (329.98045905264337, 46.12061689148052, 0.704444),
+    "2637447302310594944": (350.1427754791999, -3.2378231106818616, 0.510527),
+    "5233671057555506176": (175.37314439942438, -70.03333668433515, 1.78185),
+    "5653489198602121472": (130.52563103399274, -24.47207793477145, 0.715871),
+    "4316725467221293696": (295.1670784779848, 12.428881651070881, 1.0735978),
+}
+# Gaia DR3 vari_cepheid stars (pf from the Gaia DR3 table) whose Gaia-only periods were rejected
+# although correct (non-sinusoidal light curves; few effective points), and a Gaia EW binary.
+GAIA_CEPHEIDS: dict[str, tuple[float, float, float]] = {
+    "2049531563002338432": (288.98477982010263, 34.45223709711877, 1.6011972711525537),  # T2CEP
+    "4655167172163949184": (74.22303194643543, -69.63179683595858, 3.059788254691241),  # DCEP
+    "4661366184375995520": (75.01707959980222, -67.9684452335219, 3.140137898085693),  # DCEP
+    "2686850313960864256": (323.368588924551, -0.7987392774283647, 15.56513887355756),  # DCEP
+    "4041710426226283776": (266.77355044909024, -34.629471514497354, 12.312218550291652),  # T2CEP
+}
+GAIA_EW = (147.87115720302134, -13.001520710690393)  # Gaia DR3 5690870910317297408
+GAIA_EW_ID = "5690870910317297408"
+GAIA_EW_PERIOD_DAYS = 0.3209272  # Gaia DR3 vari_eclipsing_binary orbital frequency 3.1159710 c/d
+# Stochastic (red-noise) Seyfert 1 Mrk 817: ZTF must adopt no period.
+MRK_817_NAME = "Mrk 817"
+# Chen et al. (2020) Miras with Gaia DR3 vari_long_period_variable periods:
+MIRA_320 = (292.32525, 22.30642)  # ZTFJ192918.06+221823.1, Gaia DR3 LPV 325.2 +- 13.6 d
+MIRA_320_PERIOD_DAYS = 325.2
+MIRA_206 = (270.38054, -7.56775)  # ZTFJ180131.33-073403.9, Gaia DR3 LPV 206.0 +- 1.9 d
+MIRA_206_PERIOD_DAYS = 206.0
+# Giant planets transiting M dwarfs (single transits 7-11 % deep): the orbital period is P.
+TOI_519_PERIOD_DAYS = 1.2652328  # Parviainen et al. 2021; Kagetani et al. 2023
+TOI_5205_PERIOD_DAYS = 1.630757  # Kanodia et al. 2023, AJ 165, 120
+# GJ 3622 (M6.5 V, pm 1.53 "/yr, parallax 220 mas): ZTF assigns new object IDs along its track.
+GJ_3622_NAME = "GJ 3622"
+# Chen et al. (2020) delta Scuti ZTFJ210655.21+462600.4, P = 0.0743561 d, chi^2/dof < 1 in ZTF.
+DSCT_ZTF = (316.73004, 46.43344)
+DSCT_PERIOD_DAYS = 0.0743561
 
 
 # ---------------------------------------------------------------------------
@@ -162,6 +255,130 @@ async def case_ztf_bad_collection(client: httpx.AsyncClient) -> Any:
         return exc
 
 
+async def case_rr_lyr_ztf10(client: httpx.AsyncClient) -> td.LightCurveResult:
+    # RR Lyr (V = 7.2) is saturated in ZTF: its own objects have no good epochs.
+    return await td.get_lightcurves(*RR_LYR, radius_arcsec=10.0, surveys="ztf", client=client, use_cache=False)
+
+
+async def case_cm_dra_ztf(client: httpx.AsyncClient) -> td.LightCurveResult:
+    return await td.get_lightcurves_by_name("CM Dra", client=client, radius_arcsec=3.0, surveys="ztf", use_cache=False)
+
+
+async def case_ea2(client: httpx.AsyncClient) -> td.LightCurveResult:
+    return await td.get_lightcurves(*EA2_STAR, radius_arcsec=3.0, surveys="ztf", client=client, use_cache=False)
+
+
+async def case_v350_lyr_gaia(client: httpx.AsyncClient) -> td.LightCurveResult:
+    return await td.get_lightcurves_by_name("V350 Lyr", client=client, radius_arcsec=3.0, surveys="gaia",
+                                            use_cache=False)
+
+
+async def case_v445_lyr_ztf(client: httpx.AsyncClient) -> td.LightCurveResult:
+    return await td.get_lightcurves_by_name("V445 Lyr", client=client, radius_arcsec=3.0, surveys="ztf",
+                                            use_cache=False)
+
+
+async def case_tau_cet_tess(client: httpx.AsyncClient) -> td.LightCurveResult:
+    return await td.get_lightcurves_by_name("tau Cet", client=client, radius_arcsec=3.0, surveys="tess",
+                                            tess_max_sectors=1, use_cache=False)
+
+
+async def case_oj287_name(client: httpx.AsyncClient) -> td.LightCurveResult:
+    return await td.get_lightcurves_by_name("OJ 287", client=client, use_cache=False)
+
+
+async def case_qso_j0747(client: httpx.AsyncClient) -> td.LightCurveResult:
+    return await td.get_lightcurves(*QSO_J0747, radius_arcsec=3.0, surveys="ztf", client=client, use_cache=False)
+
+
+async def case_barnard_ztf(client: httpx.AsyncClient) -> td.LightCurveResult:
+    return await td.get_lightcurves_by_name(BARNARD_NAME, client=client, radius_arcsec=3.0, surveys="ztf",
+                                            use_cache=False)
+
+
+async def case_groombridge1830_ztf(client: httpx.AsyncClient) -> td.LightCurveResult:
+    return await td.get_lightcurves_by_name(GROOMBRIDGE_1830_NAME, client=client, radius_arcsec=3.0, surveys="ztf",
+                                            use_cache=False)
+
+
+async def case_pg1323_086b_ztf(client: httpx.AsyncClient) -> td.LightCurveResult:
+    return await td.get_lightcurves(*PG1323_086B, radius_arcsec=3.0, surveys="ztf", client=client, use_cache=False)
+
+
+async def case_v354_lyr_ztf(client: httpx.AsyncClient) -> td.LightCurveResult:
+    return await td.get_lightcurves_by_name("V354 Lyr", client=client, radius_arcsec=3.0, surveys="ztf",
+                                            use_cache=False)
+
+
+async def case_rrc_blazhko_ztf(client: httpx.AsyncClient) -> td.LightCurveResult:
+    return await td.get_lightcurves(*RRC_BLAZHKO, radius_arcsec=3.0, surveys="ztf", client=client, use_cache=False)
+
+
+async def case_lpv_ztf(client: httpx.AsyncClient) -> td.LightCurveResult:
+    return await td.get_lightcurves(*LPV_ZTF, radius_arcsec=3.0, surveys="ztf", client=client, use_cache=False)
+
+
+async def case_gaia_rrab(client: httpx.AsyncClient) -> td.LightCurveResult:
+    return await td.get_lightcurves(*GAIA_RRAB, radius_arcsec=1.0, surveys="gaia", client=client, use_cache=False)
+
+
+async def case_gaia_sparse_eb(client: httpx.AsyncClient) -> td.LightCurveResult:
+    return await td.get_lightcurves(*GAIA_SPARSE_EB, radius_arcsec=1.0, surveys="gaia", client=client,
+                                    use_cache=False)
+
+
+async def case_gaia_rrab_epsl(client: httpx.AsyncClient) -> td.LightCurveResult:
+    return await td.get_lightcurves(*GAIA_RRAB_EPSL, radius_arcsec=1.0, surveys="gaia", client=client, use_cache=False)
+
+
+async def case_gaia_agn_coherent(client: httpx.AsyncClient) -> td.LightCurveResult:
+    return await td.get_lightcurves(*GAIA_AGN_COHERENT, radius_arcsec=1.0, surveys="gaia", client=client,
+                                    use_cache=False)
+
+
+async def case_wasp12_tess(client: httpx.AsyncClient) -> td.LightCurveResult:
+    return await td.get_lightcurves_by_name("WASP-12", client=client, radius_arcsec=3.0, surveys="tess",
+                                            tess_max_sectors=1, use_cache=False)
+
+
+def _gaia_case(ra: float, dec: float) -> Callable[[httpx.AsyncClient], Awaitable[td.LightCurveResult]]:
+    async def case(client: httpx.AsyncClient) -> td.LightCurveResult:
+        return await td.get_lightcurves(ra, dec, radius_arcsec=1.0, surveys="gaia", client=client, use_cache=False)
+    return case
+
+
+async def case_mrk817_ztf(client: httpx.AsyncClient) -> td.LightCurveResult:
+    return await td.get_lightcurves_by_name(MRK_817_NAME, client=client, radius_arcsec=3.0, surveys="ztf",
+                                            use_cache=False)
+
+
+async def case_mira_320_ztf(client: httpx.AsyncClient) -> td.LightCurveResult:
+    return await td.get_lightcurves(*MIRA_320, radius_arcsec=3.0, surveys="ztf", client=client, use_cache=False)
+
+
+async def case_mira_206_ztf(client: httpx.AsyncClient) -> td.LightCurveResult:
+    return await td.get_lightcurves(*MIRA_206, radius_arcsec=3.0, surveys="ztf", client=client, use_cache=False)
+
+
+async def case_toi519_tess(client: httpx.AsyncClient) -> td.LightCurveResult:
+    return await td.get_lightcurves_by_name("TOI-519", client=client, radius_arcsec=3.0, surveys="tess",
+                                            tess_max_sectors=2, use_cache=False)
+
+
+async def case_toi5205_tess(client: httpx.AsyncClient) -> td.LightCurveResult:
+    return await td.get_lightcurves_by_name("TOI-5205", client=client, radius_arcsec=3.0, surveys="tess",
+                                            tess_max_sectors=2, use_cache=False)
+
+
+async def case_gj3622_ztf(client: httpx.AsyncClient) -> td.LightCurveResult:
+    return await td.get_lightcurves_by_name(GJ_3622_NAME, client=client, radius_arcsec=3.0, surveys="ztf",
+                                            use_cache=False)
+
+
+async def case_dsct_ztf(client: httpx.AsyncClient) -> td.LightCurveResult:
+    return await td.get_lightcurves(*DSCT_ZTF, radius_arcsec=3.0, surveys="ztf", client=client, use_cache=False)
+
+
 CASES: dict[str, Callable[[httpx.AsyncClient], Awaitable[Any]]] = {
     "rrab_css_j132708": case_rrab,
     "qso_3c273": case_3c273,
@@ -179,6 +396,35 @@ CASES: dict[str, Callable[[httpx.AsyncClient], Awaitable[Any]]] = {
     "tess_61cyg": case_tess_61cyg,
     "barnard_name": case_barnard_name,
     "rrab_neowise_wide": case_rrab_neowise_wide,
+    "rr_lyr_ztf10": case_rr_lyr_ztf10,
+    "cm_dra_ztf": case_cm_dra_ztf,
+    "ea_ztfj0048": case_ea2,
+    "v350_lyr_gaia": case_v350_lyr_gaia,
+    "v445_lyr_ztf": case_v445_lyr_ztf,
+    "tau_cet_tess": case_tau_cet_tess,
+    "qso_j0747_ztf": case_qso_j0747,
+    "oj287_name": case_oj287_name,
+    "barnard_ztf": case_barnard_ztf,
+    "groombridge1830_ztf": case_groombridge1830_ztf,
+    "pg1323_086b_ztf": case_pg1323_086b_ztf,
+    "v354_lyr_ztf": case_v354_lyr_ztf,
+    "rrc_blazhko_ztf": case_rrc_blazhko_ztf,
+    "lpv_ztf": case_lpv_ztf,
+    "gaia_rrab": case_gaia_rrab,
+    "wasp12_tess": case_wasp12_tess,
+    "gaia_sparse_eb": case_gaia_sparse_eb,
+    "gaia_agn_coherent": case_gaia_agn_coherent,
+    "gaia_rrab_epsl": case_gaia_rrab_epsl,
+    **{f"gaia_eb_{sid}": _gaia_case(ra, dec) for sid, (ra, dec, _p) in GAIA_EB_PARITY.items()},
+    **{f"gaia_cep_{sid}": _gaia_case(ra, dec) for sid, (ra, dec, _p) in GAIA_CEPHEIDS.items()},
+    "gaia_ew_5690870910317297408": _gaia_case(*GAIA_EW),
+    "mrk817_ztf": case_mrk817_ztf,
+    "mira_320_ztf": case_mira_320_ztf,
+    "mira_206_ztf": case_mira_206_ztf,
+    "toi519_tess": case_toi519_tess,
+    "toi5205_tess": case_toi5205_tess,
+    "gj3622_ztf": case_gj3622_ztf,
+    "dsct_ztf": case_dsct_ztf,
 }
 
 
@@ -436,6 +682,257 @@ def test_live_ztf_bad_collection_is_reported() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Round-3 review: identity, eclipsing binaries, red noise, Gaia doubling, TESS
+# ---------------------------------------------------------------------------
+
+
+def test_live_rr_lyr_ztf_cone_adopts_no_neighbour() -> None:
+    result = _live(case_rr_lyr_ztf10)
+    _require_survey(result, "ztf")
+    assert [s for s in result.series if s.survey == "ztf"] == []
+    assert result.period_search is None or result.period_search.best is None
+    assert any("no ZTF light curve for the target" in n for n in result.notes)
+    assert result.provenance["ztf"]["neighbour_object_ids"]  # the 17.9-mag neighbour 7.9" away is listed
+
+
+def test_live_cm_dra_high_proper_motion_eclipsing_binary() -> None:
+    result = _live(case_cm_dra_ztf)
+    _require_survey(result, "ztf")
+    g = next(s for s in result.series if s.key == "ztf:g")
+    assert len(g.points) > 300  # its own g object, found along the proper-motion track
+    best = result.period_search.best
+    assert best is not None and best.period_error_days < 1e-3
+    assert abs(best.best_period_days - CM_DRA_PERIOD_DAYS) < 5 * best.period_error_days
+
+
+@pytest.mark.parametrize("name,ra,dec,period", [("ZTFJ004818.49+625831.1", *EA2_STAR, EA2_PERIOD_DAYS), *EA_MORE])
+def test_live_equal_minima_eclipsing_binaries_orbital_period(name: str, ra: float, dec: float, period: float) -> None:
+    async def case(client: httpx.AsyncClient) -> td.LightCurveResult:
+        return await td.get_lightcurves(ra, dec, radius_arcsec=3.0, surveys="ztf", client=client, use_cache=False)
+
+    result = _live(case)
+    _require_survey(result, "ztf")
+    best = result.period_search.best
+    assert best is not None, name
+    assert within(best.best_period_days, period, 1e-3), (name, best.best_period_days)
+    assert best.alternative_period_days is not None and within(best.alternative_period_days, period / 2, 2e-3)
+
+
+def test_live_blazar_oj287_has_no_period() -> None:
+    result = _live(case_oj287_name)
+    for survey in ("ztf", "gaia"):
+        _require_survey(result, survey)
+    assert result.summary_is_variable() is True
+    assert result.period_search.best is None
+    g = next(p for p in result.period_search.per_series if p.series == "gaia:G")
+    assert not g.reliable  # the 0.0833-d Gaia 'period' is the 3rd harmonic of the 6-h spin
+
+
+def test_live_quasars_have_no_period() -> None:
+    result = _live(case_qso_j0747)
+    _require_survey(result, "ztf")
+    assert result.period_search.best is None
+    gaia_3c273 = _live(case_name_3c273_gaia)
+    _require_survey(gaia_3c273, "gaia")
+    assert gaia_3c273.period_search.best is None
+
+
+def test_live_gaia_vari_agn_sources_have_no_period() -> None:
+    async def case(client: httpx.AsyncClient) -> list[td.LightCurveResult]:
+        query = ("SELECT source_id, ra, dec FROM gaiadr3.gaia_source WHERE source_id IN ("
+                 + ", ".join(GAIA_AGN_IDS) + ")")
+        response = await td._tap_query(client, td.GAIA_TAP_SYNC_URL, query, service="gaia", timeout=120.0)
+        rows = td._csv_rows(response.text, required=("source_id", "ra", "dec"), service="gaia")
+        assert len(rows) == len(GAIA_AGN_IDS)
+        return [await td.get_lightcurves(float(r["ra"]), float(r["dec"]), radius_arcsec=1.0, surveys="gaia",
+                                         client=client, use_cache=False) for r in rows]
+
+    results = _live(case)
+    for result in results:
+        _require_survey(result, "gaia")
+    adopted = [(r.provenance["gaia"]["source_id"], r.period_search.best.best_period_days)
+               for r in results if r.period_search.best is not None]
+    assert adopted == []
+
+
+def test_live_v350_lyr_gaia_only_period_not_doubled_by_rp() -> None:
+    result = _live(case_v350_lyr_gaia)
+    _require_survey(result, "gaia")
+    best = result.period_search.best
+    assert best is not None and best.series == "gaia:G"
+    assert within(best.best_period_days, V350_LYR_PERIOD_DAYS, 1e-3)
+    assert best.harmonic_test["doubled"] is False
+
+
+def test_live_v445_lyr_daily_alias_not_adopted() -> None:
+    result = _live(case_v445_lyr_ztf)
+    _require_survey(result, "ztf")
+    best = result.period_search.best
+    assert best is not None and within(best.best_period_days, V445_LYR_PERIOD_DAYS, 1e-3)
+    for p in result.period_search.per_series:
+        if p.reliable:
+            assert within(p.best_period_days, V445_LYR_PERIOD_DAYS, 1e-2), (p.series, p.best_period_days)
+
+
+def test_live_algol_tess_period_error_covers_the_catalogue_period() -> None:
+    async def case(client: httpx.AsyncClient) -> td.LightCurveResult:
+        return await td.get_lightcurves_by_name("Algol", client=client, surveys="tess", use_cache=False)
+
+    result = _live(case)
+    _require_survey(result, "tess")
+    best = result.period_search.best
+    assert best is not None and best.period_error_days is not None
+    assert abs(best.best_period_days - ALGOL_PERIOD_DAYS) < 3 * best.period_error_days, (
+        best.best_period_days, best.period_error_days)
+    assert within(best.best_period_days, ALGOL_PERIOD_DAYS, 3e-3)
+
+
+def test_live_tau_ceti_tess_not_variable() -> None:
+    result = _live(case_tau_cet_tess)
+    _require_survey(result, "tess")
+    tess = next(s for s in result.series if s.key == "tess:TESS")
+    assert tess.source_ids == [f"TIC {TAU_CET_TIC}"]
+    m = result.variability["tess:TESS"]
+    assert m.is_variable is False, m.evidence
+    assert result.period_search.best is None
+
+
+# ---------------------------------------------------------------------------
+# Round-4 review: moving-target identity, modulated pulsators, coherence, transits, PSF fits
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize("case", [case_barnard_ztf, case_groombridge1830_ztf], ids=["barnard", "groombridge1830"])
+def test_live_saturated_high_proper_motion_stars_get_no_ztf_light_curve(case) -> None:
+    result = _live(case)
+    _require_survey(result, "ztf")
+    assert [s for s in result.series if s.survey == "ztf"] == [], [(s.key, s.source_ids) for s in result.series]
+    assert result.provenance["ztf"]["target_object_ids"] == []
+    assert any("no ZTF light curve for the target" in n for n in result.notes)
+
+
+def test_live_landolt_standard_pg1323_086b_not_variable() -> None:
+    result = _live(case_pg1323_086b_ztf)
+    _require_survey(result, "ztf")
+    for key, m in result.variability.items():
+        if m.n >= MIN_N_QUIET:
+            assert m.is_variable is False, (key, m.evidence)
+    assert result.summary_is_variable() is False
+
+
+@pytest.mark.parametrize("case,period", [(case_v354_lyr_ztf, V354_LYR_PERIOD_DAYS),
+                                         (case_rrc_blazhko_ztf, RRC_BLAZHKO_PERIOD_DAYS)], ids=["V354Lyr", "RRc"])
+def test_live_blazhko_pulsators_are_not_doubled(case, period: float) -> None:
+    result = _live(case)
+    _require_survey(result, "ztf")
+    best = result.period_search.best
+    assert best is not None and within(best.best_period_days, period, 1e-3), best and best.best_period_days
+    assert best.harmonic_test["doubled"] is False
+
+
+def test_live_long_period_variable_is_adopted() -> None:
+    result = _live(case_lpv_ztf)
+    _require_survey(result, "ztf")
+    best = result.period_search.best
+    assert best is not None and within(best.best_period_days, LPV_PERIOD_DAYS, 0.02)
+
+
+def test_live_gaia_only_rrab_is_adopted() -> None:
+    result = _live(case_gaia_rrab)
+    _require_survey(result, "gaia")
+    best = result.period_search.best
+    assert best is not None and best.series == "gaia:G"
+    assert within(best.best_period_days, GAIA_RRAB_PERIOD_DAYS, 2e-5)
+    assert result.period_search.multiband is None  # BP/RP are not summed
+
+
+def test_live_gaia_rrab_with_clustered_transits_is_adopted() -> None:
+    result = _live(case_gaia_rrab_epsl)
+    _require_survey(result, "gaia")
+    best = result.period_search.best
+    assert best is not None and within(best.best_period_days, GAIA_RRAB_EPSL_PERIOD_DAYS, 2e-5)
+
+
+def test_live_coherent_gaia_agn_peak_is_not_adopted() -> None:
+    result = _live(case_gaia_agn_coherent)
+    _require_survey(result, "gaia")
+    assert result.period_search.best is None
+
+
+def test_live_sparse_gaia_eclipsing_binary_has_no_chance_period() -> None:
+    result = _live(case_gaia_sparse_eb)
+    _require_survey(result, "gaia")
+    assert result.provenance["gaia"]["source_id"] == GAIA_SPARSE_EB_ID
+    assert result.period_search.best is None
+
+
+def test_live_wasp12_transit_period_not_doubled() -> None:
+    result = _live(case_wasp12_tess)
+    _require_survey(result, "tess")
+    best = result.period_search.best
+    assert best is not None and within(best.best_period_days, WASP12_PERIOD_DAYS, 1e-4), best.best_period_days
+    assert best.harmonic_test["doubled"] is False
+    assert best.alternative_period_days is not None and within(best.alternative_period_days, 2 * WASP12_PERIOD_DAYS, 1e-4)
+
+
+# Round-5 review targets.
+
+
+@pytest.mark.parametrize("source_id", ["1974933547345251968", "2637447302310594944"])
+def test_live_sparse_gaia_eclipsing_binaries_keep_their_orbital_period(source_id: str) -> None:
+    _ra, _dec, truth = GAIA_EB_PARITY[source_id]
+    result = _live(CASES[f"gaia_eb_{source_id}"])
+    _require_survey(result, "gaia")
+    best = result.period_search.best
+    assert best is not None and within(best.best_period_days, truth, 1e-4), best and best.best_period_days
+    assert "eclipse_shape" not in str(best.harmonic_test["doubled_by"])
+
+
+@pytest.mark.parametrize("source_id", ["2049531563002338432", "2686850313960864256"])
+def test_live_gaia_only_cepheids_are_adopted(source_id: str) -> None:
+    result = _live(CASES[f"gaia_cep_{source_id}"])
+    _require_survey(result, "gaia")
+    best = result.period_search.best
+    assert best is not None and within(best.best_period_days, GAIA_CEPHEIDS[source_id][2], 1e-4)
+
+
+def test_live_mrk817_gets_no_ztf_period() -> None:
+    result = _live(case_mrk817_ztf)
+    _require_survey(result, "ztf")
+    assert result.period_search is not None and result.period_search.best is None
+
+
+def test_live_mira_near_the_annual_window_is_adopted() -> None:
+    result = _live(case_mira_320_ztf)
+    _require_survey(result, "ztf")
+    best = result.period_search.best
+    assert best is not None and within(best.best_period_days, MIRA_320_PERIOD_DAYS, 0.03)
+
+
+def test_live_toi519_giant_planet_period_not_doubled() -> None:
+    result = _live(case_toi519_tess)
+    _require_survey(result, "tess")
+    best = result.period_search.best
+    assert best is not None and within(best.best_period_days, TOI_519_PERIOD_DAYS, 1e-3), best and best.best_period_days
+    assert best.harmonic_test["shape"]["transit_like"] is True
+
+
+def test_live_gj3622_ztf_keeps_every_object_on_its_track() -> None:
+    result = _live(case_gj3622_ztf)
+    _require_survey(result, "ztf")
+    r = next(s for s in result.series if s.key == "ztf:r")
+    assert len(r.source_ids) >= 2 and max(p.mjd for p in r.points if p.flag == 0) > 60500
+    assert result.target["parallax_mas"] is not None and result.target["parallax_mas"] > 200
+
+
+def test_live_delta_scuti_with_chi2_below_one_is_adopted() -> None:
+    result = _live(case_dsct_ztf)
+    _require_survey(result, "ztf")
+    best = result.period_search.best
+    assert best is not None and within(best.best_period_days, DSCT_PERIOD_DAYS, 1e-4)
+
+
+# ---------------------------------------------------------------------------
 # Fixture recorder
 # ---------------------------------------------------------------------------
 
@@ -475,8 +972,9 @@ async def _record_case(name: str) -> str:
 
 
 async def record(names: list[str]) -> None:
-    for line in await asyncio.gather(*(_record_case(n) for n in names)):
-        print(line)
+    # One case at a time: concurrent recordings of large light curves ran out of memory.
+    for name in names:
+        print(await _record_case(name), flush=True)
 
 
 if __name__ == "__main__":
