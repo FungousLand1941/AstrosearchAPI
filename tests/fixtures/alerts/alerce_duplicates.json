@@ -1,0 +1,255 @@
+{
+  "catalog": "alerce_duplicates",
+  "params": {
+    "broker": "alerce",
+    "since_mjd": 61308.5221,
+    "until_mjd": 61311.5221,
+    "limit": 15,
+    "options": {
+      "classifier": "lc_classifier",
+      "class_name": "AGN",
+      "mjd_field": "lastmjd"
+    },
+    "alert_ids": [
+      "ZTF18actadei",
+      "ZTF19aampqti",
+      "ZTF18acusetg",
+      "ZTF18aahpbal",
+      "ZTF18accnfvw",
+      "ZTF21aaqvvvt",
+      "ZTF19aaysifx",
+      "ZTF18accnmxe",
+      "ZTF18acbwaow",
+      "ZTF18aacgehv",
+      "ZTF20achostw",
+      "ZTF18aczejib",
+      "ZTF18aczdenj",
+      "ZTF19aannzfb",
+      "ZTF18acuseuu"
+    ],
+    "repeated": [
+      "ZTF18actadei",
+      "ZTF19aampqti",
+      "ZTF18accnfvw",
+      "ZTF18acbwaow",
+      "ZTF18aacgehv",
+      "ZTF20achostw",
+      "ZTF18aczejib",
+      "ZTF18aczdenj",
+      "ZTF19aannzfb"
+    ],
+    "truncated": true,
+    "boundary_mjd": 61309.53011569986,
+    "requests": 26
+  },
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/?classifier=lc_classifier&ranking=1&class=AGN&lastmjd=61308.522100&lastmjd=61311.522100&page_size=16&order_by=lastmjd&order_mode=DESC",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/?classifier=lc_classifier&ranking=1&class=AGN&lastmjd=61308.522100&lastmjd=61311.522100&page_size=16&order_by=lastmjd&order_mode=DESC&page=2",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18actadei/probabilities?classifier=lc_classifier",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18accnfvw/probabilities?classifier=lc_classifier",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF19aampqti/probabilities?classifier=lc_classifier",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18acbwaow/probabilities?classifier=lc_classifier",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18aacgehv/probabilities?classifier=lc_classifier",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18aczdenj/probabilities?classifier=lc_classifier",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18aczejib/probabilities?classifier=lc_classifier",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF20achostw/probabilities?classifier=lc_classifier",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF19aannzfb/probabilities?classifier=lc_classifier",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18actadei/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18aahpbal/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF19aampqti/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18acusetg/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF21aaqvvvt/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18accnfvw/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF19aaysifx/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18accnmxe/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18aacgehv/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18acbwaow/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF20achostw/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18aczejib/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18aczdenj/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF19aannzfb/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18acuseuu/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    }
+  ]
+}

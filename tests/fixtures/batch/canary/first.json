@@ -1,0 +1,46 @@
+{
+  "case": "canary",
+  "catalog": "first",
+  "radius_arcsec": 10.0,
+  "targets": [
+    {
+      "id": "3c273",
+      "ra": 187.2779154,
+      "dec": 2.0523883
+    },
+    {
+      "id": "m87",
+      "ra": 187.7059308,
+      "dec": 12.3911233
+    },
+    {
+      "id": "hd209458",
+      "ra": 330.79502,
+      "dec": 18.88432
+    },
+    {
+      "id": "hd106785",
+      "ra": 184.20402414769,
+      "dec": 12.53916028867
+    }
+  ],
+  "strategy": "upload",
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://heasarc.gsfc.nasa.gov/xamin/vo/tap/sync",
+      "request_content_type": "multipart/form-data",
+      "fields": {
+        "REQUEST": "doQuery",
+        "LANG": "ADQL",
+        "QUERY": "SELECT tu.t_idx AS t_idx, name AS name, ra AS ra, dec AS dec, flux_20_cm AS flux_20_cm, int_flux_20_cm AS int_flux_20_cm, flux_20_cm_error AS flux_20_cm_error, fit_major_axis AS fit_major_axis, fit_minor_axis AS fit_minor_axis, sidelobe_prob AS sidelobe_prob, mean_epoch AS mean_epoch FROM first, TAP_UPLOAD.targets AS tu WHERE 1 = CONTAINS(POINT('ICRS', ra, dec), CIRCLE('ICRS', tu.t_ra, tu.t_dec, tu.t_rad))",
+        "UPLOAD": "targets,param:targets",
+        "MAXREC": "200000",
+        "targets": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<VOTABLE version=\"1.3\" xmlns=\"http://www.ivoa.net/xml/VOTable/v1.3\">\n<RESOURCE type=\"results\"><TABLE name=\"targets\">\n<FIELD name=\"t_idx\" datatype=\"int\"/>\n<FIELD name=\"t_ra\" datatype=\"double\" unit=\"deg\"/>\n<FIELD name=\"t_dec\" datatype=\"double\" unit=\"deg\"/>\n<FIELD name=\"t_rad\" datatype=\"double\" unit=\"deg\"/>\n<DATA><TABLEDATA>\n<TR><TD>0</TD><TD>187.2779154</TD><TD>2.0523883</TD><TD>0.002777777777777778</TD></TR>\n<TR><TD>1</TD><TD>187.7059308</TD><TD>12.3911233</TD><TD>0.002777777777777778</TD></TR>\n<TR><TD>2</TD><TD>330.79502</TD><TD>18.88432</TD><TD>0.002777777777777778</TD></TR>\n<TR><TD>3</TD><TD>184.20402414769</TD><TD>12.53916028867</TD><TD>0.002777777777777778</TD></TR>\n</TABLEDATA></DATA></TABLE></RESOURCE></VOTABLE>\n"
+      },
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "text/xml"
+    }
+  ]
+}

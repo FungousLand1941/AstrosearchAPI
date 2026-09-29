@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <meta name="description" content="AstroSearch: search a sky position or object across radio-to-X-ray catalogs, with an interactive sky viewer, SED, light curves and multi-wavelength cutouts.">
+  <title>AstroSearch Sky Explorer</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%230b1020'/%3E%3Ccircle cx='16' cy='16' r='6' fill='none' stroke='%237aa2ff' stroke-width='2'/%3E%3Ccircle cx='23' cy='9' r='1.6' fill='%23ffd479'/%3E%3Ccircle cx='8' cy='22' r='1.1' fill='%23c9d4ff'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" crossorigin="anonymous"></script>
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to results</a>
+
+  <header class="topbar" role="banner">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+        <circle cx="16" cy="16" r="6" fill="none" stroke="currentColor" stroke-width="2"/>
+        <circle cx="16" cy="16" r="12" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="2 3" opacity=".6"/>
+        <circle cx="25" cy="8" r="1.8" fill="var(--accent-2)"/>
+      </svg>
+      <span class="brand-name">AstroSearch</span>
+    </div>
+
+    <form id="search-form" class="search" role="search" autocomplete="off" novalidate>
+      <label class="visually-hidden" for="q">Object name or coordinates</label>
+      <input id="q" name="q" type="search" required spellcheck="false"
+             placeholder="Object name or RA Dec, e.g. 3C 273 or 187.2779 +2.0524"
+             aria-describedby="q-hint">
+      <label class="visually-hidden" for="radius">Search radius in arcseconds</label>
+      <div class="radius-field">
+        <input id="radius" name="radius" type="number" inputmode="decimal" min="0.1" max="3600" step="any" value="10">
+        <span aria-hidden="true">arcsec</span>
+      </div>
+      <button id="search-btn" class="btn btn-primary" type="submit">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span>Search</span>
+      </button>
+    </form>
+
+    <div class="topbar-actions">
+      <button id="theme-toggle" class="icon-btn" type="button" aria-label="Switch to light theme" title="Toggle theme">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z" fill="currentColor"/></svg>
+      </button>
+      <button id="settings-toggle" class="icon-btn" type="button" aria-haspopup="dialog" aria-controls="settings-dialog" aria-label="Settings" title="Settings">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 15.5a3.5 3.5 0 100-7 3.5 3.5 0 000 7z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <p id="q-hint" class="hint-bar">
+    Try
+    <button type="button" class="chip example" data-q="3C 273">3C 273</button>
+    <button type="button" class="chip example" data-q="M87">M87</button>
+    <button type="button" class="chip example" data-q="Vega">Vega</button>
+    <button type="button" class="chip example" data-q="Crab Nebula" data-r="30">Crab Nebula</button>
+    <button type="button" class="chip example" data-q="Barnard's star" data-r="15">Barnard's star</button>
+    <button type="button" class="chip example" data-q="05 34 31.94 +22 00 52.1" data-r="5">Crab pulsar (RA Dec)</button>
+    <span class="hint-text">Names are resolved with CDS Sesame (with proper motion); coordinates may be decimal degrees or sexagesimal (ICRS). A bare position is not moved for proper motion, so use a name for fast-moving stars.</span>
+  </p>
+
+  <section id="progress" class="progress" aria-live="polite" aria-busy="false" hidden>
+    <div class="progress-head">
+      <span id="progress-label" class="progress-label">Searching…</span>
+      <span id="progress-count" class="progress-count"></span>
+    </div>
+    <div class="progress-track" role="progressbar" aria-labelledby="progress-label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <div id="progress-bar" class="progress-bar"></div>
+    </div>
+    <ul id="catalog-chips" class="catalog-chips" aria-label="Catalog query status"></ul>
+  </section>
+
+  <main id="main" class="layout" tabindex="-1">
+    <section class="card sky-card" aria-labelledby="sky-title">
+      <div class="card-head">
+        <h2 id="sky-title">Sky viewer</h2>
+        <div class="card-tools">
+          <label class="visually-hidden" for="survey-select">Background survey</label>
+          <select id="survey-select" class="select" title="Background survey"></select>
+        </div>
+      </div>
+      <div id="aladin" class="aladin" role="application" aria-label="Interactive sky map (Aladin Lite)">
+        <div class="aladin-placeholder" id="aladin-status">Loading Aladin Lite…</div>
+      </div>
+      <div id="sky-legend" class="legend" aria-label="Catalog overlay legend"></div>
+      <p class="card-foot">Sky map: <a href="https://aladin.cds.unistra.fr/AladinLite/" target="_blank" rel="noopener">Aladin Lite v3</a> (CDS). Toggle a catalog in the legend to show or hide its sources.</p>
+    </section>
+
+    <section class="card target-card" aria-labelledby="target-title">
+      <div class="card-head">
+        <h2 id="target-title">Target</h2>
+        <div class="card-tools">
+          <button id="download-json" class="btn btn-ghost btn-small" type="button" disabled>Download JSON</button>
+        </div>
+      </div>
+      <div id="target-body" class="target-body">
+        <p class="muted">Search an object name or position to begin. Results from every catalog appear here as they arrive.</p>
+      </div>
+      <div class="subsection" aria-labelledby="explain-title">
+        <h3 id="explain-title">Explain this object</h3>
+        <div id="explain-panel" class="panel" data-state="idle">
+          <p class="muted">An AI summary grounded in the literature appears after a search.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card ask-card" aria-labelledby="ask-title">
+      <div class="card-head"><h2 id="ask-title">Ask the sky</h2></div>
+      <form id="ask-form" class="ask-form">
+        <label for="ask-text" class="visually-hidden">Question in natural language</label>
+        <textarea id="ask-text" rows="2" maxlength="2000" placeholder="e.g. radio-loud quasars within 30 arcsec of 3C 273 with X-ray detections"></textarea>
+        <button id="ask-btn" type="submit" class="btn btn-primary">Translate</button>
+      </form>
+      <div id="ask-panel" class="panel" data-state="idle" aria-live="polite"></div>
+    </section>
+
+    <section class="card results-card" aria-labelledby="results-title">
+      <div class="card-head">
+        <h2 id="results-title">Matched objects</h2>
+        <div class="card-tools">
+          <span id="results-meta" class="muted small"></span>
+        </div>
+      </div>
+      <div id="results-panel" class="panel" data-state="idle">
+        <p class="muted">Sources are grouped into physical objects across catalogs; the probability is the positional match confidence.</p>
+      </div>
+    </section>
+
+    <section class="card sed-card" aria-labelledby="sed-title">
+      <div class="card-head"><h2 id="sed-title">Spectral energy distribution</h2></div>
+      <div id="sed-panel" class="panel" data-state="idle">
+        <p class="muted">Broadband photometry from radio to X-ray (&nu;F<sub>&nu;</sub> vs wavelength).</p>
+      </div>
+    </section>
+
+    <section class="card lc-card" aria-labelledby="lc-title">
+      <div class="card-head"><h2 id="lc-title">Light curves</h2></div>
+      <div id="lc-panel" class="panel" data-state="idle">
+        <p class="muted">Time-domain photometry (ZTF, NEOWISE, Gaia) with variability and period search.</p>
+      </div>
+    </section>
+
+    <section class="card cutout-card" aria-labelledby="cutout-title">
+      <div class="card-head">
+        <h2 id="cutout-title">Multi-wavelength cutouts</h2>
+        <div class="card-tools">
+          <label for="cutout-fov" class="small muted">FoV</label>
+          <select id="cutout-fov" class="select select-small">
+            <option value="1">1′</option>
+            <option value="3" selected>3′</option>
+            <option value="10">10′</option>
+            <option value="30">30′</option>
+          </select>
+        </div>
+      </div>
+      <div id="cutout-panel" class="panel" data-state="idle">
+        <p class="muted">Radio to X-ray image strip rendered by CDS hips2fits.</p>
+      </div>
+    </section>
+
+    <section class="card sso-card" aria-labelledby="sso-title">
+      <div class="card-head"><h2 id="sso-title">Solar-system objects</h2></div>
+      <div id="sso-panel" class="panel" data-state="idle">
+        <p class="muted">Known asteroids and comets near the position right now.</p>
+      </div>
+    </section>
+
+    <section class="card cite-card" aria-labelledby="cite-title">
+      <div class="card-head">
+        <h2 id="cite-title">Citations</h2>
+        <div class="card-tools">
+          <button id="copy-bibtex" class="btn btn-ghost btn-small" type="button" disabled>Copy BibTeX</button>
+        </div>
+      </div>
+      <div id="cite-panel" class="panel" data-state="idle">
+        <p class="muted">Acknowledgements and BibTeX for every catalog that contributed data.</p>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="settings-dialog" class="dialog" aria-labelledby="settings-title">
+    <form method="dialog" class="dialog-body" id="settings-form">
+      <h2 id="settings-title">Settings</h2>
+      <label for="api-key">API key <span class="muted small">(only if this server requires one; stored in this browser)</span></label>
+      <input id="api-key" type="password" autocomplete="off" spellcheck="false">
+      <label class="check"><input id="use-stream" type="checkbox" checked> Stream catalog results live (Server-Sent Events)</label>
+      <div class="dialog-actions">
+        <button value="cancel" class="btn btn-ghost" type="submit">Cancel</button>
+        <button value="save" class="btn btn-primary" type="submit">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <footer class="footer">
+    <p>Data from public archives (CDS, IRSA, MAST, HEASARC, NED, ESA, NOIRLab and others) via the AstroSearch API. Cutouts: <a href="https://alasky.cds.unistra.fr/hips-image-services/hips2fits" target="_blank" rel="noopener">CDS hips2fits</a>. Please cite the catalogs listed under Citations.</p>
+  </footer>
+</body>
+</html>

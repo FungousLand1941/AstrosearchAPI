@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>NGC 6621</name>
+  <!-- Q8398787 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 164ms [3] -->
+    <oid>314439</oid>
+    <otype>AG?</otype>
+    <jpos>18:12:55.27 +68:21:48.4</jpos>
+    <jradeg>273.23031667</jradeg>
+    <jdedeg>68.36347222</jdedeg>
+    <refPos>2006AJ....131.1163S</refPos>
+    <z><v>0.020843</v><q>C</q><r>2016ApJS..226...11S</r></z>
+    <MType>Sc</MType>
+    <oname>NGC  6621</oname>
+    <nrefs>130</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ****Total of 1 crashes -->
+<!-- Configuration tested: /run/sesame.conf -->

@@ -1,0 +1,21 @@
+{
+  "case": "vesta_2023",
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND=%274%3B%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27OBSERVER%27&CENTER=%27500%40399%27&TLIST=%272460000.500000%27&QUANTITIES=%271%2C9%27&ANG_FORMAT=%27DEG%27&CSV_FORMAT=%27YES%27",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "location": ""
+    },
+    {
+      "method": "GET",
+      "url": "https://ssp.imcce.fr/webservices/skybot/api/conesearch.php?-ep=2460000.500000&-ra=8.6839400&-dec=-2.1111300&-rs=600.000&-mime=json&-output=all&-observer=500&-filter=120&-objFilter=111&-refsys=EQJ2000&-from=AstroSearch",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "location": ""
+    }
+  ]
+}

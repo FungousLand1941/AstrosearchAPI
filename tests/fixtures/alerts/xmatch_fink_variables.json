@@ -1,0 +1,377 @@
+{
+  "catalog": "xmatch_fink_variables",
+  "params": {
+    "alerts": [
+      {
+        "broker": "fink",
+        "object_id": "ZTF19aaxvjli",
+        "ra": 308.4337739,
+        "dec": -8.7102259,
+        "mjd": 61309.23987270007,
+        "magpsf": 18.951803,
+        "band": "r",
+        "classification": "(TNS) CV",
+        "probability": null,
+        "url": "https://ztf.fink-portal.org/ZTF19aaxvjli",
+        "survey": "ztf",
+        "magpsf_err": 0.13793342,
+        "first_mjd": 58338.35883100005,
+        "extra": {
+          "candid": "3555239874015015005",
+          "isdiffpos": "t",
+          "ndethist": 136,
+          "drb": 0.99900395,
+          "classtar": 1.0,
+          "sgscore1": 0.866818,
+          "distpsnr1_arcsec": 0.1737851,
+          "scores": {
+            "snn_snia_vs_nonia": 0.0,
+            "snn_sn_vs_all": 0.0,
+            "rf_snia_vs_nonia": 0.0,
+            "rf_kn_vs_nonkn": 0.0,
+            "mulens": 0.0,
+            "slsn_score": null
+          },
+          "simbad_otype": null,
+          "tns_type": "CV",
+          "gaia_dr3_name": null,
+          "gaia_parallax_mas": null,
+          "gaia_parallax_error_mas": null,
+          "gaia_var_flag": 0,
+          "mangrove_hyperleda_name": null,
+          "mangrove_ang_dist": null,
+          "mangrove_lum_dist": null,
+          "roid": 0
+        },
+        "is_negative": false,
+        "id": "fink:ZTF19aaxvjli"
+      },
+      {
+        "broker": "fink",
+        "object_id": "ZTF18acclkfa",
+        "ra": 99.7106887,
+        "dec": 1.9887846,
+        "mjd": 61308.50907409983,
+        "magpsf": 19.99073,
+        "band": "g",
+        "classification": "(TNS) CV",
+        "probability": null,
+        "url": "https://ztf.fink-portal.org/ZTF18acclkfa",
+        "survey": "ztf",
+        "magpsf_err": 0.21153148,
+        "first_mjd": 58371.47443290008,
+        "extra": {
+          "candid": "3554509070015010036",
+          "isdiffpos": "f",
+          "ndethist": 905,
+          "drb": 0.9997542,
+          "classtar": 0.985,
+          "sgscore1": 0.9735,
+          "distpsnr1_arcsec": 0.22086406,
+          "scores": {
+            "snn_snia_vs_nonia": 0.0,
+            "snn_sn_vs_all": 0.0,
+            "rf_snia_vs_nonia": 0.0,
+            "rf_kn_vs_nonkn": 0.0,
+            "mulens": 0.0,
+            "slsn_score": null
+          },
+          "simbad_otype": "CataclyV*_Candidate",
+          "tns_type": "CV",
+          "gaia_dr3_name": "Gaia DR3 3126747736361227008",
+          "gaia_parallax_mas": 1.3743,
+          "gaia_parallax_error_mas": 0.2248,
+          "gaia_var_flag": 1,
+          "mangrove_hyperleda_name": null,
+          "mangrove_ang_dist": null,
+          "mangrove_lum_dist": null,
+          "roid": 0
+        },
+        "is_negative": true,
+        "id": "fink:ZTF18acclkfa"
+      },
+      {
+        "broker": "fink",
+        "object_id": "ZTF18aaxdjur",
+        "ra": 289.170805,
+        "dec": 15.0869158,
+        "mjd": 61309.19074069988,
+        "magpsf": 17.182966,
+        "band": "r",
+        "classification": "RRLyrae",
+        "probability": null,
+        "url": "https://ztf.fink-portal.org/ZTF18aaxdjur",
+        "survey": "ztf",
+        "magpsf_err": 0.07138684,
+        "first_mjd": 58234.48140050005,
+        "extra": {
+          "candid": "3555190746015015016",
+          "isdiffpos": "t",
+          "ndethist": 1753,
+          "drb": 0.8310493,
+          "classtar": 0.997,
+          "sgscore1": 0.901708,
+          "distpsnr1_arcsec": 0.6847322,
+          "scores": {
+            "snn_snia_vs_nonia": 0.0,
+            "snn_sn_vs_all": 0.0,
+            "rf_snia_vs_nonia": 0.0,
+            "rf_kn_vs_nonkn": 0.0,
+            "mulens": 0.0,
+            "slsn_score": null
+          },
+          "simbad_otype": "RRLyrae",
+          "tns_type": null,
+          "gaia_dr3_name": "Gaia DR3 4320732499927478144",
+          "gaia_parallax_mas": 0.3745,
+          "gaia_parallax_error_mas": 0.0253,
+          "gaia_var_flag": 1,
+          "mangrove_hyperleda_name": null,
+          "mangrove_ang_dist": null,
+          "mangrove_lum_dist": null,
+          "roid": 0
+        },
+        "is_negative": false,
+        "id": "fink:ZTF18aaxdjur"
+      },
+      {
+        "broker": "fink",
+        "object_id": "ZTF18adqfyiv",
+        "ra": 292.0367853,
+        "dec": 9.5011662,
+        "mjd": 61309.19074069988,
+        "magpsf": 18.30045,
+        "band": "r",
+        "classification": "RRLyrae",
+        "probability": null,
+        "url": "https://ztf.fink-portal.org/ZTF18adqfyiv",
+        "survey": "ztf",
+        "magpsf_err": 0.11518946,
+        "first_mjd": 58234.48140050005,
+        "extra": {
+          "candid": "3555190740515015008",
+          "isdiffpos": "t",
+          "ndethist": 1085,
+          "drb": 0.9999999,
+          "classtar": 0.963,
+          "sgscore1": 0.5,
+          "distpsnr1_arcsec": 0.42761248,
+          "scores": {
+            "snn_snia_vs_nonia": 0.0,
+            "snn_sn_vs_all": 0.0,
+            "rf_snia_vs_nonia": 0.0,
+            "rf_kn_vs_nonkn": 0.0,
+            "mulens": 0.0,
+            "slsn_score": null
+          },
+          "simbad_otype": "RRLyrae",
+          "tns_type": null,
+          "gaia_dr3_name": "Gaia DR3 4308450096032079616",
+          "gaia_parallax_mas": 0.1846,
+          "gaia_parallax_error_mas": 0.0691,
+          "gaia_var_flag": 1,
+          "mangrove_hyperleda_name": null,
+          "mangrove_ang_dist": null,
+          "mangrove_lum_dist": null,
+          "roid": 0
+        },
+        "is_negative": false,
+        "id": "fink:ZTF18adqfyiv"
+      }
+    ]
+  },
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://simbad.cds.unistra.fr/simbad/sim-tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+b.main_id%2C+b.ra%2C+b.dec%2C+b.coo_err_maj%2C+b.coo_err_min%2C+b.coo_err_angle%2C+b.coo_qual%2C+b.coo_wavelength%2C+b.coo_bibcode%2C+b.otype%2C+b.sp_type%2C+b.rvz_redshift%2C+b.plx_value%2C+b.pmra%2C+b.pmdec%2C+f.V%2C+f.G%2C+f.K%2C+DISTANCE%28POINT%28%27ICRS%27%2C+b.ra%2C+b.dec%29%2C+POINT%28%27ICRS%27%2C+308.433773900%2C+-8.710225900%29%29+AS+match_dist+FROM+basic+AS+b+LEFT+OUTER+JOIN+allfluxes+AS+f+ON+f.oidref+%3D+b.oid+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+b.ra%2C+b.dec%29%2C+CIRCLE%28%27ICRS%27%2C+308.433773900%2C+-8.710225900%2C+0.0005555556%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://ned.ipac.caltech.edu/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+prefname%2C+ra%2C+dec%2C+uncmaja%2C+uncmina%2C+uncposa%2C+pos_bibcode%2C+prefphytype%2C+z%2C+zunc%2C+zflag%2C+n_gphot%2C+DISTANCE%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+POINT%28%27ICRS%27%2C+308.433773900%2C+-8.710225900%29%29+AS+match_dist+FROM+NEDTAP.objdir+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+308.433773900%2C+-8.710225900%2C+0.0005555556%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://simbad.cds.unistra.fr/simbad/sim-tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+b.main_id%2C+b.ra%2C+b.dec%2C+b.coo_err_maj%2C+b.coo_err_min%2C+b.coo_err_angle%2C+b.coo_qual%2C+b.coo_wavelength%2C+b.coo_bibcode%2C+b.otype%2C+b.sp_type%2C+b.rvz_redshift%2C+b.plx_value%2C+b.pmra%2C+b.pmdec%2C+f.V%2C+f.G%2C+f.K%2C+DISTANCE%28POINT%28%27ICRS%27%2C+b.ra%2C+b.dec%29%2C+POINT%28%27ICRS%27%2C+308.433773900%2C+-8.710225900%29%29+AS+match_dist+FROM+basic+AS+b+LEFT+OUTER+JOIN+allfluxes+AS+f+ON+f.oidref+%3D+b.oid+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+b.ra%2C+b.dec%29%2C+CIRCLE%28%27ICRS%27%2C+308.433773900%2C+-8.710225900%2C+0.0166666667%29%29+AND+%28b.otype+IN+%28%27G%27%2C+%27G%3F%27%2C+%27AGN%27%2C+%27AG%3F%27%2C+%27LIN%27%2C+%27QSO%27%2C+%27Q%3F%27%2C+%27Bla%27%2C+%27Bz%3F%27%2C+%27BLL%27%2C+%27BL%3F%27%2C+%27rG%27%2C+%27SyG%27%2C+%27Sy1%27%2C+%27Sy2%27%2C+%27bCG%27%2C+%27EmG%27%2C+%27GiC%27%2C+%27BiC%27%2C+%27GiG%27%2C+%27GiP%27%2C+%27H2G%27%2C+%27LSB%27%2C+%27SBG%27%2C+%27IG%27%2C+%27PaG%27%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://simbad.cds.unistra.fr/simbad/sim-tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+b.main_id%2C+b.ra%2C+b.dec%2C+b.coo_err_maj%2C+b.coo_err_min%2C+b.coo_err_angle%2C+b.coo_qual%2C+b.coo_wavelength%2C+b.coo_bibcode%2C+b.otype%2C+b.sp_type%2C+b.rvz_redshift%2C+b.plx_value%2C+b.pmra%2C+b.pmdec%2C+f.V%2C+f.G%2C+f.K%2C+DISTANCE%28POINT%28%27ICRS%27%2C+b.ra%2C+b.dec%29%2C+POINT%28%27ICRS%27%2C+99.710688700%2C+1.988784600%29%29+AS+match_dist+FROM+basic+AS+b+LEFT+OUTER+JOIN+allfluxes+AS+f+ON+f.oidref+%3D+b.oid+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+b.ra%2C+b.dec%29%2C+CIRCLE%28%27ICRS%27%2C+99.710688700%2C+1.988784600%2C+0.0166666667%29%29+AND+%28b.otype+IN+%28%27G%27%2C+%27G%3F%27%2C+%27AGN%27%2C+%27AG%3F%27%2C+%27LIN%27%2C+%27QSO%27%2C+%27Q%3F%27%2C+%27Bla%27%2C+%27Bz%3F%27%2C+%27BLL%27%2C+%27BL%3F%27%2C+%27rG%27%2C+%27SyG%27%2C+%27Sy1%27%2C+%27Sy2%27%2C+%27bCG%27%2C+%27EmG%27%2C+%27GiC%27%2C+%27BiC%27%2C+%27GiG%27%2C+%27GiP%27%2C+%27H2G%27%2C+%27LSB%27%2C+%27SBG%27%2C+%27IG%27%2C+%27PaG%27%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://simbad.cds.unistra.fr/simbad/sim-tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+b.main_id%2C+b.ra%2C+b.dec%2C+b.coo_err_maj%2C+b.coo_err_min%2C+b.coo_err_angle%2C+b.coo_qual%2C+b.coo_wavelength%2C+b.coo_bibcode%2C+b.otype%2C+b.sp_type%2C+b.rvz_redshift%2C+b.plx_value%2C+b.pmra%2C+b.pmdec%2C+f.V%2C+f.G%2C+f.K%2C+DISTANCE%28POINT%28%27ICRS%27%2C+b.ra%2C+b.dec%29%2C+POINT%28%27ICRS%27%2C+99.710688700%2C+1.988784600%29%29+AS+match_dist+FROM+basic+AS+b+LEFT+OUTER+JOIN+allfluxes+AS+f+ON+f.oidref+%3D+b.oid+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+b.ra%2C+b.dec%29%2C+CIRCLE%28%27ICRS%27%2C+99.710688700%2C+1.988784600%2C+0.0005555556%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://gea.esac.esa.int/tap-server/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+source_id%2C+ra%2C+dec%2C+ra_error%2C+dec_error%2C+ra_dec_corr%2C+ref_epoch%2C+parallax%2C+parallax_error%2C+pmra%2C+pmdec%2C+phot_g_mean_mag%2C+phot_bp_mean_mag%2C+phot_rp_mean_mag%2C+ruwe%2C+astrometric_params_solved%2C+pmra_error%2C+pmdec_error%2C+pmra_pmdec_corr%2C+astrometric_excess_noise%2C+astrometric_excess_noise_sig%2C+in_galaxy_candidates%2C+classprob_dsc_combmod_star%2C+classprob_dsc_combmod_galaxy%2C+classprob_dsc_combmod_quasar%2C+DISTANCE%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+POINT%28%27ICRS%27%2C+308.433773900%2C+-8.710225900%29%29+AS+match_dist+FROM+gaiadr3.gaia_source+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+308.433773900%2C+-8.710225900%2C+0.0005555556%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://simbad.cds.unistra.fr/simbad/sim-tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+b.main_id%2C+b.ra%2C+b.dec%2C+b.coo_err_maj%2C+b.coo_err_min%2C+b.coo_err_angle%2C+b.coo_qual%2C+b.coo_wavelength%2C+b.coo_bibcode%2C+b.otype%2C+b.sp_type%2C+b.rvz_redshift%2C+b.plx_value%2C+b.pmra%2C+b.pmdec%2C+f.V%2C+f.G%2C+f.K%2C+DISTANCE%28POINT%28%27ICRS%27%2C+b.ra%2C+b.dec%29%2C+POINT%28%27ICRS%27%2C+289.170805000%2C+15.086915800%29%29+AS+match_dist+FROM+basic+AS+b+LEFT+OUTER+JOIN+allfluxes+AS+f+ON+f.oidref+%3D+b.oid+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+b.ra%2C+b.dec%29%2C+CIRCLE%28%27ICRS%27%2C+289.170805000%2C+15.086915800%2C+0.0005555556%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://ned.ipac.caltech.edu/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+prefname%2C+ra%2C+dec%2C+uncmaja%2C+uncmina%2C+uncposa%2C+pos_bibcode%2C+prefphytype%2C+z%2C+zunc%2C+zflag%2C+n_gphot%2C+DISTANCE%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+POINT%28%27ICRS%27%2C+308.433773900%2C+-8.710225900%29%29+AS+match_dist+FROM+NEDTAP.objdir+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+308.433773900%2C+-8.710225900%2C+0.0166666667%29%29+AND+%28prefphytype+IN+%28%27G%27%2C+%27GPair%27%2C+%27GTrpl%27%2C+%27G_Lens%27%2C+%27QSO%27%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://ned.ipac.caltech.edu/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+prefname%2C+ra%2C+dec%2C+uncmaja%2C+uncmina%2C+uncposa%2C+pos_bibcode%2C+prefphytype%2C+z%2C+zunc%2C+zflag%2C+n_gphot%2C+DISTANCE%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+POINT%28%27ICRS%27%2C+99.710688700%2C+1.988784600%29%29+AS+match_dist+FROM+NEDTAP.objdir+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+99.710688700%2C+1.988784600%2C+0.0005555556%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://simbad.cds.unistra.fr/simbad/sim-tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+b.main_id%2C+b.ra%2C+b.dec%2C+b.coo_err_maj%2C+b.coo_err_min%2C+b.coo_err_angle%2C+b.coo_qual%2C+b.coo_wavelength%2C+b.coo_bibcode%2C+b.otype%2C+b.sp_type%2C+b.rvz_redshift%2C+b.plx_value%2C+b.pmra%2C+b.pmdec%2C+f.V%2C+f.G%2C+f.K%2C+DISTANCE%28POINT%28%27ICRS%27%2C+b.ra%2C+b.dec%29%2C+POINT%28%27ICRS%27%2C+289.170805000%2C+15.086915800%29%29+AS+match_dist+FROM+basic+AS+b+LEFT+OUTER+JOIN+allfluxes+AS+f+ON+f.oidref+%3D+b.oid+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+b.ra%2C+b.dec%29%2C+CIRCLE%28%27ICRS%27%2C+289.170805000%2C+15.086915800%2C+0.0166666667%29%29+AND+%28b.otype+IN+%28%27G%27%2C+%27G%3F%27%2C+%27AGN%27%2C+%27AG%3F%27%2C+%27LIN%27%2C+%27QSO%27%2C+%27Q%3F%27%2C+%27Bla%27%2C+%27Bz%3F%27%2C+%27BLL%27%2C+%27BL%3F%27%2C+%27rG%27%2C+%27SyG%27%2C+%27Sy1%27%2C+%27Sy2%27%2C+%27bCG%27%2C+%27EmG%27%2C+%27GiC%27%2C+%27BiC%27%2C+%27GiG%27%2C+%27GiP%27%2C+%27H2G%27%2C+%27LSB%27%2C+%27SBG%27%2C+%27IG%27%2C+%27PaG%27%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://ned.ipac.caltech.edu/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+prefname%2C+ra%2C+dec%2C+uncmaja%2C+uncmina%2C+uncposa%2C+pos_bibcode%2C+prefphytype%2C+z%2C+zunc%2C+zflag%2C+n_gphot%2C+DISTANCE%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+POINT%28%27ICRS%27%2C+99.710688700%2C+1.988784600%29%29+AS+match_dist+FROM+NEDTAP.objdir+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+99.710688700%2C+1.988784600%2C+0.0166666667%29%29+AND+%28prefphytype+IN+%28%27G%27%2C+%27GPair%27%2C+%27GTrpl%27%2C+%27G_Lens%27%2C+%27QSO%27%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://ned.ipac.caltech.edu/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+prefname%2C+ra%2C+dec%2C+uncmaja%2C+uncmina%2C+uncposa%2C+pos_bibcode%2C+prefphytype%2C+z%2C+zunc%2C+zflag%2C+n_gphot%2C+DISTANCE%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+POINT%28%27ICRS%27%2C+289.170805000%2C+15.086915800%29%29+AS+match_dist+FROM+NEDTAP.objdir+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+289.170805000%2C+15.086915800%2C+0.0005555556%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://ned.ipac.caltech.edu/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+prefname%2C+ra%2C+dec%2C+uncmaja%2C+uncmina%2C+uncposa%2C+pos_bibcode%2C+prefphytype%2C+z%2C+zunc%2C+zflag%2C+n_gphot%2C+DISTANCE%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+POINT%28%27ICRS%27%2C+289.170805000%2C+15.086915800%29%29+AS+match_dist+FROM+NEDTAP.objdir+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+289.170805000%2C+15.086915800%2C+0.0166666667%29%29+AND+%28prefphytype+IN+%28%27G%27%2C+%27GPair%27%2C+%27GTrpl%27%2C+%27G_Lens%27%2C+%27QSO%27%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://gea.esac.esa.int/tap-server/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+source_id%2C+ra%2C+dec%2C+ra_error%2C+dec_error%2C+ra_dec_corr%2C+ref_epoch%2C+parallax%2C+parallax_error%2C+pmra%2C+pmdec%2C+phot_g_mean_mag%2C+phot_bp_mean_mag%2C+phot_rp_mean_mag%2C+ruwe%2C+astrometric_params_solved%2C+pmra_error%2C+pmdec_error%2C+pmra_pmdec_corr%2C+astrometric_excess_noise%2C+astrometric_excess_noise_sig%2C+in_galaxy_candidates%2C+classprob_dsc_combmod_star%2C+classprob_dsc_combmod_galaxy%2C+classprob_dsc_combmod_quasar%2C+DISTANCE%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+POINT%28%27ICRS%27%2C+289.170805000%2C+15.086915800%29%29+AS+match_dist+FROM+gaiadr3.gaia_source+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+289.170805000%2C+15.086915800%2C+0.0005555556%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+PGC%2C+RAJ2000%2C+DEJ2000%2C+OType%2C+logD25%2C+logR25%2C+PA%2C+ANames%2C+DISTANCE%28POINT%28%27ICRS%27%2C+RAJ2000%2C+DEJ2000%29%2C+POINT%28%27ICRS%27%2C+308.433773900%2C+-8.710225900%29%29+AS+match_dist+FROM+%22VII%2F237%2Fpgc%22+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+RAJ2000%2C+DEJ2000%29%2C+CIRCLE%28%27ICRS%27%2C+308.433773900%2C+-8.710225900%2C+6.0000000000%29%29+AND+%28%28OType+LIKE+%27G%25%27+OR+OType+LIKE+%27M%25%27%29+AND+%28DISTANCE%28POINT%28%27ICRS%27%2C+RAJ2000%2C+DEJ2000%29%2C+POINT%28%27ICRS%27%2C+308.433773900%2C+-8.710225900%29%29+%3C%3D+0.0166666667+OR+12+%2A+POWER%2810%2C+logD25%29+%3E%3D+3600.0+%2A+DISTANCE%28POINT%28%27ICRS%27%2C+RAJ2000%2C+DEJ2000%29%2C+POINT%28%27ICRS%27%2C+308.433773900%2C+-8.710225900%29%29%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://simbad.cds.unistra.fr/simbad/sim-tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+b.main_id%2C+b.ra%2C+b.dec%2C+b.coo_err_maj%2C+b.coo_err_min%2C+b.coo_err_angle%2C+b.coo_qual%2C+b.coo_wavelength%2C+b.coo_bibcode%2C+b.otype%2C+b.sp_type%2C+b.rvz_redshift%2C+b.plx_value%2C+b.pmra%2C+b.pmdec%2C+f.V%2C+f.G%2C+f.K%2C+DISTANCE%28POINT%28%27ICRS%27%2C+b.ra%2C+b.dec%29%2C+POINT%28%27ICRS%27%2C+292.036785300%2C+9.501166200%29%29+AS+match_dist+FROM+basic+AS+b+LEFT+OUTER+JOIN+allfluxes+AS+f+ON+f.oidref+%3D+b.oid+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+b.ra%2C+b.dec%29%2C+CIRCLE%28%27ICRS%27%2C+292.036785300%2C+9.501166200%2C+0.0005555556%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+PGC%2C+RAJ2000%2C+DEJ2000%2C+OType%2C+logD25%2C+logR25%2C+PA%2C+ANames%2C+DISTANCE%28POINT%28%27ICRS%27%2C+RAJ2000%2C+DEJ2000%29%2C+POINT%28%27ICRS%27%2C+99.710688700%2C+1.988784600%29%29+AS+match_dist+FROM+%22VII%2F237%2Fpgc%22+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+RAJ2000%2C+DEJ2000%29%2C+CIRCLE%28%27ICRS%27%2C+99.710688700%2C+1.988784600%2C+6.0000000000%29%29+AND+%28%28OType+LIKE+%27G%25%27+OR+OType+LIKE+%27M%25%27%29+AND+%28DISTANCE%28POINT%28%27ICRS%27%2C+RAJ2000%2C+DEJ2000%29%2C+POINT%28%27ICRS%27%2C+99.710688700%2C+1.988784600%29%29+%3C%3D+0.0166666667+OR+12+%2A+POWER%2810%2C+logD25%29+%3E%3D+3600.0+%2A+DISTANCE%28POINT%28%27ICRS%27%2C+RAJ2000%2C+DEJ2000%29%2C+POINT%28%27ICRS%27%2C+99.710688700%2C+1.988784600%29%29%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://simbad.cds.unistra.fr/simbad/sim-tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+b.main_id%2C+b.ra%2C+b.dec%2C+b.coo_err_maj%2C+b.coo_err_min%2C+b.coo_err_angle%2C+b.coo_qual%2C+b.coo_wavelength%2C+b.coo_bibcode%2C+b.otype%2C+b.sp_type%2C+b.rvz_redshift%2C+b.plx_value%2C+b.pmra%2C+b.pmdec%2C+f.V%2C+f.G%2C+f.K%2C+DISTANCE%28POINT%28%27ICRS%27%2C+b.ra%2C+b.dec%29%2C+POINT%28%27ICRS%27%2C+292.036785300%2C+9.501166200%29%29+AS+match_dist+FROM+basic+AS+b+LEFT+OUTER+JOIN+allfluxes+AS+f+ON+f.oidref+%3D+b.oid+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+b.ra%2C+b.dec%29%2C+CIRCLE%28%27ICRS%27%2C+292.036785300%2C+9.501166200%2C+0.0166666667%29%29+AND+%28b.otype+IN+%28%27G%27%2C+%27G%3F%27%2C+%27AGN%27%2C+%27AG%3F%27%2C+%27LIN%27%2C+%27QSO%27%2C+%27Q%3F%27%2C+%27Bla%27%2C+%27Bz%3F%27%2C+%27BLL%27%2C+%27BL%3F%27%2C+%27rG%27%2C+%27SyG%27%2C+%27Sy1%27%2C+%27Sy2%27%2C+%27bCG%27%2C+%27EmG%27%2C+%27GiC%27%2C+%27BiC%27%2C+%27GiG%27%2C+%27GiP%27%2C+%27H2G%27%2C+%27LSB%27%2C+%27SBG%27%2C+%27IG%27%2C+%27PaG%27%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://gea.esac.esa.int/tap-server/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+source_id%2C+ra%2C+dec%2C+ra_error%2C+dec_error%2C+ra_dec_corr%2C+ref_epoch%2C+parallax%2C+parallax_error%2C+pmra%2C+pmdec%2C+phot_g_mean_mag%2C+phot_bp_mean_mag%2C+phot_rp_mean_mag%2C+ruwe%2C+astrometric_params_solved%2C+pmra_error%2C+pmdec_error%2C+pmra_pmdec_corr%2C+astrometric_excess_noise%2C+astrometric_excess_noise_sig%2C+in_galaxy_candidates%2C+classprob_dsc_combmod_star%2C+classprob_dsc_combmod_galaxy%2C+classprob_dsc_combmod_quasar%2C+DISTANCE%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+POINT%28%27ICRS%27%2C+99.710688700%2C+1.988784600%29%29+AS+match_dist+FROM+gaiadr3.gaia_source+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+99.710688700%2C+1.988784600%2C+0.0005555556%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://ned.ipac.caltech.edu/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+prefname%2C+ra%2C+dec%2C+uncmaja%2C+uncmina%2C+uncposa%2C+pos_bibcode%2C+prefphytype%2C+z%2C+zunc%2C+zflag%2C+n_gphot%2C+DISTANCE%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+POINT%28%27ICRS%27%2C+292.036785300%2C+9.501166200%29%29+AS+match_dist+FROM+NEDTAP.objdir+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+292.036785300%2C+9.501166200%2C+0.0005555556%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+PGC%2C+RAJ2000%2C+DEJ2000%2C+OType%2C+logD25%2C+logR25%2C+PA%2C+ANames%2C+DISTANCE%28POINT%28%27ICRS%27%2C+RAJ2000%2C+DEJ2000%29%2C+POINT%28%27ICRS%27%2C+289.170805000%2C+15.086915800%29%29+AS+match_dist+FROM+%22VII%2F237%2Fpgc%22+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+RAJ2000%2C+DEJ2000%29%2C+CIRCLE%28%27ICRS%27%2C+289.170805000%2C+15.086915800%2C+6.0000000000%29%29+AND+%28%28OType+LIKE+%27G%25%27+OR+OType+LIKE+%27M%25%27%29+AND+%28DISTANCE%28POINT%28%27ICRS%27%2C+RAJ2000%2C+DEJ2000%29%2C+POINT%28%27ICRS%27%2C+289.170805000%2C+15.086915800%29%29+%3C%3D+0.0166666667+OR+12+%2A+POWER%2810%2C+logD25%29+%3E%3D+3600.0+%2A+DISTANCE%28POINT%28%27ICRS%27%2C+RAJ2000%2C+DEJ2000%29%2C+POINT%28%27ICRS%27%2C+289.170805000%2C+15.086915800%29%29%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://ned.ipac.caltech.edu/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+prefname%2C+ra%2C+dec%2C+uncmaja%2C+uncmina%2C+uncposa%2C+pos_bibcode%2C+prefphytype%2C+z%2C+zunc%2C+zflag%2C+n_gphot%2C+DISTANCE%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+POINT%28%27ICRS%27%2C+292.036785300%2C+9.501166200%29%29+AS+match_dist+FROM+NEDTAP.objdir+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+292.036785300%2C+9.501166200%2C+0.0166666667%29%29+AND+%28prefphytype+IN+%28%27G%27%2C+%27GPair%27%2C+%27GTrpl%27%2C+%27G_Lens%27%2C+%27QSO%27%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+PGC%2C+RAJ2000%2C+DEJ2000%2C+OType%2C+logD25%2C+logR25%2C+PA%2C+ANames%2C+DISTANCE%28POINT%28%27ICRS%27%2C+RAJ2000%2C+DEJ2000%29%2C+POINT%28%27ICRS%27%2C+292.036785300%2C+9.501166200%29%29+AS+match_dist+FROM+%22VII%2F237%2Fpgc%22+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+RAJ2000%2C+DEJ2000%29%2C+CIRCLE%28%27ICRS%27%2C+292.036785300%2C+9.501166200%2C+6.0000000000%29%29+AND+%28%28OType+LIKE+%27G%25%27+OR+OType+LIKE+%27M%25%27%29+AND+%28DISTANCE%28POINT%28%27ICRS%27%2C+RAJ2000%2C+DEJ2000%29%2C+POINT%28%27ICRS%27%2C+292.036785300%2C+9.501166200%29%29+%3C%3D+0.0166666667+OR+12+%2A+POWER%2810%2C+logD25%29+%3E%3D+3600.0+%2A+DISTANCE%28POINT%28%27ICRS%27%2C+RAJ2000%2C+DEJ2000%29%2C+POINT%28%27ICRS%27%2C+292.036785300%2C+9.501166200%29%29%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://gea.esac.esa.int/tap-server/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+source_id%2C+ra%2C+dec%2C+ra_error%2C+dec_error%2C+ra_dec_corr%2C+ref_epoch%2C+parallax%2C+parallax_error%2C+pmra%2C+pmdec%2C+phot_g_mean_mag%2C+phot_bp_mean_mag%2C+phot_rp_mean_mag%2C+ruwe%2C+astrometric_params_solved%2C+pmra_error%2C+pmdec_error%2C+pmra_pmdec_corr%2C+astrometric_excess_noise%2C+astrometric_excess_noise_sig%2C+in_galaxy_candidates%2C+classprob_dsc_combmod_star%2C+classprob_dsc_combmod_galaxy%2C+classprob_dsc_combmod_quasar%2C+DISTANCE%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+POINT%28%27ICRS%27%2C+292.036785300%2C+9.501166200%29%29+AS+match_dist+FROM+gaiadr3.gaia_source+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+292.036785300%2C+9.501166200%2C+0.0005555556%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    }
+  ]
+}

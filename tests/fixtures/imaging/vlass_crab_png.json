@@ -1,0 +1,30 @@
+{
+  "scenario": "vlass_crab_png",
+  "recorded_outcome": "64x64 coverage=0.0 degraded=blank image from mirror alaskybis.cds.unistra.fr after alasky.cds.unistra.fr: HTTP 500 500 Internal Server Error",
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://alasky.cds.unistra.fr/hips-image-services/hips2fits?hips=NRAO%2FP%2FVLASS-Quicklook-MedianStack&width=64&height=64&fov=0.03333333333333333&projection=TAN&ra=83.63308&dec=22.0145&format=png",
+      "request_body": "",
+      "status_code": 500,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://alaskybis.cds.unistra.fr/hips-image-services/hips2fits?hips=NRAO%2FP%2FVLASS-Quicklook-MedianStack&width=64&height=64&fov=0.03333333333333333&projection=TAN&ra=83.63308&dec=22.0145&format=png",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "image/png",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://alasky.cds.unistra.fr/MocServer/query?RA=83.63308&DEC=22.0145&SR=0.023570226039551584&expr=ID%3DNRAO%2FP%2FVLASS-Quicklook-MedianStack&get=id&fmt=json",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json;charset=ISO-8859-1",
+      "match": []
+    }
+  ]
+}

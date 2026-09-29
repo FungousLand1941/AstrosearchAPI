@@ -1,0 +1,37 @@
+{
+  "set": "sesame",
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://cds.unistra.fr/cgi-bin/nph-sesame/-oxp/SNV?M87",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "text/plain",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://cds.unistra.fr/cgi-bin/nph-sesame/-oxp/SNV?3C%20273",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "text/plain",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://cds.unistra.fr/cgi-bin/nph-sesame/-oxp/SNV?Qzxv%20Nonexistent%20Object%20999",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "text/plain",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://simbad.cds.unistra.fr/simbad/sim-tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&FORMAT=json&QUERY=SELECT+otype%2C+path%2C+is_candidate+FROM+otypedef",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    }
+  ]
+}

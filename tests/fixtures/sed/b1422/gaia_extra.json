@@ -1,0 +1,13 @@
+{
+  "catalog": "gaia_extra",
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://gea.esac.esa.int/tap-server/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&FORMAT=json&QUERY=SELECT+g.source_id%2C+g.pmra_error%2C+g.pmdec_error%2C+g.pmra_pmdec_corr%2C+g.parallax_over_error%2C+g.ruwe%2C+g.phot_g_mean_flux_over_error%2C+g.phot_bp_mean_flux_over_error%2C+g.phot_rp_mean_flux_over_error%2C+g.classprob_dsc_combmod_quasar%2C+g.classprob_dsc_combmod_galaxy%2C+g.classprob_dsc_combmod_star%2C+g.in_qso_candidates%2C+g.in_galaxy_candidates%2C+g.phot_bp_rp_excess_factor%2C+g.astrometric_excess_noise%2C+g.astrometric_excess_noise_sig%2C+ap.classprob_dsc_combmod_whitedwarf%2C+ap.classprob_dsc_combmod_binarystar+FROM+gaiadr3.gaia_source+AS+g+LEFT+OUTER+JOIN+gaiadr3.astrophysical_parameters+AS+ap+ON+ap.source_id+%3D+g.source_id+WHERE+g.source_id+%3D+1254357435159465088",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    }
+  ]
+}

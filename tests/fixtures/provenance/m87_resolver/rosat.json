@@ -1,0 +1,20 @@
+{
+  "catalog": "rosat",
+  "target": "M87 (Sesame)",
+  "ra": 187.70593077,
+  "dec": 12.39112325,
+  "epoch": 2000.0,
+  "pm_ra_masyr": 0.0,
+  "pm_dec_masyr": 0.0,
+  "radius_arcsec": 10.0,
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://heasarc.gsfc.nasa.gov/xamin/vo/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+name%2C+ra%2C+dec%2C+x_pixel_error%2C+y_pixel_error%2C+count_rate%2C+count_rate_error%2C+detection_likelihood%2C+exposure%2C+source_extent%2C+source_quality_flag%2C+%22time%22%2C+end_time%2C+DISTANCE%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+POINT%28%27ICRS%27%2C+187.705930770%2C+12.391123250%29%29+AS+match_dist+FROM+rass2rxs+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+187.705930770%2C+12.391123250%2C+0.0027777778%29%29+ORDER+BY+match_dist+ASC",
+      "status_code": 200,
+      "content_type": "text/xml",
+      "match": []
+    }
+  ]
+}

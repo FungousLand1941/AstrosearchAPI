@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<VOTABLE xmlns="http://www.ivoa.net/xml/VOTable/v1.3" xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.4">
+ <RESOURCE type="results">
+  <INFO name="QUERY_STATUS" value="OK">No errors detected in query preprocessing</INFO>
+  <TABLE>
+   <DESCRIPTION>Query result for:&#xA;SELECT tu.t_idx AS t_idx, name AS name, ra AS ra, dec AS dec, flux_20_cm AS flux_20_cm, int_flux_20_cm AS int_flux_20_cm, flux_20_cm_error AS flux_20_cm_error, fit_major_axis AS fit_major_axis, fit_minor_axis AS fit_minor_axis, sidelobe_prob AS sidelobe_prob, mean_epoch AS mean_epoch FROM first, tap_upload_1790594714320_targets AS tu WHERE 1 = CONTAINS(POINT(&apos;ICRS&apos;, ra, dec), CIRCLE(&apos;ICRS&apos;, tu.t_ra, tu.t_dec, tu.t_rad))</DESCRIPTION>
+   <FIELD datatype="int" name="t_idx">
+    <VALUES null="-2147483648"/>
+   </FIELD>
+   <FIELD datatype="char" arraysize="*" ucd="meta.id;meta.main" name="name">
+    <DESCRIPTION>FIRST Source Designation</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="deg" datatype="double" ucd="pos.eq.ra;meta.main" precision="F6" name="ra">
+    <DESCRIPTION>Right Ascension</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="deg" datatype="double" ucd="pos.eq.dec;meta.main" precision="F6" name="dec">
+    <DESCRIPTION>Declination</DESCRIPTION>
+   </FIELD>
+   <FIELD datatype="double" name="flux_20_cm"/>
+   <FIELD datatype="double" name="int_flux_20_cm"/>
+   <FIELD datatype="double" name="flux_20_cm_error"/>
+   <FIELD datatype="double" name="fit_major_axis"/>
+   <FIELD datatype="double" name="fit_minor_axis"/>
+   <FIELD datatype="double" name="sidelobe_prob"/>
+   <FIELD datatype="double" name="mean_epoch"/>
+   <DATA>
+    <BINARY>
+     <STREAM encoding="base64">
+AAAAAAAAABZGSVJTVCBKMTIyOTA2LjcrMDIwMzA4QGdo5ewSuD5AAGt67YcBkUDh
+XM4UeuFIQOIO6uFHrhRAGMi0OVgQYkAaAAAAAAAAQBYeuFHrhR8/oWhysCDE
+nEDo6+ZmZmaCAAAAAQAAABZGSVJTVCBKMTIzMDQ5LjMrMTIyMzIzQGd2k47z
+TWpAKMefJvc6tUCpnvrhR64UQP3VHXCj1wpAFc3S8an750BMnrhR64UfQDL6
+4UeuFHs/oWhysCDEnEDpbazMzMy/
+     </STREAM>
+    </BINARY>
+   </DATA>
+  </TABLE>
+ </RESOURCE>
+</VOTABLE>

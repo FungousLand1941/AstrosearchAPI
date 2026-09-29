@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-28T11:37:54 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-28T11:37:54">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-meta=&amp;-meta.max=10&amp;-words=galaxy+redshift+optical&amp;-ucd=src.redshift">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+<INFO name="Warning" value="List of 413 matching catalogues truncated to 10"/>
+
+<RESOURCE ID="yCat_5159" name="V/159" type="meta">
+  <DESCRIPTION>JADES NIRCam &amp; NIRSpec phot. &amp; line fluxes cat. (DR1-DR3) (Rieke+, 2023)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/v/159">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/v/159">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Rieke M.J.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2023ApJS..269...16R">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJS">    Journal name  </INFO>
+  <INFO name="original_date" value="2023">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/V/159">    Dataset landing page  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.643367">popularity index</INFO>
+  <INFO name="cpopu" value="39723">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Wavelength" value="IR"/>
+  <INFO name="-kw.Astronomy" value="Photometry"/>
+  <INFO name="-kw.Astronomy" value="Galaxies"/>
+  <INFO name="-kw.Astronomy" value="Spectroscopy"/>
+  <INFO name="-kw.Astronomy" value="Redshifts"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=V/159"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_7213" name="VII/213" type="meta">
+  <DESCRIPTION>Hickson's Compact groups of Galaxies (Hickson+ 1982-1994)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/vii/213">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/vii/213">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Hickson P.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:1982ApJ...255..382H">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJ">    Journal name  </INFO>
+  <INFO name="original_date" value="1982">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/VII/213">    Dataset landing page  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.569749">popularity index</INFO>
+  <INFO name="cpopu" value="11824">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Astronomy" value="Clusters_of_galaxies"/>
+  <INFO name="-kw.Astronomy" value="Photometry"/>
+  <INFO name="-kw.Astronomy" value="Galaxies"/>
+  <INFO name="-kw.Astronomy" value="Nonstellar"/>
+  <INFO name="-kw.Astronomy" value="Redshifts"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=VII/213"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_7287" name="VII/287" type="meta">
+  <DESCRIPTION>Extragalactic linear polarization meas. agglomeration (Friedman+, 2020)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/vii/287">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/vii/287">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Friedman A.S.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2020yCat.7287....0F">    Bibcode of the dataset  </INFO>
+  <INFO name="journal" value="yCat">    Journal name  </INFO>
+  <INFO name="original_date" value="2020">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/VII/287">    Dataset landing page  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.556634">popularity index</INFO>
+  <INFO name="cpopu" value="9528">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="Gamma-ray"/>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Wavelength" value="IR"/>
+  <INFO name="-kw.Astronomy" value="AGN"/>
+  <INFO name="-kw.Astronomy" value="Photometry:wide-band"/>
+  <INFO name="-kw.Astronomy" value="Polarization"/>
+  <INFO name="-kw.Astronomy" value="Redshifts"/>
+  <INFO name="-kw.Astronomy" value="GRB"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=VII/287"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_7299" name="VII/299" type="meta">
+  <DESCRIPTION>HELP DR1 photometry of extragalactic field sources (Shirley+, 2021)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/vii/299">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/vii/299">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Shirley R.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2021MNRAS.507..129S">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="MNRA">    Journal name  </INFO>
+  <INFO name="original_date" value="2021">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/VII/299">    Dataset landing page  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.853481">popularity index</INFO>
+  <INFO name="cpopu" value="1261919">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Wavelength" value="IR"/>
+  <INFO name="-kw.Wavelength" value="Millimeter"/>
+  <INFO name="-kw.Wavelength" value="Radio"/>
+  <INFO name="-kw.Astronomy" value="Positional_Data"/>
+  <INFO name="-kw.Astronomy" value="Photometry"/>
+  <INFO name="-kw.Astronomy" value="Stars"/>
+  <INFO name="-kw.Astronomy" value="Galaxies"/>
+  <INFO name="-kw.Astronomy" value="Spectroscopy"/>
+  <INFO name="-kw.Astronomy" value="Nonstellar"/>
+  <INFO name="-kw.Astronomy" value="Redshifts"/>
+  <INFO name="-kw.Astronomy" value="Masses"/>
+  <INFO name="-kw.Astronomy" value="Star_Forming_Region"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=VII/299"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_9052" name="IX/52" type="meta">
+  <DESCRIPTION>XXL Survey. DR2 (Chiappetti+, 2018)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/ix/52">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/ix/52">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Chiappetti L.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2018yCat.9052....0C">    Bibcode of the dataset  </INFO>
+  <INFO name="journal" value="yCat">    Journal name  </INFO>
+  <INFO name="original_date" value="2018">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/IX/52">    Dataset landing page  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.669819">popularity index</INFO>
+  <INFO name="cpopu" value="61395">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="X-ray"/>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Wavelength" value="IR"/>
+  <INFO name="-kw.Wavelength" value="Radio"/>
+  <INFO name="-kw.Astronomy" value="AGN"/>
+  <INFO name="-kw.Astronomy" value="Clusters_of_galaxies"/>
+  <INFO name="-kw.Astronomy" value="Stars"/>
+  <INFO name="-kw.Astronomy" value="Galaxies"/>
+  <INFO name="-kw.Astronomy" value="Photometry:wide-band"/>
+  <INFO name="-kw.Astronomy" value="QSOs"/>
+  <INFO name="-kw.Astronomy" value="Redshifts"/>
+  <INFO name="-kw.Astronomy" value="Spectrophotometry"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=IX/52"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_16840136" name="J/ApJ/684/136" type="meta">
+  <DESCRIPTION>SEDs of ELAIS-S1 mid-IR sources (Gruppioni+, 2008)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apj/684/136">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apj/684/136">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Gruppioni C.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2008ApJ...684..136G">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJ">    Journal name  </INFO>
+  <INFO name="original_date" value="2008">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/684/136">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.16840136">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.474461">popularity index</INFO>
+  <INFO name="cpopu" value="2463">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="UV"/>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Wavelength" value="IR"/>
+  <INFO name="-kw.Astronomy" value="AGN"/>
+  <INFO name="-kw.Astronomy" value="Galaxies"/>
+  <INFO name="-kw.Astronomy" value="Spectroscopy"/>
+  <INFO name="-kw.Astronomy" value="Redshifts"/>
+<INFO name="media" value="spectrum"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJ/684/136"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_16841026" name="J/ApJ/684/1026" type="meta">
+  <DESCRIPTION>Photometric profiles from GOODS data (Azzollini+, 2008)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apj/684/1026">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apj/684/1026">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Azzollini R.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2008ApJ...684.1026A">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJ">    Journal name  </INFO>
+  <INFO name="original_date" value="2008">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/684/1026">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.16841026">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.473316">popularity index</INFO>
+  <INFO name="cpopu" value="2417">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Astronomy" value="Galaxies"/>
+  <INFO name="-kw.Astronomy" value="Redshifts"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJ/684/1026"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_16850235" name="J/ApJ/685/235" type="meta">
+  <DESCRIPTION>Host and companion galaxies in the SDSS (Patton+, 2008)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apj/685/235">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apj/685/235">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Patton D.R.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2008ApJ...685..235P">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJ">    Journal name  </INFO>
+  <INFO name="original_date" value="2008">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/685/235">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.16850235">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.473316">popularity index</INFO>
+  <INFO name="cpopu" value="2417">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Astronomy" value="Galaxies"/>
+  <INFO name="-kw.Astronomy" value="Spectroscopy"/>
+  <INFO name="-kw.Astronomy" value="Photometry:wide-band"/>
+  <INFO name="-kw.Astronomy" value="Redshifts"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJ/685/235"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_16850904" name="J/ApJ/685/904" type="meta">
+  <DESCRIPTION>Metal-rich dwarf galaxies from SDSS-DR4 (Peeples+, 2008)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apj/685/904">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apj/685/904">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Peeples M.S.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2008ApJ...685..904P">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJ">    Journal name  </INFO>
+  <INFO name="original_date" value="2008">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/685/904">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.16850904">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.458605">popularity index</INFO>
+  <INFO name="cpopu" value="1897">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Astronomy" value="Abundances"/>
+  <INFO name="-kw.Astronomy" value="Galaxies"/>
+  <INFO name="-kw.Astronomy" value="Redshifts"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJ/685/904"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_16900670" name="J/ApJ/690/670" type="meta">
+  <DESCRIPTION>The Sloan lens ACS Survey. VIII. (Treu+, 2009)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apj/690/670">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apj/690/670">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Treu T.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2009ApJ...690..670T">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJ">    Journal name  </INFO>
+  <INFO name="original_date" value="2009">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/690/670">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.16900670">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.477748">popularity index</INFO>
+  <INFO name="cpopu" value="2600">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Astronomy" value="Clusters_of_galaxies"/>
+  <INFO name="-kw.Astronomy" value="Galaxies"/>
+  <INFO name="-kw.Astronomy" value="Gravitational_lensing"/>
+  <INFO name="-kw.Astronomy" value="Redshifts"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJ/690/670"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+<INFO name="matches" value="20">matching records</INFO>
+
+<INFO name="Warning" value="can't find table or catalogue: galaxy"/>
+<INFO name="Warning" value="can't find table or catalogue: redshift"/>
+<INFO name="Warning" value="can't find table or catalogue: optical"/>
+</VOTABLE>

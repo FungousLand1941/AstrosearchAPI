@@ -1,0 +1,903 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-28T11:38:19 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-28T11:38:19">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-source=IX%2F58%2F2sxps&amp;-meta.all=">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+
+<RESOURCE ID="yCat_9058_1" name="IX/58/2sxps" type="meta">
+  <INFO name="nrows" value="206335">Number of rows of the table</INFO>
+  <DESCRIPTION>
+    2SXPS Swift X-ray telescope point source catalogue (Evans+, 2020)
+    The 2SXPS Catalogue of Swift X-ray telescope Point Sources
+  </DESCRIPTION>
+  <PARAM name="-c" datatype="char" arraysize="32*" value="">
+    <DESCRIPTION>Query from a celestial position according to ASU syntax:
+      {RA{+|-}Dec|object_name}[,eq=equinox][,ep=epoch][,rm=[min/]max]
+      (see http://vizier.cds.unistra.fr/doc/asu.html)
+    </DESCRIPTION>
+  </PARAM>
+  <LINK content-role="query" action="votable?-source=IX/58/2sxps&amp;">
+    Action to Query the current RESOURCE, to be completed by PARAMs and FIELDs contents
+  </LINK>
+
+  <TABLE name="IX/58/2sxps" nrows="206335">
+    <COOSYS ID="J2000" system="eq_FK5" equinox="J2000"/>
+    <!-- Definitions of GROUPs and FIELDs -->
+
+<!-- +++No column could be found to attach a LINK in table: IX/58/2sxps -->
+    <FIELD name="recno" ucd="meta.record" display="0" datatype="int" width="8"><!-- ucd="RECORD" -->
+      <DESCRIPTION>Record number assigned by the VizieR team. Should Not be used for identification.</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-5?-info=XML&amp;-out.add=.&amp;-source=IX/58/2sxps&amp;recno=${recno}"/>
+    </FIELD>
+    <FIELD name="2SXPS" ucd="meta.id;meta.main" display="1" datatype="int" width="6"><!-- ucd="ID_MAIN" -->
+      <DESCRIPTION>Numerical unique source identifier within 2SXPS (2SXPS_ID)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="IAUName" ucd="meta.id" display="1" datatype="char" arraysize="22"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>IAU-format name, 2SXPS JHHMMSS+-ddmmsss (IAUName)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RAJ2000" ucd="pos.eq.ra;meta.main" ref="J2000" display="1" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_RA_MAIN" -->
+      <DESCRIPTION>Right Ascension (J2000) (RA)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DEJ2000" ucd="pos.eq.dec;meta.main" ref="J2000" display="1" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_DEC_MAIN" -->
+      <DESCRIPTION>Declination (J2000) (Decl)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Err90" ucd="stat.error" display="0" datatype="float" width="4" precision="1" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Position uncertainty, 90% confidence, radial, assumed to be Rayleigh-distributed (Err90)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="A" ucd="meta.ref;pos.frame" display="0" datatype="unsignedByte" width="1"><!-- ucd="REFER_CODE" -->
+      <DESCRIPTION>[0/1] Provenance of source astrometry. 0=Swift star tracker, 1=XRT/2MASS astrometry (AstromType)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="GLON" ucd="pos.galactic.lon" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_GAL_LON" -->
+      <DESCRIPTION>Galactic longitude (l)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="GLAT" ucd="pos.galactic.lat" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_GAL_LAT" -->
+      <DESCRIPTION>Galactic latitude (b)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="OffAxis" ucd="pos.angDistance;stat.mean" display="0" datatype="float" width="6" precision="2" unit="arcmin"><!-- ucd="POS_ANG_DIST_GENERAL" -->
+      <DESCRIPTION>The mean angular distance of the source from the XRT boresight in all observations within which the source was detected (MeanOffAxisAngle) (1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DNN" ucd="pos.angDistance" display="0" datatype="double" width="8" precision="2" unit="arcsec"><!-- ucd="POS_ANG_DIST_GENERAL" -->
+      <DESCRIPTION>The distance to the closest 2SXPS source to this one (NearestNeighbour)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DNNOK" ucd="pos.angDistance" display="0" datatype="double" width="8" precision="2" unit="arcsec"><!-- ucd="POS_ANG_DIST_GENERAL" -->
+      <DESCRIPTION>The distance to the closest 2SXPS source to this one which is ranked Good or Reasonable and has no other DetFlag bits set (NearestOKNeighbour)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="t.exp" ucd="time.expo" display="0" datatype="int" width="7" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>The total exposure at the source location in the catalogue (Exposure)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="t.start1" ucd="time.epoch" display="0" datatype="char" arraysize="19" unit="s"><!-- ucd="TIME_DATE" -->
+      <DESCRIPTION>The UTC date &amp; time of the start of the first observation in 2SXPS which covered the source location (FirstObsDate)</DESCRIPTION>
+      <VALUES null=" " />
+    </FIELD>
+    <FIELD name="t.stop1" ucd="time.epoch" display="0" datatype="char" arraysize="19" unit="s"><!-- ucd="TIME_DATE" -->
+      <DESCRIPTION>The UTC date &amp; time of the end of the last observation in 2SXPS which covered the source location (LastObsDate)</DESCRIPTION>
+      <VALUES null=" " />
+    </FIELD>
+    <FIELD name="time.start1" ucd="time.expo" display="0" datatype="int" width="9" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>The time of the start of the first observation in 2SXPS which covered the source location, in Swift Mission Elapsed Time (FirstObsMET) (2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="time.stop1" ucd="time.expo" display="0" datatype="int" width="9" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>The time of the end of the last observation in 2SXPS which covered the source location in, Swift Mission Elapsed Time (LastObsMET) (2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="t.start2" ucd="time.epoch" display="0" datatype="char" arraysize="19" unit="s"><!-- ucd="TIME_DATE" -->
+      <DESCRIPTION>The UTC date &amp; time of the start of the first observation in 2SXPS in which the source count rate is inconsistent with 0 at the 3-sigma level (FirstDetDate)</DESCRIPTION>
+      <VALUES null=" " />
+    </FIELD>
+    <FIELD name="t.stop2" ucd="time.epoch" display="0" datatype="char" arraysize="19" unit="s"><!-- ucd="TIME_DATE" -->
+      <DESCRIPTION>The UTC date &amp; time of the end of the last observation in 2SXPS in which the source count rate is inconsistent with 0 at the 3-sigma level (LastDetDate)</DESCRIPTION>
+      <VALUES null=" " />
+    </FIELD>
+    <FIELD name="time.start2" ucd="time.expo" display="0" datatype="int" width="9" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>The time of the start of the first observation in 2SXPS in which the source count rate is inconsistent with 0 at the 3-sigma level, in Swift Mission Elapsed Time (FirstDetMET)(2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="time.stop2" ucd="time.expo" display="0" datatype="int" width="9" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>The time of the end of the last observation in 2SXPS in which the source count rate is inconsistent with 0 at the 3-sigma level, in Swift Mission Elapsed Time (LastDetMET) (2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="t.start3" ucd="time.epoch" display="0" datatype="char" arraysize="19" unit="s"><!-- ucd="TIME_DATE" -->
+      <DESCRIPTION>The UTC date &amp; time of the start of the first observation in 2SXPS in which the source is detected in the blind search (FirstBlindDetDate)</DESCRIPTION>
+      <VALUES null=" " />
+    </FIELD>
+    <FIELD name="t.stop3" ucd="time.epoch" display="0" datatype="char" arraysize="19" unit="s"><!-- ucd="TIME_DATE" -->
+      <DESCRIPTION>The UTC date &amp; time of the end of the last observation in 2SXPS in which the source is detected in the blind search (LastBlindDetDate)</DESCRIPTION>
+      <VALUES null=" " />
+    </FIELD>
+    <FIELD name="time.start3" ucd="time.expo" display="0" datatype="int" width="9" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>The time of the start of the first observation in 2SXPS in which the source is detected in the blind search, in Swift Mission Elapsed Time (FirstBlindDetMET) (2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="time.stop3" ucd="time.expo" display="0" datatype="int" width="9" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>The time of the end of the last observation in 2SXPS in which the source is detected in the blind search, in Swift Mission Elapsed Time (LastBlindDetMET) (2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="NObs" ucd="meta.number" display="0" datatype="short" width="4"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>The number of observations covering this source's position (NumObs)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="NBlind" ucd="meta.number" display="0" datatype="short" width="4"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>The number of observations in which this source was found in a blind search (NumBlindDetObs)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="NDet" ucd="meta.number" display="0" datatype="short" width="4"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>The number of observations in which this source is detected (NumDetObs)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="NBest" ucd="meta.number" display="0" datatype="int" width="7"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>The ID of the 'best' detection (BestDetectionID)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="F0" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Whether the count-rate in the 0.3-10keV band is inconsistent with 0 at the 3-sigma level (NonBlindDet_band0)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="F1" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Whether the count-rate in the 0.3-1keV band is inconsistent with 0 at the 3-sigma level (NonBlindDet_band1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="F2" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Whether the count-rate in the 1-2keV band is inconsistent with 0 at the 3-sigma level (NonBlindDet_band2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="F3" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Whether the count-rate in the 2-10keV band is inconsistent with 0 at the 3-sigma level (NonBlindDet_band3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Det" ucd="meta.code.error;phys.atmol.final" display="1" datatype="short" width="2"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>? The final source detection flag (DetFlag) (3)</DESCRIPTION>
+      <VALUES null="-32768" />
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR?-6N&amp;-info=XML&amp;-out.add=.&amp;&amp;lt;&amp;quot;Note&amp;quot;&amp;catid=9058&amp;notid=3&amp;-out.emph=${Det}"/>
+    </FIELD>
+    <FIELD name="FField" ucd="meta.code" display="0" datatype="short" width="2"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>? The final fieldFlag for this source (FieldFlag) (4)</DESCRIPTION>
+      <VALUES null="-32768" />
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR?-6N&amp;-info=XML&amp;-out.add=.&amp;&amp;lt;&amp;quot;Note&amp;quot;&amp;catid=9058&amp;notid=4&amp;-out.emph=${FField}"/>
+    </FIELD>
+    <FIELD name="Det0" ucd="meta.code.qual" display="0" datatype="short" width="3"><!-- ucd="CODE_QUALITY" -->
+      <DESCRIPTION>? The final detection flag the 0.3-10keV band (DetFlag_band0) (3)</DESCRIPTION>
+      <VALUES null="-32768" />
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR?-6N&amp;-info=XML&amp;-out.add=.&amp;&amp;lt;&amp;quot;Note&amp;quot;&amp;catid=9058&amp;notid=3&amp;-out.emph=${Det0}"/>
+    </FIELD>
+    <FIELD name="Det1" ucd="meta.code.qual" display="0" datatype="short" width="3"><!-- ucd="CODE_QUALITY" -->
+      <DESCRIPTION>? The final detection flag the 0.3-1keV band (DetFlag_band1) (3)</DESCRIPTION>
+      <VALUES null="-32768" />
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR?-6N&amp;-info=XML&amp;-out.add=.&amp;&amp;lt;&amp;quot;Note&amp;quot;&amp;catid=9058&amp;notid=3&amp;-out.emph=${Det1}"/>
+    </FIELD>
+    <FIELD name="Det2" ucd="meta.code.qual" display="0" datatype="short" width="3"><!-- ucd="CODE_QUALITY" -->
+      <DESCRIPTION>? The final detection flag in the 1-2keV band (DetFlag_band2) (3)</DESCRIPTION>
+      <VALUES null="-32768" />
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR?-6N&amp;-info=XML&amp;-out.add=.&amp;&amp;lt;&amp;quot;Note&amp;quot;&amp;catid=9058&amp;notid=3&amp;-out.emph=${Det2}"/>
+    </FIELD>
+    <FIELD name="Det3" ucd="meta.code.qual" display="0" datatype="short" width="3"><!-- ucd="CODE_QUALITY" -->
+      <DESCRIPTION>? The final detection flag in the 2-10keV band (DetFlag_band3) (3)</DESCRIPTION>
+      <VALUES null="-32768" />
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR?-6N&amp;-info=XML&amp;-out.add=.&amp;&amp;lt;&amp;quot;Note&amp;quot;&amp;catid=9058&amp;notid=3&amp;-out.emph=${Det3}"/>
+    </FIELD>
+    <FIELD name="Warning" ucd="meta.code" display="0" datatype="double" width="9" precision="6" unit="mag"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>The worst optical loading warning from all detections of this source (5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DetSLW" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Whether any detection of this source occurred within fitted stray light rings (StrayLightWarning)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DetNBSW" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Whether any detection of this source occurred within the PSF wings of a bright object (NearBrightSourceWarning)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Dup" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Whether this source is potentially an alias (i.e. duplicate) of another source (IsPotentialAlias)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="ONames" ucd="meta.id" display="0" datatype="char" arraysize="177*"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>The list of other sources which may be aliases of this one (PotentialAliasList)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="CR0" ucd="phot.count;em.X-ray" display="1" datatype="float" width="9" precision="E2" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>? The mean count-rate in the 0.3-10keV band (Rate_band0)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_CR0" ucd="stat.error;stat.max" display="1" datatype="float" width="9" precision="E2" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? The 1-sigma positive uncertainty on the mean count-rate in the 0.3-10keV band (Rate_band0_pos)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_CR0" ucd="stat.error" display="1" datatype="float" width="9" precision="E2" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma negative uncertainty on the mean count-rate in the 0.3-10keV band (Rate_band0_neg)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="HR1" ucd="phot.flux;arith.ratio" display="1" datatype="float" width="6" precision="3"><!-- ucd="SPECT_HARDNESS-RATIO" -->
+      <DESCRIPTION>? The aggregate HR1 hardness ratio of the source (HR1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_HR1" ucd="stat.error;stat.max" display="0" datatype="float" width="7" precision="4"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? The 1-sigma positive uncertainty on the aggregate HR1 hardness ratio of the source (HR1_pos)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_HR1" ucd="stat.error" display="0" datatype="float" width="7" precision="4"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma negative uncertainty on the aggregate HR1 hardness ratio of the source (HR1_neg)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="HR2" ucd="phot.flux;arith.ratio" display="1" datatype="float" width="6" precision="3"><!-- ucd="SPECT_HARDNESS-RATIO" -->
+      <DESCRIPTION>? The aggregate HR2 hardness ratio of the source (HR2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_HR2" ucd="stat.error;stat.max" display="0" datatype="float" width="7" precision="4"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? The 1-sigma positive uncertainty on the aggregate HR2 hardness ratio of the source (HR2_pos)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_HR2" ucd="stat.error" display="0" datatype="float" width="7" precision="4"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma negative uncertainty on the aggregate HR2 hardness ratio of the source (HR2_neg)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="CR1" ucd="phot.count;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>? The mean count-rate in the 0.3-1keV band (Rate_band1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_CR1" ucd="stat.error;stat.max" display="0" datatype="float" width="9" precision="E2" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? The 1-sigma positive uncertainty on the mean count-rate in the 0.3-1keV band (Rate_band1_pos)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_CR1" ucd="stat.error" display="0" datatype="float" width="9" precision="E2" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma negative uncertainty on the mean count-rate in the 0.3-1keV band (Rate_band1_neg)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="CR2" ucd="phot.count;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>? The mean count-rate in the 1-2keV band (Rate_band2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_CR2" ucd="stat.error;stat.max" display="0" datatype="float" width="9" precision="E2" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? The 1-sigma positive uncertainty on the mean count-rate in the 1-2keV band (Rate_band2_pos)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_CR2" ucd="stat.error" display="0" datatype="float" width="9" precision="E2" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma negative uncertainty on the mean count-rate in the 1-2keV band (Rate_band2_neg)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="CR3" ucd="phot.count;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>? The mean count-rate in the 2-10keV band (Rate_band3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_CR3" ucd="stat.error;stat.max" display="0" datatype="float" width="9" precision="E2" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? The 1-sigma positive uncertainty on the mean count-rate in the 2-10keV band (Rate_band3_pos)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_CR3" ucd="stat.error" display="0" datatype="float" width="9" precision="E2" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma negative uncertainty on the mean count-rate in the 2-10keV band (Rate_band3_neg)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Ct0" ucd="phot.count;em.X-ray" display="0" datatype="int" width="7" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>? The total number of counts in the source region in the 0.3-10keV band (Counts_band0)</DESCRIPTION>
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="Ct1" ucd="phot.count;em.X-ray" display="0" datatype="int" width="7" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>? The total number of counts in the source region in the 0.3-1keV band (Counts_band1)</DESCRIPTION>
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="Ct2" ucd="phot.count;em.X-ray" display="0" datatype="int" width="7" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>? The total number of counts in the source region in the 1-2keV band (Counts_band2)</DESCRIPTION>
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="Ct3" ucd="phot.count;em.X-ray" display="0" datatype="int" width="7" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>? The total number of counts in the source region in the 2-10keV band (Counts_band3)</DESCRIPTION>
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="bgCt0" ucd="phot.count;em.X-ray" display="0" datatype="double" width="10" precision="2" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>? The total number of background counts expected in the source region in the 0.3-10keV band (BgCounts_band0)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="bgCt1" ucd="phot.count;em.X-ray" display="0" datatype="double" width="10" precision="2" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>? The total number of background counts expected in the source region in the 0.3-1keV band (BgCounts_band1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="bgCt2" ucd="phot.count;em.X-ray" display="0" datatype="double" width="10" precision="2" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>? The total number of background counts expected in the source region in the 1-2keV band (BgCounts_band2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="bgCt3" ucd="phot.count;em.X-ray" display="0" datatype="double" width="10" precision="2" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>? The total number of background counts expected in the source region in the 2-10keV band (BgCounts_band3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="CF0" ucd="instr.param" display="0" datatype="float" width="7" precision="2"><!-- ucd="INST_CORR-FACTOR" -->
+      <DESCRIPTION>? The PSF correction factor in the 0.3-10keV band (RateCF_band0)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="CF1" ucd="instr.param" display="0" datatype="float" width="7" precision="2"><!-- ucd="INST_CORR-FACTOR" -->
+      <DESCRIPTION>? The PSF correction factor in the 0.3-1keV band (RateCF_band1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="CF2" ucd="instr.param" display="0" datatype="float" width="7" precision="2"><!-- ucd="INST_CORR-FACTOR" -->
+      <DESCRIPTION>? The PSF correction factor in the 1-2keV band (RateCF_band2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="CF3" ucd="instr.param" display="0" datatype="float" width="7" precision="2"><!-- ucd="INST_CORR-FACTOR" -->
+      <DESCRIPTION>? The PSF correction factor in the 2-10keV band (RateCF_band3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FUL0" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="10" precision="E3" unit="ct/s"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? The 3-sigma upper confidence limit on the count-rate in the 0.3-10keV band (UL_band0)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FUL1" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="10" precision="E3" unit="ct/s"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? The 3-sigma upper confidence limit on the count-rate in the 0.3-1keV band (UL_band1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FUL2" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="10" precision="E3" unit="ct/s"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? The 3-sigma upper confidence limit on the count-rate in the 1-2keV band (UL_band2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FUL3" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="10" precision="E3" unit="ct/s"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? The 3-sigma upper confidence limit on the count-rate in the 2-10keV band (UL_band3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PCR0" ucd="phot.count;em.X-ray" display="0" datatype="float" width="10" precision="E3" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>? The peak count-rate in the 0.3-10keV band (PeakRate_band0)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_PCR0" ucd="stat.error;stat.max" display="0" datatype="float" width="10" precision="E3" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? The 1-sigma positive uncertainty on the peak count-rate in the 0.3-10keV band (PeakRate_band0_pos)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_PCR0" ucd="stat.error" display="0" datatype="float" width="10" precision="E3" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma negative uncertainty on the peak count-rate in the 0.3-10keV band (PeakRate_band0_neg)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PCR1" ucd="phot.count;em.X-ray" display="0" datatype="float" width="10" precision="E3" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>? The peak count-rate in the 0.3-1keV band (PeakRate_band1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_PCR1" ucd="stat.error;stat.max" display="0" datatype="float" width="10" precision="E3" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? The 1-sigma positive uncertainty on the peak count-rate in the 0.3-1keV band (PeakRate_band1_pos)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_PCR1" ucd="stat.error" display="0" datatype="float" width="10" precision="E3" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma negative uncertainty on the peak count-rate in the 0.3-1keV band (PeakRate_band1_neg)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PCR2" ucd="phot.count;em.X-ray" display="0" datatype="float" width="10" precision="E3" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>? The peak count-rate in the 1-2keV band (PeakRate_band2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_PCR2" ucd="stat.error;stat.max" display="0" datatype="float" width="10" precision="E3" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? The 1-sigma positive uncertainty on the peak count-rate in the 1-2keV band (PeakRate_band2_pos)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_PCR2" ucd="stat.error" display="0" datatype="float" width="10" precision="E3" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma negative uncertainty on the peak count-rate in the 1-2keV band (PeakRate_band2_neg)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PCR3" ucd="phot.count;em.X-ray" display="0" datatype="float" width="10" precision="E3" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>? The peak count-rate in the 2-10keV band (PeakRate_band3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_PCR3" ucd="stat.error;stat.max" display="0" datatype="float" width="10" precision="E3" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? The 1-sigma positive uncertainty on the peak count-rate in the 2-10keV band (PeakRate_band3_pos)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_PCR3" ucd="stat.error" display="0" datatype="float" width="10" precision="E3" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma negative uncertainty on the peak count-rate in the 2-10keV band (PeakRate_band3_neg)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="NHg" ucd="phys.absorption.gal" display="0" datatype="float" width="9" precision="E2" unit="cm**-2"><!-- ucd="PHYS_COLUMN_DENSITY" -->
+      <DESCRIPTION>The Galactic absorption column in the direction of the source, from Willingale et al (2013) (GalacticNH)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="PcstS0" ucd="src.var.index" display="1" datatype="float" width="9" precision="E2"><!-- ucd="VAR_INDEX" -->
+      <DESCRIPTION>? The probability that the source count-rate in the 0.3-10keV band does not vary between snapshots (PvarPchiSnapshot_band0) (6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PcstS1" ucd="src.var.index" display="0" datatype="float" width="9" precision="E2"><!-- ucd="VAR_INDEX" -->
+      <DESCRIPTION>? The probability that the source count-rate in the 0.3-1keV band does not vary between snapshots (PvarPchiSnapshot_band1) (6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PcstS2" ucd="src.var.index" display="0" datatype="float" width="9" precision="E2"><!-- ucd="VAR_INDEX" -->
+      <DESCRIPTION>? The probability that the source count-rate in the 1-2keV band does not vary between snapshots (PvarPchiSnapshot_band2) (6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PcstS3" ucd="src.var.index" display="0" datatype="float" width="9" precision="E2"><!-- ucd="VAR_INDEX" -->
+      <DESCRIPTION>? The probability that the source count-rate in the 2-10keV band does not vary between snapshots (PvarPchiSnapshot_band3) (6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PcstSHR1" ucd="src.var.index" display="0" datatype="float" width="9" precision="E2"><!-- ucd="VAR_INDEX" -->
+      <DESCRIPTION>? The probability that the source HR1 hardness ratio does not vary between snapshots (PvarPchiSnapshot_HR1) (6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PcstSHR2" ucd="src.var.index" display="0" datatype="float" width="9" precision="E2"><!-- ucd="VAR_INDEX" -->
+      <DESCRIPTION>? The probability that the source HR2 hardness ratio does not vary between snapshots (PvarPchiSnapshot_HR2) (6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Pcst0" ucd="src.var.index" display="0" datatype="float" width="9" precision="E2"><!-- ucd="VAR_INDEX" -->
+      <DESCRIPTION>? The probability that the source count-rate in the 0.3-10keV band does not vary between observations (PvarPchiObsID_band0) (6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Pcst1" ucd="src.var.index" display="0" datatype="float" width="9" precision="E2"><!-- ucd="VAR_INDEX" -->
+      <DESCRIPTION>? The probability that the source count-rate in the 0.3-1keV band does not vary between observations (PvarPchiObsID_band1) (6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Pcst2" ucd="src.var.index" display="0" datatype="float" width="9" precision="E2"><!-- ucd="VAR_INDEX" -->
+      <DESCRIPTION>? The probability that the source count-rate in the 1-2keV band does not vary between observations (PvarPchiObsID_band2) (6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Pcst3" ucd="src.var.index" display="0" datatype="float" width="9" precision="E2"><!-- ucd="VAR_INDEX" -->
+      <DESCRIPTION>? The probability that the source count-rate in the 2-10keV band does not vary between observations (PvarPchiObsID_band3) (6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PcstHR1" ucd="src.var.index" display="0" datatype="float" width="9" precision="E2"><!-- ucd="VAR_INDEX" -->
+      <DESCRIPTION>? The probability that the source HR1 hardness ratio does not vary between observations (PvarPchiObsID_HR1) (6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PcstHR2" ucd="src.var.index" display="0" datatype="float" width="9" precision="E2"><!-- ucd="VAR_INDEX" -->
+      <DESCRIPTION>? The probability that the source HR2 hardness ratio does not vary between observations (PvarPchiObsID_HR2) (6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Pow" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>? Which method of determining the spectral properties assuming a power-law was used (WhichPow) (7)</DESCRIPTION>
+      <VALUES null="255" />
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR?-6N&amp;-info=XML&amp;-out.add=.&amp;&amp;lt;&amp;quot;Note&amp;quot;&amp;catid=9058&amp;notid=7&amp;-out.emph=${Pow}"/>
+    </FIELD>
+    <FIELD name="APEC" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>? Which method of determining the spectral properties assuming an APEC was used (WhichAPEC) (7)</DESCRIPTION>
+      <VALUES null="255" />
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR?-6N&amp;-info=XML&amp;-out.add=.&amp;&amp;lt;&amp;quot;Note&amp;quot;&amp;catid=9058&amp;notid=7&amp;-out.emph=${APEC}"/>
+    </FIELD>
+    <FIELD name="CFO0" ucd="instr.param" display="0" datatype="float" width="10" precision="E3" unit="mJ.m**-2.count**-1"><!-- ucd="INST_CORR-FACTOR" -->
+      <DESCRIPTION>? Energy Conversion Factor from 0.3-10keV count-rate to 0.3-10keV observed flux, assuming a power-law spectrum (PowECFO)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="CFU0" ucd="instr.param" display="0" datatype="char" arraysize="9" unit="mJ.m**-2.count**-1"><!-- ucd="INST_CORR-FACTOR" -->
+      <DESCRIPTION>Energy Conversion Factor from 0.3-10keV count-rate to 0.3-10keV unabsorbed flux, assuming a power-law spectrum (PowECFU)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="FPO0" ucd="phot.flux;em.X-ray" display="1" datatype="float" width="10" precision="E3" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? The mean 0.3-10keV observed flux assuming a power-law spectrum (PowFlux)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_FPO0" ucd="stat.error;stat.max" display="0" datatype="float" width="11" precision="E4" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? The 1-sigma positive uncertainty on the mean 0.3-10keV observed flux assuming a power-law spectrum (PowFlux_pos)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_FPO0" ucd="stat.error" display="0" datatype="float" width="11" precision="E4" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma negative uncertainty on the mean 0.3-10keV observed flux assuming a power-law spectrum (PowFlux_neg)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FPU0" ucd="phot.flux;em.X-ray" display="1" datatype="char" arraysize="9" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>The mean 0.3-10keV unabsorbed flux assuming a power-law spectrum (PowUnabsFlux)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="E_FPU0" ucd="stat.error;stat.max" display="0" datatype="char" arraysize="10" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>The 1-sigma positive uncertainty on the mean 0.3-10keV unabsorbed flux assuming a power-law spectrum (PowUnabsFlux_pos)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_FPU0" ucd="stat.error" display="0" datatype="char" arraysize="11" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>The 1-sigma negative uncertainty on the mean 0.3-10keV unabsorbed flux assuming a power-law spectrum (PowUnabsFlux_neg)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="ECFO0" ucd="arith.factor;phys.energy" display="0" datatype="float" width="10" precision="E3" unit="mJ.m**-2.count**-1"><!-- ucd="OBS_CALIB_FACTOR" -->
+      <DESCRIPTION>? The Energy Conversion Factor from 0.3-10keV count-rate to 0.3-10keV observed flux, assuming an APEC spectrum (APECECFO)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ECFU0" ucd="arith.factor;phys.energy" display="0" datatype="char" arraysize="9" unit="mJ.m**-2.count**-1"><!-- ucd="OBS_CALIB_FACTOR" -->
+      <DESCRIPTION>The Energy Conversion Factor from 0.3-10keV count-rate to 0.3-10keV unabsorbed flux, assuming an APEC spectrum (APECECFU)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="FAO0" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="10" precision="E3" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? The mean 0.3-10keV observed flux assuming an APEC spectrum (APECFlux)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_FAO0" ucd="stat.error;stat.max" display="0" datatype="float" width="11" precision="E4" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? The 1-sigma positive uncertainty on the mean 0.3-10keV observed flux assuming an APEC spectrum (APECFlux_pos)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_FAO0" ucd="stat.error" display="0" datatype="float" width="11" precision="E4" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma negative uncertainty on the mean 0.3-10keV observed flux assuming an APEC spectrum (APECFlux_neg)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FAU0" ucd="phot.flux;em.X-ray" display="0" datatype="char" arraysize="10" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>The mean 0.3-10keV unabsorbed flux assuming an APEC spectrum (APECUnabsFlux)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="E_FAU0" ucd="stat.error;stat.max" display="0" datatype="char" arraysize="11" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>The 1-sigma positive uncertainty on the mean 0.3-10keV unabsorbed flux assuming an APEC spectrum (APECUnabsFlux_pos)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_FAU0" ucd="stat.error" display="0" datatype="char" arraysize="13" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>The 1-sigma negative uncertainty on the mean 0.3-10keV unabsorbed flux assuming an APEC spectrum (APECUnabsFlux_neg)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="FpPO0" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="11" precision="E4" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? The peak 0.3-10keV observed flux assuming a power-law spectrum (PowPeakFlux)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_FpPO0" ucd="stat.error;stat.max" display="0" datatype="float" width="11" precision="E4" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? The 1-sigma positive uncertainty on the peak 0.3-10keV observed flux assuming a power-law spectrum (PowPeakFlux_pos)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_FpPO0" ucd="stat.error" display="0" datatype="float" width="11" precision="E4" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma negative uncertainty on the peak 0.3-10keV observed flux assuming a power-law spectrum (PowPeakFlux_neg)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FpPU0" ucd="phot.flux;em.X-ray" display="0" datatype="char" arraysize="11" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>The peak 0.3-10keV unabsorbed flux assuming a power-law spectrum (PowPeakUnabsFlux)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="E_FpPU0" ucd="stat.error;stat.max" display="0" datatype="char" arraysize="11" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>The 1-sigma positive uncertainty on the peak 0.3-10keV unabsorbed flux assuming a power-law spectrum (PowPeakUnabsFlux_pos)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_FpPU0" ucd="stat.error" display="0" datatype="char" arraysize="12" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>The 1-sigma negative uncertainty on the peak 0.3-10keV unabsorbed flux assuming a power-law spectrum (PowPeakUnabsFlux_neg)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="FpAO0" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="11" precision="E4" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? The peak 0.3-10keV observed flux assuming an APEC spectrum (APECPeakFlux)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_FpAO0" ucd="stat.error;stat.max" display="0" datatype="float" width="11" precision="E4" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? The 1-sigma positive uncertainty on the peak 0.3-10keV observed flux assuming an APEC spectrum (APECPeakFlux_pos)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_FpAO0" ucd="stat.error" display="0" datatype="float" width="11" precision="E4" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma negative uncertainty on the peak 0.3-10keV observed flux assuming an APEC spectrum (APECPeakFlux_neg)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FpAU0" ucd="phot.flux;em.X-ray" display="0" datatype="char" arraysize="11" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>The peak 0.3-10keV unabsorbed flux assuming an APEC spectrum (APECPeakUnabsFlux)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="E_FpAU0" ucd="stat.error;stat.max" display="0" datatype="char" arraysize="11" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>The 1-sigma positive uncertainty on the peak 0.3-10keV unabsorbed flux assuming an APEC spectrum (APECPeakUnabsFlux_pos)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_FpAU0" ucd="stat.error" display="0" datatype="char" arraysize="13" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>The 1-sigma negative uncertainty on the peak 0.3-10keV unabsorbed flux assuming an APEC spectrum (APECPeakUnabsFlux_neg)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="CECFO" ucd="arith.factor;phys.energy" display="0" datatype="float" width="10" precision="E3" unit="mJ.m**-2.count**-1"><!-- ucd="OBS_CALIB_FACTOR" -->
+      <DESCRIPTION>? The Energy Conversion Factor from 0.3-10keV count-rate to 0.3-10keV observed flux, assuming the canned power-law spectrum (FixedPowECFO)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="CECFU" ucd="arith.factor;phys.energy" display="0" datatype="float" width="10" precision="E3" unit="mJ.m**-2.count**-1"><!-- ucd="OBS_CALIB_FACTOR" -->
+      <DESCRIPTION>? The Energy Conversion Factor from 0.3-10keV count-rate to 0.3-10keV unabsorbed flux, assuming the canned power-law spectrum (FixedPowECFU)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FCOP0" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="10" precision="E3" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? The mean 0.3-10keV observed flux assuming the canned power-law spectrum (FixedPowFlux)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_FCOP0" ucd="stat.error;stat.max" display="0" datatype="float" width="11" precision="E4" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? The 1-sigma positive uncertainty on the mean 0.3-10keV observed flux assuming the canned power-law spectrum (FixedPowFlux_pos)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_FCOP0" ucd="stat.error" display="0" datatype="float" width="11" precision="E4" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma negative uncertainty on the mean 0.3-10keV observed flux assuming the canned power-law spectrum (FixedPowFlux_neg)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FCUP0" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="10" precision="E3" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? The mean 0.3-10keV unabsorbed flux assuming the canned power-law spectrum (FixedPowUnabsFlux)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_FCUP0" ucd="stat.error;stat.max" display="0" datatype="float" width="11" precision="E4" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? The 1-sigma positive uncertainty on the mean 0.3-10keV unabsorbed flux assuming the canned power-law spectrum (FixedPowUnabsFlux_pos)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_FCUP0" ucd="stat.error" display="0" datatype="float" width="11" precision="E4" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma negative uncertainty on the mean 0.3-10keV unabsorbed flux assuming the canned power-law spectrum (FixedPowUnabsFlux_neg)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="AECFO" ucd="arith.factor;phys.energy" display="0" datatype="float" width="10" precision="E3" unit="mJ.m**-2.count**-1"><!-- ucd="OBS_CALIB_FACTOR" -->
+      <DESCRIPTION>? The Energy Conversion Factor from 0.3-10keV count-rate to 0.3-10keV observed flux, assuming the canned APEC spectrum (FixedAPECECFO)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="AECFU" ucd="arith.factor;phys.energy" display="0" datatype="float" width="10" precision="E3" unit="mJ.m**-2.count**-1"><!-- ucd="OBS_CALIB_FACTOR" -->
+      <DESCRIPTION>? The Energy Conversion Factor from 0.3-10keV count-rate to 0.3-10keV unabsorbed flux, assuming the canned APEC spectrum (FixedAPECECFU)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FCAO1" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="10" precision="E3" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? The mean 0.3-10keV observed flux assuming the canned APEC spectrum (FixedAPECFlux)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_FCAO1" ucd="stat.error;stat.max" display="0" datatype="float" width="11" precision="E4" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? The 1-sigma positive uncertainty on the mean 0.3-10keV observed flux assuming the canned APEC spectrum (FixedAPECFlux_pos)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_FCAO1" ucd="stat.error" display="0" datatype="float" width="11" precision="E4" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma negative uncertainty on the mean 0.3-10keV observed flux assuming the canned APEC spectrum (FixedAPECFlux_neg)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FCAU1" ucd="phot.flux;em.X-ray" display="0" datatype="char" arraysize="9" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>The mean 0.3-10keV unabsorbed flux assuming the canned APEC spectrum (FixedAPECUnabsFlux)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="E_FCAU1" ucd="stat.error;stat.max" display="0" datatype="char" arraysize="10" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>The 1-sigma positive uncertainty on the mean 0.3-10keV unabsorbed flux assuming the canned APEC spectrum (FixedAPECUnabsFlux_pos)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_FCAU1" ucd="stat.error" display="0" datatype="char" arraysize="11" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>The 1-sigma negative uncertainty on the mean 0.3-10keV unabsorbed flux assuming the canned APEC spectrum (FixedAPECUnabsFlux_neg)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="PECFO" ucd="arith.factor" display="0" datatype="float" width="10" precision="E3" unit="mJ.m**-2.count**-1"><!-- ucd="OBS_CALIB_FACTOR" -->
+      <DESCRIPTION>? The Energy Conversion Factor from 0.3-10keV count-rate to 0.3-10keV observed flux, assuming the power-law spectrum interpolated from the HRs (InterpPowECFO)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PECFU" ucd="arith.factor" display="0" datatype="float" width="10" precision="E3" unit="mJ.m**-2.count**-1"><!-- ucd="OBS_CALIB_FACTOR" -->
+      <DESCRIPTION>? The Energy Conversion Factor from 0.3-10keV count-rate to 0.3-10keV unabsorbed flux, assuming the power-law spectrum interpolated from the HRs (InterpPowECFU)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="NH1H" ucd="phys.columnDensity" display="0" datatype="float" width="10" precision="E3" unit="cm**-2"><!-- ucd="PHYS_COLUMN_DENSITY" -->
+      <DESCRIPTION>? The hydrogen column density inferred assuming the power-law spectrum interpolated from the HRs (InterpPowNH)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_NH1H" ucd="stat.error;stat.max" display="0" datatype="float" width="11" precision="E4" unit="cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma positive uncertainty on the hydrogen column density inferred assuming the power-law spectrum interpolated from the HRs (InterpPowNH_pos)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_NH1H" ucd="stat.error" display="0" datatype="float" width="11" precision="E4" unit="cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma negative uncertainty on the hydrogen column density inferred assuming the power-law spectrum interpolated from the HRs (InterpPowNH_neg)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Gam1" ucd="spect.index" display="0" datatype="float" width="10" precision="E3"><!-- ucd="SPECT_SP-INDEX" -->
+      <DESCRIPTION>? The spectral photon index inferred assuming the power-law spectrum interpolated from the HRs (InterpPowGamma)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_Gam1" ucd="stat.error;stat.max" display="0" datatype="float" width="11" precision="E4"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma positive uncertainty on the spectral photon index inferred assuming the power-law spectrum interpolated from the HRs (InterpPowGamma_pos)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Gam1" ucd="stat.error" display="0" datatype="float" width="11" precision="E4"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma negative uncertainty on the spectral photon index inferred assuming the power-law spectrum interpolated from the HRs (InterpPowGamma_neg)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FIPO1" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="10" precision="E3" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? The mean 0.3-10keV observed flux assuming the power-law spectrum interpolated from the HRs (InterpPowFlux)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_FIPO1" ucd="stat.error;stat.max" display="0" datatype="float" width="11" precision="E4" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? The 1-sigma positive uncertainty on the mean 0.3-10keV observed flux assuming the power-law spectrum interpolated from the HRs (InterpPowFlux_pos)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_FIPO1" ucd="stat.error" display="0" datatype="float" width="11" precision="E4" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma negative uncertainty on the mean 0.3-10keV observed flux assuming the power-law spectrum interpolated from the HRs (InterpPowFlux_neg)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FIPU1" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="10" precision="E3" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? The mean 0.3-10keV unabsorbed flux assuming the power-law spectrum interpolated from the HRs (InterpPowUnabsFlux)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_FIPU1" ucd="stat.error;stat.max" display="0" datatype="float" width="11" precision="E4" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? The 1-sigma positive uncertainty on the mean 0.3-10keV unabsorbed flux assuming the power-law spectrum interpolated from the HRs (InterpPowUnabsFlux_pos)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_FIPU1" ucd="stat.error" display="0" datatype="float" width="11" precision="E4" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma negative uncertainty on the mean 0.3-10keV unabsorbed flux assuming the power-law spectrum interpolated from the HRs (InterpPowUnabsFlux_neg)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="IPECFO" ucd="arith.factor;phys.energy" display="0" datatype="float" width="10" precision="E3" unit="mJ.m**-2.count**-1"><!-- ucd="OBS_CALIB_FACTOR" -->
+      <DESCRIPTION>? The Energy Conversion Factor from 0.3-10keV count-rate to 0.3-10keV observed flux, assuming the APEC spectrum interpolated from the HRs (InterpAPECECFO)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="IPECFU" ucd="arith.factor;phys.energy" display="0" datatype="char" arraysize="9" unit="mJ.m**-2.count**-1"><!-- ucd="OBS_CALIB_FACTOR" -->
+      <DESCRIPTION>The Energy Conversion Factor from 0.3-10keV count-rate to 0.3-10keV unabsorbed flux, assuming the APEC spectrum interpolated from the HRs (InterpAPECECFU)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="NH2A" ucd="phys.columnDensity" display="0" datatype="char" arraysize="10" unit="cm**-2"><!-- ucd="PHYS_COLUMN_DENSITY" -->
+      <DESCRIPTION>The hydrogen column density inferred assuming the APEC spectrum interpolated from the HRs (InterpAPECNH)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="E_NH2A" ucd="stat.error;stat.max" display="0" datatype="char" arraysize="11" unit="cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>The 1-sigma positive uncertainty on the hydrogen column density inferred assuming the APEC spectrum interpolated from the HRs (InterpAPECNH_pos)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_NH2A" ucd="stat.error" display="0" datatype="float" width="11" precision="E4" unit="cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma negative uncertainty on the hydrogen column density inferred assuming the APEC spectrum interpolated from the HRs (InterpAPECNH_neg)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="kTAH" ucd="spect.index" display="0" datatype="float" width="10" precision="E3" unit="keV"><!-- ucd="SPECT_SP-INDEX" -->
+      <DESCRIPTION>? The temperature inferred assuming the APEC spectrum interpolated from the HRs (InterpAPECkT)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_kTAH" ucd="stat.error;stat.max" display="0" datatype="float" width="11" precision="E4" unit="keV"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma positive uncertainty on the temperature inferred assuming the APEC spectrum interpolated from the HRs (InterpAPECkT_pos)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_kTAH" ucd="stat.error" display="0" datatype="float" width="11" precision="E4" unit="keV"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma negative uncertainty on the temperature inferred assuming the APEC spectrum interpolated from the HRs (InterpAPECkT_neg)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FAIO1" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="10" precision="E3" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? The mean 0.3-10keV observed flux assuming the APEC spectrum interpolated from the HRs (InterpAPECFlux)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_FAIO1" ucd="stat.error;stat.max" display="0" datatype="float" width="11" precision="E4" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? The 1-sigma positive uncertainty on the mean 0.3-10keV observed flux assuming the APEC spectrum interpolated from the HRs (InterpAPECFlux_pos)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_FAIO1" ucd="stat.error" display="0" datatype="float" width="11" precision="E4" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma negative uncertainty on the mean 0.3-10keV observed flux assuming the APEC spectrum interpolated from the HRs (InterpAPECFlux_neg)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FAIU1" ucd="phot.flux;em.X-ray" display="0" datatype="char" arraysize="9" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>The mean 0.3-10keV unabsorbed flux assuming the APEC spectrum interpolated from the HRs (InterpAPECUnabsFlux)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="E_FAIU1" ucd="stat.error;stat.max" display="0" datatype="char" arraysize="10" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>The 1-sigma positive uncertainty on the mean 0.3-10keV unabsorbed flux assuming the APEC spectrum interpolated from the HRs (InterpAPECUnabsFlux_pos)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_FAIU1" ucd="stat.error" display="0" datatype="char" arraysize="11" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>The 1-sigma negative uncertainty on the mean 0.3-10keV unabsorbed flux assuming the APEC spectrum interpolated from the HRs (InterpAPECUnabsFlux_neg)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="P1" ucd="stat.probability" display="0" datatype="float" width="5" precision="2"><!-- ucd="STAT_PROBABILITY" -->
+      <DESCRIPTION>? The probability that the HR values of this source could be obtained if the true spectrum is an absorbed power-law (P_pow)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="P2" ucd="stat.probability" display="0" datatype="float" width="5" precision="2"><!-- ucd="STAT_PROBABILITY" -->
+      <DESCRIPTION>? The probability that the HR values of this source could be obtained if the true spectrum is an APEC (P_APEC)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FPECFO" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="10" precision="E3" unit="mJ.m**-2.count**-1"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? The Energy Conversion Factor from 0.3-10keV count-rate to 0.3-10keV observed flux, assuming the power-law spectral model fitted to a custom-built spectrum (FittedPowECFO)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FPECFU" ucd="phot.flux;em.X-ray" display="0" datatype="char" arraysize="9" unit="mJ.m**-2.count**-1"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>The Energy Conversion Factor from 0.3-10keV count-rate to 0.3-10keV unabsorbed flux, assuming the power-law spectral model fitted to a custom-built spectrum (FittedPowECFU)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="NH2C" ucd="phys.columnDensity" display="0" datatype="char" arraysize="10" unit="cm**-2"><!-- ucd="PHYS_COLUMN_DENSITY" -->
+      <DESCRIPTION>The hydrogen column density inferred assuming the power-law spectral model fitted to a custom-built spectrum (FittedPowNH)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="E_NH2C" ucd="stat.error;stat.max" display="0" datatype="char" arraysize="10" unit="cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>The 1-sigma positive uncertainty on the hydrogen column density inferred assuming the power-law spectral model fitted to a custom-built spectrum (FittedPowNH_pos) (8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_NH2C" ucd="stat.error" display="0" datatype="char" arraysize="12" unit="cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>The 1-sigma negative uncertainty on the hydrogen column density inferred assuming the power-law spectral model fitted to a custom-built spectrum (FittedPowNH_neg) (8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Gamma" ucd="spect.index" display="0" datatype="float" width="10" precision="E3"><!-- ucd="SPECT_SP-INDEX" -->
+      <DESCRIPTION>? The spectral photon index inferred assuming the power-law spectral model fitted to a custom-built spectrum (FittedPowGamma)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_Gamma" ucd="stat.error;stat.max" display="0" datatype="float" width="11" precision="E4"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma positive uncertainty on the spectral photon index inferred assuming the power-law spectral model fitted to a custom-built spectrum (FittedPowGamma_pos) (8)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Gamma" ucd="stat.error" display="0" datatype="float" width="11" precision="E4"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma negative uncertainty on the spectral photon index inferred assuming the power-law spectral model fitted to a custom-built spectrum (FittedPowGamma_neg) (8)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FPCO0" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="10" precision="E3" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? The mean 0.3-10keV observed flux assuming the power-law spectral model fitted to a custom-built spectrum (FittedPowFlux)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_FPCO0" ucd="stat.error;stat.max" display="0" datatype="float" width="11" precision="E4" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? The 1-sigma positive uncertainty on the mean 0.3-10keV observed flux assuming the power-law spectral model fitted to a custom-built spectrum (FittedPowFlux_pos) (8)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_FPCO0" ucd="stat.error" display="0" datatype="float" width="11" precision="E4" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma negative uncertainty on the mean 0.3-10keV observed flux assuming the power-law spectral model fitted to a custom-built spectrum (FittedPowFlux_neg) (8)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FPCU0" ucd="phot.flux;em.X-ray" display="0" datatype="char" arraysize="10" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>The mean 0.3-10keV unabsorbed flux assuming the power-law spectral model fitted to a custom-built spectrum (FittedPowUnabsFlux)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="E_FPCU0" ucd="stat.error;stat.max" display="0" datatype="char" arraysize="12" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>The 1-sigma positive uncertainty on the mean 0.3-10keV unabsorbed flux assuming the power-law spectral model fitted to a custom-built spectrum (FittedPowUnabsFlux_pos) (8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_FPCU0" ucd="stat.error" display="0" datatype="char" arraysize="12" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>The 1-sigma negative uncertainty on the mean 0.3-10keV unabsorbed flux assuming the power-law spectral model fitted to a custom-built spectrum (FittedPowUnabsFlux_neg) (8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Cstat" ucd="meta.code" display="0" datatype="float" width="7" precision="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>? The C-statistic from the power-law spectral fit to the custom-built spectrum (FittedPowCstat)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="DOF" ucd="stat.fit.dof" display="0" datatype="short" width="3"><!-- ucd="STAT_N-DOF" -->
+      <DESCRIPTION>? The number of degrees of freedom in the power-law spectral fit to the custom-built spectrum (FittedPowDOF)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="chi2r" ucd="stat.fit.chi2" display="0" datatype="float" width="6" precision="2"><!-- ucd="FIT_CHI2" -->
+      <DESCRIPTION>? The Churazov-weighted reduced chi^2^ from the power-law spectral fit to the custom-built spectrum (FittedPowReducedChi2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ACECFO" ucd="arith.factor;phys.energy" display="0" datatype="float" width="10" precision="E3" unit="mJ.m**-2.count**-1"><!-- ucd="OBS_CALIB_FACTOR" -->
+      <DESCRIPTION>? The Energy Conversion Factor from 0.3-10keV count-rate to 0.3-10keV observed flux, assuming the APEC spectral model fitted to a custom-built spectrum (FittedAPECECFO)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ACECFU" ucd="arith.factor;phys.energy" display="0" datatype="char" arraysize="9" unit="mJ.m**-2.count**-1"><!-- ucd="OBS_CALIB_FACTOR" -->
+      <DESCRIPTION>The Energy Conversion Factor from 0.3-10keV count-rate to 0.3-10keV unabsorbed flux, assuming the APEC spectral model fitted to a custom-built spectrum (FittedAPECECFU)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="NH2AC" ucd="phys.columnDensity" display="0" datatype="char" arraysize="10" unit="cm**-2"><!-- ucd="PHYS_COLUMN_DENSITY" -->
+      <DESCRIPTION>The hydrogen column density inferred assuming the APEC spectral model fitted to a custom-built spectrum (FittedAPECNH)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="E_NH2AC" ucd="stat.error;stat.max" display="0" datatype="char" arraysize="11" unit="cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>The 1-sigma positive uncertainty on the hydrogen column density inferred assuming the APEC spectral model fitted to a custom-built spectrum (FittedAPECNH_pos) (8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_NH2AC" ucd="stat.error" display="0" datatype="char" arraysize="12" unit="cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>The 1-sigma negative uncertainty on the hydrogen column density inferred assuming the APEC spectral model fitted to a custom-built spectrum (FittedAPECNH_neg) (8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="kTAC" ucd="spect.index" display="0" datatype="float" width="10" precision="E3" unit="keV"><!-- ucd="SPECT_SP-INDEX" -->
+      <DESCRIPTION>? The temperature inferred assuming the APEC spectral model fitted to a custom-built spectrum (FittedAPECkT)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_kTAC" ucd="stat.error;stat.max" display="0" datatype="float" width="11" precision="E4" unit="keV"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma positive uncertainty on the temperature inferred assuming the APEC spectral model fitted to a custom-built spectrum (FittedAPECkT_pos) (8)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_kTAC" ucd="stat.error" display="0" datatype="float" width="11" precision="E4" unit="keV"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma negative uncertainty on the temperature inferred assuming the APEC spectral model fitted to a custom-built spectrum (FittedAPECkT_neg) (8)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FACO0" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="10" precision="E3" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? The mean 0.3-10keV observed flux assuming the APEC spectral model fitted to a custom-built spectrum (FittedAPECFlux)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_FACO0" ucd="stat.error;stat.max" display="0" datatype="float" width="11" precision="E4" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? The 1-sigma positive uncertainty on the mean 0.3-10keV observed flux assuming the APEC spectral model fitted to a custom-built spectrum (FittedAPECFlux_pos) (8)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_FACO0" ucd="stat.error" display="0" datatype="float" width="11" precision="E4" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[]? The 1-sigma negative uncertainty on the mean 0.3-10keV observed flux assuming the APEC spectral model fitted to a custom-built spectrum (FittedAPECFlux_neg) (8)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FACU0" ucd="phot.flux;em.X-ray" display="0" datatype="char" arraysize="10" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>The mean 0.3-10keV unabsorbed flux assuming the APEC spectral model fitted to a custom-built spectrum (FittedAPECUnabsFlux)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="E_FACU0" ucd="stat.error;stat.max" display="0" datatype="char" arraysize="12" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>The 1-sigma positive uncertainty on the mean 0.3-10keV unabsorbed flux assuming the APEC spectral model fitted to a custom-built spectrum (FittedAPECUnabsFlux_pos) (8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_FACU0" ucd="stat.error" display="0" datatype="char" arraysize="12" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>The 1-sigma negative uncertainty on the mean 0.3-10keV unabsorbed flux assuming the APEC spectral model fitted to a custom-built spectrum (FittedAPECUnabsFlux_neg) (8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="CstatA" ucd="stat.fit.param" display="0" datatype="double" width="8" precision="1"><!-- ucd="STAT_PARAM" -->
+      <DESCRIPTION>? The C-statistic from the APEC spectral fit to the custom-built spectrum (FittedAPECCstat)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="DOFA" ucd="stat.fit.dof" display="0" datatype="short" width="3"><!-- ucd="STAT_N-DOF" -->
+      <DESCRIPTION>? The number of degrees of freedom in the APEC spectral fit to the custom-built spectrum (FittedAPECDOF)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="chi2rA" ucd="stat.fit.chi2" display="0" datatype="double" width="8" precision="2"><!-- ucd="FIT_CHI2" -->
+      <DESCRIPTION>? The Churazov-weighted reduced chi^2^ from the APEC spectral fit to the custom-built spectrum (FittedAPECReducedChi2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="HasSpec" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>? Whether a custom-built spectrum was created for this source (HasSpec)</DESCRIPTION>
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="Next" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? The number of external sources found to agree spatially with this one at the 3-sigma level (NumExternalMatches)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="Next2" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? The number of external sources found to agree spatially with this one at the 3-sigma level, excluding 2MASS, USNO-B1 and ALLWISE matches (NumExternalMatches_slim)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="ROSHRI" ucd="meta.note" display="0" datatype="unsignedByte" width="1"><!-- ucd="NOTE" -->
+      <DESCRIPTION>? Whether the sources is spatially within 3 sigma of a source in the Rosat HRI catalogue (Cat. IX/28) (MatchInROSHRI)</DESCRIPTION>
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="2RXS" ucd="meta.note" display="0" datatype="unsignedByte" width="1"><!-- ucd="NOTE" -->
+      <DESCRIPTION>? Whether the sources is spatially within 3 sigma of a source in the 2RXS catalogue (Cat. J/A+A/588/A103) (MatchIn2RXS)</DESCRIPTION>
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="3XMMDR8" ucd="meta.note" display="0" datatype="unsignedByte" width="1"><!-- ucd="NOTE" -->
+      <DESCRIPTION>? Whether the sources is spatially within 3 sigma of a source in the 3XMM-DR8 catalogue (Cat. IX/55) (MatchIn3XMMDR8)</DESCRIPTION>
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="3XMMStack" ucd="meta.note" display="0" datatype="unsignedByte" width="1"><!-- ucd="NOTE" -->
+      <DESCRIPTION>? Whether the sources is spatially within 3 sigma of a source in the 3XMM-DR7s (stacked) catalogue (Cat. IX/56) (MatchIn3XMM_Stack)</DESCRIPTION>
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="XMMSL2" ucd="meta.note" display="0" datatype="unsignedByte" width="1"><!-- ucd="NOTE" -->
+      <DESCRIPTION>? Whether the sources is spatially within 3 sigma of a source in the XMMSL2 catalogue (Cat. IX/53) (MatchInXMMSL2)</DESCRIPTION>
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="SwiftFT" ucd="meta.note" display="0" datatype="unsignedByte" width="1"><!-- ucd="NOTE" -->
+      <DESCRIPTION>? Whether the sources is spatially within 3 sigma of a source in the SwiftFT catalogue (Cat. J/A+A/528/A122) (MatchInSwiftFT)</DESCRIPTION>
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="1SWXRT" ucd="meta.note" display="0" datatype="unsignedByte" width="1"><!-- ucd="NOTE" -->
+      <DESCRIPTION>? Whether the sources is spatially within 3 sigma of a source in the 1SWXRT catalogue (Cat. J/A+A/551/A142) (MatchIn1SWXRT)</DESCRIPTION>
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="XRTGRB" ucd="meta.note" display="0" datatype="unsignedByte" width="1"><!-- ucd="NOTE" -->
+      <DESCRIPTION>? Whether the sources is spatially within 3 sigma of an XRT GRB afterglow (MatchInXRTGRB)</DESCRIPTION>
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="SDSSQSO" ucd="meta.note" display="0" datatype="unsignedByte" width="1"><!-- ucd="NOTE" -->
+      <DESCRIPTION>? Whether the sources is spatially within 3 sigma of a source in the SDSS QSO DR14 catalogue (MatchInSDSSQSO)</DESCRIPTION>
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="2MASS" ucd="meta.note" display="0" datatype="unsignedByte" width="1"><!-- ucd="NOTE" -->
+      <DESCRIPTION>? Whether the sources is spatially within 3 sigma of a source in the 2MASS catalogue (Cat. II/246) (MatchIn2MASS)</DESCRIPTION>
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="USNOB1" ucd="meta.note" display="0" datatype="unsignedByte" width="1"><!-- ucd="NOTE" -->
+      <DESCRIPTION>? Whether the sources is spatially within 3 sigma of a source in the USNO-B1 catalogue (Cat. I/284) (MatchInUSNOB1)</DESCRIPTION>
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="2CSC" ucd="meta.note" display="0" datatype="unsignedByte" width="1"><!-- ucd="NOTE" -->
+      <DESCRIPTION>? Whether the sources is spatially within 3 sigma of a source in the 2CSC catalogue (MatchIn2CSC)</DESCRIPTION>
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="1SXPS" ucd="meta.note" display="0" datatype="unsignedByte" width="1"><!-- ucd="NOTE" -->
+      <DESCRIPTION>? Whether the sources is spatially within 3 sigma of a source in the 1SXPS catalogue (Cat. IX/43) (MatchIn1SXPS)</DESCRIPTION>
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="ALLWISE" ucd="meta.note" display="0" datatype="unsignedByte" width="1"><!-- ucd="NOTE" -->
+      <DESCRIPTION>? Whether the sources is spatially within 3 sigma of a source in the ALLWISE catalogue (Cat. II/328) (MatchInALLWISE)</DESCRIPTION>
+      <VALUES null="255" />
+    </FIELD>
+  </TABLE>
+<INFO name="matches" value="2">matching records</INFO>
+</RESOURCE>
+</VOTABLE>

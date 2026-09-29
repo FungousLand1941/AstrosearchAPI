@@ -1,0 +1,300 @@
+{
+  "catalog": "alerce_backlog",
+  "params": {
+    "broker": "alerce",
+    "options": {
+      "classifier": "stamp_classifier",
+      "class_name": "SN",
+      "mjd_field": "firstmjd"
+    },
+    "until_mjd": 61309.5346,
+    "lookback_days": 0.2,
+    "reference_ids": [
+      "alerce:ZTF20acfhsql",
+      "alerce:ZTF26abxsgim",
+      "alerce:ZTF26abxsxww",
+      "alerce:ZTF26abxsyjc",
+      "alerce:ZTF26abxsysn"
+    ],
+    "polls": [
+      {
+        "broker": "alerce",
+        "since_mjd": 61309.3346,
+        "until_mjd": 61309.5346,
+        "options": {
+          "classifier": "stamp_classifier",
+          "class_name": "SN",
+          "mjd_field": "firstmjd"
+        },
+        "window": "new",
+        "fetched": 2,
+        "inserted": 2,
+        "updated": 0,
+        "unchanged": 0,
+        "crossmatched": 0,
+        "crossmatch_partial": 0,
+        "crossmatch_failed": 0,
+        "retried": 0,
+        "truncated": true,
+        "boundary_mjd": 61309.5221644002,
+        "backlog": {
+          "since_mjd": 61309.3346,
+          "until_mjd": 61309.5221644002
+        },
+        "alert_ids": [
+          "alerce:ZTF26abxsysn",
+          "alerce:ZTF26abxsxww"
+        ],
+        "new_alert_ids": [
+          "alerce:ZTF26abxsysn",
+          "alerce:ZTF26abxsxww"
+        ],
+        "warnings": [
+          "window truncated at limit=2: older alerts at or before MJD 61309.522164 were not fetched (backlog [61309.334600, 61309.522164] queued for the next polls)"
+        ],
+        "error": null,
+        "elapsed_ms": 1461.6
+      },
+      {
+        "broker": "alerce",
+        "since_mjd": 61309.3346,
+        "until_mjd": 61309.5221644002,
+        "options": {
+          "classifier": "stamp_classifier",
+          "class_name": "SN",
+          "mjd_field": "firstmjd"
+        },
+        "window": "backlog",
+        "fetched": 2,
+        "inserted": 2,
+        "updated": 0,
+        "unchanged": 0,
+        "crossmatched": 0,
+        "crossmatch_partial": 0,
+        "crossmatch_failed": 0,
+        "retried": 0,
+        "truncated": true,
+        "boundary_mjd": 61309.48197920015,
+        "backlog": {
+          "since_mjd": 61309.3346,
+          "until_mjd": 61309.48197920015
+        },
+        "alert_ids": [
+          "alerce:ZTF26abxsyjc",
+          "alerce:ZTF26abxsgim"
+        ],
+        "new_alert_ids": [
+          "alerce:ZTF26abxsyjc",
+          "alerce:ZTF26abxsgim"
+        ],
+        "warnings": [
+          "window truncated at limit=2: older alerts at or before MJD 61309.481979 were not fetched (backlog [61309.334600, 61309.481979] queued for the next polls)"
+        ],
+        "error": null,
+        "elapsed_ms": 1491.8
+      },
+      {
+        "broker": "alerce",
+        "since_mjd": 61309.3346,
+        "until_mjd": 61309.48197920015,
+        "options": {
+          "classifier": "stamp_classifier",
+          "class_name": "SN",
+          "mjd_field": "firstmjd"
+        },
+        "window": "backlog",
+        "fetched": 1,
+        "inserted": 1,
+        "updated": 0,
+        "unchanged": 0,
+        "crossmatched": 0,
+        "crossmatch_partial": 0,
+        "crossmatch_failed": 0,
+        "retried": 0,
+        "truncated": false,
+        "boundary_mjd": null,
+        "backlog": null,
+        "alert_ids": [
+          "alerce:ZTF20acfhsql"
+        ],
+        "new_alert_ids": [
+          "alerce:ZTF20acfhsql"
+        ],
+        "warnings": [],
+        "error": null,
+        "elapsed_ms": 1405.3
+      },
+      {
+        "broker": "alerce",
+        "since_mjd": 61309.2846,
+        "until_mjd": 61309.5346,
+        "options": {
+          "classifier": "stamp_classifier",
+          "class_name": "SN",
+          "mjd_field": "firstmjd"
+        },
+        "window": "new",
+        "fetched": 2,
+        "inserted": 0,
+        "updated": 0,
+        "unchanged": 2,
+        "crossmatched": 0,
+        "crossmatch_partial": 0,
+        "crossmatch_failed": 0,
+        "retried": 0,
+        "truncated": true,
+        "boundary_mjd": 61309.5221644002,
+        "backlog": null,
+        "alert_ids": [
+          "alerce:ZTF26abxsysn",
+          "alerce:ZTF26abxsxww"
+        ],
+        "new_alert_ids": [],
+        "warnings": [
+          "window truncated at limit=2: older alerts at or before MJD 61309.522164 were not fetched (already covered by earlier polls)",
+          "the re-covered overlap before MJD 61309.534600 was truncated: late alerts older than MJD 61309.522164 may be missed; raise the limit"
+        ],
+        "error": null,
+        "elapsed_ms": 1140.4
+      }
+    ]
+  },
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/?classifier=stamp_classifier&ranking=1&class=SN&firstmjd=61309.334600&firstmjd=61309.534600&page_size=3&order_by=firstmjd&order_mode=DESC",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF26abxsysn/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF26abxsxww/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/?classifier=stamp_classifier&ranking=1&class=SN&firstmjd=61309.334600&firstmjd=61309.522164&page_size=3&order_by=firstmjd&order_mode=DESC",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF26abxsyjc/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF26abxsgim/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/?classifier=stamp_classifier&ranking=1&class=SN&firstmjd=61309.334600&firstmjd=61309.481979&page_size=3&order_by=firstmjd&order_mode=DESC",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF20acfhsql/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/?classifier=stamp_classifier&ranking=1&class=SN&firstmjd=61309.284600&firstmjd=61309.534600&page_size=3&order_by=firstmjd&order_mode=DESC",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF26abxsxww/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF26abxsysn/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/?classifier=stamp_classifier&ranking=1&class=SN&firstmjd=61309.334600&firstmjd=61309.534600&page_size=101&order_by=firstmjd&order_mode=DESC",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF26abxsxww/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF26abxsysn/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF26abxsyjc/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF26abxsgim/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF20acfhsql/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    }
+  ]
+}

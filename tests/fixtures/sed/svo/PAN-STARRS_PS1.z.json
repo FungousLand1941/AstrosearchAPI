@@ -1,0 +1,13 @@
+{
+  "catalog": "PAN-STARRS_PS1.z",
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://svo2.cab.inta-csic.es/theory/fps/fps.php?ID=PAN-STARRS%2FPS1.z",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "text/xml",
+      "match": []
+    }
+  ]
+}

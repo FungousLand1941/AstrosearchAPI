@@ -1,0 +1,13 @@
+{
+  "case": "rrab_neowise_wide",
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://irsa.ipac.caltech.edu/TAP/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&FORMAT=csv&QUERY=SELECT+ra%2C+dec%2C+mjd%2C+w1mpro%2C+w1sigmpro%2C+w2mpro%2C+w2sigmpro%2C+qual_frame%2C+qi_fact%2C+saa_sep%2C+moon_masked%2C+cc_flags%2C+nb%2C+na%2C+w1rchi2%2C+w2rchi2+FROM+neowiser_p1bs_psd+WHERE+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+201.7846706%2C+38.7450683%2C+0.01666667%29%29+%3D+1",
+      "status_code": 200,
+      "content_type": "text/csv",
+      "location": ""
+    }
+  ]
+}

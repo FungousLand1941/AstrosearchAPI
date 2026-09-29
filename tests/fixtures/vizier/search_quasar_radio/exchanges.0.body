@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-28T11:38:01 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-28T11:38:01">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-meta=&amp;-meta.max=20&amp;-words=quasar+Radio">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+<INFO name="Warning" value="List of 99 matching catalogues truncated to 20"/>
+
+<RESOURCE ID="yCat_14270125" name="J/ApJ/427/125" type="meta">
+  <DESCRIPTION>QSOs orientation modeling (Lister+ 1994)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apj/427/125">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apj/427/125">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Lister M.L.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:1994ApJ...427..125L">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJ">    Journal name  </INFO>
+  <INFO name="original_date" value="1994">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/427/125">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.14270125">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.402357">popularity index</INFO>
+  <INFO name="cpopu" value="751">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="Radio"/>
+  <INFO name="-kw.Astronomy" value="Galaxies"/>
+  <INFO name="-kw.Astronomy" value="QSOs"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJ/427/125"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_14450062" name="J/ApJ/445/62" type="meta">
+  <DESCRIPTION>Radio properties of optically selected quasars (Hooper+ 1995)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apj/445/62">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apj/445/62">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Hooper E.J.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:1995ApJ...445...62H">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJ">    Journal name  </INFO>
+  <INFO name="original_date" value="1995">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/445/62">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.14450062">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.362933">popularity index</INFO>
+  <INFO name="cpopu" value="392">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="Radio"/>
+  <INFO name="-kw.Astronomy" value="QSOs"/>
+  <INFO name="-kw.Astronomy" value="Redshifts"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJ/445/62"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_15110612" name="J/ApJ/511/612" type="meta">
+  <DESCRIPTION>Comparison of Radio-loud and Quiet Quasars (Goldschmidt+, 1999)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apj/511/612">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apj/511/612">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Goldschmidt P.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:1999ApJ...511..612G">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJ">    Journal name  </INFO>
+  <INFO name="original_date" value="1999">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/511/612">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.15110612">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.454705">popularity index</INFO>
+  <INFO name="cpopu" value="1779">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="Radio"/>
+  <INFO name="-kw.Astronomy" value="Galaxies"/>
+  <INFO name="-kw.Astronomy" value="QSOs"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJ/511/612"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_16090539" name="J/ApJ/609/539" type="meta">
+  <DESCRIPTION>Kinematics of parsec-scale radio jets (Kellermann+, 2004)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apj/609/539">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apj/609/539">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Kellermann K.I.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2004ApJ...609..539K">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJ">    Journal name  </INFO>
+  <INFO name="original_date" value="2004">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/609/539">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.16090539">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.523881">popularity index</INFO>
+  <INFO name="cpopu" value="5557">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="Radio"/>
+  <INFO name="-kw.Astronomy" value="AGN"/>
+  <INFO name="-kw.Astronomy" value="QSOs"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJ/609/539"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_16450856" name="J/ApJ/645/856" type="meta">
+  <DESCRIPTION>Beamed radio-intermediate quasars (Wang+, 2006)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apj/645/856">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apj/645/856">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Wang T.-G.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2006ApJ...645..856W">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJ">    Journal name  </INFO>
+  <INFO name="original_date" value="2006">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/645/856">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.16450856">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.463816">popularity index</INFO>
+  <INFO name="cpopu" value="2067">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="Radio"/>
+  <INFO name="-kw.Astronomy" value="QSOs"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJ/645/856"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_16570116" name="J/ApJ/657/116" type="meta">
+  <DESCRIPTION>X-ray and UV parameters of radio-quiet quasars (Kelly+, 2007)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apj/657/116">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apj/657/116">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Kelly B.C.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2007ApJ...657..116K">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJ">    Journal name  </INFO>
+  <INFO name="original_date" value="2007">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/657/116">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.16570116">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.481922">popularity index</INFO>
+  <INFO name="cpopu" value="2785">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="X-ray"/>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Astronomy" value="QSOs"/>
+  <INFO name="-kw.Astronomy" value="Redshifts"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJ/657/116"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_17091407" name="J/ApJ/709/1407" type="meta">
+  <DESCRIPTION>SED of the Fermi blazars (Li+, 2010)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apj/709/1407">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apj/709/1407">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Li H.Z.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2010ApJ...709.1407L">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJ">    Journal name  </INFO>
+  <INFO name="original_date" value="2010">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/709/1407">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.17091407">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.516683">popularity index</INFO>
+  <INFO name="cpopu" value="4936">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="Gamma-ray"/>
+  <INFO name="-kw.Wavelength" value="X-ray"/>
+  <INFO name="-kw.Astronomy" value="AGN"/>
+  <INFO name="-kw.Astronomy" value="BL_Lac_objects"/>
+  <INFO name="-kw.Astronomy" value="QSOs"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJ/709/1407"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_17260020" name="J/ApJ/726/20" type="meta">
+  <DESCRIPTION>X-ray emission from quasars (Miller+, 2011)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apj/726/20">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apj/726/20">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Miller B.P.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2011ApJ...726...20M">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJ">    Journal name  </INFO>
+  <INFO name="original_date" value="2011">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/726/20">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.17260020">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.562454">popularity index</INFO>
+  <INFO name="cpopu" value="10486">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="X-ray"/>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Wavelength" value="Radio"/>
+  <INFO name="-kw.Astronomy" value="Photometry:wide-band"/>
+  <INFO name="-kw.Astronomy" value="QSOs"/>
+  <INFO name="-kw.Astronomy" value="Redshifts"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJ/726/20"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_17540038" name="J/ApJ/754/38" type="meta">
+  <DESCRIPTION>MgII absorption systems for Flat-Spectrum Radio QSOs (Chand+, 2012)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apj/754/38">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apj/754/38">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Chand H.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2012ApJ...754...38C">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJ">    Journal name  </INFO>
+  <INFO name="original_date" value="2012">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/754/38">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.17540038">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.490925">popularity index</INFO>
+  <INFO name="cpopu" value="3230">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Wavelength" value="Radio"/>
+  <INFO name="-kw.Astronomy" value="Equivalent_widths"/>
+  <INFO name="-kw.Astronomy" value="Spectroscopy"/>
+  <INFO name="-kw.Astronomy" value="QSOs"/>
+  <INFO name="-kw.Astronomy" value="Redshifts"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJ/754/38"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_17660037" name="J/ApJ/766/37" type="meta">
+  <DESCRIPTION>Sizes of MRC radio galaxies and QSOs (Singal+, 2013)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apj/766/37">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apj/766/37">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Singal A.K.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2013ApJ...766...37S">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJ">    Journal name  </INFO>
+  <INFO name="original_date" value="2013">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/766/37">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.17660037">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.479656">popularity index</INFO>
+  <INFO name="cpopu" value="2683">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Wavelength" value="Radio"/>
+  <INFO name="-kw.Astronomy" value="AGN"/>
+  <INFO name="-kw.Astronomy" value="QSOs"/>
+  <INFO name="-kw.Astronomy" value="Redshifts"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJ/766/37"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_17680037" name="J/ApJ/768/37" type="meta">
+  <DESCRIPTION>Radio emission from SDSS quasars (Condon+, 2013)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apj/768/37">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apj/768/37">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Condon J.J.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2013ApJ...768...37C">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJ">    Journal name  </INFO>
+  <INFO name="original_date" value="2013">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/768/37">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.17680037">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.523947">popularity index</INFO>
+  <INFO name="cpopu" value="5563">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="Radio"/>
+  <INFO name="-kw.Astronomy" value="QSOs"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJ/768/37"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_18130045" name="J/ApJ/813/45" type="meta">
+  <DESCRIPTION>ALMA observations in z~0.5-3 quasars (Lonsdale+, 2015)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apj/813/45">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apj/813/45">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Lonsdale C.J.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2015ApJ...813...45L">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJ">    Journal name  </INFO>
+  <INFO name="original_date" value="2015">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/813/45">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.18130045">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.460247">popularity index</INFO>
+  <INFO name="cpopu" value="1949">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="Radio"/>
+  <INFO name="-kw.Astronomy" value="Photometry"/>
+  <INFO name="-kw.Astronomy" value="QSOs"/>
+  <INFO name="-kw.Astronomy" value="Redshifts"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJ/813/45"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_18420087" name="J/ApJ/842/87" type="meta">
+  <DESCRIPTION>Radio luminosity function of FSRQs (Mao+, 2017)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apj/842/87">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apj/842/87">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Mao P.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2017ApJ...842...87M">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJ">    Journal name  </INFO>
+  <INFO name="original_date" value="2017">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/842/87">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.18420087">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.510754">popularity index</INFO>
+  <INFO name="cpopu" value="4477">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Wavelength" value="Radio"/>
+  <INFO name="-kw.Astronomy" value="Spectroscopy"/>
+  <INFO name="-kw.Astronomy" value="QSOs"/>
+  <INFO name="-kw.Astronomy" value="Redshifts"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJ/842/87"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_18730132" name="J/ApJ/873/132" type="meta">
+  <DESCRIPTION>ICRF3 radio-loud quasars with Gaia DR2 data (Makarov+, 2019)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apj/873/132">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apj/873/132">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Makarov V.V.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2019ApJ...873..132M">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJ">    Journal name  </INFO>
+  <INFO name="original_date" value="2019">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/873/132">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.18730132">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.575266">popularity index</INFO>
+  <INFO name="cpopu" value="12948">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Wavelength" value="Radio"/>
+  <INFO name="-kw.Astronomy" value="Positional_Data"/>
+  <INFO name="-kw.Astronomy" value="Photometry"/>
+  <INFO name="-kw.Astronomy" value="QSOs"/>
+  <INFO name="-kw.Astronomy" value="Redshifts"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJ/873/132"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_18810125" name="J/ApJ/881/125" type="meta">
+  <DESCRIPTION>2014-2018 multiwavelength obs. of PKS 1502+106 (Ding+, 2019)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apj/881/125">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apj/881/125">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Ding N.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2019ApJ...881..125D">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJ">    Journal name  </INFO>
+  <INFO name="original_date" value="2019">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/881/125">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.18810125">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.393595">popularity index</INFO>
+  <INFO name="cpopu" value="650">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="Gamma-ray"/>
+  <INFO name="-kw.Wavelength" value="X-ray"/>
+  <INFO name="-kw.Wavelength" value="UV"/>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Wavelength" value="Radio"/>
+  <INFO name="-kw.Astronomy" value="Photometry"/>
+  <INFO name="-kw.Astronomy" value="Polarization"/>
+  <INFO name="-kw.Astronomy" value="QSOs"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJ/881/125"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_18960018" name="J/ApJ/896/18" type="meta">
+  <DESCRIPTION>VLA imaging of obscured WISE+NVSS QSOs (Patil+, 2020)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apj/896/18">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apj/896/18">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Patil P.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2020ApJ...896...18P">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJ">    Journal name  </INFO>
+  <INFO name="original_date" value="2020">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/896/18">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.18960018">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.461663">popularity index</INFO>
+  <INFO name="cpopu" value="1995">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="IR"/>
+  <INFO name="-kw.Wavelength" value="Radio"/>
+  <INFO name="-kw.Astronomy" value="QSOs"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJ/896/18"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_18970018" name="J/ApJ/897/18" type="meta">
+  <DESCRIPTION>Swift UVOT observation of the radio quasar 3C 273 (Li+, 2020)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apj/897/18">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apj/897/18">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Li Y.-R.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2020ApJ...897...18L">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJ">    Journal name  </INFO>
+  <INFO name="original_date" value="2020">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/897/18">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.18970018">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.355719">popularity index</INFO>
+  <INFO name="cpopu" value="348">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="UV"/>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Astronomy" value="Photometry"/>
+  <INFO name="-kw.Astronomy" value="Photometry:wide-band"/>
+  <INFO name="-kw.Astronomy" value="QSOs"/>
+<INFO name="media" value="timeserie"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJ/897/18"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_19040179" name="J/ApJ/904/179" type="meta">
+  <DESCRIPTION>VLA observations of 147 radio-loud Quasars (Maithil+, 2020)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apj/904/179">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apj/904/179">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Maithil J.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2020ApJ...904..179M">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJ">    Journal name  </INFO>
+  <INFO name="original_date" value="2020">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/904/179">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.19040179">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.445351">popularity index</INFO>
+  <INFO name="cpopu" value="1525">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="Millimeter"/>
+  <INFO name="-kw.Wavelength" value="Radio"/>
+  <INFO name="-kw.Astronomy" value="AGN"/>
+  <INFO name="-kw.Astronomy" value="Spectroscopy"/>
+  <INFO name="-kw.Astronomy" value="QSOs"/>
+  <INFO name="-kw.Astronomy" value="Redshifts"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJ/904/179"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_19220202" name="J/ApJ/922/202" type="meta">
+  <DESCRIPTION>Radio luminous QSOs in SDSS DR14Q (Rusinek-Abarca+, 2021)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apj/922/202">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apj/922/202">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Rusinek-Abarca K.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2021ApJ...922..202R">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJ">    Journal name  </INFO>
+  <INFO name="original_date" value="2021">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/922/202">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.19220202">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.511844">popularity index</INFO>
+  <INFO name="cpopu" value="4558">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Wavelength" value="Radio"/>
+  <INFO name="-kw.Astronomy" value="AGN"/>
+  <INFO name="-kw.Astronomy" value="QSOs"/>
+  <INFO name="-kw.Astronomy" value="Redshifts"/>
+  <INFO name="-kw.Astronomy" value="Black_Holes"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJ/922/202"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_19340026" name="J/ApJ/934/26" type="meta">
+  <DESCRIPTION>Radio sp. of luminous obscured WISE-NVSS QSOs (Patil+, 2022)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apj/934/26">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apj/934/26">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Patil P.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2022ApJ...934...26P">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJ">    Journal name  </INFO>
+  <INFO name="original_date" value="2022">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/934/26">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.19340026">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.418508">popularity index</INFO>
+  <INFO name="cpopu" value="980">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="IR"/>
+  <INFO name="-kw.Wavelength" value="Radio"/>
+  <INFO name="-kw.Astronomy" value="Spectroscopy"/>
+  <INFO name="-kw.Astronomy" value="QSOs"/>
+  <INFO name="-kw.Astronomy" value="Redshifts"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJ/934/26"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+<INFO name="matches" value="40">matching records</INFO>
+
+<INFO name="Warning" value="can't find table or catalogue: quasar"/>
+<INFO name="Warning" value="can't find table or catalogue: Radio"/>
+</VOTABLE>

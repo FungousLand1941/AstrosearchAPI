@@ -1,10 +1,20 @@
-"""Query building, spatial geometry, proper-motion epoch propagation, and crossmatching engine."""
+"""Query building, spatial geometry, proper-motion epoch propagation, and crossmatching engine.
+
+Associations between the target and catalogue rows, and between rows of different
+catalogues, are Bayesian (Budavari & Szalay 2008, ApJ 679, 301; NWAY, Salvato et al. 2018,
+MNRAS 473, 4937): see :mod:`astrometry`. Every row is first brought to the target's epoch
+(its own proper motion, else the target's motion and parallax) with its positional
+covariance grown by the proper-motion uncertainty over the epoch difference. A match's
+``confidence`` is the posterior probability that the row is the target's counterpart.
+:meth:`CrossmatchService.crossmatch_stream` yields results catalogue by catalogue.
+"""
 
 from __future__ import annotations
 
 import asyncio
 import math
 import statistics
+from collections.abc import AsyncIterator
 from dataclasses import dataclass, field, replace
 from datetime import date, datetime
 from time import monotonic
@@ -13,6 +23,19 @@ from typing import Any
 from astropy import units as u
 from astropy.coordinates import SkyCoord
 
+from astrometry import (
+    COINCIDENT_ARCSEC,
+    DEFAULT_TARGET_PM_SIGMA_MASYR,
+    LINK_CHI2,
+    AssociationConfig,
+    AssociationResult,
+    Detection,
+    associate,
+    cone_area_deg2,
+    estimate_density_deg2,
+    pm_sigma_masyr,
+    source_detection,
+)
 from models import (
     TARGET_PM_METHODS,
     CatalogDefinition,
@@ -425,7 +448,12 @@ def match_score(
     positional_error_arcsec: float | None = None,
     target_uncertainty_arcsec: float | None = None,
 ) -> float:
-    """Calculate match confidence using Gaussian positional uncertainty quadrature."""
+    """Gaussian positional score exp(-sep^2 / 2 sigma^2) of one row against the target.
+
+    A relative likelihood, not a probability: the crossmatch service reports the
+    Bayesian posterior of :mod:`astrometry` as a match's ``confidence``; this score is
+    kept for :func:`match_target` (quick in-radius ranking) and backward compatibility.
+    """
     if separation_arcsec < 0:
         return 0.0
     if positional_error_arcsec is not None or target_uncertainty_arcsec is not None:
@@ -495,49 +523,224 @@ def _source_dict(match: Match) -> dict[str, Any]:
     }
 
 
-def _group_matches(matches: list[Match], target: Target, radius_arcsec: float) -> list[dict[str, Any]]:
-    """Cluster multi-catalog detections into coherent physical objects using Disjoint-Set Union."""
+def _row_priority(source: CatalogSource) -> int:
+    """Planet rows (SIMBAD 'Pl', 'Pl?') share their host's coordinates: the host represents them."""
+    return 1 if _is_planet(source) else 0
+
+
+def _match_detections(
+    matches: list[Match],
+    target: Target,
+    *,
+    target_pm_sigma_masyr: float | None = None,
+) -> tuple[list[Detection], list[dict[str, Any]]]:
+    """Detections of the matched rows at the common epoch (see :func:`astrometry.source_detection`).
+
+    Extragalactic rows (galaxy/QSO types, redshift >= EXTRAGALACTIC_MIN_REDSHIFT) are not moved.
+
+    Rows compared through the target's own motion without a parallax correction get the
+    target's parallax as an extra uncertainty (:func:`parallax_uncertainty_arcsec`).
+    """
+    pm_sigma = DEFAULT_TARGET_PM_SIGMA_MASYR if target_pm_sigma_masyr is None else float(target_pm_sigma_masyr)
+    detections: list[Detection] = []
+    infos: list[dict[str, Any]] = []
+    for idx, match in enumerate(matches):
+        method = source_position_at(match.source, target.epoch, target.proper_motion, (target.ra, target.dec),
+                                    target.parallax_mas)[2]
+        det, info = source_detection(match.source, target, target_pm_sigma_masyr=pm_sigma,
+                                     extra_sigma_arcsec=parallax_uncertainty_arcsec(target, method),
+                                     priority=_row_priority(match.source), label=idx,
+                                     extragalactic=_is_extragalactic_row(match.source))
+        detections.append(det)
+        infos.append(info)
+    return detections, infos
+
+
+def _target_rows(sources: list[CatalogSource], target: Target, target_sigma_arcsec: float) -> int:
+    """Rows of one catalogue explained by the target itself (not field sources): the row
+    nearest the target when it is consistent with it (chi2 <= LINK_CHI2), plus the rows
+    listed at exactly its position (a star and its planets)."""
+    best: tuple[float, CatalogSource] | None = None
+    for src in sources:
+        sep = src.metadata.get("epoch_separation_arcsec")
+        if sep is None:
+            sep = epoch_separation_arcsec(target, src)[0]
+        sigma2 = (src.positional_error_arcsec or 0.0) ** 2 + target_sigma_arcsec**2
+        if sigma2 > 0 and sep * sep / sigma2 <= LINK_CHI2 and (best is None or sep < best[0]):
+            best = (float(sep), src)
+    if best is None:
+        return 0
+    ref = best[1]
+    return sum(1 for s in sources if haversine_arcsec(s.ra, s.dec, ref.ra, ref.dec) <= COINCIDENT_ARCSEC)
+
+
+def catalog_densities(
+    successes: list[tuple[str, list[CatalogSource]]],
+    target: Target,
+    radius_arcsec: float,
+    target_sigma_arcsec: float,
+) -> tuple[dict[str, float], dict[str, dict[str, Any]]]:
+    """Field-source density (deg^-2) of every queried catalogue around the target.
+
+    Uses every row fetched from the archive (in-radius, beyond max_rows and epoch pad)
+    over the cone actually queried; a cone the archive truncated (rows are returned
+    nearest-first) covers only the area inside its farthest returned row. See
+    :func:`astrometry.estimate_density_deg2` for the Gamma-Poisson estimate.
+    """
+    densities: dict[str, float] = {}
+    info: dict[str, dict[str, Any]] = {}
+    for name, sources in successes:
+        meta = getattr(sources, "meta", {}) or {}
+        rows = list(sources) + list(meta.get("excess_sources") or []) + list(meta.get("pad_sources") or [])
+        radius = float(meta.get("query_radius_arcsec") or radius_arcsec)
+        centre = _pair(meta.get("cone_center")) or (target.ra, target.dec)
+        truncated = bool(meta.get("archive_truncated"))
+        if truncated and rows:
+            radius = min(radius, max(haversine_arcsec(centre[0], centre[1], s.ra, s.dec) for s in rows))
+        density, details = estimate_density_deg2(
+            len(rows), cone_area_deg2(max(radius, 1e-3)), catalog=name,
+            n_target_rows=_target_rows(rows, target, target_sigma_arcsec),
+        )
+        details["radius_arcsec"] = radius
+        details["truncated"] = truncated
+        densities[name] = density
+        info[name] = details
+    return densities, info
+
+
+def associate_matches(
+    matches: list[Match],
+    target: Target,
+    *,
+    densities: dict[str, float] | None = None,
+    config: AssociationConfig | None = None,
+    radius_arcsec: float | None = None,
+    target_pm_sigma_masyr: float | None = None,
+) -> tuple[AssociationResult, list[dict[str, Any]], dict[str, dict[str, Any]]]:
+    """Bayesian association of ``matches`` with the target and with each other.
+
+    Returns (association, per-match propagation info, density provenance). Densities
+    default to an estimate from the matches themselves over the cone of
+    ``radius_arcsec`` (the largest match separation when not given).
+    """
+    cfg = config or AssociationConfig()
+    density_info: dict[str, dict[str, Any]] = {}
+    if densities is None:
+        radius = radius_arcsec or max([m.separation_arcsec for m in matches] + [1.0])
+        by_catalog: dict[str, list[CatalogSource]] = {}
+        for m in matches:
+            by_catalog.setdefault(m.catalog, []).append(m.source)
+        densities = {}
+        for name, rows in by_catalog.items():
+            densities[name], density_info[name] = estimate_density_deg2(
+                len(rows), cone_area_deg2(radius), catalog=name,
+                n_target_rows=_target_rows(rows, target, cfg.target_sigma_arcsec))
+    else:
+        densities = dict(densities)
+        for m in matches:  # a catalogue without an estimate (e.g. rows injected by a caller)
+            if m.catalog not in densities:
+                densities[m.catalog], density_info[m.catalog] = estimate_density_deg2(
+                    sum(1 for x in matches if x.catalog == m.catalog),
+                    cone_area_deg2(radius_arcsec or max(x.separation_arcsec for x in matches) or 1.0), catalog=m.catalog)
+    detections, infos = _match_detections(matches, target, target_pm_sigma_masyr=target_pm_sigma_masyr)
+    result = associate(detections, densities, target=(target.ra, target.dec), config=cfg)
+    return result, infos, density_info
+
+
+def _probability(value: float | None) -> float | None:
+    return None if value is None else round(float(value), 6)
+
+
+def _groups_from_association(
+    matches: list[Match],
+    result: AssociationResult,
+    infos: list[dict[str, Any]],
+    keep: set[int] | None = None,
+) -> list[dict[str, Any]]:
+    """Serialize association groups (only members whose index is in ``keep``, if given).
+
+    Output per group (the former keys first): ``group_id``, ``catalogs``,
+    ``wavelengths``, ``members`` (counterpart dicts plus ``match_probability`` -- the
+    posterior that the row belongs to this object --, ``target_probability``,
+    ``coincident_with`` and the epoch-propagated ``position_at_epoch``), then
+    ``contains_target``, ``match_flag`` ('best' / 'secondary' / None),
+    ``match_probability``, ``p_any``, ``p_i``, ``log10_bayes_factor``, ``log10_prior``
+    and ``alternatives``. The target group comes first, then objects by distance.
+    """
+    def ident(i: int) -> dict[str, str]:
+        return {"catalog": matches[i].catalog, "source_id": matches[i].source.source_id}
+
+    def distance(group: Any) -> float:
+        return min(matches[i].separation_arcsec for i in group.members)
+
+    ordered = sorted(result.groups, key=lambda g: (not g.contains_target, distance(g)))
+    output: list[dict[str, Any]] = []
+    for group in ordered:
+        kept = [i for i in group.members if keep is None or i in keep]
+        if not kept:
+            continue
+        members = []
+        for i in kept:
+            member = _source_dict(matches[i])
+            info = infos[i]
+            rep = group.coincident_with.get(i)
+            member.update({
+                "match_probability": _probability(group.member_probability.get(i)),
+                "target_probability": _probability(float(result.target_probability[i])),
+                "coincident_with": matches[rep].source.source_id if rep is not None else None,
+                "position_at_epoch": {"epoch": info.get("epoch"), "propagation": info.get("propagation"),
+                                      "sigma_arcsec": info.get("sigma_arcsec"),
+                                      "pm_growth_arcsec": info.get("pm_growth_arcsec"),
+                                      "covariance_shape": info.get("covariance_shape")},
+            })
+            members.append(member)
+        output.append({
+            "group_id": f"object-{len(output) + 1}",
+            "catalogs": sorted({matches[i].catalog for i in kept}),
+            "wavelengths": sorted({str(matches[i].source.metadata.get("wavelength", "unknown")) for i in kept}),
+            "members": members,
+            "contains_target": group.contains_target,
+            "match_flag": group.match_flag,
+            "match_probability": _probability(group.match_probability),
+            "exact_probability": _probability(group.exact_probability),
+            "p_any": _probability(group.p_any),
+            "p_i": _probability(group.p_i),
+            "log10_bayes_factor": round(group.log10_bayes_factor, 4),
+            "log10_prior": None if group.log10_prior is None else round(group.log10_prior, 4),
+            "alternatives": [
+                {"members": [ident(i) for i in alt["members"]], "p_i": _probability(alt["p_i"]),
+                 "match_probability": _probability(alt["match_probability"]),
+                 "log10_bayes_factor": round(alt["log10_bayes_factor"], 4)}
+                for alt in group.alternatives
+            ],
+        })
+    return output
+
+
+def _group_matches(
+    matches: list[Match],
+    target: Target,
+    radius_arcsec: float,
+    *,
+    association: tuple[AssociationResult, list[dict[str, Any]]] | None = None,
+    config: AssociationConfig | None = None,
+    keep: set[int] | None = None,
+) -> list[dict[str, Any]]:
+    """Group multi-catalog detections into physical objects (Bayesian N-way association).
+
+    Replaces the former O(n^2) single-linkage (disjoint-set) grouping: candidate pairs
+    come from cKDTree range searches and the groups are the most probable partition in
+    which each catalogue contributes at most one source per object (see
+    :mod:`astrometry`). Member ``confidence`` values are those of the Match objects (the
+    crossmatch service sets them to the target-association posterior).
+    """
     if not matches:
         return []
-    parent = list(range(len(matches)))
-
-    def find(i: int) -> int:
-        while parent[i] != i:
-            parent[i] = parent[parent[i]]
-            i = parent[i]
-        return i
-
-    def union(i: int, j: int) -> None:
-        root_i, root_j = find(i), find(j)
-        if root_i != root_j:
-            parent[root_j] = root_i
-
-    anchor = (target.ra, target.dec)
-    positions = [source_position_at(m.source, target.epoch, target.proper_motion, anchor)[:2] for m in matches]
-    for i in range(len(matches)):
-        for j in range(i + 1, len(matches)):
-            sep = haversine_arcsec(*positions[i], *positions[j])
-            allowed = max(
-                radius_arcsec,
-                matches[i].source.positional_error_arcsec or 0.0,
-                matches[j].source.positional_error_arcsec or 0.0,
-            )
-            if sep <= allowed:
-                union(i, j)
-
-    grouped: dict[int, list[Match]] = {}
-    for idx, match in enumerate(matches):
-        grouped.setdefault(find(idx), []).append(match)
-
-    result = []
-    for num, group in enumerate(grouped.values(), start=1):
-        result.append({
-            "group_id": f"object-{num}",
-            "catalogs": sorted({m.catalog for m in group}),
-            "wavelengths": sorted({str(m.source.metadata.get("wavelength", "unknown")) for m in group}),
-            "members": [_source_dict(m) for m in group],
-        })
-    return result
+    if association is None:
+        result, infos, _ = associate_matches(matches, _icrs_target(target), config=config, radius_arcsec=radius_arcsec)
+    else:
+        result, infos = association
+    return _groups_from_association(matches, result, infos, keep)
 
 
 # ---------------------------------------------------------------------------
@@ -689,18 +892,21 @@ class QueryExecutor:
 
         for plan, item in zip(plans, gathered):
             if isinstance(item, BaseException):
-                failures.append(
-                    CatalogFailure(
-                        plan.catalog,
-                        error_type=item.__class__.__name__,
-                        message=str(item),
-                        elapsed_ms=getattr(item, "elapsed_ms", None),
-                        fallback=getattr(item, "fallback", None),
-                    )
-                )
+                failures.append(self.failure_for(plan, item))
             else:
                 successes.append(item)
         return successes, failures
+
+    @staticmethod
+    def failure_for(plan: QueryPlan, error: BaseException) -> CatalogFailure:
+        """The CatalogFailure recorded for a plan whose query raised ``error``."""
+        return CatalogFailure(
+            plan.catalog,
+            error_type=error.__class__.__name__,
+            message=str(error),
+            elapsed_ms=getattr(error, "elapsed_ms", None),
+            fallback=getattr(error, "fallback", None),
+        )
 
 
 def _combined_failure(primary: BaseException, fallback: BaseException, fallback_used: dict[str, Any]) -> Exception:
@@ -728,8 +934,27 @@ def _combined_failure(primary: BaseException, fallback: BaseException, fallback_
 # ---------------------------------------------------------------------------
 
 
+@dataclass(slots=True)
+class SearchContext:
+    """Validated inputs of one crossmatch: target model, catalogue plans and options."""
+
+    target: Target
+    plans: list[QueryPlan]
+    search_radius: float
+    query: AdvancedQuery | None
+    profile: str | None
+    pm_source: str | None
+    target_sigma_arcsec: float
+    target_pm_sigma_masyr: float | None
+
+
 class CrossmatchService:
-    """Orchestrates catalog querying, filtering, grouping, and UnifiedRecord assembly."""
+    """Orchestrates catalog querying, filtering, Bayesian association, and UnifiedRecord assembly.
+
+    ``association_config`` sets the association parameters (target uncertainty, prior
+    completeness, ...; see :class:`astrometry.AssociationConfig`). ``max_concurrency``
+    bounds the number of targets :meth:`crossmatch_many` runs at once.
+    """
 
     def __init__(
         self,
@@ -739,14 +964,22 @@ class CrossmatchService:
         radius_arcsec: float = 3.0,
         timeout: float = 30.0,
         timeout_cap: float | None = None,
+        association_config: AssociationConfig | None = None,
+        max_concurrency: int = 4,
     ) -> None:
         self.registry = registry
         self.providers = providers
         self.radius_arcsec = radius_arcsec
         self.planner = QueryPlanner(registry)
         self.executor = QueryExecutor(providers, timeout=timeout, registry=registry, timeout_cap=timeout_cap)
+        self.association_config = association_config or AssociationConfig()
+        if int(max_concurrency) < 1:
+            raise ValueError("max_concurrency must be at least 1")
+        self.max_concurrency = int(max_concurrency)
 
-    async def crossmatch(
+    # -- inputs -------------------------------------------------------------------------
+
+    def prepare(
         self,
         ra: float | str,
         dec: float | str,
@@ -759,25 +992,11 @@ class CrossmatchService:
         pm_dec_masyr: float | None = None,
         pm_source: str | None = None,
         parallax_mas: float | None = None,
-    ) -> UnifiedRecord:
-        """Execute full crossmatch pipeline for given coordinates or AdvancedQuery.
-
-        ``parallax_mas`` (the target's parallax; with a query, ``query.target.parallax_mas``)
-        removes the annual parallax from single-epoch positions of the target (2MASS, SDSS,
-        ...); when not given, a significant parallax is adopted with the proper motion.
-
-        ``epoch`` is the Julian year of (ra, dec); with it, every catalog cone follows
-        the target to that catalog's epoch (using ``pm_ra_masyr``/``pm_dec_masyr`` when
-        given, else widened by the largest plausible proper motion) and rows are
-        compared after propagation. Without it positions are compared as given.
-        ``pm_source`` records where a given proper motion came from ("input" by
-        default, "resolver" for a name-resolver motion; with a query it is read from
-        ``query.metadata["pm_source"]``).
-
-        Catalog statistics: ``row_count``/``status`` count the rows inside the radius
-        (the nearest ``max_rows``); with an AdvancedQuery, ``sources`` holds only the rows
-        that pass its confidence/type filters and ``returned_count`` is their number.
-        """
+        catalogs: list[str] | None = None,
+        target_uncertainty_arcsec: float | None = None,
+        target_pm_error_masyr: float | None = None,
+    ) -> SearchContext:
+        """Validate the inputs of a crossmatch and plan its catalogue queries."""
         target = validate_target(ra, dec, epoch=epoch, pm_ra_masyr=pm_ra_masyr, pm_dec_masyr=pm_dec_masyr,
                                  parallax_mas=parallax_mas)
         if query is not None:
@@ -805,8 +1024,85 @@ class CrossmatchService:
         if not math.isfinite(search_radius) or search_radius <= 0:
             raise ValueError("radius_arcsec must be a finite number greater than zero.")
 
+        sigma = self.association_config.target_sigma_arcsec if target_uncertainty_arcsec is None \
+            else _positive(target_uncertainty_arcsec, "target_uncertainty_arcsec")
+        pm_sigma = None if target_pm_error_masyr is None else _positive(target_pm_error_masyr, "target_pm_error_masyr",
+                                                                         allow_zero=True)
+
         plans = QueryBuilder(self.registry).build(query) if query else self.planner.plan(search_radius, profile=profile)
-        successes, failures = await self.executor.execute(plans, target)
+        if catalogs:
+            enabled = self.registry.enabled_catalogs()
+            unknown = [c for c in catalogs if c not in enabled]
+            if unknown:
+                raise ValueError(f"Unknown catalog(s): {', '.join(unknown)}; known: {', '.join(sorted(enabled))}")
+            plans = [p for p in plans if p.catalog in set(catalogs)]
+        return SearchContext(target, plans, search_radius, query, profile, pm_source, sigma, pm_sigma)
+
+    # -- one target ------------------------------------------------------------------------
+
+    async def crossmatch(
+        self,
+        ra: float | str,
+        dec: float | str,
+        *,
+        radius_arcsec: float | None = None,
+        epoch: float | None = None,
+        profile: str | None = None,
+        query: AdvancedQuery | None = None,
+        pm_ra_masyr: float | None = None,
+        pm_dec_masyr: float | None = None,
+        pm_source: str | None = None,
+        parallax_mas: float | None = None,
+        catalogs: list[str] | None = None,
+        target_uncertainty_arcsec: float | None = None,
+        target_pm_error_masyr: float | None = None,
+    ) -> UnifiedRecord:
+        """Execute full crossmatch pipeline for given coordinates or AdvancedQuery.
+
+        ``parallax_mas`` (the target's parallax; with a query, ``query.target.parallax_mas``)
+        removes the annual parallax from single-epoch positions of the target (2MASS, SDSS,
+        ...); when not given, a significant parallax is adopted with the proper motion.
+
+        ``epoch`` is the Julian year of (ra, dec); with it, every catalog cone follows
+        the target to that catalog's epoch (using ``pm_ra_masyr``/``pm_dec_masyr`` when
+        given, else widened by the largest plausible proper motion) and rows are
+        compared after propagation. Without it positions are compared as given.
+        ``pm_source`` records where a given proper motion came from ("input" by
+        default, "resolver" for a name-resolver motion; with a query it is read from
+        ``query.metadata["pm_source"]``).
+
+        ``catalogs`` restricts the search to these registry catalogues.
+        ``target_uncertainty_arcsec`` is the 1-sigma per-axis uncertainty of the target
+        position (default ``association_config.target_sigma_arcsec``, 0.1") and
+        ``target_pm_error_masyr`` that of a given proper motion (default 1 mas/yr).
+
+        Every match's ``confidence`` is the posterior probability that the row is the
+        target's counterpart (NWAY-style, :mod:`astrometry`); ``crossmatch_groups`` are
+        the most probable partition of the matches into physical objects with their
+        association probabilities; ``provenance["association"]`` records the densities,
+        priors and the target's ``p_any``.
+
+        Catalog statistics: ``row_count``/``status`` count the rows inside the radius
+        (the nearest ``max_rows``); with an AdvancedQuery, ``sources`` holds only the rows
+        that pass its confidence/type filters and ``returned_count`` is their number.
+        """
+        ctx = self.prepare(ra, dec, radius_arcsec=radius_arcsec, epoch=epoch, profile=profile, query=query,
+                           pm_ra_masyr=pm_ra_masyr, pm_dec_masyr=pm_dec_masyr, pm_source=pm_source,
+                           parallax_mas=parallax_mas, catalogs=catalogs,
+                           target_uncertainty_arcsec=target_uncertainty_arcsec,
+                           target_pm_error_masyr=target_pm_error_masyr)
+        successes, failures = await self.executor.execute(ctx.plans, ctx.target)
+        return self.finalize(ctx, successes, failures)
+
+    def finalize(
+        self,
+        ctx: SearchContext,
+        successes: list[tuple[str, list[CatalogSource]]],
+        failures: list[CatalogFailure],
+    ) -> UnifiedRecord:
+        """Assemble the UnifiedRecord from the catalogue results of ``ctx``'s plans."""
+        target, plans, search_radius, query, profile, pm_source = (
+            ctx.target, ctx.plans, ctx.search_radius, ctx.query, ctx.profile, ctx.pm_source)
 
         # Target proper motion: given, or adopted from a matched catalog row (e.g. Gaia)
         # so rows without their own proper motion (2MASS, AllWISE, ...) can be checked.
@@ -820,6 +1116,7 @@ class CrossmatchService:
             adoption_warnings.append(
                 "No catalogs were queried: no enabled catalog matches the requested profile/catalog selection."
             )
+        pm_sigma = ctx.target_pm_sigma_masyr
         if target.proper_motion is not None:
             pm_origin = {"source": pm_source or "input"}
             if target.parallax_mas is None:
@@ -832,6 +1129,10 @@ class CrossmatchService:
                 target, pm_origin = adopted
                 if pm_origin.get("parallax") is not None:
                     parallax_origin = pm_origin["parallax"]
+                if pm_sigma is None:
+                    pm_sigma = _adopted_pm_sigma(pm_origin, successes)
+        if pm_sigma is None:
+            pm_sigma = DEFAULT_TARGET_PM_SIGMA_MASYR
 
         # Final in-cone / pad split with the final target model over EVERY fetched row
         # (in-radius, beyond max_rows, and pad): rows fetched only because of the epoch
@@ -856,7 +1157,20 @@ class CrossmatchService:
         successes = classified
 
         all_sources = [source for _, sources in successes for source in sources]
-        matches = match_target(target, all_sources, search_radius)
+        all_matches = match_target(target, all_sources, search_radius)
+
+        # Bayesian association over every in-radius row: confidence = posterior that the
+        # row is the target's counterpart.
+        config = replace(self.association_config, target_sigma_arcsec=ctx.target_sigma_arcsec)
+        densities, density_info = catalog_densities(successes, target, search_radius, config.target_sigma_arcsec)
+        association, det_infos, extra_density = associate_matches(
+            all_matches, target, densities=densities, config=config, radius_arcsec=search_radius,
+            target_pm_sigma_masyr=pm_sigma)
+        density_info.update(extra_density)
+        for idx, match in enumerate(all_matches):
+            match.confidence = round(float(association.target_probability[idx]), 6)
+        index_of = {id(m): i for i, m in enumerate(all_matches)}
+        matches = list(all_matches)
 
         effective_radius = search_radius
         if query and query.adaptive_radius and matches:
@@ -927,6 +1241,8 @@ class CrossmatchService:
                 "excess_row_count": excess_count,
                 "query_radius_arcsec": meta.get("query_radius_arcsec", search_radius),
                 "epoch_incomplete": epoch_incomplete,
+                # Field-source density used by the association prior (per deg^2).
+                "source_density_deg2": densities.get(name),
                 "warnings": warnings,
             }
             catalog_stats[name] = stats
@@ -966,7 +1282,9 @@ class CrossmatchService:
             counterparts.setdefault(wave, []).append(_source_dict(match))
 
         failures_list = [f.as_dict() for f in failures]
-        groups = _group_matches(matches, target, search_radius)
+        keep = {index_of[id(m)] for m in matches} if len(matches) != len(all_matches) else None
+        groups = _groups_from_association(all_matches, association, det_infos, keep) if all_matches else []
+        target_group = next((g for g in association.groups if g.contains_target), None)
 
         provenance = {
             "query_radius_arcsec": search_radius,
@@ -993,6 +1311,21 @@ class CrossmatchService:
                 }
                 for m in matches
             ],
+            "association": {
+                "method": ("Bayesian N-way cross-identification (Budavari & Szalay 2008, ApJ 679, 301) with "
+                           "NWAY-style target association (Salvato et al. 2018, MNRAS 473, 4937)"),
+                "confidence": "posterior probability that the row is the target's counterpart",
+                "config": config.as_dict(),
+                "target_sigma_arcsec": config.target_sigma_arcsec,
+                "target_pm_error_masyr": pm_sigma if target.proper_motion is not None else None,
+                "p_any": _probability(association.p_any),
+                "best_match_probability": _probability(target_group.match_probability) if target_group else None,
+                "states": association.n_states,
+                "exact": association.exact,
+                "links": association.n_links,
+                "densities": density_info,
+                "notes": list(association.notes),
+            },
         }
 
         return UnifiedRecord(
@@ -1007,6 +1340,133 @@ class CrossmatchService:
             crossmatch_groups=groups,
         )
 
+    # -- streaming -------------------------------------------------------------------------
+
+    async def crossmatch_stream(
+        self,
+        ra: float | str | None = None,
+        dec: float | str | None = None,
+        *,
+        name: str | None = None,
+        resolver: Any = None,
+        radius_arcsec: float | None = None,
+        epoch: float | None = None,
+        profile: str | None = None,
+        query: AdvancedQuery | None = None,
+        pm_ra_masyr: float | None = None,
+        pm_dec_masyr: float | None = None,
+        pm_source: str | None = None,
+        parallax_mas: float | None = None,
+        catalogs: list[str] | None = None,
+        target_uncertainty_arcsec: float | None = None,
+        target_pm_error_masyr: float | None = None,
+    ) -> AsyncIterator[dict[str, Any]]:
+        """Crossmatch as an async stream of events, one per catalogue as it completes.
+
+        Same parameters as :meth:`crossmatch`, plus ``name`` (resolved with CDS Sesame --
+        ``resolver`` or a :class:`providers.SesameResolver` on the providers' HTTP client --
+        which supplies the position, epoch, proper motion, parallax and their errors).
+        Events are dicts ``{"event": kind, "data": {...}}``, in this order:
+
+        * ``start``: target, planned catalogues, resolved object (when ``name``);
+        * ``catalog`` (one per catalogue, in completion order): ``catalog``, ``status``
+          (success / empty / failed), ``count`` (rows inside the radius at the provider's
+          first-pass epoch split), ``elapsed_ms``, ``sources`` (serialised rows) and, on
+          failure, ``error_type``/``message``;
+        * ``group`` (one per crossmatch group of the final record, target group first);
+        * ``done``: ``{"record": UnifiedRecord.as_dict()}``.
+
+        Closing the generator (e.g. a disconnected client) cancels the catalogue queries
+        still running.
+        """
+        resolved: dict[str, Any] | None = None
+        if name is not None:
+            from models import resolved_target
+            from providers import SesameResolver
+
+            if resolver is None:
+                client = next((getattr(p, "client", None) for p in self.providers.values()
+                               if getattr(p, "client", None) is not None), None)
+                resolver = SesameResolver(client)
+            obj = await resolver.resolve(name)
+            resolved = obj.as_dict()
+            rt = resolved_target(obj)
+            ra, dec = rt.ra, rt.dec
+            if rt.epoch is not None and epoch is None:
+                epoch = rt.epoch
+                if rt.proper_motion is not None and pm_ra_masyr is None and pm_dec_masyr is None:
+                    pm_ra_masyr, pm_dec_masyr, pm_source = rt.pm_ra_masyr, rt.pm_dec_masyr, "resolver"
+                    if target_pm_error_masyr is None:
+                        target_pm_error_masyr = _resolver_pm_error(obj)
+                if parallax_mas is None:
+                    parallax_mas = rt.parallax_mas
+            if target_uncertainty_arcsec is None:
+                target_uncertainty_arcsec = _resolver_position_error(obj)
+        if ra is None or dec is None:
+            raise ValueError("Provide ra and dec, or an object name.")
+        ctx = self.prepare(ra, dec, radius_arcsec=radius_arcsec, epoch=epoch, profile=profile, query=query,
+                           pm_ra_masyr=pm_ra_masyr, pm_dec_masyr=pm_dec_masyr, pm_source=pm_source,
+                           parallax_mas=parallax_mas, catalogs=catalogs,
+                           target_uncertainty_arcsec=target_uncertainty_arcsec,
+                           target_pm_error_masyr=target_pm_error_masyr)
+        yield {"event": "start", "data": {
+            "target": ctx.target.as_dict(), "radius_arcsec": ctx.search_radius,
+            "catalogs": [p.catalog for p in ctx.plans], "target_sigma_arcsec": ctx.target_sigma_arcsec,
+            "resolved_object": resolved,
+        }}
+
+        started = monotonic()
+        tasks: dict[asyncio.Task[Any], QueryPlan] = {
+            asyncio.create_task(self.executor._run_plan(plan, ctx.target), name=f"crossmatch:{plan.catalog}"): plan
+            for plan in ctx.plans
+        }
+        outcomes: dict[str, tuple[str, list[CatalogSource]] | CatalogFailure] = {}
+        try:
+            pending = set(tasks)
+            while pending:
+                done, pending = await asyncio.wait(pending, return_when=asyncio.FIRST_COMPLETED)
+                for task in sorted(done, key=lambda t: ctx.plans.index(tasks[t])):
+                    plan = tasks[task]
+                    error = task.exception()
+                    if error is not None:
+                        failure = self.executor.failure_for(plan, error)
+                        outcomes[plan.catalog] = failure
+                        yield {"event": "catalog", "data": {
+                            "catalog": plan.catalog, "wavelength": plan.wavelength, "status": "failed", "count": 0,
+                            "elapsed_ms": failure.elapsed_ms, "sources": [], "error_type": failure.error_type,
+                            "message": failure.message, "since_start_ms": round((monotonic() - started) * 1000.0, 1),
+                        }}
+                        continue
+                    name_, sources = task.result()
+                    outcomes[plan.catalog] = (name_, sources)
+                    meta = getattr(sources, "meta", {}) or {}
+                    yield {"event": "catalog", "data": {
+                        "catalog": plan.catalog, "wavelength": plan.wavelength,
+                        "status": "success" if sources else "empty", "count": len(sources),
+                        "elapsed_ms": meta.get("elapsed_ms"), "truncated": bool(meta.get("truncated")),
+                        "since_start_ms": round((monotonic() - started) * 1000.0, 1),
+                        "sources": [_stream_source_dict(s) for s in sources],
+                    }}
+        finally:
+            leftover = [t for t in tasks if not t.done()]
+            for task in leftover:
+                task.cancel()
+            if leftover:
+                await asyncio.gather(*leftover, return_exceptions=True)
+
+        successes = [o for p in ctx.plans if isinstance(o := outcomes.get(p.catalog), tuple)]
+        failures = [o for p in ctx.plans if isinstance(o := outcomes.get(p.catalog), CatalogFailure)]
+        record = self.finalize(ctx, successes, failures)  # type: ignore[arg-type]
+        if resolved is not None:
+            record.resolved_object = resolved
+            record.provenance["resolver"] = resolved.get("resolver")
+        for group in record.crossmatch_groups:
+            yield {"event": "group", "data": group}
+        yield {"event": "done", "data": {"record": record.as_dict(),
+                                          "elapsed_ms": round((monotonic() - started) * 1000.0, 1)}}
+
+    # -- many targets ----------------------------------------------------------------------
+
     async def crossmatch_many(
         self,
         targets: list[dict[str, Any]],
@@ -1014,21 +1474,111 @@ class CrossmatchService:
         radius_arcsec: float | None = None,
         epoch: float | None = None,
         profile: str | None = None,
+        max_concurrency: int | None = None,
     ) -> list[UnifiedRecord]:
-        """Execute crossmatch pipeline sequentially or concurrently for multiple targets."""
-        return [
-            await self.crossmatch(
-                t["ra"],
-                t["dec"],
-                radius_arcsec=t.get("radius_arcsec", radius_arcsec),
-                epoch=t.get("epoch", epoch),
-                profile=t.get("profile", profile),
-                pm_ra_masyr=t.get("pm_ra_masyr"),
-                pm_dec_masyr=t.get("pm_dec_masyr"),
-                parallax_mas=t.get("parallax_mas"),
-            )
-            for t in targets
-        ]
+        """Crossmatch several targets concurrently (at most ``max_concurrency`` at once,
+        default ``self.max_concurrency``); results are returned in the input order."""
+        limit = self.max_concurrency if max_concurrency is None else int(max_concurrency)
+        if limit < 1:
+            raise ValueError("max_concurrency must be at least 1")
+        semaphore = asyncio.Semaphore(limit)
+
+        async def one(t: dict[str, Any]) -> UnifiedRecord:
+            async with semaphore:
+                return await self.crossmatch(
+                    t["ra"],
+                    t["dec"],
+                    radius_arcsec=t.get("radius_arcsec", radius_arcsec),
+                    epoch=t.get("epoch", epoch),
+                    profile=t.get("profile", profile),
+                    pm_ra_masyr=t.get("pm_ra_masyr"),
+                    pm_dec_masyr=t.get("pm_dec_masyr"),
+                    parallax_mas=t.get("parallax_mas"),
+                    catalogs=t.get("catalogs"),
+                    target_uncertainty_arcsec=t.get("target_uncertainty_arcsec"),
+                )
+
+        return list(await asyncio.gather(*(one(t) for t in targets)))
+
+
+def _positive(value: Any, label: str, *, allow_zero: bool = False) -> float:
+    try:
+        number = float(value)
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"{label} must be a number") from exc
+    if not math.isfinite(number) or number < 0 or (number == 0 and not allow_zero):
+        raise ValueError(f"{label} must be a finite number {'>= 0' if allow_zero else '> 0'}")
+    return number
+
+
+def _adopted_pm_sigma(origin: dict[str, Any], successes: list[tuple[str, list[CatalogSource]]]) -> float | None:
+    """Uncertainty of an adopted target motion: 0 for an extragalactic (stationary)
+    target, else that of the catalogue row it was taken from."""
+    if origin.get("source") == "extragalactic":
+        return 0.0
+    for name, sources in successes:
+        if name != origin.get("catalog"):
+            continue
+        meta = getattr(sources, "meta", {}) or {}
+        for src in list(sources) + list(meta.get("excess_sources") or []) + list(meta.get("pad_sources") or []):
+            if src.source_id == origin.get("source_id"):
+                return pm_sigma_masyr(src)
+    return None
+
+
+def _resolver_values(obj: Any) -> dict[str, Any]:
+    return ((getattr(obj, "resolver_metadata", None) or {}).get("raw_fields") or {})
+
+
+def _first_number(values: dict[str, Any], *keys: str) -> float | None:
+    for key in keys:
+        raw = values.get(key)
+        if isinstance(raw, list):
+            raw = raw[0] if raw else None
+        number = _to_float(raw)
+        if number is not None:
+            return number
+    return None
+
+
+def _resolver_position_error(obj: Any) -> float | None:
+    """Per-axis 1-sigma position error (arcsec) of a Sesame answer (errRAmas/errDEmas)."""
+    values = _resolver_values(obj)
+    era, ede = _first_number(values, "errramas"), _first_number(values, "errdemas")
+    errs = [e for e in (era, ede) if e is not None and e > 0]
+    if not errs:
+        return None
+    return math.sqrt(sum(e * e for e in errs) / len(errs)) / 1000.0
+
+
+def _resolver_pm_error(obj: Any) -> float | None:
+    """Per-axis proper-motion error (mas/yr) of a Sesame answer (pm.epmra / pm.epmde)."""
+    values = _resolver_values(obj)
+    errs = [e for e in (_first_number(values, "pm.epmra"), _first_number(values, "pm.epmde")) if e is not None and e >= 0]
+    if not errs:
+        return None
+    return math.sqrt(sum(e * e for e in errs) / len(errs))
+
+
+def _stream_source_dict(source: CatalogSource) -> dict[str, Any]:
+    """Compact serialisation of a catalogue row for a streamed ``catalog`` event."""
+    meta = source.metadata or {}
+    return {
+        "catalog": source.catalog,
+        "source_id": source.source_id,
+        "ra": source.ra,
+        "dec": source.dec,
+        "separation_arcsec": meta.get("epoch_separation_arcsec", meta.get("query_separation_arcsec")),
+        "epoch_propagation": meta.get("epoch_propagation"),
+        "positional_error_arcsec": source.positional_error_arcsec,
+        "epoch": source.epoch,
+        "epoch_range": list(source.epoch_range) if source.epoch_range else None,
+        "proper_motion_ra_masyr": source.proper_motion_ra_masyr,
+        "proper_motion_dec_masyr": source.proper_motion_dec_masyr,
+        "wavelength": meta.get("wavelength"),
+        "physical": meta.get("physical", {}),
+        "data": source.data,
+    }
 
 
 def _pair(value: Any) -> tuple[float, float] | None:

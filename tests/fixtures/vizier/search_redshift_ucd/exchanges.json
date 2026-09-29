@@ -1,0 +1,29 @@
+{
+  "case": "search_redshift_ucd",
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://vizier.cds.unistra.fr/viz-bin/votable?-meta=&-meta.max=10&-words=galaxy+redshift+optical&-ucd=src.redshift",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/x-votable+xml",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+table_name%2C+description%2C+nrows+FROM+TAP_SCHEMA.tables+WHERE+table_name+LIKE+%27%22V%2F159%2F%25%27+OR+table_name+LIKE+%27%22VII%2F213%2F%25%27+OR+table_name+LIKE+%27%22VII%2F287%2F%25%27+OR+table_name+LIKE+%27%22VII%2F299%2F%25%27+OR+table_name+LIKE+%27%22IX%2F52%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F684%2F136%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F684%2F1026%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F685%2F235%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F685%2F904%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F690%2F670%2F%25%27&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+table_name%2C+column_name%2C+ucd%2C+unit+FROM+TAP_SCHEMA.columns+WHERE+table_name+IN+%28%27%22V%2F159%2Fgncirc%22%27%2C+%27%22V%2F159%2Fgncircbs%22%27%2C+%27%22V%2F159%2Fgncircc%22%27%2C+%27%22V%2F159%2Fgnflags%22%27%2C+%27%22V%2F159%2Fgngrat%22%27%2C+%27%22V%2F159%2Fgnkron%22%27%2C+%27%22V%2F159%2Fgnkronc%22%27%2C+%27%22V%2F159%2Fgnprism%22%27%2C+%27%22V%2F159%2Fgnsample%22%27%2C+%27%22V%2F159%2Fgscirc%22%27%2C+%27%22V%2F159%2Fgscircbs%22%27%2C+%27%22V%2F159%2Fgscircc%22%27%2C+%27%22V%2F159%2Fgsflags%22%27%2C+%27%22V%2F159%2Fgsgrat%22%27%2C+%27%22V%2F159%2Fgskron%22%27%2C+%27%22V%2F159%2Fgskronc%22%27%2C+%27%22V%2F159%2Fgsprism%22%27%2C+%27%22V%2F159%2Fgssample%22%27%2C+%27%22VII%2F213%2Fdynamics%22%27%2C+%27%22VII%2F213%2Fgalaxies%22%27%2C+%27%22VII%2F213%2Fgroups%22%27%2C+%27%22VII%2F213%2Fmorpho%22%27%2C+%27%22VII%2F287%2Ftable1%22%27%2C+%27%22VII%2F287%2Ftable2%22%27%2C+%27%22IX%2F52%2F3xlsoptn%22%27%2C+%27%22IX%2F52%2F3xlsopts%22%27%2C+%27%22IX%2F52%2F3xlss%22%27%2C+%27%22IX%2F52%2Fatcaclas%22%27%2C+%27%22IX%2F52%2Fatcacomp%22%27%2C+%27%22IX%2F52%2Fatcactpt%22%27%2C+%27%22IX%2F52%2Fatcasrc%22%27%2C+%27%22IX%2F52%2Flist%22%27%2C+%27%22IX%2F52%2Flist17%22%27%2C+%27%22IX%2F52%2Fxxl365gc%22%27%2C+%27%22IX%2F52%2Fxxl_gmrt%22%27%2C+%27%22IX%2F52%2Fxxlaaoz%22%27%2C+%27%22IX%2F52%2Fxxlnbcg%22%27%2C+%27%22IX%2F52%2Fxxlngal%22%27%2C+%27%22IX%2F52%2Fxxlpoint%22%27%2C+%27%22J%2FApJ%2F684%2F136%2Ftable1%22%27%2C+%27%22J%2FApJ%2F684%2F1026%2Ftable1%22%27%2C+%27%22J%2FApJ%2F685%2F235%2Ftable1%22%27%2C+%27%22J%2FApJ%2F685%2F904%2Ftable1%22%27%2C+%27%22J%2FApJ%2F690%2F670%2Ftable1%22%27%29+AND+ucd+LIKE+%27%25src.redshift%25%27&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    }
+  ]
+}

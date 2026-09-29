@@ -274,7 +274,32 @@ async def test_barnard_found_in_every_catalog_that_observed_it(key: str) -> None
     pm = record.provenance["target_proper_motion"]
     assert pm["pm_dec_masyr"] == pytest.approx(10362.394, abs=1)
     assert pm["source"] == ("input" if key.endswith("_pm") else "adopted")
-    assert any(set(BARNARD_HITS) <= set(g["catalogs"]) for g in record.crossmatch_groups)
+    # Groups are now Bayesian associations (one row per catalogue per object) instead of
+    # single-linkage chains of everything within the radius. The target group holds
+    # Barnard's star in every catalogue whose row agrees with the track within its
+    # quoted errors, each with a posterior > 0.99.
+    target_group = record.crossmatch_groups[0]
+    assert target_group["contains_target"] and target_group["match_flag"] == "best"
+    assert target_group["p_any"] > 0.99
+    independent = [m for m in target_group["members"] if m["coincident_with"] is None]
+    assert len({m["catalog"] for m in independent}) == len(independent)
+    secure = {"gaia_dr3", "simbad", "twomass_psc", "allwise", "exoplanet_archive", "chandra", "rosat"}
+    assert secure <= set(target_group["catalogs"])
+    for member in independent:
+        assert member["source_id"] in BARNARD_HITS[member["catalog"]], member["source_id"]
+        if member["catalog"] in secure:
+            assert member["match_probability"] > 0.99 and member["confidence"] > 0.99, member["catalog"]
+    # Genuinely ambiguous rows share the probability: NED lists the star twice (its WISEA
+    # and 2MASS entries) and Pan-STARRS split the fast mover into several objects along
+    # its track -- one of each joins the target group, the other(s) form their own group.
+    ned = [m for g in record.crossmatch_groups for m in g["members"] if m["catalog"] == "ned"
+           and m["source_id"] in BARNARD_HITS["ned"]]
+    assert len(ned) == 2 and sum(m["target_probability"] for m in ned) == pytest.approx(1.0, abs=0.02)
+    # SDSS saw the star saturated (r = 11.1, clean = 0): its centroid lies 0.51" off the
+    # track with a quoted 0.079" error, so it is not identified with the target.
+    sdss = next(m for g in record.crossmatch_groups for m in g["members"]
+                if m["catalog"] == "sdss" and m["source_id"] in BARNARD_HITS["sdss"])
+    assert sdss["target_probability"] < 0.01 and sdss["data"]["psfMag_r"] < 14.0
 
 
 async def test_barnard_results_do_not_depend_on_whether_the_motion_was_given_or_adopted() -> None:

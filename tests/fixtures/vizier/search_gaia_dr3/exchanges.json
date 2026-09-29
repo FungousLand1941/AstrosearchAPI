@@ -1,0 +1,21 @@
+{
+  "case": "search_gaia_dr3",
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://vizier.cds.unistra.fr/viz-bin/votable?-meta=&-meta.max=50&-words=Gaia+DR3",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/x-votable+xml",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+table_name%2C+description%2C+nrows+FROM+TAP_SCHEMA.tables+WHERE+table_name+LIKE+%27%22I%2F324%2F%25%27+OR+table_name+LIKE+%27%22I%2F337%2F%25%27+OR+table_name+LIKE+%27%22I%2F345%2F%25%27+OR+table_name+LIKE+%27%22I%2F347%2F%25%27+OR+table_name+LIKE+%27%22I%2F350%2F%25%27+OR+table_name+LIKE+%27%22I%2F352%2F%25%27+OR+table_name+LIKE+%27%22I%2F355%2F%25%27+OR+table_name+LIKE+%27%22I%2F356%2F%25%27+OR+table_name+LIKE+%27%22I%2F357%2F%25%27+OR+table_name+LIKE+%27%22I%2F358%2F%25%27+OR+table_name+LIKE+%27%22I%2F359%2F%25%27+OR+table_name+LIKE+%27%22I%2F360%2F%25%27+OR+table_name+LIKE+%27%22I%2F361%2F%25%27+OR+table_name+LIKE+%27%22II%2F350%2F%25%27+OR+table_name+LIKE+%27%22IV%2F36%2F%25%27+OR+table_name+LIKE+%27%22VI%2F137%2F%25%27+OR+table_name+LIKE+%27%22VI%2F145%2F%25%27+OR+table_name+LIKE+%27%22J%2FA%2BA%2F523%2FA48%2F%25%27+OR+table_name+LIKE+%27%22J%2FA%2BA%2F674%2FA25%2F%25%27&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    }
+  ]
+}

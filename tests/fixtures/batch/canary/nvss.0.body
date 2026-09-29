@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<VOTABLE xmlns="http://www.ivoa.net/xml/VOTable/v1.3" xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.4">
+ <RESOURCE type="results">
+  <INFO name="QUERY_STATUS" value="OK">No errors detected in query preprocessing</INFO>
+  <TABLE>
+   <DESCRIPTION>Query result for:&#xA;SELECT tu.t_idx AS t_idx, name AS name, ra AS ra, dec AS dec, flux_20_cm AS flux_20_cm, flux_20_cm_error AS flux_20_cm_error, ra_error AS ra_error, dec_error AS dec_error, major_axis AS major_axis, minor_axis AS minor_axis, position_angle AS position_angle, pol_flux AS pol_flux FROM nvss, tap_upload_1790594717319_targets AS tu WHERE 1 = CONTAINS(POINT(&apos;ICRS&apos;, ra, dec), CIRCLE(&apos;ICRS&apos;, tu.t_ra, tu.t_dec, tu.t_rad))</DESCRIPTION>
+   <FIELD datatype="int" name="t_idx">
+    <VALUES null="-2147483648"/>
+   </FIELD>
+   <FIELD datatype="char" arraysize="*" ucd="meta.id;meta.main" name="name">
+    <DESCRIPTION>Catalog Designation</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="deg" datatype="double" ucd="pos.eq.ra;meta.main" precision="F5" name="ra">
+    <DESCRIPTION>Right Ascension</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="deg" datatype="double" ucd="pos.eq.dec;meta.main" precision="F5" name="dec">
+    <DESCRIPTION>Declination</DESCRIPTION>
+   </FIELD>
+   <FIELD datatype="double" name="flux_20_cm"/>
+   <FIELD datatype="double" name="flux_20_cm_error"/>
+   <FIELD datatype="double" name="ra_error"/>
+   <FIELD datatype="double" name="dec_error"/>
+   <FIELD datatype="double" name="major_axis"/>
+   <FIELD datatype="double" name="minor_axis"/>
+   <FIELD datatype="double" name="position_angle"/>
+   <FIELD datatype="double" name="pol_flux"/>
+   <DATA>
+    <BINARY>
+     <STREAM encoding="base64">
+AAAAAAAAABNOVlNTIEoxMjI5MDYrMDIwMzA1QGdo2sttfC9AAGlNJKD0LEDq2eZm
+ZmZmQJ2xMzMzMzM/nrhR64UeuD/jMzMzMzMzQDWAAAAAAABAL8zMzMzMzUBG
+JmZmZmZmQIH/hR64UewAAAABAAAAE05WU1MgSjEyMzA0OSsxMjIzMjFAZ3aY
+PBFTOkAox1ayvy+AQQDnuAAAAABAsvqzMzMzMz+euFHrhR64P+MzMzMzMzNA
+SDMzMzMzM0AyszMzMzMzwE+ZmZmZmZpAgH/rhR64Ug==
+     </STREAM>
+    </BINARY>
+   </DATA>
+  </TABLE>
+ </RESOURCE>
+</VOTABLE>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="N">
+  <name>M 1</name>
+  <!-- Q8398767 #1 -->
+  <Resolver name="N=NED"><!--delay: 830ms [1] -->
+    <otype>SNR</otype>
+    <jpos>05:34:31.94 +22:00:52.1</jpos>
+    <jradeg>83.633107</jradeg>
+    <jdedeg>+22.014486</jdedeg>
+    <refPos>2006AJ....131.1163S</refPos>
+    <errRAmas>15</errRAmas><errDEmas>150</errDEmas>
+    <oname>MESSIER 001</oname>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ****Total of 1 crashes -->
+<!-- Configuration tested: /run/sesame.conf -->

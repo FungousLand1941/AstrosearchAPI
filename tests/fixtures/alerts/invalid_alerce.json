@@ -1,0 +1,32 @@
+{
+  "catalog": "invalid_alerce",
+  "params": {
+    "broker": "alerce",
+    "since_mjd": 61310.3842,
+    "until_mjd": 61311.3842,
+    "limit": 2,
+    "options": {
+      "classifier": "stamp_classifier",
+      "class_name": "NotAClass",
+      "mjd_field": "firstmjd"
+    }
+  },
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/?classifier=stamp_classifier&ranking=1&class=NotAClass&firstmjd=61310.384200&firstmjd=61311.384200&page_size=3&order_by=firstmjd&order_mode=DESC",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/classifiers/",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    }
+  ]
+}

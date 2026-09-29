@@ -1,0 +1,37 @@
+{
+  "case": "describe_4xmm",
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+table_name%2C+description%2C+nrows+FROM+TAP_SCHEMA.tables+WHERE+table_name+%3D+%27%22IX%2F69%2Fxmm4d13s%22%27+OR+table_name+LIKE+%27%22IX%2F69%2Fxmm4d13s%2F%25%27&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+column_name%2C+description%2C+unit%2C+ucd%2C+datatype%2C+principal%2C+indexed+FROM+TAP_SCHEMA.columns+WHERE+table_name+%3D+%27%22IX%2F69%2Fxmm4d13s%22%27&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://vizier.cds.unistra.fr/viz-bin/votable?-source=IX%2F69&-meta=",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/x-votable+xml",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://vizier.cds.unistra.fr/viz-bin/votable?-source=IX%2F69%2Fxmm4d13s&-meta.all=",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/x-votable+xml",
+      "match": []
+    }
+  ]
+}

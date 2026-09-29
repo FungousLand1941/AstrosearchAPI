@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>Mira</name>
+  <!-- Q8398811 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 72ms [2] -->
+    <oid>1359450</oid>
+    <otype>Mi*</otype>
+    <jpos>02:19:20.79 -02:58:39.4</jpos>
+    <jradeg>34.83663376</jradeg>
+    <jdedeg>-2.97763767</jdedeg>
+    <refPos>2007A&amp;A...474..653V</refPos>
+    <errRAmas>17.48</errRAmas><errDEmas>13.89</errDEmas>
+    <pm>
+      <v>237.54</v><e>2.54</e><q>A</q><r>2007A&amp;A...474..653V</r>
+      <pa>178</pa>
+      <pmRA>9.33</pmRA><epmRA>1.58</epmRA>
+      <pmDE>-237.36</pmDE><epmDE>1.99</epmDE>
+    </pm>
+    <Vel><v>63.50</v><e>0.6</e><q>A</q><r>2007AN....328..889K</r></Vel>
+    <plx><v>10.91</v><e>1.22</e><q>A</q><r>2007A&amp;A...474..653V</r></plx>
+    <spType>M5/6IIIe</spType><spNum>0.02028F00.0020.0000000001000000</spNum>
+    <oname>* omi Cet</oname>
+    <nrefs>1596</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ****Total of 1 crashes -->
+<!-- Configuration tested: /run/sesame.conf -->

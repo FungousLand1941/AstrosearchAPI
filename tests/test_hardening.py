@@ -349,20 +349,30 @@ def test_api_reports_rows_and_returned_count_separately() -> None:
 
     from api import app
 
-    exchanges = load_exchanges("3c273", ["first", "gaia_dr3"])
+    exchanges = load_exchanges("3c273", ["first", "gaia_dr3", "panstarrs_dr2"])
     with respx.mock(assert_all_called=False) as router:
         router.route(host="testserver").pass_through()
         router.route().mock(side_effect=replay_side_effect(exchanges))
         with TestClient(app) as client:
             response = client.post("/api/v1/search", json={
                 "ra": TARGETS["3c273"][0], "dec": TARGETS["3c273"][1], "radius_arcsec": 10.0,
-                "catalogs": ["first", "gaia_dr3"], "min_confidence": 0.5,
+                "catalogs": ["first", "gaia_dr3", "panstarrs_dr2"], "min_confidence": 0.5,
             })
     assert response.status_code == 200, response.text
-    first = response.json()["catalog_results"]["first"]
-    # FIRST's 3C 273 row (0.64" away, sigma 0.18") is inside the radius but below the
-    # 0.5 confidence cut: counted in row_count, not returned.
-    assert first["status"] == "success" and first["row_count"] == 1
-    assert first["returned_count"] == 0 and first["sources"] == []
-    gaia = response.json()["catalog_results"]["gaia_dr3"]
+    results = response.json()["catalog_results"]
+    # Pan-STARRS has three rows inside 10": 3C 273 itself (0.007") and two unrelated
+    # objects at 6.9" and 8.8" whose posterior of being 3C 273 is ~0: all three are counted
+    # in row_count, only the counterpart passes the 0.5 confidence cut.
+    ps1 = results["panstarrs_dr2"]
+    assert ps1["status"] == "success" and ps1["row_count"] == 3
+    assert ps1["returned_count"] == len(ps1["sources"]) == 1
+    assert ps1["sources"][0]["source_id"] == "110461872779253351"
+    # Confidence is the Bayesian posterior (it used to be a Gaussian score): FIRST's 3C 273
+    # core, 0.64" away with a 0.18" fit error and a resolved 6.5" x 5.5" structure, is the
+    # radio counterpart (posterior > 0.99; the Gaussian score was 0.002 and cut it).
+    first = results["first"]
+    assert first["status"] == "success" and first["row_count"] == first["returned_count"] == 1
+    gaia = results["gaia_dr3"]
     assert gaia["returned_count"] == len(gaia["sources"]) == 1
+    matches = {m["catalog"]: m for m in response.json()["provenance"]["matches"]}
+    assert matches["first"]["confidence"] > 0.99 and matches["gaia_dr3"]["confidence"] > 0.99

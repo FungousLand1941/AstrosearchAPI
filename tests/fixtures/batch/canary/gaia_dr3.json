@@ -1,0 +1,50 @@
+{
+  "case": "canary",
+  "catalog": "gaia_dr3",
+  "radius_arcsec": 10.0,
+  "targets": [
+    {
+      "id": "3c273",
+      "ra": 187.2779154,
+      "dec": 2.0523883
+    },
+    {
+      "id": "m87",
+      "ra": 187.7059308,
+      "dec": 12.3911233
+    },
+    {
+      "id": "hd209458",
+      "ra": 330.79502,
+      "dec": 18.88432
+    },
+    {
+      "id": "hd106785",
+      "ra": 184.20402414769,
+      "dec": 12.53916028867
+    }
+  ],
+  "strategy": "xmatch",
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "http://cdsxmatch.u-strasbg.fr/xmatch/api/v1/sync",
+      "request_content_type": "multipart/form-data",
+      "fields": {
+        "request": "xmatch",
+        "distMaxArcsec": "10.000",
+        "RESPONSEFORMAT": "votable",
+        "cat2": "vizier:I/355/gaiadr3",
+        "colRA1": "t_ra",
+        "colDec1": "t_dec",
+        "selection": "all",
+        "MAXREC": "200000",
+        "cols2": "Source,RAdeg,DEdeg,e_RAdeg,e_DEdeg,RADEcor,Plx,e_Plx,pmRA,pmDE,Gmag,BPmag,RPmag,RUWE,Solved",
+        "cat1": "t_idx,t_ra,t_dec\n0,187.2779154,2.0523883\n1,187.7059308,12.3911233\n2,330.79502,18.88432\n3,184.20402414769,12.53916028867\n"
+      },
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/x-votable+xml"
+    }
+  ]
+}

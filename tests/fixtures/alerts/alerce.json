@@ -1,0 +1,52 @@
+{
+  "catalog": "alerce",
+  "params": {
+    "broker": "alerce",
+    "since_mjd": 61308.3842,
+    "until_mjd": 61311.3842,
+    "limit": 3,
+    "options": {
+      "classifier": "stamp_classifier",
+      "class_name": "SN",
+      "mjd_field": "firstmjd"
+    },
+    "n_alerts": 3,
+    "warnings": [],
+    "truncated": true,
+    "boundary_mjd": 61309.519536999986
+  },
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/?classifier=stamp_classifier&ranking=1&class=SN&firstmjd=61308.384200&firstmjd=61311.384200&page_size=4&order_by=firstmjd&order_mode=DESC",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF26abxsysn/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF26abxsxww/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF26abxsyjc/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    }
+  ]
+}

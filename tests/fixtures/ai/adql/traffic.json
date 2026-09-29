@@ -1,0 +1,29 @@
+{
+  "set": "adql",
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://simbad.cds.unistra.fr/simbad/sim-tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+5+b.main_id+AS+main_id%2C+b.plx_value+AS+plx_value%2C+b.sp_type+AS+sp_type+FROM+basic+AS+b+WHERE+b.plx_value+%3E+500+ORDER+BY+plx_value+DESC&MAXREC=1",
+      "status_code": 200,
+      "content_type": "application/x-votable+xml;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://simbad.cds.unistra.fr/simbad/sim-tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+5+b.main_id%2C+b.no_such_column+FROM+basic+AS+b+WHERE+b.plx_value+%3E+500&MAXREC=1",
+      "status_code": 400,
+      "content_type": "application/xml;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://simbad.cds.unistra.fr/simbad/sim-tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+5+b.main_id+AS+main_id%2C+b.plx_value+AS+plx_value%2C+b.sp_type+AS+sp_type+FROM+basic+AS+b+WHERE+b.plx_value+%3E+500+ORDER+BY+plx_value+DESC&MAXREC=5",
+      "status_code": 200,
+      "content_type": "application/x-votable+xml;charset=UTF-8",
+      "match": []
+    }
+  ]
+}

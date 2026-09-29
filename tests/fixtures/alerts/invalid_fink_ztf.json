@@ -1,0 +1,30 @@
+{
+  "catalog": "invalid_fink_ztf",
+  "params": {
+    "broker": "fink",
+    "since_mjd": 61310.3842,
+    "until_mjd": 61311.3842,
+    "limit": 2,
+    "options": {
+      "class_name": "NotAClass"
+    }
+  },
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://api.ztf.fink-portal.org/api/v1/latests?class=NotAClass&n=3&startdate=2026-09-27+09%3A13%3A14&stopdate=2026-09-28+09%3A13%3A15&columns=i%3AobjectId%2Ci%3Acandid%2Ci%3Ara%2Ci%3Adec%2Ci%3Ajd%2Ci%3Amagpsf%2Ci%3Asigmapsf%2Ci%3Afid%2Ci%3Aisdiffpos%2Ci%3Ajdstarthist%2Ci%3Andethist%2Ci%3Adrb%2Ci%3Aclasstar%2Ci%3Asgscore1%2Ci%3Adistpsnr1%2Cd%3Asnn_snia_vs_nonia%2Cd%3Asnn_sn_vs_all%2Cd%3Arf_snia_vs_nonia%2Cd%3Arf_kn_vs_nonkn%2Cd%3Amulens%2Cd%3Aslsn_score%2Cd%3Acdsxmatch%2Cd%3Atns%2Cd%3ADR3Name%2Cd%3APlx%2Cd%3Ae_Plx%2Cd%3AgaiaVarFlag%2Cd%3Amangrove_HyperLEDA_name%2Cd%3Amangrove_ang_dist%2Cd%3Amangrove_lum_dist%2Cd%3Aroid",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.ztf.fink-portal.org/api/v1/classes",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    }
+  ]
+}
