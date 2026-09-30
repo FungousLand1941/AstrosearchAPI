@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-29T05:45:35 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-29T05:45:35">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-source=VII%2F118%2Fngc2000&amp;-meta.all=">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+
+<RESOURCE ID="yCat_7118_1" name="VII/118/ngc2000" type="meta">
+  <INFO name="nrows" value="13226">Number of rows of the table</INFO>
+  <DESCRIPTION>
+    NGC 2000.0 (Sky Publishing, ed. Sinnott 1988)
+    The NGC 2000.0 Catalogue
+  </DESCRIPTION>
+  <PARAM name="-c" datatype="char" arraysize="32*" value="">
+    <DESCRIPTION>Query from a celestial position according to ASU syntax:
+      {RA{+|-}Dec|object_name}[,eq=equinox][,ep=epoch][,rm=[min/]max]
+      (see http://vizier.cds.unistra.fr/doc/asu.html)
+    </DESCRIPTION>
+  </PARAM>
+  <LINK content-role="query" action="votable?-source=VII/118/ngc2000&amp;">
+    Action to Query the current RESOURCE, to be completed by PARAMs and FIELDs contents
+  </LINK>
+
+  <TABLE name="VII/118/ngc2000" nrows="13226">
+    <COOSYS ID="B2000" system="eq_FK4" equinox="B2000"/>
+    <!-- Definitions of GROUPs and FIELDs -->
+    <FIELD name="recno" ucd="meta.record" display="0" datatype="int" width="8"><!-- ucd="RECORD" -->
+      <DESCRIPTION>Record number assigned by the VizieR team. Should Not be used for identification.</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-5?-info=XML&amp;-out.add=.&amp;-source=VII/118/ngc2000&amp;recno=${recno}"/>
+    </FIELD>
+    <FIELD name="Name" ucd="meta.id;meta.main" display="1" datatype="char" arraysize="5"><!-- ucd="ID_MAIN" -->
+      <DESCRIPTION>NGC or IC designation (preceded by I)</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-5?-info=XML&amp;-out.add=.&amp;-source=VII/118/ngc2000&amp;recno=${recno}"/>
+    </FIELD>
+    <FIELD name="Type" ucd="src.class" display="1" datatype="char" arraysize="3"><!-- ucd="CLASS_OBJECT" -->
+      <DESCRIPTION>Object classification (1)</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR?-6N&amp;-info=XML&amp;-out.add=.&amp;&amp;lt;&amp;quot;Note&amp;quot;&amp;catid=7118&amp;notid=1&amp;-out.emph=${Type}"/>
+    </FIELD>
+    <FIELD name="RAB2000" ucd="pos.eq.ra;meta.main" ref="B2000" display="1" datatype="char" arraysize="7" xtype="hms"><!-- ucd="POS_EQ_RA_MAIN" -->
+      <DESCRIPTION>Right Ascension B2000</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DEB2000" ucd="pos.eq.dec;meta.main" ref="B2000" display="1" datatype="char" arraysize="6" xtype="dms"><!-- ucd="POS_EQ_DEC_MAIN" -->
+      <DESCRIPTION>Declination B2000</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Source" ucd="meta.ref;pos.frame" display="1" datatype="char" arraysize="1"><!-- ucd="REFER_CODE" -->
+      <DESCRIPTION>Source of entry (2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Const" ucd="meta.id" display="1" datatype="char" arraysize="3"><!-- ucd="ID_CONSTEL" -->
+      <DESCRIPTION>Constellation</DESCRIPTION>
+    </FIELD>
+    <FIELD name="l_size" ucd="meta.code.error;phys.angSize" display="1" datatype="char" arraysize="1"><!-- ucd="CODE_LIMIT" -->
+      <DESCRIPTION>[&lt;] Limit on Size</DESCRIPTION>
+    </FIELD>
+    <FIELD name="size" ucd="phys.angSize" display="1" datatype="float" width="5" precision="1" unit="arcmin"><!-- ucd="EXTENSION_DIAM" -->
+      <DESCRIPTION>? Largest dimension</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="mag" ucd="phot.mag;em.opt" display="1" datatype="float" width="4" precision="1" unit="mag"><!-- ucd="PHOT_MAG_OPTICAL" -->
+      <DESCRIPTION>? Integrated magnitude, visual or photographic (see n_mag)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="n_mag" ucd="meta.note" display="1" datatype="char" arraysize="1"><!-- ucd="NOTE" -->
+      <DESCRIPTION>[p] 'p' if mag is photographic (blue)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Desc" ucd="meta.note" display="1" datatype="char" arraysize="53*"><!-- ucd="REMARKS" -->
+      <DESCRIPTION>Description of the object (3)</DESCRIPTION>
+    </FIELD>
+  </TABLE>
+<INFO name="matches" value="2">matching records</INFO>
+</RESOURCE>
+</VOTABLE>

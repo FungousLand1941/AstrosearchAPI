@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>Pleiades</name>
+  <!-- Q8398845 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 185ms [1] -->
+    <oid>675533</oid>
+    <otype>OpC</otype>
+    <jpos>03:46:24.19 +24:06:50.0</jpos>
+    <jradeg>56.60083333</jradeg>
+    <jdedeg>24.11388889</jdedeg>
+    <refPos>2021A&amp;A...647A..19T</refPos>
+    <pm>
+      <v>49.744</v><e>0.162</e><q>B</q><r>2018A&amp;A...616A..10G</r>
+      <pa>156.3</pa>
+      <pmRA>19.997</pmRA><epmRA>0.127</epmRA>
+      <pmDE>-45.548</pmDE><epmDE>0.101</epmDE>
+    </pm>
+    <Vel><v>5.88</v><e>0.03</e><q>A</q><r>2021A&amp;A...647A..19T</r></Vel>
+    <plx><v>7.364</v><e>0.005</e><q>B</q><r>2018A&amp;A...616A..10G</r></plx>
+    <oname>Cl Melotte   22</oname>
+    <nrefs>3729</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ****Total of 1 crashes -->
+<!-- Configuration tested: /run/sesame.conf -->

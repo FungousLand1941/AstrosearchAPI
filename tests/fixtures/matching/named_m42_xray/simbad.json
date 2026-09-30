@@ -1,0 +1,19 @@
+{
+  "catalog": "simbad",
+  "target": "named_m42_xray",
+  "search": {
+    "name": "M 42",
+    "sesame": "m42_xray",
+    "radius_arcsec": 20.0
+  },
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://simbad.cds.unistra.fr/simbad/sim-tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+b.main_id%2C+b.ra%2C+b.dec%2C+b.coo_err_maj%2C+b.coo_err_min%2C+b.coo_err_angle%2C+b.coo_qual%2C+b.coo_wavelength%2C+b.coo_bibcode%2C+b.otype%2C+b.sp_type%2C+b.rvz_redshift%2C+b.plx_value%2C+b.pmra%2C+b.pmdec%2C+f.V%2C+f.G%2C+f.K%2C+DISTANCE%28POINT%28%27ICRS%27%2C+b.ra%2C+b.dec%29%2C+POINT%28%27ICRS%27%2C+83.820100000%2C+-5.387600000%29%29+AS+match_dist+FROM+basic+AS+b+LEFT+OUTER+JOIN+allfluxes+AS+f+ON+f.oidref+%3D+b.oid+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+b.ra%2C+b.dec%29%2C+CIRCLE%28%27ICRS%27%2C+83.820100000%2C+-5.387600000%2C+0.0055555556%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    }
+  ]
+}

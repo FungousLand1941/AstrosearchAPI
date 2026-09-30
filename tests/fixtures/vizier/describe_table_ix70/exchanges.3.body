@@ -1,0 +1,1975 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-29T05:45:57 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-29T05:45:57">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-source=IX%2F70%2Fcsc21mas&amp;-meta.all=">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+
+<RESOURCE ID="yCat_9070_1" name="IX/70/csc21mas" type="meta">
+  <INFO name="nrows" value="407806">Number of rows of the table</INFO>
+  <DESCRIPTION>
+    Chandra Source Catalog Release 2 (CSC 2.1) (Evans+, 2024)
+    Chandra Source Catalog version 2.1
+  </DESCRIPTION>
+
+<!-- Chandra Source Catalog version 2.1 (\originalcolumnnames) -->
+  <PARAM name="-c" datatype="char" arraysize="32*" value="">
+    <DESCRIPTION>Query from a celestial position according to ASU syntax:
+      {RA{+|-}Dec|object_name}[,eq=equinox][,ep=epoch][,rm=[min/]max]
+      (see http://vizier.cds.unistra.fr/doc/asu.html)
+    </DESCRIPTION>
+  </PARAM>
+  <LINK content-role="query" action="votable?-source=IX/70/csc21mas&amp;">
+    Action to Query the current RESOURCE, to be completed by PARAMs and FIELDs contents
+  </LINK>
+
+  <TABLE name="IX/70/csc21mas" nrows="407806">
+    <COOSYS ID="H" system="ICRS"/>
+    <!-- Definitions of GROUPs and FIELDs -->
+
+<!-- +++No column could be found to attach a LINK in table: IX/70/csc21mas -->
+    <FIELD name="recno" ucd="meta.record" display="0" datatype="int" width="8"><!-- ucd="RECORD" -->
+      <DESCRIPTION>Record number assigned by the VizieR team. Should Not be used for identification.</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-5?-info=XML&amp;-out.add=.&amp;-source=IX/70/csc21mas&amp;recno=${recno}"/>
+    </FIELD>
+    <FIELD name="2CXO" ucd="meta.id;meta.main" display="1" datatype="char" arraysize="22"><!-- ucd="ID_MAIN" -->
+      <DESCRIPTION>Source name, 2CXO JHHMMSS.s+DDMMSSAX (name)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RAICRS" ucd="pos.eq.ra;meta.main" ref="H" display="1" datatype="double" width="15" precision="11" unit="deg"><!-- ucd="POS_EQ_RA_MAIN" -->
+      <DESCRIPTION>? Source position, ICRS right ascension (ra)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="DEICRS" ucd="pos.eq.dec;meta.main" ref="H" display="1" datatype="double" width="15" precision="11" unit="deg"><!-- ucd="POS_EQ_DEC_MAIN" -->
+      <DESCRIPTION>? Source position, ICRS declination (dec)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="GLON" ucd="pos.galactic.lon" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_GAL_LON" -->
+      <DESCRIPTION>? Source position, Galactic longitude (J2000.0) (gal_l)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="GLAT" ucd="pos.galactic.lat" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_GAL_LAT" -->
+      <DESCRIPTION>? Source position, Galactic latitude (J2000.0) (gal_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="r0" ucd="phys.angSize;pos.errorEllipse" display="1" datatype="float" width="5" precision="2" unit="arcsec"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>? Major radius of the 95% confidence level position error ellipse (err_ellipse_r0)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="r1" ucd="phys.angSize;src" display="1" datatype="float" width="5" precision="2" unit="arcsec"><!-- ucd="EXTENSION_SMIN" -->
+      <DESCRIPTION>? Minor radius of the 95% confidence level position error ellipse (err_ellipse_r1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PA" ucd="pos.posAng" display="1" datatype="float" width="5" precision="1" unit="deg"><!-- ucd="POS_POS-ANG" -->
+      <DESCRIPTION>? Position angle (ref. local true north) of the major axis of the 95% confidence level error ellipse (err_ellipse_ang)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="signi" ucd="stat.fit.goodness" display="1" datatype="double" width="8" precision="2"><!-- ucd="STAT_SIGNIFICANCE" -->
+      <DESCRIPTION>? Highest flux significance (S/N) across all stacked observations and energy bands (significance)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="like" ucd="stat.likelihood;phys.energy;obs" display="1" datatype="double" width="24" precision="E17"><!-- ucd="STAT_LIKELIHOOD" -->
+      <DESCRIPTION>? Highest detection log likelihood across all stacked observations and energy bands (likelihood)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="likeClass" ucd="meta.code" display="1" datatype="char" arraysize="8*"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Highest detection likelihood classification across all stacked observations and energy bands (likelihood_class)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="fc" ucd="meta.code" display="1" datatype="char" arraysize="5"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Source may be confused (source regions overlap in one or more contributing stacked observations) (conf_flag)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="fd" ucd="meta.code" display="1" datatype="char" arraysize="5"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Highest statistically significant peak in the power spectrum of the source region count rate occurs at the dither frequency or at a beat frequency of the dither frequency in one or more observations (dither_warning_flag)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="fe" ucd="meta.code" display="1" datatype="char" arraysize="5"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Source is extended, or deconvolved source extent is inconsistent with a point source at the 90% confidence level in one or more observations and energy bands (extent_flag)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="fp" ucd="meta.code" display="1" datatype="char" arraysize="5"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>ACIS pile-up fraction exceeds ~10% in all observations; source properties may be affected (pileup_flag)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="fs" ucd="meta.code" display="1" datatype="char" arraysize="5"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Source is saturated in all observations; source properties are unreliable (sat_src_flag)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="fst" ucd="meta.code" display="1" datatype="char" arraysize="5"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Source is located on an ACIS readout streak in all observations; source properties may be affected (streak_src_flag)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="fv" ucd="meta.code" display="1" datatype="char" arraysize="5"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Source displays flux variability within one or more observations, or between observations, in one or more energy bands (var_flag)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="fvi" ucd="meta.code" display="1" datatype="char" arraysize="5"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Source hardness ratios are statistically inconsistent between two or more observations (var_inter_hard_flag)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="fa" ucd="meta.code" display="1" datatype="char" arraysize="5"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Source was manually added in the catalog via human review (man_add_flag)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="fi" ucd="meta.code" display="1" datatype="char" arraysize="5"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Source was manually included in the catalog via human review (detection was rejected by automated criteria) (man_inc_flag)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="fm" ucd="meta.code" display="1" datatype="char" arraysize="5"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Source detections were manually matched between overlapping stacked observations via human review (man_match_flag)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="ff" ucd="meta.code" display="1" datatype="char" arraysize="5"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Best fit source position was manually modified via human review (man_pos_flag)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="fr" ucd="meta.code" display="1" datatype="char" arraysize="5"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Source region parameters (dimensions, initial guess position input to the Maximum Likelihood Estimator fit) were manually modified via human review (man_reg_flag)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="majb" ucd="stat.stdev;phys.angSize" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>? 1 sigma radius along the major axis of the ellipse defining the deconvolved source extent; ACIS broad (0.5-7.0keV) energy band (major_axis_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_majb" ucd="phys.angSize;src" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>? 1 sigma radius along the major axis of the ellipse defining the deconvolved source extent (68% lower confidence limit); ACIS broad (0.5-7.0keV) energy band (major_axis_lolim_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_majb" ucd="phys.angSize;src" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>? 1 sigma radius along the major axis of the ellipse defining the deconvolved source extent (68% upper confidence limit); ACIS broad (0.5-7.0keV) energy band (major_axis_hilim_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="minb" ucd="phys.angSize;src" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_SMIN" -->
+      <DESCRIPTION>? 1 sigma radius along the minor axis of the ellipse defining the deconvolved source extent; ACIS broad (0.5-7.0keV) energy band (minor_axis_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_minb" ucd="phys.angSize;src" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_SMIN" -->
+      <DESCRIPTION>? 1 sigma radius along the minor axis of the ellipse defining the deconvolved source extent (68% lower confidence limit); ACIS broad (0.5-7.0keV) energy band (minor_axis_lolim_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_minb" ucd="phys.angSize;src" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_SMIN" -->
+      <DESCRIPTION>? 1 sigma radius along the minor axis of the ellipse defining the deconvolved source extent (68% upper confidence limit); ACIS broad (0.5-7.0keV) energy band (minor_axis_hilim_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PAb" ucd="pos.posAng" display="0" datatype="float" width="4" precision="1" unit="deg"><!-- ucd="POS_POS-ANG" -->
+      <DESCRIPTION>? Position angle (ref. local true north) of the major axis of the ellipse defining the deconvolved source extent; ACIS broad (0.5-7.0keV) energy band (pos_angle_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Areab" ucd="phys.area" display="0" datatype="double" width="13" precision="E6" unit="arcsec**2"><!-- ucd="EXTENSION_AREA" -->
+      <DESCRIPTION>? Area of the deconvolved source extent ellipse, or area of the source polygon for extended sources; ACIS broad (0.5-7.0keV) energy band (src_area_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="majh" ucd="stat.stdev;phys.angSize" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>? 1 sigma radius along the major axis of the ellipse defining the deconvolved source extent; ACIS hard (2.0-7.0keV) energy band (major_axis_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_majh" ucd="phys.angSize;src" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>? 1 sigma radius along the major axis of the ellipse defining the deconvolved source extent (68% lower confidence limit); ACIS hard (2.0-7.0keV) energy band (major_axis_lolim_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_majh" ucd="phys.angSize;src" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>? 1 sigma radius along the major axis of the ellipse defining the deconvolved source extent (68% upper confidence limit); ACIS hard (2.0-7.0keV) energy band (major_axis_hilim_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="minh" ucd="phys.angSize;src" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_SMIN" -->
+      <DESCRIPTION>? 1 sigma radius along the minor axis of the ellipse defining the deconvolved source extent; ACIS hard (2.0-7.0keV) energy band (minor_axis_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_minh" ucd="phys.angSize;src" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_SMIN" -->
+      <DESCRIPTION>? 1 sigma radius along the minor axis of the ellipse defining the deconvolved source extent (68% lower confidence limit); ACIS hard (2.0-7.0keV) energy band (minor_axis_lolim_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_minh" ucd="phys.angSize;src" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_SMIN" -->
+      <DESCRIPTION>? 1 sigma radius along the minor axis of the ellipse defining the deconvolved source extent (68% upper confidence limit); ACIS hard (2.0-7.0keV) energy band (minor_axis_hilim_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PAh" ucd="pos.posAng" display="0" datatype="float" width="4" precision="1" unit="deg"><!-- ucd="POS_POS-ANG" -->
+      <DESCRIPTION>? Position angle (ref. local true north) of the major axis of the ellipse defining the deconvolved source extent; ACIS hard (2.0-7.0keV) energy band (pos_angle_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Areah" ucd="phys.area" display="0" datatype="double" width="13" precision="E6" unit="arcsec**2"><!-- ucd="EXTENSION_AREA" -->
+      <DESCRIPTION>? Area of the deconvolved source extent ellipse, or area of the source polygon for extended sources; ACIS hard (2.0-7.0keV) energy band (src_area_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="majm" ucd="stat.stdev;phys.angSize" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>? 1 sigma radius along the major axis of the ellipse defining the deconvolved source extent; ACIS medium (1.2-2.0keV) energy band (major_axis_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_majm" ucd="phys.angSize;src" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>? 1 sigma radius along the major axis of the ellipse defining the deconvolved source extent (68% lower confidence limit); ACIS medium (1.2-2.0keV) energy band (major_axis_lolim_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_majm" ucd="phys.angSize;src" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>? 1 sigma radius along the major axis of the ellipse defining the deconvolved source extent (68% upper confidence limit); ACIS medium (1.2-2.0keV) energy band (major_axis_hilim_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="minm" ucd="phys.angSize;src" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_SMIN" -->
+      <DESCRIPTION>? 1 sigma radius along the minor axis of the ellipse defining the deconvolved source extent; ACIS medium (1.2-2.0keV) energy band (minor_axis_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_minm" ucd="phys.angSize;src" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_SMIN" -->
+      <DESCRIPTION>? 1 sigma radius along the minor axis of the ellipse defining the deconvolved source extent (68% lower confidence limit); ACIS medium (1.2-2.0keV) energy band (minor_axis_lolim_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_minm" ucd="phys.angSize;src" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_SMIN" -->
+      <DESCRIPTION>? 1 sigma radius along the minor axis of the ellipse defining the deconvolved source extent (68% upper confidence limit); ACIS medium (1.2-2.0keV) energy band (minor_axis_hilim_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PAm" ucd="pos.posAng" display="0" datatype="float" width="4" precision="1" unit="deg"><!-- ucd="POS_POS-ANG" -->
+      <DESCRIPTION>? Position angle (ref. local true north) of the major axis of the ellipse defining the deconvolved source extent; ACIS medium (1.2-2.0keV) energy band (pos_angle_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Aream" ucd="phys.area" display="0" datatype="double" width="13" precision="E6" unit="arcsec**2"><!-- ucd="EXTENSION_AREA" -->
+      <DESCRIPTION>? Area of the deconvolved source extent ellipse, or area of the source polygon for extended sources; ACIS medium (1.2-2.0keV) energy band (src_area_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="majs" ucd="stat.stdev;phys.angSize" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>? 1 sigma radius along the major axis of the ellipse defining the deconvolved source extent; ACIS soft (0.5-1.2keV) energy band (major_axis_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_majs" ucd="phys.angSize;src" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>? 1 sigma radius along the major axis of the ellipse defining the deconvolved source extent (68% lower confidence limit); ACIS soft (0.5-1.2keV) energy band (major_axis_lolim_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_majs" ucd="phys.angSize;src" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>? 1 sigma radius along the major axis of the ellipse defining the deconvolved source extent (68% upper confidence limit); ACIS soft (0.5-1.2keV) energy band (major_axis_hilim_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="mins" ucd="phys.angSize;src" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_SMIN" -->
+      <DESCRIPTION>? 1 sigma radius along the minor axis of the ellipse defining the deconvolved source extent; ACIS soft (0.5-1.2keV) energy band (minor_axis_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_mins" ucd="phys.angSize;src" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_SMIN" -->
+      <DESCRIPTION>? 1 sigma radius along the minor axis of the ellipse defining the deconvolved source extent (68% lower confidence limit); ACIS soft (0.5-1.2keV) energy band (minor_axis_lolim_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_mins" ucd="phys.angSize;src" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_SMIN" -->
+      <DESCRIPTION>? 1 sigma radius along the minor axis of the ellipse defining the deconvolved source extent (68% upper confidence limit); ACIS soft (0.5-1.2keV) energy band (minor_axis_hilim_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PAs" ucd="pos.posAng" display="0" datatype="float" width="4" precision="1" unit="deg"><!-- ucd="POS_POS-ANG" -->
+      <DESCRIPTION>? Position angle (ref. local true north) of the major axis of the ellipse defining the deconvolved source extent; ACIS soft (0.5-1.2keV) energy band (pos_angle_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Areas" ucd="phys.area" display="0" datatype="double" width="13" precision="E6" unit="arcsec**2"><!-- ucd="EXTENSION_AREA" -->
+      <DESCRIPTION>? Area of the deconvolved source extent ellipse, or area of the source polygon for extended sources; ACIS soft (0.5-1.2keV) energy band (src_area_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="maju" ucd="stat.stdev;phys.angSize" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>? 1 sigma radius along the major axis of the ellipse defining the deconvolved source extent; ACIS ultrasoft (0.2-0.5keV) energy band (major_axis_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_maju" ucd="phys.angSize;src" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>? 1 sigma radius along the major axis of the ellipse defining the deconvolved source extent (68% lower confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (major_axis_lolim_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_maju" ucd="phys.angSize;src" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>? 1 sigma radius along the major axis of the ellipse defining the deconvolved source extent (68% upper confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (major_axis_hilim_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="minu" ucd="phys.angSize;src" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_SMIN" -->
+      <DESCRIPTION>? 1 sigma radius along the minor axis of the ellipse defining the deconvolved source extent; ACIS ultrasoft (0.2-0.5keV) energy band (minor_axis_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_minu" ucd="phys.angSize;src" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_SMIN" -->
+      <DESCRIPTION>? 1 sigma radius along the minor axis of the ellipse defining the deconvolved source extent (68% lower confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (minor_axis_lolim_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_minu" ucd="phys.angSize;src" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_SMIN" -->
+      <DESCRIPTION>? 1 sigma radius along the minor axis of the ellipse defining the deconvolved source extent (68% upper confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (minor_axis_hilim_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PAu" ucd="pos.posAng" display="0" datatype="float" width="4" precision="1" unit="deg"><!-- ucd="POS_POS-ANG" -->
+      <DESCRIPTION>? Position angle (ref. local true north) of the major axis of the ellipse defining the deconvolved source extent; ACIS ultrasoft (0.2-0.5keV) energy band (pos_angle_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Areau" ucd="phys.area" display="0" datatype="double" width="12" precision="E5" unit="arcsec**2"><!-- ucd="EXTENSION_AREA" -->
+      <DESCRIPTION>? Area of the deconvolved source extent ellipse, or area of the source polygon for extended sources; ACIS ultrasoft (0.2-0.5keV) energy band (src_area_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="majw" ucd="stat.stdev;phys.angSize" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>? 1 sigma radius along the major axis of the ellipse defining the deconvolved source extent; HRC wide (~0.1-10.0keV) energy band (major_axis_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_majw" ucd="phys.angSize;src" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>? 1 sigma radius along the major axis of the ellipse defining the deconvolved source extent (68% lower confidence limit); HRC wide (~0.1-10.0keV) energy band (major_axis_lolim_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_majw" ucd="phys.angSize;src" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>? 1 sigma radius along the major axis of the ellipse defining the deconvolved source extent (68% upper confidence limit); HRC wide (~0.1-10.0keV) energy band (major_axis_hilim_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="minw" ucd="phys.angSize;src" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_SMIN" -->
+      <DESCRIPTION>? 1 sigma radius along the minor axis of the ellipse defining the deconvolved source extent; HRC wide (~0.1-10.0keV) energy band (minor_axis_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_minw" ucd="phys.angSize;src" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_SMIN" -->
+      <DESCRIPTION>? 1 sigma radius along the minor axis of the ellipse defining the deconvolved source extent (68% lower confidence limit); HRC wide (~0.1-10.0keV) energy band (minor_axis_lolim_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_minw" ucd="phys.angSize;src" display="0" datatype="float" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_SMIN" -->
+      <DESCRIPTION>? 1 sigma radius along the minor axis of the ellipse defining the deconvolved source extent (68% upper confidence limit); HRC wide (~0.1-10.0keV) energy band (minor_axis_hilim_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PAw" ucd="pos.posAng" display="0" datatype="float" width="4" precision="1" unit="deg"><!-- ucd="POS_POS-ANG" -->
+      <DESCRIPTION>? Position angle (ref. local true north) of the major axis of the ellipse defining the deconvolved source extent; HRC wide (~0.1-10.0keV) energy band (pos_angle_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Areaw" ucd="phys.area" display="0" datatype="double" width="12" precision="E5" unit="arcsec**2"><!-- ucd="EXTENSION_AREA" -->
+      <DESCRIPTION>? Area of the deconvolved source extent ellipse, or area of the source polygon for extended sources; HRC wide (~0.1-10.0keV) energy band (src_area_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PFluxb" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture, ACIS broad (0.5-7.0keV) energy band (photflux_aper_b) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_PFluxb" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture (68% lower confidence limit); ACIS broad (0.5-7.0keV) energy band (photflux_aper_lolim_b) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_PFluxb" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture (68% upper confidence limit); ACIS broad (0.5-7.0keV) energy band (1) (photflux_aper_hilim_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PFluxh" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture, ACIS hard (2.0-7.0keV) energy band (photflux_aper_h) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_PFluxh" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture (68% lower confidence limit); ACIS hard (2.0-7.0keV) energy band (photflux_aper_lolim_h) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_PFluxh" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture (68% upper confidence limit); ACIS hard (2.0-7.0keV) energy band (photflux_aper_hilim_h) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PFluxm" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture, ACIS medium (1.2-2.0keV) energy band (photflux_aper_m) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_PFluxm" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture (68% lower confidence limit); ACIS medium (1.2-2.0keV) energy band (photflux_aper_lolim_m) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_PFluxm" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture (68% upper confidence limit); ACIS medium (1.2-2.0keV) energy band (photflux_aper_hilim_m) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PFluxs" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture, ACIS soft (0.5-1.2keV) energy band (photflux_aper_s) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_PFluxs" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture (68% lower confidence limit); ACIS soft (0.5-1.2keV) energy band (photflux_aper_lolim_s) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_PFluxs" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture (68% upper confidence limit); ACIS soft (0.5-1.2keV) energy band (photflux_aper_hilim_s) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PFluxu" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture, ACIS ultrasoft (0.2-0.5keV) energy band (photflux_aper_u) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_PFluxu" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture (68% lower confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (photflux_aper_lolim_u) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_PFluxu" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture (68% upper confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (photflux_aper_hilim_u) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PFluxw" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture, HRC wide (~0.1-10.0keV) energy band (photflux_aper_w) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_PFluxw" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture (68% lower confidence limit); HRC wide (~0.1-10.0keV) energy band (photflux_aper_lolim_w) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_PFluxw" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture (68% upper confidence limit); HRC wide (~0.1-10.0keV) energy band (photflux_aper_hilim_w) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PFavgb" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture, ACIS broad (0.5-7.0keV) energy band (photflux_aper_avg_b) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_PFavgb" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture (68% lower confidence limit); ACIS broad (0.5-7.0keV) energy band (photflux_aper_avg_lolim_b) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_PFavgb" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture (68% upper confidence limit); ACIS broad (0.5-7.0keV) energy band (photflux_aper_avg_hilim_b) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PFavgh" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture, ACIS hard (2.0-7.0keV) energy band (photflux_aper_avg_h) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_PFavgh" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture (68% lower confidence limit); ACIS hard (2.0-7.0keV) energy band (photflux_aper_avg_lolim_h) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_PFavgh" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture (68% upper confidence limit); ACIS hard (2.0-7.0keV) energy band (photflux_aper_avg_hilim_h) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PFavgm" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture, ACIS medium (1.2-2.0keV) energy band (photflux_aper_avg_m) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_PFavgm" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture (68% lower confidence limit); ACIS medium (1.2-2.0keV) energy band (photflux_aper_avg_lolim_m) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_PFavgm" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture (68% upper confidence limit); ACIS medium (1.2-2.0keV) energy band (photflux_aper_avg_hilim_m) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PFavgs" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture, ACIS soft (0.5-1.2keV) energy band (photflux_aper_avg_s) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_PFavgs" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture (68% lower confidence limit); ACIS soft (0.5-1.2keV) energy band (photflux_aper_avg_lolim_s) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_PFavgs" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture (68% upper confidence limit); ACIS soft (0.5-1.2keV) energy band (photflux_aper_avg_hilim_s) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PFavgu" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture; ACIS ultrasoft (0.2-0.5keV) energy band (photflux_aper_avg_u) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_PFavgu" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture (68% lower confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (photflux_aper_avg_lolim_u) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_PFavgu" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture (68% upper confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (photflux_aper_avg_hilim_u) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PFavgw" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture, HRC wide (~0.1-10.0keV) energy band (photflux_aper_avg_w) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_PFavgw" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture (68% lower confidence limit); HRC wide (~0.1-10.0keV) energy band (photflux_aper_avg_lolim_w) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_PFavgw" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the source region aperture (68% upper confidence limit); HRC wide (~0.1-10.0keV) energy band (photflux_aper_avg_hilim_w) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Fluxb" ucd="phot.flux;em.X-ray" display="1" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture, ACIS broad (0.5-7.0keV) energy band (flux_aper_b) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_Fluxb" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture (68% lower confidence limit); ACIS broad (0.5-7.0keV) energy band (flux_aper_lolim_b) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_Fluxb" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture (68% upper confidence limit); ACIS broad (0.5-7.0keV) energy band (flux_aper_hilim_b) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Fluxh" ucd="phot.flux;em.X-ray" display="1" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture, ACIS hard (2.0-7.0keV) energy band (flux_aper_h) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_Fluxh" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture (68% lower confidence limit); ACIS hard (2.0-7.0keV) energy band (flux_aper_lolim_h) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_Fluxh" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture (68% upper confidence limit); ACIS hard (2.0-7.0keV) energy band (flux_aper_hilim_h) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Fluxm" ucd="phot.flux;em.X-ray" display="1" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture, ACIS medium (1.2-2.0keV) energy band (flux_aper_m) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_Fluxm" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture (68% lower confidence limit); ACIS medium (1.2-2.0keV) energy band (flux_aper_lolim_m) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_Fluxm" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture (68% upper confidence limit); ACIS medium (1.2-2.0keV) energy band (flux_aper_hilim_m) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Fluxs" ucd="phot.flux;em.X-ray" display="1" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture, ACIS soft (0.5-1.2keV) energy band (flux_aper_s) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_Fluxs" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture (68% lower confidence limit); ACIS soft (0.5-1.2keV) energy band (flux_aper_lolim_s) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_Fluxs" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture (68% upper confidence limit); ACIS soft (0.5-1.2keV) energy band (flux_aper_hilim_s) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Fluxu" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture, ACIS ultrasoft (0.2-0.5keV) energy band (flux_aper_u) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_Fluxu" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture (68% lower confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (flux_aper_lolim_u) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_Fluxu" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture (68% upper confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (flux_aper_hilim_u) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Fluxw" ucd="phot.flux;em.X-ray" display="1" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture, HRC wide (~0.1-10.0keV) energy band (flux_aper_w) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_Fluxw" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture (68% lower confidence limit); HRC wide (~0.1-10.0keV) energy band (flux_aper_lolim_w) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_Fluxw" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture (68% upper confidence limit); HRC wide (~0.1-10.0keV) energy band (flux_aper_hilim_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Favgb" ucd="phot.flux;em.X-ray" display="1" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture, ACIS broad (0.5-7.0keV) energy band (flux_aper_avg_b) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_Favgb" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture (68% lower confidence limit); ACIS broad (0.5-7.0keV) energy band (flux_aper_avg_lolim_b) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_Favgb" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture (68% upper confidence limit); ACIS broad (0.5-7.0keV) energy band (flux_aper_avg_hilim_b) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Favgh" ucd="phot.flux;em.X-ray" display="1" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture ; ACIS hard (2.0-7.0keV) energy band (flux_aper_avg_h) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_Favgh" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture (68% lower confidence limit); ACIS hard (2.0-7.0keV) energy band (flux_aper_avg_lolim_h) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_Favgh" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture (68% upper confidence limit); ACIS hard (2.0-7.0keV) energy band (flux_aper_avg_hilim_h) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Favgm" ucd="phot.flux;em.X-ray" display="1" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture, ACIS medium (1.2-2.0keV) energy band (flux_aper_avg_m) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_Favgm" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture (68% lower confidence limit); ACIS medium (1.2-2.0keV) energy band (flux_aper_avg_lolim_m) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_Favgm" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture (68% upper confidence limit); ACIS medium (1.2-2.0keV) energy band (flux_aper_avg_hilim_m) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Favgs" ucd="phot.flux;em.X-ray" display="1" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture ACIS soft (0.5-1.2keV) energy band (flux_aper_avg_s) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_Favgs" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture (68% lower confidence limit); ACIS soft (0.5-1.2keV) energy band (flux_aper_avg_lolim_s) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_Favgs" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture (68% upper confidence limit); ACIS soft (0.5-1.2keV) energy band (flux_aper_avg_hilim_s) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Favgu" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture ; ACIS ultrasoft (0.2-0.5keV) energy band (flux_aper_avg_u) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_Favgu" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture (68% lower confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (flux_aper_avg_lolim_u) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_Favgu" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture (68% upper confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (flux_aper_avg_hilim_u) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Favgw" ucd="phot.flux;em.X-ray" display="1" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture; HRC wide (~0.1-10.0keV) energy band (flux_aper_avg_w) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_Favgw" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture (68% lower confidence limit); HRC wide (~0.1-10.0keV) energy band (flux_aper_avg_lolim_w) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_Favgw" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the source region aperture (68% upper confidence limit); HRC wide (~0.1-10.0keV) energy band (flux_aper_avg_hilim_w) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PF90b" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, ACIS broad (0.5-7.0keV) energy band (photflux_aper90_b) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_PF90b" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, (68% lower confidence limit); ACIS broad (0.5-7.0keV) energy band (photflux_aper90_lolim_b) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_PF90b" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, (68% upper confidence limit); ACIS broad (0.5-7.0keV) energy band (photflux_aper90_hilim_b) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PF90h" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, ACIS hard (2.0-7.0keV) energy band (photflux_aper90_h) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_PF90h" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, (68% lower confidence limit); ACIS hard (2.0-7.0keV) energy band (photflux_aper90_lolim_h) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_PF90h" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, (68% upper confidence limit); ACIS hard (2.0-7.0keV) energy band (photflux_aper90_hilim_h) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PF90m" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, ACIS medium (1.2-2.0keV) energy band (photflux_aper90_m) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_PF90m" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, (68% lower confidence limit); ACIS medium (1.2-2.0keV) energy band (photflux_aper90_lolim_m) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_PF90m" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, (68% upper confidence limit); ACIS medium (1.2-2.0keV) energy band (photflux_aper90_hilim_m) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PF90s" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, ACIS soft (0.5-1.2keV) energy band (photflux_aper90_s) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_PF90s" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, (68% lower confidence limit); ACIS soft (0.5-1.2keV) energy band (photflux_aper90_lolim_s) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_PF90s" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, (68% upper confidence limit); ACIS soft (0.5-1.2keV) energy band (photflux_aper90_hilim_s) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PF90u" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, ACIS ultrasoft (0.2-0.5keV) energy band (photflux_aper90_u) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_PF90u" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, (68% lower confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (photflux_aper90_lolim_u) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_PF90u" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, (68% upper confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (photflux_aper90_hilim_u) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PF90w" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, HRC wide (~0.1-10.0keV) energy band (photflux_aper90_w) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_PF90w" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, (68% lower confidence limit); HRC wide (~0.1-10.0keV) energy band (photflux_aper90_lolim_w) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_PF90w" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, (68% upper confidence limit); HRC wide (~0.1-10.0keV) energy band (photflux_aper90_hilim_w) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PF90avgb" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, ACIS broad (0.5-7.0keV) energy band (photflux_aper90_avg_b) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_PF90avgb" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, (68% lower confidence limit); ACIS broad (0.5-7.0keV) energy band (photflux_aper90_avg_lolim_b) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_PF90avgb" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, (68% upper confidence limit); ACIS broad (0.5-7.0keV) energy band (photflux_aper90_avg_hilim_b) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PF90avgh" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, ACIS hard (2.0-7.0keV) energy band (photflux_aper90_avg_h) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_PF90avgh" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, (68% lower confidence limit); ACIS hard (2.0-7.0keV) energy band (photflux_aper90_avg_lolim_h) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_PF90avgh" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, (68% upper confidence limit); ACIS hard (2.0-7.0keV) energy band (photflux_aper90_avg_hilim_h) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PF90avgm" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, ACIS medium (1.2-2.0keV) energy band (photflux_aper90_avg_m) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_PF90avgm" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, (68% lower confidence limit); ACIS medium (1.2-2.0keV) energy band (photflux_aper90_avg_lolim_m) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_PF90avgm" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, (68% upper confidence limit); ACIS medium (1.2-2.0keV) energy band (photflux_aper90_avg_hilim_m) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PF90avgs" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, ACIS soft (0.5-1.2keV) energy band (photflux_aper90_avg_s) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_PF90avgs" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, (68% lower confidence limit); ACIS soft (0.5-1.2keV) energy band (photflux_aper90_avg_lolim_s) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_PF90avgs" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, (68% upper confidence limit); ACIS soft (0.5-1.2keV) energy band (photflux_aper90_avg_hilim_s) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PF90avgu" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, ACIS ultrasoft (0.2-0.5keV) energy band (photflux_aper90_avg_u) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_PF90avgu" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, (68% lower confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (photflux_aper90_avg_lolim_u) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_PF90avgu" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, (68% upper confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (photflux_aper90_avg_hilim_u) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PF90avgw" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, HRC wide (~0.1-10.0keV) energy band (photflux_aper90_avg_w) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_PF90avgw" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, (68% lower confidence limit); HRC wide (~0.1-10.0keV) energy band (photflux_aper90_avg_lolim_w) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_PF90avgw" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="ph.s**-1.cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net photon flux inferred from the PSF 90% ECF aperture, (68% upper confidence limit); HRC wide (~0.1-10.0keV) energy band (photflux_aper90_avg_hilim_w) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F90b" ucd="phot.flux;em.X-ray" display="1" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, ACIS broad (0.5-7.0keV) energy band (flux_aper90_b) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_F90b" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, (68% lower confidence limit); ACIS broad (0.5-7.0keV) energy band (flux_aper90_lolim_b) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_F90b" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, (68% upper confidence limit); ACIS broad (0.5-7.0keV) energy band (flux_aper90_hilim_b) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F90h" ucd="phot.flux;em.X-ray" display="1" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, ACIS hard (2.0-7.0keV) energy band (flux_aper90_h) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_F90h" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, (68% lower confidence limit); ACIS hard (2.0-7.0keV) energy band (flux_aper90_lolim_h) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_F90h" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, (68% upper confidence limit); ACIS hard (2.0-7.0keV) energy band (flux_aper90_hilim_h) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F90m" ucd="phot.flux;em.X-ray" display="1" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, ACIS medium (1.2-2.0keV) energy band (flux_aper90_m) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_F90m" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, (68% lower confidence limit); ACIS medium (1.2-2.0keV) energy band (flux_aper90_lolim_m) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_F90m" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, (68% upper confidence limit); ACIS medium (1.2-2.0keV) energy band (flux_aper90_hilim_m) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F90s" ucd="phot.flux;em.X-ray" display="1" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, ACIS soft (0.5-1.2keV) energy band (flux_aper90_s) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_F90s" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, (68% lower confidence limit); ACIS soft (0.5-1.2keV) energy band (flux_aper90_lolim_s) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_F90s" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, (68% upper confidence limit); ACIS soft (0.5-1.2keV) energy band (flux_aper90_hilim_s) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F90u" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, ACIS ultrasoft (0.2-0.5keV) energy band (flux_aper90_u) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_F90u" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, (68% lower confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (flux_aper90_lolim_u) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_F90u" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, (68% upper confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (flux_aper90_hilim_u) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F90w" ucd="phot.flux;em.X-ray" display="1" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, HRC wide (~0.1-10.0keV) energy band (flux_aper90_w) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_F90w" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, (68% lower confidence limit); HRC wide (~0.1-10.0keV) energy band (flux_aper90_lolim_w) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_F90w" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, (68% upper confidence limit); HRC wide (~0.1-10.0keV) energy band (flux_aper90_hilim_w) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="EF90avgb" ucd="phot.flux;em.X-ray" display="1" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, ACIS broad (0.5-7.0keV) energy band (flux_aper90_avg_b) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_EF90avgb" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, (68% lower confidence limit); ACIS broad (0.5-7.0keV) energy band (flux_aper90_avg_lolim_b) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_EF90avgb" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, (68% upper confidence limit); ACIS broad (0.5-7.0keV) energy band (flux_aper90_avg_hilim_b) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="EF90avgh" ucd="phot.flux;em.X-ray" display="1" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, ACIS hard (2.0-7.0keV) energy band (flux_aper90_avg_h) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_EF90avgh" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, (68% lower confidence limit); ACIS hard (2.0-7.0keV) energy band (flux_aper90_avg_lolim_h) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_EF90avgh" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, (68% upper confidence limit); ACIS hard (2.0-7.0keV) energy band (flux_aper90_avg_hilim_h) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="EF90avgm" ucd="phot.flux;em.X-ray" display="1" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, ACIS medium (1.2-2.0keV) energy band (flux_aper90_avg_m) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_EF90avgm" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, (68% lower confidence limit); ACIS medium (1.2-2.0keV) energy band (flux_aper90_avg_lolim_m) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_EF90avgm" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, (68% upper confidence limit); ACIS medium (1.2-2.0keV) energy band (flux_aper90_avg_hilim_m) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="EF90avgs" ucd="phot.flux;em.X-ray" display="1" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, ACIS soft (0.5-1.2keV) energy band (flux_aper90_avg_s) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_EF90avgs" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, (68% lower confidence limit); ACIS soft (0.5-1.2keV) energy band (flux_aper90_avg_lolim_s) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_EF90avgs" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, (68% upper confidence limit); ACIS soft (0.5-1.2keV) energy band (flux_aper90_avg_hilim_s) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="EF90avgu" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, ACIS ultrasoft (0.2-0.5keV) energy band (flux_aper90_avg_u) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_EF90avgu" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, (68% lower confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (flux_aper90_avg_lolim_u) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_EF90avgu" ucd="phys.angSize;src.net" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, (68% upper confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (flux_aper90_avg_hilim_u) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="EF90avgw" ucd="phot.flux;em.X-ray" display="1" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, HRC wide (~0.1-10.0keV) energy band (flux_aper90_avg_w) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_EF90avgw" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, HRC wide (~0.1-10.0keV) energy band (flux_aper90_avg_lolim_w) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_EF90avgw" ucd="phys.angSize;src.net" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Aperture-corrected net energy flux inferred from the PSF 90% ECF aperture, (68% upper confidence limit); HRC wide (~0.1-10.0keV) energy band (flux_aper90_avg_hilim_w) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Ns" ucd="meta.number" display="1" datatype="short" width="2"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Number of sources fit simultaneously to compute aperture photometry quantities (phot_nsrcs)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="FPLb" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0]; ACIS broad (0.5-7.0keV) energy band (flux_powlaw_aper_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FPLb" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0] (68% lower confidence limit); ACIS broad (0.5-7.0keV) energy band (flux_powlaw_aper_lolim_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FPLb" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0] (68% upper confidence limit); ACIS broad (0.5-7.0keV) energy band (flux_powlaw_aper_hilim_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FPLh" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0]; ACIS hard (2.0-7.0keV) energy band (flux_powlaw_aper_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FPLh" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0] (68% lower confidence limit); ACIS hard (2.0-7.0keV) energy band (flux_powlaw_aper_lolim_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FPLh" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0] (68% upper confidence limit); ACIS hard (2.0-7.0keV) energy band (flux_powlaw_aper_hilim_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FPLm" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0]; ACIS medium (1.2-2.0keV) energy band (flux_powlaw_aper_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FPLm" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0] (68% lower confidence limit); ACIS medium (1.2-2.0keV) energy band (flux_powlaw_aper_lolim_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FPLm" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0] (68% upper confidence limit); ACIS medium (1.2-2.0keV) energy band (flux_powlaw_aper_hilim_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FPLs" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0]; ACIS soft (0.5-1.2keV) energy band (flux_powlaw_aper_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FPLs" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0] (68% lower confidence limit); ACIS soft (0.5-1.2keV) energy band (flux_powlaw_aper_lolim_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FPLs" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0] (68% upper confidence limit); ACIS soft (0.5-1.2keV) energy band (flux_powlaw_aper_hilim_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FPLu" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0]; ACIS ultrasoft (0.2-0.5keV) energy band (flux_powlaw_aper_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FPLu" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0] (68% lower confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (flux_powlaw_aper_lolim_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FPLu" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0] (68% upper confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (flux_powlaw_aper_hilim_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FPLw" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0]; HRC wide (~0.1-10.0keV) energy band (flux_powlaw_aper_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FPLw" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0] (68% lower confidence limit); HRC wide (~0.1-10.0keV) energy band (flux_powlaw_aper_lolim_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FPLw" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0] (68% upper confidence limit); HRC wide (~0.1-10.0keV) energy band (flux_powlaw_aper_hilim_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FBBb" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV]; ACIS broad (0.5-7.0keV) energy band (flux_bb_aper_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FBBb" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV] (68% lower confidence limit); ACIS broad (0.5-7.0keV) energy band (flux_bb_aper_lolim_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FBBb" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV] (68% upper confidence limit); ACIS broad (0.5-7.0keV) energy band (flux_bb_aper_hilim_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FBBh" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV]; ACIS hard (2.0-7.0keV) energy band (flux_bb_aper_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FBBh" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV] (68% lower confidence limit); ACIS hard (2.0-7.0keV) energy band (flux_bb_aper_lolim_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FBBh" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV] (68% upper confidence limit); ACIS hard (2.0-7.0keV) energy band (flux_bb_aper_hilim_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FBBm" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV]; ACIS medium (1.2-2.0keV) energy band (flux_bb_aper_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FBBm" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV] (68% lower confidence limit); ACIS medium (1.2-2.0keV) energy band (flux_bb_aper_lolim_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FBBm" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV] (68% upper confidence limit); ACIS medium (1.2-2.0keV) energy band (flux_bb_aper_hilim_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FBBs" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV]; ACIS soft (0.5-1.2keV) energy band (flux_bb_aper_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FBBs" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV] (68% lower confidence limit); ACIS soft (0.5-1.2keV) energy band (flux_bb_aper_lolim_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FBBs" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV] (68% upper confidence limit); ACIS soft (0.5-1.2keV) energy band (flux_bb_aper_hilim_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FBBu" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV]; ACIS ultrasoft (0.2-0.5keV) energy band (flux_bb_aper_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FBBu" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV] (68% lower confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (flux_bb_aper_lolim_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FBBu" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV] (68% upper confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (flux_bb_aper_hilim_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FBBw" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV]; HRC wide (~0.1-10.0keV) energy band (flux_bb_aper_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FBBw" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV] (68% lower confidence limit); HRC wide (~0.1-10.0keV) energy band (flux_bb_aper_lolim_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FBBw" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV] (68% upper confidence limit); HRC wide (~0.1-10.0keV) energy band (flux_bb_aper_hilim_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FBSb" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV]; ACIS broad (0.5-7.0keV) energy band (flux_brems_aper_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FBSb" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV] (68% lower confidence limit); ACIS broad (0.5-7.0keV) energy band (flux_brems_aper_lolim_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FBSb" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV] (68% upper confidence limit); ACIS broad (0.5-7.0keV) energy band (flux_brems_aper_hilim_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FBSh" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV]; ACIS hard (2.0-7.0keV) energy band (flux_brems_aper_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FBSh" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV] (68% lower confidence limit); ACIS hard (2.0-7.0keV) energy band (flux_brems_aper_lolim_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FBSh" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV] (68% upper confidence limit); ACIS hard (2.0-7.0keV) energy band (flux_brems_aper_hilim_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FBSm" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV]; ACIS medium (1.2-2.0keV) energy band (flux_brems_aper_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FBSm" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV] (68% lower confidence limit); ACIS medium (1.2-2.0keV) energy band (flux_brems_aper_lolim_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FBSm" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV] (68% upper confidence limit); ACIS medium (1.2-2.0keV) energy band (flux_brems_aper_hilim_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FBSs" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV]; ACIS soft (0.5-1.2keV) energy band (flux_brems_aper_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FBSs" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV] (68% lower confidence limit); ACIS soft (0.5-1.2keV) energy band (flux_brems_aper_lolim_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FBSs" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV] (68% upper confidence limit); ACIS soft (0.5-1.2keV) energy band (flux_brems_aper_hilim_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FBSu" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV]; ACIS ultrasoft (0.2-0.5keV) energy band (flux_brems_aper_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FBSu" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV] (68% lower confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (flux_brems_aper_lolim_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FBSu" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV] (68% upper confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (flux_brems_aper_hilim_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FBSw" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV]; HRC wide (~0.1-10.0keV) energy band (flux_brems_aper_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FBSw" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV] (68% lower confidence limit); HRC wide (~0.1-10.0keV) energy band (flux_brems_aper_lolim_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FBSw" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV] (68% upper confidence limit); HRC wide (~0.1-10.0keV) energy band (flux_brems_aper_hilim_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FAPb" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV]; ACIS broad (0.5-7.0keV) energy band (flux_apec_aper_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FAPb" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV] (68% lower confidence limit); ACIS broad (0.5-7.0keV) energy band (flux_apec_aper_lolim_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FAPb" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV] (68% upper confidence limit); ACIS broad (0.5-7.0keV) energy band (flux_apec_aper_hilim_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FAPh" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV]; ACIS hard (2.0-7.0keV) energy band (flux_apec_aper_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FAPh" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV] (68% lower confidence limit); ACIS hard (2.0-7.0keV) energy band (flux_apec_aper_lolim_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FAPh" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV] (68% upper confidence limit); ACIS hard (2.0-7.0keV) energy band (flux_apec_aper_hilim_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FAPm" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV]; ACIS medium (1.2-2.0keV) energy band (flux_apec_aper_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FAPm" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV] (68% lower confidence limit); ACIS medium (1.2-2.0keV) energy band (flux_apec_aper_lolim_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FAPm" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV] (68% upper confidence limit); ACIS medium (1.2-2.0keV) energy band (flux_apec_aper_hilim_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FAPs" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV]; ACIS soft (0.5-1.2keV) energy band (flux_apec_aper_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FAPs" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV] (68% lower confidence limit); ACIS soft (0.5-1.2keV) energy band (flux_apec_aper_lolim_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FAPs" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV] (68% upper confidence limit); ACIS soft (0.5-1.2keV) energy band (flux_apec_aper_hilim_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FAPu" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV]; ACIS ultrasoft (0.2-0.5keV) energy band (flux_apec_aper_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FAPu" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV] (68% lower confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (flux_apec_aper_lolim_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FAPu" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV] (68% upper confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (flux_apec_aper_hilim_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FAPw" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV]; HRC wide (~0.1-10.0keV) energy band (flux_apec_aper_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FAPw" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV] (68% lower confidence limit); HRC wide (~0.1-10.0keV) energy band (flux_apec_aper_lolim_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FAPw" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Source region aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV] (68% upper confidence limit); HRC wide (~0.1-10.0keV) energy band (flux_apec_aper_hilim_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FPL90b" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0]; ACIS broad (0.5-7.0keV) energy band (flux_powlaw_aper90_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FPL90b" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0] (68% lower confidence limit); ACIS broad (0.5-7.0keV) energy band (flux_powlaw_aper90_lolim_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FPL90b" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0] (68% upper confidence limit); ACIS broad (0.5-7.0keV) energy band (flux_powlaw_aper90_hilim_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FPL90h" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0]; ACIS hard (2.0-7.0keV) energy band (flux_powlaw_aper90_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FPL90h" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0] (68% lower confidence limit); ACIS hard (2.0-7.0keV) energy band (flux_powlaw_aper90_lolim_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FPL90h" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0] (68% upper confidence limit); ACIS hard (2.0-7.0keV) energy band (flux_powlaw_aper90_hilim_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FPL90m" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0]; ACIS medium (1.2-2.0keV) energy band (flux_powlaw_aper90_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FPL90m" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0] (68% lower confidence limit); ACIS medium (1.2-2.0keV) energy band (flux_powlaw_aper90_lolim_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FPL90m" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0] (68% upper confidence limit); ACIS medium (1.2-2.0keV) energy band (flux_powlaw_aper90_hilim_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FPL90s" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0]; ACIS soft (0.5-1.2keV) energy band (flux_powlaw_aper90_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FPL90s" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0] (68% lower confidence limit); ACIS soft (0.5-1.2keV) energy band (flux_powlaw_aper90_lolim_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FPL90s" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0] (68% upper confidence limit); ACIS soft (0.5-1.2keV) energy band (flux_powlaw_aper90_hilim_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FPL90u" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0]; ACIS ultrasoft (0.2-0.5keV) energy band (flux_powlaw_aper90_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FPL90u" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0] (68% lower confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (flux_powlaw_aper90_lolim_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FPL90u" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0] (68% upper confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (flux_powlaw_aper90_hilim_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FPL90w" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0]; HRC wide (~0.1-10.0keV) energy band (flux_powlaw_aper90_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FPL90w" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0] (68% lower confidence limit); HRC wide (~0.1-10.0keV) energy band (flux_powlaw_aper90_lolim_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FPL90w" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed power law model [N_H=N_H(Gal); Gamma=2.0] (68% upper confidence limit); HRC wide (~0.1-10.0keV) energy band (flux_powlaw_aper90_hilim_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FBB90b" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV]; ACIS broad (0.5-7.0keV) energy band (flux_bb_aper90_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FBB90b" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV] (68% lower confidence limit); ACIS broad (0.5-7.0keV) energy band (flux_bb_aper90_lolim_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FBB90b" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV] (68% upper confidence limit); ACIS broad (0.5-7.0keV) energy band (flux_bb_aper90_hilim_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FBB90h" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV]; ACIS hard (2.0-7.0keV) energy band (flux_bb_aper90_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FBB90h" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV] (68% lower confidence limit); ACIS hard (2.0-7.0keV) energy band (flux_bb_aper90_lolim_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FBB90h" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV] (68% upper confidence limit); ACIS hard (2.0-7.0keV) energy band (flux_bb_aper90_hilim_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FBB90m" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV]; ACIS medium (1.2-2.0keV) energy band (flux_bb_aper90_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FBB90m" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV] (68% lower confidence limit); ACIS medium (1.2-2.0keV) energy band (flux_bb_aper90_lolim_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FBB90m" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV] (68% upper confidence limit); ACIS medium (1.2-2.0keV) energy band (flux_bb_aper90_hilim_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FBB90s" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV]; ACIS soft (0.5-1.2keV) energy band (flux_bb_aper90_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FBB90s" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV] (68% lower confidence limit); ACIS soft (0.5-1.2keV) energy band (flux_bb_aper90_lolim_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FBB90s" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV] (68% upper confidence limit); ACIS soft (0.5-1.2keV) energy band (flux_bb_aper90_hilim_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FBB90u" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV]; ACIS ultrasoft (0.2-0.5keV) energy band (flux_bb_aper90_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FBB90u" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV] (68% lower confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (flux_bb_aper90_lolim_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FBB90u" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV] (68% upper confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (flux_bb_aper90_hilim_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FBB90w" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV]; HRC wide (~0.1-10.0keV) energy band (flux_bb_aper90_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FBB90w" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV] (68% lower confidence limit); HRC wide (~0.1-10.0keV) energy band (flux_bb_aper90_lolim_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FBB90w" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed black body model [N_H=N_H(Gal); kT=0.75keV] (68% upper confidence limit); HRC wide (~0.1-10.0keV) energy band (flux_bb_aper90_hilim_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FBS90b" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV]; ACIS broad (0.5-7.0keV) energy band (flux_brems_aper90_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FBS90b" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF90% ECF aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV] (68% lower confidence limit); ACIS broad (0.5-7.0keV) energy band (flux_brems_aper90_lolim_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FBS90b" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF90% ECF aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV] (68% upper confidence limit); ACIS broad (0.5-7.0keV) energy band (flux_brems_aper90_hilim_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FBS90h" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV]; ACIS hard (2.0-7.0keV) energy band (flux_brems_aper90_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FBS90h" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF90% ECF aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV] (68% lower confidence limit); ACIS hard (2.0-7.0keV) energy band (flux_brems_aper90_lolim_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FBS90h" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF90% ECF aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV] (68% upper confidence limit); ACIS hard (2.0-7.0keV) energy band (flux_brems_aper90_hilim_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FBS90m" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV]; ACIS medium (1.2-2.0keV) energy band (flux_brems_aper90_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FBS90m" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF90% ECF aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV] (68% lower confidence limit); ACIS medium (1.2-2.0keV) energy band (flux_brems_aper90_lolim_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FBS90m" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF90% ECF aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV] (68% upper confidence limit); ACIS medium (1.2-2.0keV) energy band (flux_brems_aper90_hilim_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FBS90s" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV]; ACIS soft (0.5-1.2keV) energy band (flux_brems_aper90_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FBS90s" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF90% ECF aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV] (68% lower confidence limit); ACIS soft (0.5-1.2keV) energy band (flux_brems_aper90_lolim_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FBS90s" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF90% ECF aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV] (68% upper confidence limit); ACIS soft (0.5-1.2keV) energy band (flux_brems_aper90_hilim_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FBS90u" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV]; ACIS ultrasoft (0.2-0.5keV) energy band (flux_brems_aper90_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FBS90u" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF90% ECF aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV] (68% lower confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (flux_brems_aper90_lolim_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FBS90u" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF90% ECF aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV] (68% upper confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (flux_brems_aper90_hilim_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FBS90w" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV]; HRC wide (~0.1-10.0keV) energy band (flux_brems_aper90_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FBS90w" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF90% ECF aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV] (68% lower confidence limit); HRC wide (~0.1-10.0keV) energy band (flux_brems_aper90_lolim_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FBS90w" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF90% ECF aperture model energy flux inferred from the canonical absorbed bremsstrahlung model [N_H=N_H(Gal); kT=3.5keV] (68% upper confidence limit); HRC wide (~0.1-10.0keV) energy band (flux_brems_aper90_hilim_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FAP90b" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV]; ACIS broad (0.5-7.0keV) energy band (flux_apec_aper90_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FAP90b" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV] (68% lower confidence limit); ACIS broad (0.5-7.0keV) energy band (flux_apec_aper90_lolim_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FAP90b" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV] (68% upper confidence limit); ACIS broad (0.5-7.0keV) energy band (flux_apec_aper90_hilim_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FAP90h" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV]; ACIS hard (2.0-7.0keV) energy band (flux_apec_aper90_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FAP90h" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV] (68% lower confidence limit); ACIS hard (2.0-7.0keV) energy band (flux_apec_aper90_lolim_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FAP90h" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV] (68% upper confidence limit); ACIS hard (2.0-7.0keV) energy band (flux_apec_aper90_hilim_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FAP90m" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV]; ACIS medium (1.2-2.0keV) energy band (flux_apec_aper90_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FAP90m" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV] (68% lower confidence limit); ACIS medium (1.2-2.0keV) energy band (flux_apec_aper90_lolim_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FAP90m" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV] (68% upper confidence limit); ACIS medium (1.2-2.0keV) energy band (flux_apec_aper90_hilim_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FAP90s" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV]; ACIS soft (0.5-1.2keV) energy band (flux_apec_aper90_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FAP90s" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV] (68% lower confidence limit); ACIS soft (0.5-1.2keV) energy band (flux_apec_aper90_lolim_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FAP90s" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV] (68% upper confidence limit); ACIS soft (0.5-1.2keV) energy band (flux_apec_aper90_hilim_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FAP90u" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV]; ACIS ultrasoft (0.2-0.5keV) energy band (flux_apec_aper90_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FAP90u" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV] (68% lower confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (flux_apec_aper90_lolim_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FAP90u" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV] (68% upper confidence limit); ACIS ultrasoft (0.2-0.5keV) energy band (flux_apec_aper90_hilim_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FAP90w" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV]; HRC wide (~0.1-10.0keV) energy band (flux_apec_aper90_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FAP90w" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV] (68% lower confidence limit); HRC wide (~0.1-10.0keV) energy band (flux_apec_aper90_lolim_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FAP90w" ucd="phys.angSize;instr.fov;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? PSF 90% ECF aperture model energy flux inferred from the canonical absorbed APEC model [N_H=N_H(Gal); kT=6.5keV] (68% upper confidence limit); HRC wide (~0.1-10.0keV) energy band (flux_apec_aper90_hilim_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="NHGal" ucd="phys.columnDensity" display="1" datatype="float" width="6" precision="2" unit="1e+20cm**-2"><!-- ucd="PHYS_COLUMN_DENSITY" -->
+      <DESCRIPTION>? Galactic N_H column density in direction of source (nh_gal)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="HRhm" ucd="phot.flux;arith.ratio" display="1" datatype="float" width="7" precision="4"><!-- ucd="SPECT_HARDNESS-RATIO" -->
+      <DESCRIPTION>? ACIS hard (2.0-7.0keV) - medium (1.2-2.0keV) energy band photon flux hardness ratio (hard_hm)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_HRhm" ucd="phot.flux;arith.ratio" display="0" datatype="float" width="7" precision="4"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? ACIS hard (2.0-7.0keV) - medium (1.2-2.0keV) energy band photon flux hardness ratio (68% lower confidence limit) (hard_hm_lolim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_HRhm" ucd="phot.flux;arith.ratio" display="0" datatype="float" width="7" precision="4"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? ACIS hard (2.0-7.0keV) - medium (1.2-2.0keV) energy band photon flux hardness ratio (68% upper confidence limit) (hard_hm_hilim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ViPhm" ucd="stat.fit.goodness;src.var" display="0" datatype="float" width="6" precision="3"><!-- ucd="VAR_PROBABILITY" -->
+      <DESCRIPTION>? Inter-observation ACIS hard (2.0-7.0keV) - medium (1.2-2.0keV) energy band photon flux hardness ratio variability probability (var_inter_hard_prob_hm)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ViShm" ucd="src.var.amplitude" display="0" datatype="double" width="13" precision="E6"><!-- ucd="VAR_AMPLITUDE_VALUE" -->
+      <DESCRIPTION>? Inter-observation ACIS hard (2.0-7.0keV) - medium (1.2-2.0keV) energy band photon flux hardness ratio variability standard deviation (var_inter_hard_sigma_hm)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="HRhs" ucd="phot.flux;arith.ratio" display="1" datatype="float" width="7" precision="4"><!-- ucd="SPECT_HARDNESS-RATIO" -->
+      <DESCRIPTION>? ACIS hard (2.0-7.0keV) - soft (0.5-1.2keV) energy band photon flux hardness ratio (hard_hs)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_HRhs" ucd="phot.flux;arith.ratio" display="0" datatype="float" width="7" precision="4"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? ACIS hard (2.0-7.0keV) - soft (0.5-1.2keV) energy band photon flux hardness ratio (68% lower confidence limit) (hard_hs_lolim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_HRhs" ucd="phot.flux;arith.ratio" display="0" datatype="float" width="7" precision="4"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? ACIS hard (2.0-7.0keV) - soft (0.5-1.2keV) energy band photon flux hardness ratio (68% upper confidence limit) (hard_hs_hilim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ViPhs" ucd="stat.fit.goodness;src.var" display="0" datatype="float" width="6" precision="3"><!-- ucd="VAR_PROBABILITY" -->
+      <DESCRIPTION>? Inter-observation ACIS hard (2.0-7.0keV) - soft (0.5-1.2keV) energy band photon flux hardness ratio variability probability (var_inter_hard_prob_hs)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ViShs" ucd="src.var.amplitude" display="0" datatype="double" width="13" precision="E6"><!-- ucd="VAR_AMPLITUDE_VALUE" -->
+      <DESCRIPTION>? Inter-observation ACIS hard (2.0-7.0keV) - soft (0.5-1.2keV) energy band photon flux hardness ratio variability standard deviation (var_inter_hard_sigma_hs)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="HRms" ucd="phot.flux;arith.ratio" display="1" datatype="float" width="7" precision="4"><!-- ucd="SPECT_HARDNESS-RATIO" -->
+      <DESCRIPTION>? ACIS medium (1.2-2.0keV) - soft (0.5-1.2keV) energy band photon flux hardness ratio (hard_ms)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_HRms" ucd="phot.flux;arith.ratio" display="0" datatype="float" width="7" precision="4"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? ACIS medium (1.2-2.0keV) - soft (0.5-1.2keV) energy band photon flux hardness ratio (68% lower confidence limit) (hard_ms_lolim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_HRms" ucd="phot.flux;arith.ratio" display="0" datatype="float" width="7" precision="4"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? ACIS medium (1.2-2.0keV) - soft (0.5-1.2keV) energy band photon flux hardness ratio (68% upper confidence limit) (hard_ms_hilim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ViPms" ucd="stat.fit.goodness;src.var" display="0" datatype="float" width="6" precision="3"><!-- ucd="VAR_PROBABILITY" -->
+      <DESCRIPTION>? Inter-observation ACIS medium (1.2-2.0keV) - soft (0.5-1.2keV) energy band photon flux hardness ratio variability probability (var_inter_hard_prob_ms)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ViSms" ucd="src.var.amplitude" display="0" datatype="double" width="13" precision="E6"><!-- ucd="VAR_AMPLITUDE_VALUE" -->
+      <DESCRIPTION>? Inter-observation ACIS medium (1.2-2.0keV) - soft (0.5-1.2keV) energy band photon flux hardness ratio variability standard deviation (var_inter_hard_sigma_ms)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FPL0.5-7" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Net integrated 0.5-7.0 keV energy flux of the best fitting absorbed power-law model spectrum to the source region aperture PI spectrum (flux_powlaw)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FPL0.5-7" ucd="phot.flux;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Net integrated 0.5-7.0 keV energy flux of the best fitting absorbed power-law model spectrum to the source region aperture PI spectrum (68% lower confidence limit) (flux_powlaw_lolim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FPL0.5-7" ucd="phot.flux;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Net integrated 0.5-7.0 keV energy flux of the best fitting absorbed power-law model spectrum to the source region aperture PI spectrum (68% upper confidence limit) (flux_powlaw_hilim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="GamPL" ucd="spect.index" display="0" datatype="float" width="6" precision="3"><!-- ucd="SPECT_SP-INDEX" -->
+      <DESCRIPTION>? Photon index, defined as F_E_~E^(-Gamma)^, of the best fitting absorbed power-law model spectrum to the source region aperture PI spectrum (powlaw_gamma)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_GamPL" ucd="meta.code;phys.angSize;meta.modelled" display="0" datatype="float" width="7" precision="3"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Photon index, defined as F_E_~E^(-Gamma)^, of the best fitting absorbed power-law model spectrum to the source region aperture PI spectrum (68% lower confidence limit) (powlaw_gamma_lolim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_GamPL" ucd="meta.code;phys.angSize;meta.modelled" display="0" datatype="float" width="7" precision="3"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Photon index, defined as F_E_~E^(-Gamma)^, of the best fitting absorbed power-law model spectrum to the source region aperture PI spectrum (68% upper confidence limit) (powlaw_gamma_hilim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="NHPL" ucd="phys.columnDensity" display="0" datatype="double" width="13" precision="E6" unit="1e+20cm**-2"><!-- ucd="PHYS_COLUMN_DENSITY" -->
+      <DESCRIPTION>? N_H column density of the best fitting absorbed power-law model spectrum to the source region aperture PI spectrum (powlaw_nh)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_NHPL" ucd="phys.columnDensity;meta.modelled" display="0" datatype="double" width="10" precision="5" unit="1e+20cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? N_H column density of the best fitting absorbed power-law model spectrum to the source region aperture PI spectrum (68% lower confidence limit) (powlaw_nh_lolim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_NHPL" ucd="phys.columnDensity;meta.modelled" display="0" datatype="double" width="13" precision="E6" unit="1e+20cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? N_H column density of the best fitting absorbed power-law model spectrum to the source region aperture PI spectrum (68% upper confidence limit) (powlaw_nh_hilim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="AmpPL" ucd="stat.fit.param" display="0" datatype="double" width="13" precision="E6"><!-- ucd="VAR_MODEL-FIT" -->
+      <DESCRIPTION>? Amplitude of the best fitting absorbed power-law model spectrum to the source region aperture PI spectrum (powlaw_ampl)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_AmpPL" ucd="meta.note" display="0" datatype="double" width="13" precision="E6"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Amplitude of the best fitting absorbed power-law model spectrum to the source region aperture PI spectrum (68% lower confidence limit) (powlaw_ampl_lolim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_AmpPL" ucd="meta.note" display="0" datatype="double" width="13" precision="E6"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Amplitude of the best fitting absorbed power-law model spectrum to the source region aperture PI spectrum (68% upper confidence limit) (powlaw_ampl_hilim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Chi2PL" ucd="stat.fit.chi2" display="0" datatype="float" width="6" precision="3"><!-- ucd="FIT_CHI2" -->
+      <DESCRIPTION>? chi-square statistic per degree of freedom of the best fitting absorbed power-law model spectrum to the source region aperture PI spectrum (powlaw_stat)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FBB0.5-7" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Net integrated 0.5-7.0 keV energy flux of the best fitting absorbed black body model spectrum to the source region aperture PI spectrum (flux_bb)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FBB0.5-7" ucd="phot.flux;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Net integrated 0.5-7.0 keV energy flux of the best fitting absorbed black body model spectrum to the source region aperture PI spectrum (68% lower confidence limit) (flux_bb_lolim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FBB0.5-7" ucd="phot.flux;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Net integrated 0.5-7.0 keV energy flux of the best fitting absorbed black body model spectrum to the source region aperture PI spectrum (68% upper confidence limit) (flux_bb_hilim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="kTBB" ucd="phys.temperature" display="0" datatype="double" width="8" precision="4" unit="keV"><!-- ucd="PHYS_TEMP_XRAY" -->
+      <DESCRIPTION>? Temperature (kT) of the best fitting absorbed black body model spectrum to the source region aperture PI spectrum (bb_kt)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_kTBB" ucd="phys.angSize;meta.modelled" display="0" datatype="double" width="8" precision="5" unit="keV"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Temperature (kT) of the best fitting absorbed black body model spectrum to the source region aperture PI spectrum (68% lower confidence limit) (bb_kt_lolim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_kTBB" ucd="phys.angSize;meta.modelled" display="0" datatype="float" width="10" precision="E3" unit="keV"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Temperature (kT) of the best fitting absorbed black body model spectrum to the source region aperture PI spectrum (68% upper confidence limit) (bb_kt_hilim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="NHBB" ucd="phys.columnDensity" display="0" datatype="double" width="13" precision="E6" unit="1e+20cm**-2"><!-- ucd="PHYS_COLUMN_DENSITY" -->
+      <DESCRIPTION>? N_H column density of the best fitting absorbed black body model spectrum to the source region aperture PI spectrum (bb_nh)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_NHBB" ucd="phys.columnDensity;meta.modelled" display="0" datatype="double" width="10" precision="5" unit="1e+20cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? N_H column density of the best fitting absorbed black body model spectrum to the source region aperture PI spectrum (68% lower confidence limit) (bb_nh_lolim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_NHBB" ucd="phys.columnDensity;meta.modelled" display="0" datatype="double" width="12" precision="E5" unit="1e+20cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? N_H column density of the best fitting absorbed black body model spectrum to the source region aperture PI spectrum (68% upper confidence limit) (bb_nh_hilim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="AmpBB" ucd="stat.fit.param" display="0" datatype="double" width="13" precision="E6"><!-- ucd="VAR_MODEL-FIT" -->
+      <DESCRIPTION>? Amplitude of the best fitting absorbed black body model spectrum to the source region aperture PI spectrum (bb_ampl)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_AmpBB" ucd="meta.note" display="0" datatype="double" width="13" precision="E6"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Amplitude of the best fitting absorbed black body model spectrum to the source region aperture PI spectrum (68% lower confidence limit) (bb_ampl_lolim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_AmpBB" ucd="meta.note" display="0" datatype="double" width="13" precision="E6"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Amplitude of the best fitting absorbed black body model spectrum to the source region aperture PI spectrum (68% upper confidence limit) (bb_ampl_hilim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Chi2BB" ucd="stat.fit.chi2" display="0" datatype="float" width="7" precision="3"><!-- ucd="FIT_CHI2" -->
+      <DESCRIPTION>? chi-square statistic per degree of freedom of the best fitting absorbed black body model spectrum to the source region aperture PI spectrum (bb_stat)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FBS0.5-7" ucd="phot.flux;em.X-ray" display="0" datatype="double" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Net integrated 0.5-7.0 keV energy flux of the best fitting absorbed bremsstrahlung model spectrum to the source region aperture PI spectrum (flux_brems)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FBS0.5-7" ucd="phot.flux;meta.modelled" display="0" datatype="double" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Net integrated 0.5-7.0 keV energy flux of the best fitting absorbed bremsstrahlung model spectrum to the source region aperture PI spectrum (68% lower confidence limit) (flux_brems_lolim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FBS0.5-7" ucd="phot.flux;meta.modelled" display="0" datatype="double" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Net integrated 0.5-7.0 keV energy flux of the best fitting absorbed bremsstrahlung model spectrum to the source region aperture PI spectrum (68% upper confidence limit) (flux_brems_hilim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="kTBS" ucd="phys.temperature" display="0" datatype="double" width="11" precision="7" unit="keV"><!-- ucd="PHYS_TEMP_XRAY" -->
+      <DESCRIPTION>? Temperature (kT) of the best fitting absorbed bremsstrahlung model spectrum to the source region aperture PI spectrum (brems_kt)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_kTBS" ucd="phys.angSize;meta.modelled" display="0" datatype="double" width="8" precision="5" unit="keV"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Temperature (kT) of the best fitting absorbed bremsstrahlung model spectrum to the source region aperture PI spectrum (68% lower confidence limit) (brems_kt_lolim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_kTBS" ucd="phys.angSize;meta.modelled" display="0" datatype="float" width="11" precision="E4" unit="keV"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Temperature (kT) of the best fitting absorbed bremsstrahlung model spectrum to the source region aperture PI spectrum (68% upper confidence limit) (brems_kt_hilim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="NHBS" ucd="phys.columnDensity" display="0" datatype="double" width="13" precision="E6" unit="1e+20cm**-2"><!-- ucd="PHYS_COLUMN_DENSITY" -->
+      <DESCRIPTION>? N_H column density of the best fitting absorbed bremsstrahlung model spectrum to the source region aperture PI spectrum (brems_nh)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_NHBS" ucd="phys.columnDensity;meta.modelled" display="0" datatype="float" width="11" precision="E4" unit="1e+20cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? N_H column density of the best fitting absorbed bremsstrahlung model spectrum to the source region aperture PI spectrum (68% lower confidence limit) (brems_nh_lolim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_NHBS" ucd="phys.columnDensity;meta.modelled" display="0" datatype="float" width="11" precision="E4" unit="1e+20cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? N_H column density of the best fitting absorbed bremsstrahlung model spectrum to the source region aperture PI spectrum (68% upper confidence limit) (brems_nh_hilim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="AmpBS" ucd="stat.fit.param" display="0" datatype="double" width="13" precision="E6"><!-- ucd="VAR_MODEL-FIT" -->
+      <DESCRIPTION>? Amplitude of the best fitting absorbed bremsstrahlung model spectrum to the source region aperture PI spectrum (brems_norm)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_AmpBS" ucd="meta.note" display="0" datatype="double" width="13" precision="E6"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Amplitude of the best fitting absorbed bremsstrahlung model spectrum to the source region aperture PI spectrum (68% lower confidence limit) (brems_norm_lolim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_AmpBS" ucd="meta.note" display="0" datatype="double" width="13" precision="E6"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Amplitude of the best fitting absorbed bremsstrahlung model spectrum to the source region aperture PI spectrum (68% upper confidence limit) (brems_norm_hilim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Chi2BS" ucd="stat.fit.chi2" display="0" datatype="float" width="6" precision="3"><!-- ucd="FIT_CHI2" -->
+      <DESCRIPTION>? chi-square statistic per degree of freedom of the best fitting absorbed bremsstrahlung model spectrum to the source region aperture PI spectrum (brems_stat)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FA0.5-7.0" ucd="phot.flux;em.X-ray" display="1" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Net integrated 0.5-7.0 keV energy flux of the best fitting absorbed APEC model spectrum to the source region aperture PI spectrum (flux_apec)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_FA0.5-7.0" ucd="phot.flux;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Net integrated 0.5-7.0 keV energy flux of the best fitting absorbed APEC model spectrum to the source region aperture PI spectrum (68% lower confidence limit) (flux_apec_lolim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_FA0.5-7.0" ucd="phot.flux;meta.modelled" display="0" datatype="float" width="9" precision="E2" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Net integrated 0.5-7.0 keV energy flux of the best fitting absorbed APEC model spectrum to the source region aperture PI spectrum (68% upper confidence limit) (flux_apec_hilim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="kTA" ucd="phys.temperature" display="1" datatype="double" width="8" precision="5" unit="keV"><!-- ucd="PHYS_TEMP_XRAY" -->
+      <DESCRIPTION>? Temperature (kT) of the best fitting absorbed APEC model spectrum to the source region aperture PI spectrum (apec_kt)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_kTA" ucd="phys.angSize;meta.modelled" display="0" datatype="double" width="9" precision="6" unit="keV"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Temperature (kT) of the best fitting absorbed APEC model spectrum to the source region aperture PI spectrum (68% lower confidence limit) (apec_kt_lolim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_kTA" ucd="phys.angSize;meta.modelled" display="0" datatype="double" width="8" precision="4" unit="keV"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Temperature (kT) of the best fitting absorbed APEC model spectrum to the source region aperture PI spectrum (68% upper confidence limit) (apec_kt_hilim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Abund" ucd="phys.abund" display="1" datatype="double" width="13" precision="E6"><!-- ucd="PHYS_ABUND_MISC" -->
+      <DESCRIPTION>? Abundance of the best fitting absorbed APEC model spectrum to the source region aperture PI spectrum (apec_abund)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_Abund" ucd="meta.note" display="0" datatype="double" width="10" precision="7"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Abundance of the best fitting absorbed APEC model spectrum to the source region aperture PI spectrum (68% lower confidence limit) (apec_abund_lolim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_Abund" ucd="meta.note" display="0" datatype="double" width="12" precision="E5"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Abundance of the best fitting absorbed APEC model spectrum to the source region aperture PI spectrum (68% upper confidence limit) (apec_abund_hilim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="z" ucd="src.redshift;pos.heliocentric" display="1" datatype="double" width="13" precision="E6"><!-- ucd="REDSHIFT_HC" -->
+      <DESCRIPTION>? Redshift of the best fitting absorbed APEC model spectrum to the source region aperture PI spectrum (apec_z)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_z" ucd="phys.angSize;meta.modelled" display="0" datatype="double" width="13" precision="E6"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Redshift of the best fitting absorbed APEC model spectrum to the source region aperture PI spectrum (68% lower confidence limit) (apec_z_lolim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_z" ucd="phys.angSize;meta.modelled" display="0" datatype="double" width="11" precision="7"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Redshift of the best fitting absorbed APEC model spectrum to the source region aperture PI spectrum (68% upper confidence limit) (apec_z_hilim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="NH" ucd="phys.columnDensity" display="1" datatype="double" width="13" precision="E6" unit="1e+20cm**-2"><!-- ucd="PHYS_COLUMN_DENSITY" -->
+      <DESCRIPTION>? N_H column density of the best fitting absorbed APEC model spectrum to the source region aperture PI spectrum (apec_nh)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_NH" ucd="phys.columnDensity;meta.modelled" display="0" datatype="double" width="11" precision="6" unit="1e+20cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? N_H column density of the best fitting absorbed APEC model spectrum to the source region aperture PI spectrum (68% lower confidence limit) (apec_nh_lolim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_NH" ucd="phys.columnDensity;meta.modelled" display="0" datatype="float" width="11" precision="E4" unit="1e+20cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? N_H column density of the best fitting absorbed APEC model spectrum to the source region aperture PI spectrum (68% upper confidence limit) (apec_nh_hilim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Amp" ucd="stat.fit.param" display="1" datatype="double" width="13" precision="E6"><!-- ucd="VAR_MODEL-FIT" -->
+      <DESCRIPTION>? Amplitude of the best fitting absorbed APEC model spectrum to the source region aperture PI spectrum (apec_norm)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="b_Amp" ucd="meta.note" display="0" datatype="double" width="13" precision="E6"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Amplitude of the best fitting absorbed APEC model spectrum to the source region aperture PI spectrum (68% lower confidence limit) (apec_norm_lolim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B_Amp" ucd="meta.note" display="0" datatype="double" width="13" precision="E6"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Amplitude of the best fitting absorbed APEC model spectrum to the source region aperture PI spectrum (68% upper confidence limit) (apec_norm_hilim)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Chi2" ucd="stat.fit.chi2" display="1" datatype="float" width="6" precision="3"><!-- ucd="FIT_CHI2" -->
+      <DESCRIPTION>? chi-square statistic per degree of freedom of the best fitting absorbed APEC model spectrum to the source region aperture PI spectrum (apec_stat)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="VaGLIb" ucd="meta.code;src.var" display="0" datatype="short" width="2"><!-- ucd="CODE_VARIAB" -->
+      <DESCRIPTION>? Intra-observation Gregory-Loredo variability index in the range [0, 10]: indicates whether the source region photon flux is constant within an observation (highest value across all observations); ACIS broad (0.5-7.0keV) energy band (var_intra_index_b)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="Vab" ucd="stat.fit.goodness;src.var" display="0" datatype="float" width="6" precision="3"><!-- ucd="VAR_PROBABILITY" -->
+      <DESCRIPTION>? Intra-observation Gregory-Loredo variability probability (highest value across all observations); ACIS broad (0.5-7.0keV) energy band (var_intra_prob_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="VaKSb" ucd="src.var.amplitude" display="0" datatype="float" width="6" precision="3"><!-- ucd="VAR_AMPLITUDE_VALUE" -->
+      <DESCRIPTION>? Intra-observation Kolmogorov-Smirnov test variability probability (highest value across all observations); ACIS broad (0.5-7.0keV) energy band (ks_intra_prob_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="VaKPb" ucd="stat.fit.goodness;src.var" display="0" datatype="float" width="6" precision="3"><!-- ucd="VAR_PROBABILITY" -->
+      <DESCRIPTION>? Intra-observation Kuiper's test variability probability (highest value across all observations); ACIS broad (0.5-7.0keV) energy band (kp_intra_prob_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="VaGLIh" ucd="meta.code;src.var" display="0" datatype="short" width="2"><!-- ucd="CODE_VARIAB" -->
+      <DESCRIPTION>? Intra-observation Gregory-Loredo variability index in the range [0, 10]: indicates whether the source region photon flux is constant within an observation (highest value across all observations); ACIS hard (2.0-7.0keV) energy band (var_intra_index_h)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="Vah" ucd="stat.fit.goodness;src.var" display="0" datatype="float" width="6" precision="3"><!-- ucd="VAR_PROBABILITY" -->
+      <DESCRIPTION>? Intra-observation Gregory-Loredo variability probability (highest value across all observations); ACIS hard (2.0-7.0keV) energy band (var_intra_prob_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="VaKSh" ucd="src.var.amplitude" display="0" datatype="float" width="6" precision="3"><!-- ucd="VAR_AMPLITUDE_VALUE" -->
+      <DESCRIPTION>? Intra-observation Kolmogorov-Smirnov test variability probability (highest value across all observations); ACIS hard (2.0-7.0keV) energy band (ks_intra_prob_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="VaKPh" ucd="stat.fit.goodness;src.var" display="0" datatype="float" width="6" precision="3"><!-- ucd="VAR_PROBABILITY" -->
+      <DESCRIPTION>? Intra-observation Kuiper's test variability probability (highest value across all observations); ACIS hard (2.0-7.0keV) energy band (kp_intra_prob_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="VaGLIm" ucd="meta.code;src.var" display="0" datatype="short" width="2"><!-- ucd="CODE_VARIAB" -->
+      <DESCRIPTION>? Intra-observation Gregory-Loredo variability index in the range [0, 10]: indicates whether the source region photon flux is constant within an observation (highest value across all observations); ACIS medium (1.2-2.0keV) energy band (var_intra_index_m)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="Vam" ucd="src.var" display="0" datatype="float" width="6" precision="3"><!-- ucd="VAR_PROBABILITY" -->
+      <DESCRIPTION>? Intra-observation Gregory-Loredo variability probability (highest value across all observations); ACIS medium (1.2-2.0keV) energy band (var_intra_prob_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="VaKSm" ucd="src.var.amplitude" display="0" datatype="float" width="6" precision="3"><!-- ucd="VAR_AMPLITUDE_VALUE" -->
+      <DESCRIPTION>? Intra-observation Kolmogorov-Smirnov test variability probability (highest value across all observations); ACIS medium (1.2-2.0keV) energy band (ks_intra_prob_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="VaKPm" ucd="stat.fit.goodness;src.var" display="0" datatype="float" width="6" precision="3"><!-- ucd="VAR_PROBABILITY" -->
+      <DESCRIPTION>? Intra-observation Kuiper's test variability probability (highest value across all observations); ACIS medium (1.2-2.0keV) energy band (kp_intra_prob_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="VaGLIs" ucd="meta.code;src.var" display="0" datatype="short" width="2"><!-- ucd="CODE_VARIAB" -->
+      <DESCRIPTION>? Intra-observation Gregory-Loredo variability index in the range [0, 10]: indicates whether the source region photon flux is constant within an observation (highest value across all observations); ACIS soft (0.5-1.2keV) energy band (var_intra_index_s)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="Vas" ucd="stat.fit.goodness;src.var" display="0" datatype="float" width="6" precision="3"><!-- ucd="VAR_PROBABILITY" -->
+      <DESCRIPTION>? Intra-observation Gregory-Loredo variability probability (highest value across all observations); ACIS soft (0.5-1.2keV) energy band (var_intra_prob_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="VaKSs" ucd="src.var.amplitude" display="0" datatype="float" width="6" precision="3"><!-- ucd="VAR_AMPLITUDE_VALUE" -->
+      <DESCRIPTION>? Intra-observation Kolmogorov-Smirnov test variability probability (highest value across all observations); ACIS soft (0.5-1.2keV) energy band (ks_intra_prob_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="VaKPs" ucd="stat.fit.goodness;src.var" display="0" datatype="float" width="6" precision="3"><!-- ucd="VAR_PROBABILITY" -->
+      <DESCRIPTION>? Intra-observation Kuiper's test variability probability (highest value across all observations); ACIS soft (0.5-1.2keV) energy band (kp_intra_prob_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="VaGLIu" ucd="meta.code;src.var" display="0" datatype="short" width="2"><!-- ucd="CODE_VARIAB" -->
+      <DESCRIPTION>? Intra-observation Gregory-Loredo variability index in the range [0, 10]: indicates whether the source region photon flux is constant within an observation (highest value across all observations); ACIS ultrasoft (0.2-0.5keV) energy band</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="Vau" ucd="src.var" display="0" datatype="float" width="6" precision="3"><!-- ucd="VAR_PROBABILITY" -->
+      <DESCRIPTION>? Intra-observation Gregory-Loredo variability probability (highest value across all observations); ACIS ultrasoft (0.2-0.5keV) energy band (var_intra_prob_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="VaKSu" ucd="src.var.amplitude" display="0" datatype="float" width="6" precision="3"><!-- ucd="VAR_AMPLITUDE_VALUE" -->
+      <DESCRIPTION>? Intra-observation Kolmogorov-Smirnov test variability probability (highest value across all observations); ACIS ultrasoft (0.2-0.5keV) energy band (ks_intra_prob_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="VaKPu" ucd="stat.fit.goodness;src.var" display="0" datatype="float" width="6" precision="3"><!-- ucd="VAR_PROBABILITY" -->
+      <DESCRIPTION>? Intra-observation Kuiper's test variability probability (highest value across all observations); ACIS ultrasoft (0.2-0.5keV) energy band (kp_intra_prob_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="VaGLIw" ucd="meta.code;src.var" display="0" datatype="short" width="2"><!-- ucd="CODE_VARIAB" -->
+      <DESCRIPTION>? Intra-observation Gregory-Loredo variability index in the range [0, 10]: indicates whether the source region photon flux is constant within an observation (highest value across all observations); HRC wide (~0.1-10.0keV) energy band (var_intra_index_w)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="Vaw" ucd="stat.fit.goodness;src.var" display="0" datatype="float" width="6" precision="3"><!-- ucd="VAR_PROBABILITY" -->
+      <DESCRIPTION>? Intra-observation Gregory-Loredo variability probability (highest value across all observations); HRC wide (~0.1-10.0keV) energy band (var_intra_prob_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="VaKSw" ucd="src.var.amplitude" display="0" datatype="float" width="6" precision="3"><!-- ucd="VAR_AMPLITUDE_VALUE" -->
+      <DESCRIPTION>? Intra-observation Kolmogorov-Smirnov test variability probability (highest value across all observations); HRC wide (~0.1-10.0keV) energy band (ks_intra_prob_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="VaKPw" ucd="stat.fit.goodness;src.var" display="0" datatype="float" width="6" precision="3"><!-- ucd="VAR_PROBABILITY" -->
+      <DESCRIPTION>? Intra-observation Kuiper's test variability probability (highest value across all observations); HRC wide (~0.1-10.0keV) energy band (kp_intra_prob_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ViIb" ucd="meta.code;src.var" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_VARIAB" -->
+      <DESCRIPTION>? Inter-observation variability index in the range [0, 10]: indicates whether the source region photon flux is constant between observations; ACIS broad (0.5-7.0keV) energy band (var_inter_index_b)</DESCRIPTION>
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="Vib" ucd="stat.fit.goodness;src.var" display="0" datatype="float" width="6" precision="3"><!-- ucd="VAR_PROBABILITY" -->
+      <DESCRIPTION>? Inter-observation variability probability, calculated from the chi^2^ distribution of the photon fluxes of the individual observations; ACIS broad (0.5-7.0keV) energy band (var_inter_prob_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ViSb" ucd="src.var.amplitude" display="0" datatype="double" width="13" precision="E6" unit="ph.s**-1.cm**-2"><!-- ucd="VAR_AMPLITUDE_VALUE" -->
+      <DESCRIPTION>? Inter-observation flux variability standard deviation; the spread of the individual observation photon fluxes about the error weighted mean; ACIS broad (0.5-7.0keV) energy band (var_inter_sigma_b)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ViIh" ucd="meta.code;src.var" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_VARIAB" -->
+      <DESCRIPTION>? Inter-observation variability index in the range [0, 10]: indicates whether the source region photon flux is constant between observations; ACIS hard (2.0-7.0keV) energy band (var_inter_index_h)</DESCRIPTION>
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="Vih" ucd="stat.fit.goodness;src.var" display="0" datatype="float" width="6" precision="3"><!-- ucd="VAR_PROBABILITY" -->
+      <DESCRIPTION>? Inter-observation variability probability, calculated from the chi^2^ distribution of the photon fluxes of the individual observations; ACIS hard (2.0-7.0keV) energy band (var_inter_prob_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ViSh" ucd="src.var.amplitude" display="0" datatype="double" width="13" precision="E6" unit="ph.s**-1.cm**-2"><!-- ucd="VAR_AMPLITUDE_VALUE" -->
+      <DESCRIPTION>? Inter-observation flux variability standard deviation; the spread of the individual observation photon fluxes about the error weighted mean; ACIS hard (2.0-7.0keV) energy band (var_inter_sigma_h)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ViIm" ucd="meta.code;src.var" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_VARIAB" -->
+      <DESCRIPTION>? Inter-observation variability index in the range [0, 10]: indicates whether the source region photon flux is constant between observations; ACIS medium (1.2-2.0keV) energy band (var_inter_index_m)</DESCRIPTION>
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="Vim" ucd="stat.fit.goodness;src.var" display="0" datatype="float" width="6" precision="3"><!-- ucd="VAR_PROBABILITY" -->
+      <DESCRIPTION>? Inter-observation variability probability, calculated from the chi^2^ distribution of the photon fluxes of the individual observations; ACIS medium (1.2-2.0keV) energy band (var_inter_prob_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ViSm" ucd="src.var.amplitude" display="0" datatype="double" width="13" precision="E6" unit="ph.s**-1.cm**-2"><!-- ucd="VAR_AMPLITUDE_VALUE" -->
+      <DESCRIPTION>? Inter-observation flux variability standard deviation; the spread of the individual observation photon fluxes about the error weighted mean; ACIS medium (1.2-2.0keV) energy band (var_inter_sigma_m)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ViIs" ucd="meta.code;src.var" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_VARIAB" -->
+      <DESCRIPTION>? Inter-observation variability index in the range [0, 10]: indicates whether the source region photon flux is constant between observations; ACIS soft (0.5-1.2keV) energy band (var_inter_index_s)</DESCRIPTION>
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="Vis" ucd="stat.fit.goodness;src.var" display="0" datatype="float" width="6" precision="3"><!-- ucd="VAR_PROBABILITY" -->
+      <DESCRIPTION>? Inter-observation variability probability, calculated from the chi^2^ distribution of the photon fluxes of the individual observations; ACIS soft (0.5-1.2keV) energy band (var_inter_prob_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ViSs" ucd="src.var.amplitude" display="0" datatype="double" width="13" precision="E6" unit="ph.s**-1.cm**-2"><!-- ucd="VAR_AMPLITUDE_VALUE" -->
+      <DESCRIPTION>? Inter-observation flux variability standard deviation; the spread of the individual observation photon fluxes about the error weighted mean; ACIS soft (0.5-1.2keV) energy band (var_inter_sigma_s)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ViIu" ucd="meta.code;src.var" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_VARIAB" -->
+      <DESCRIPTION>? Inter-observation variability index in the range [0, 10]: indicates whether the source region photon flux is constant between observations; ACIS ultrasoft (0.2-0.5keV) energy band (var_inter_index_u)</DESCRIPTION>
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="Viu" ucd="stat.fit.goodness;src.var" display="0" datatype="float" width="6" precision="3"><!-- ucd="VAR_PROBABILITY" -->
+      <DESCRIPTION>? Inter-observation variability probability, calculated from the chi^2^ distribution of the photon fluxes of the individual observations; ACIS ultrasoft (0.2-0.5keV) energy band (var_inter_prob_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ViSu" ucd="src.var.amplitude" display="0" datatype="double" width="13" precision="E6" unit="ph.s**-1.cm**-2"><!-- ucd="VAR_AMPLITUDE_VALUE" -->
+      <DESCRIPTION>? Inter-observation flux variability standard deviation; the spread of the individual observation photon fluxes about the error weighted mean; ACIS ultrasoft (0.2-0.5keV) energy band (var_inter_sigma_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ViIw" ucd="meta.code;src.var" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_VARIAB" -->
+      <DESCRIPTION>? Inter-observation variability index in the range [0, 10]: indicates whether the source region photon flux is constant between observations; HRC wide (~0.1-10.0keV) energy band (var_inter_index_w)</DESCRIPTION>
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="Viw" ucd="stat.fit.goodness;src.var" display="0" datatype="float" width="6" precision="3"><!-- ucd="VAR_PROBABILITY" -->
+      <DESCRIPTION>? Inter-observation variability probability, calculated from the chi^2^ distribution of the photon fluxes of the individual observations; HRC wide (~0.1-10.0keV) energy band (var_inter_prob_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ViSw" ucd="src.var.amplitude" display="0" datatype="double" width="13" precision="E6" unit="ph.s**-1.cm**-2"><!-- ucd="VAR_AMPLITUDE_VALUE" -->
+      <DESCRIPTION>? Inter-observation flux variability standard deviation; the spread of the individual observation photon fluxes about the error weighted mean; HRC wide (~0.1-10.0keV) energy band (var_inter_sigma_w)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Nac" ucd="meta.number" display="1" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Total number of ACIS imaging observations contributing to the Master Sources Table record of the source (acis_num)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="Nac/hetg" ucd="meta.number" display="1" datatype="unsignedByte" width="1"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Total number of ACIS/HETG observations contributing to the Master Sources Table record of the source (acis_hetg_num)</DESCRIPTION>
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="Nac/letg" ucd="meta.number" display="1" datatype="unsignedByte" width="1"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Total number of ACIS/LETG observations contributing to the Master Sources Table record of the source (acis_letg_num)</DESCRIPTION>
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="Nhrc" ucd="meta.number" display="1" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Total number of HRC imaging observations contributing to the Master Sources Table record of the source (hrc_num)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="Nhrc/h" ucd="meta.number" display="1" datatype="unsignedByte" width="1"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Total number of HRC/HETG observations contributing to the Master Sources Table record of the source (hrc_hetg_num)</DESCRIPTION>
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="Nhrc/l" ucd="meta.number" display="1" datatype="unsignedByte" width="1"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Total number of HRC/LETG observations contributing to the Master Sources Table record of the source (hrc_letg_num)</DESCRIPTION>
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="TimeA" ucd="time.epoch" display="1" datatype="double" width="9" precision="1" unit="s"><!-- ucd="TIME_MISC" -->
+      <DESCRIPTION>? Total livetime for all ACIS imaging observations contributing to the Master Sources Table record of the source (Tacis_time)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="TimeH" ucd="time.epoch" display="1" datatype="double" width="9" precision="1" unit="s"><!-- ucd="TIME_MISC" -->
+      <DESCRIPTION>? Total livetime for all HRC imaging observations contributing to the Master Sources Table record of the source (Thrc_time)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+  </TABLE>
+<INFO name="matches" value="2">matching records</INFO>
+</RESOURCE>
+</VOTABLE>

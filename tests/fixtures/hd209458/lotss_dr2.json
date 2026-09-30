@@ -1,0 +1,19 @@
+{
+  "catalog": "lotss_dr2",
+  "target": "hd209458",
+  "ra": 330.79502,
+  "dec": 18.88432,
+  "radius_arcsec": 10.0,
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+Source%2C+RAJ2000%2C+DEJ2000%2C+e_RAJ2000%2C+e_DEJ2000%2C+SpeakTot%2C+e_SpeakTot%2C+Maj%2C+Min%2C+SCode%2C+DISTANCE%28POINT%28%27ICRS%27%2C+RAJ2000%2C+DEJ2000%29%2C+POINT%28%27ICRS%27%2C+330.795020000%2C+18.884320000%29%29+AS+match_dist+FROM+%22J%2FA%2BA%2F659%2FA1%2Fcatalog%22+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+RAJ2000%2C+DEJ2000%29%2C+CIRCLE%28%27ICRS%27%2C+330.795020000%2C+18.884320000%2C+0.0027777778%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": [
+        "FROM \"J/A+A/659/A1/catalog\" "
+      ]
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "reference": "2099XXX.....1....1Z",
+  "recorded_check": {
+    "key": "2099XXX.....1....1Z",
+    "bibcode": "2099XXX.....1....1Z",
+    "exists": null,
+    "link_type": null,
+    "resolved_url": null,
+    "doi_from_ads": null,
+    "doi_matches": null,
+    "metadata": null,
+    "metadata_matches": null,
+    "problems": [
+      "ADS gives no full-text, data, e-source, SIMBAD or associated link for this bibcode (HTTP 404 for every link type): existence undecided (a typo or an unlinked record)"
+    ],
+    "ok": false
+  },
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://ui.adsabs.harvard.edu/link_gateway/2099XXX.....1....1Z/PUB_HTML",
+      "accept": "*/*",
+      "status_code": 404,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      }
+    },
+    {
+      "method": "GET",
+      "url": "https://ui.adsabs.harvard.edu/link_gateway/2099XXX.....1....1Z/EPRINT_HTML",
+      "accept": "*/*",
+      "status_code": 404,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      }
+    },
+    {
+      "method": "GET",
+      "url": "https://ui.adsabs.harvard.edu/link_gateway/2099XXX.....1....1Z/ADS_PDF",
+      "accept": "*/*",
+      "status_code": 404,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      }
+    },
+    {
+      "method": "GET",
+      "url": "https://ui.adsabs.harvard.edu/link_gateway/2099XXX.....1....1Z/ADS_SCAN",
+      "accept": "*/*",
+      "status_code": 404,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      }
+    },
+    {
+      "method": "GET",
+      "url": "https://ui.adsabs.harvard.edu/link_gateway/2099XXX.....1....1Z/PUB_PDF",
+      "accept": "*/*",
+      "status_code": 404,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      }
+    },
+    {
+      "method": "GET",
+      "url": "https://ui.adsabs.harvard.edu/link_gateway/2099XXX.....1....1Z/ASSOCIATED",
+      "accept": "*/*",
+      "status_code": 404,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      }
+    },
+    {
+      "method": "GET",
+      "url": "https://ui.adsabs.harvard.edu/link_gateway/2099XXX.....1....1Z/DATA",
+      "accept": "*/*",
+      "status_code": 404,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      }
+    },
+    {
+      "method": "GET",
+      "url": "https://ui.adsabs.harvard.edu/link_gateway/2099XXX.....1....1Z/ESOURCE",
+      "accept": "*/*",
+      "status_code": 404,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      }
+    },
+    {
+      "method": "GET",
+      "url": "https://ui.adsabs.harvard.edu/link_gateway/2099XXX.....1....1Z/SIMBAD",
+      "accept": "*/*",
+      "status_code": 404,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      }
+    }
+  ]
+}

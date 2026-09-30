@@ -1,0 +1,12 @@
+{"request":[
+ {
+  "name":"NVSS J122906+020305"
+  ,"ra":187.27670833
+  ,"dec":2.05141667
+  ,"flux_20_cm":54991.2
+  ,"flux_20_cm_error":1900.3
+ }
+], "status": true,
+   "messages":[   {"status":"Info","id":"Name resolution","text":"Position 187.2779154,2.0523883 corresponds to J2000 decimal coordinates:187.2779154 2.0523883"}
+  ]
+}

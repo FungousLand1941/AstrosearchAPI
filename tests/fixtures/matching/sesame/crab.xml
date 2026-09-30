@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>Crab Nebula</name>
+  <!-- Q8506014 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 0ms [0] -->
+    <INFO>from cache</INFO>
+    <oid>795871</oid>
+    <otype>SNR</otype>
+    <jpos>05:34:31.77 +22:01:02.6</jpos>
+    <jradeg>83.6324</jradeg>
+    <jdedeg>22.0174</jdedeg>
+    <refPos>2022A&amp;A...661A..38P</refPos>
+    <errRAmas>5000</errRAmas><errDEmas>5000</errDEmas>
+    <oname>M   1</oname>
+    <nrefs>6593</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ====Done (2026-Sep-29,10:36:28z)==== -->

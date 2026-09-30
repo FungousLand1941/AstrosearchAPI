@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>RR Lyr</name>
+  <!-- Q8552376 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 66ms [2] -->
+    <oid>2950036</oid>
+    <otype>RR*</otype>
+    <jpos>19:25:27.91 +42:47:03.6</jpos>
+    <jradeg>291.366304</jradeg>
+    <jdedeg>42.78435924</jdedeg>
+    <refPos>2020yCat.1350....0G</refPos>
+    <errRAmas>0.0224</errRAmas><errDEmas>0.0242</errDEmas>
+    <pm>
+      <v>224.432</v><e>0.043</e><q>A</q><r>2020yCat.1350....0G</r>
+      <pa>209.23</pa>
+      <pmRA>-109.599</pmRA><epmRA>0.029</epmRA>
+      <pmDE>-195.851</pmDE><epmDE>0.032</epmDE>
+    </pm>
+    <Vel><v>-78.0694</v><e>0.0919</e><q>A</q><r>2022ApJS..259...35A</r></Vel>
+    <plx><v>3.9849</v><e>0.0265</e><q>A</q><r>2020yCat.1350....0G</r></plx>
+    <spType>kA3hF0</spType><spNum>0.0004ED00.0000.0000000000000000</spNum>
+    <oname>V* RR Lyr</oname>
+    <nrefs>953</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ****Total of 1 crashes -->
+<!-- Configuration tested: /run/sesame.conf -->

@@ -1,0 +1,14 @@
+{
+  "scenario": "unknown_hips",
+  "recorded_outcome": "UnknownSurveyError: hips2fits does not know HiPS 'BOGUS/P/nothing': Unknown HiPS - Could not find a HiPS matching \"BOGUS/P/nothing\"",
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://alasky.cds.unistra.fr/hips-image-services/hips2fits?hips=BOGUS%2FP%2Fnothing&width=64&height=64&fov=0.03333333333333333&projection=TAN&ra=187.2779154&dec=2.0523883&format=png",
+      "request_body": "",
+      "status_code": 400,
+      "content_type": "application/json",
+      "match": []
+    }
+  ]
+}

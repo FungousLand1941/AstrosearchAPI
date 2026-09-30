@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-29T05:43:31 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-29T05:43:31">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-source=J%2FApJ%2F956%2F51%2Ftable4&amp;-meta.all=">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+
+<RESOURCE ID="yCat_19560051_1" name="J/ApJ/956/51/table4" type="meta">
+  <INFO name="nrows" value="13861">Number of rows of the table</INFO>
+  <DESCRIPTION>
+    RESOLVE DR4 and ECO DR3 G3 groups HI catalogs (Hutchens+, 2023)
+    ECO DR3 photometry &amp; SED modeling outputs
+  </DESCRIPTION>
+  <PARAM name="-c" datatype="char" arraysize="32*" value="">
+    <DESCRIPTION>Query from a celestial position according to ASU syntax:
+      {RA{+|-}Dec|object_name}[,eq=equinox][,ep=epoch][,rm=[min/]max]
+      (see http://vizier.cds.unistra.fr/doc/asu.html)
+    </DESCRIPTION>
+  </PARAM>
+  <LINK content-role="query" action="votable?-source=J/ApJ/956/51/table4&amp;">
+    Action to Query the current RESOURCE, to be completed by PARAMs and FIELDs contents
+  </LINK>
+
+  <TABLE name="J/ApJ/956/51/table4" nrows="13861">
+    <COOSYS ID="J2000" system="eq_FK5" equinox="J2000"/>
+    <!-- Definitions of GROUPs and FIELDs -->
+
+<!-- +++No column could be found to attach a LINK in table: J/ApJ/956/51/table4 -->
+    <FIELD name="recno" ucd="meta.record" display="0" datatype="int" width="8"><!-- ucd="RECORD" -->
+      <DESCRIPTION>Record number assigned by the VizieR team. Should Not be used for identification.</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-5?-info=XML&amp;-out.add=.&amp;-source=J/ApJ/956/51/table4&amp;recno=${recno}"/>
+    </FIELD>
+    <FIELD name="ECO" ucd="meta.id;meta.main" display="1" datatype="short" width="5"><!-- ucd="ID_MAIN" -->
+      <DESCRIPTION>[1/13883] ECO galaxy identifier (name)</DESCRIPTION>
+<!-- [1/13883] ECO galaxy identifier (name) \linkRole{all data for this ECO source (Tables 4, 5, 7) } -->
+
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-4?-info=XML&amp;-out.add=.&amp;-source=J/ApJ/956/51&amp;-corr=PFK=ECO&amp;ECO===${ECO}"/>
+    </FIELD>
+    <FIELD name="RESOLVE" ucd="meta.id.cross" display="1" datatype="char" arraysize="6"><!-- ucd="ID_CROSSID" -->
+      <DESCRIPTION>RESOLVE galaxy identifier if any (resname)</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-4?-info=XML&amp;-out.add=.&amp;-source=J/ApJ/956/51/table6&amp;RESOLVE=${RESOLVE}"/>
+    </FIELD>
+    <FIELD name="f_RESOLVE" ucd="meta.code" display="1" datatype="char" arraysize="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>n: not in RESOLVE</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RAJ2000" ucd="pos.eq.ra;meta.main" ref="J2000" display="1" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_RA_MAIN" -->
+      <DESCRIPTION>[130/237.5] Right Ascension (J2000)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DEJ2000" ucd="pos.eq.dec;meta.main" ref="J2000" display="1" datatype="double" width="8" precision="4" unit="deg"><!-- ucd="POS_EQ_DEC_MAIN" -->
+      <DESCRIPTION>[-1/50] Declination (J2000)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="cz" ucd="src.redshift" display="1" datatype="float" width="6" precision="1" unit="km/s"><!-- ucd="VELOC_HC" -->
+      <DESCRIPTION>[2525/7518] Local Group-corrected Recession Velocity of Galaxy</DESCRIPTION>
+    </FIELD>
+    <FIELD name="cze16" ucd="src.redshift" display="0" datatype="float" width="6" precision="1" unit="km/s"><!-- ucd="VELOC_HC" -->
+      <DESCRIPTION>[2532/7470] Local Group-corrected Recession Velocity of Galaxy from E16 (Eckert+ 2016, J/ApJ/824/124)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="czhel" ucd="src.redshift;pos.heliocentric" display="1" datatype="float" width="6" precision="1" unit="km/s"><!-- ucd="VELOC_HC" -->
+      <DESCRIPTION>[2419/7663] Heliocentric Recession Velocity of Galaxy</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Dist" ucd="pos.distance" display="1" datatype="float" width="5" precision="1" unit="Mpc"><!-- ucd="PHYS_DISTANCE_TRUE" -->
+      <DESCRIPTION>[36/107] Line-of-Sight Comoving Distance to Galaxy (logscmvgdist)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="vif" ucd="meta.code" display="1" datatype="float" width="4" precision="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[-6/0] Visual Inspection Flag (1)</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR?-6N&amp;-info=XML&amp;-out.add=.&amp;&amp;lt;&amp;quot;Note&amp;quot;&amp;catid=19560051&amp;notid=1&amp;-out.emph=${vif}"/>
+    </FIELD>
+    <FIELD name="fm15" ucd="meta.code.member" display="1" datatype="float" width="6" precision="1"><!-- ucd="CODE_MEMB" -->
+      <DESCRIPTION>[1]? ECO DR1 Moffett+15 (J/ApJ/812/89) membership flag</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="nuvmag" ucd="phot.mag;em.UV.200-300nm" display="1" datatype="float" width="8" precision="3" unit="mag"><!-- ucd="PHOT_MAG_UV" -->
+      <DESCRIPTION>[0/24]? Apparent magnitude in GALEX NUV band (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_nuvmag" ucd="stat.error;phot.mag;em.UV.200-300nm" display="1" datatype="float" width="8" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0/3.6]? Error in NUVmag</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="umag" ucd="phot.mag;em.opt.U" display="1" datatype="float" width="8" precision="3" unit="mag"><!-- ucd="PHOT_SDSS_U" -->
+      <DESCRIPTION>[0/22.3]? Apparent magnitude in SDSS u band (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_umag" ucd="stat.error;phot.mag;em.opt.U" display="1" datatype="float" width="8" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0/3]? Error in umag</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="gmag" ucd="phot.mag;em.opt.B" display="1" datatype="float" width="8" precision="3" unit="mag"><!-- ucd="PHOT_SDSS_G" -->
+      <DESCRIPTION>[0/22]? Apparent magnitude in SDSS g band (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_gmag" ucd="stat.error;phot.mag;em.opt.B" display="1" datatype="float" width="8" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0/1.7]? Error in gmag</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="rmag" ucd="phot.mag;em.opt.R" display="1" datatype="float" width="8" precision="3" unit="mag"><!-- ucd="PHOT_SDSS_R" -->
+      <DESCRIPTION>[10.5/21]? Apparent magnitude in SDSS r band (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_rmag" ucd="stat.error;phot.mag;em.opt.R" display="1" datatype="float" width="8" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0.02/1.7]? Error in rmag</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="imag" ucd="phot.mag;em.opt.I" display="1" datatype="float" width="8" precision="3" unit="mag"><!-- ucd="PHOT_SDSS_I" -->
+      <DESCRIPTION>[0/20.6]? Apparent magnitude in SDSS i band (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_imag" ucd="stat.error;phot.mag;em.opt.I" display="1" datatype="float" width="8" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0/1.7]? Error in imag</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="zmag" ucd="phot.mag;em.opt.I" display="1" datatype="float" width="8" precision="3" unit="mag"><!-- ucd="PHOT_SDSS_Z" -->
+      <DESCRIPTION>[0/20.9]? Apparent magnitude in SDSS z band (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_zmag" ucd="stat.error;phot.mag;em.opt.I" display="1" datatype="float" width="8" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0/1.7]? Error in zmag</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Jmag" ucd="phot.mag;em.IR.J" display="1" datatype="float" width="8" precision="3" unit="mag"><!-- ucd="PHOT_JHN_J" -->
+      <DESCRIPTION>[0/16]? Apparent magnitude in 2MASS J band (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Jmag" ucd="stat.error;phot.mag;em.IR.J" display="1" datatype="float" width="8" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0/2.3]? Error in Jmag</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Hmag" ucd="phot.mag;em.IR.H" display="1" datatype="float" width="8" precision="3" unit="mag"><!-- ucd="PHOT_JHN_H" -->
+      <DESCRIPTION>[0/15]? Apparent magnitude in 2MASS H band (2hmag) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Hmag" ucd="stat.error;phot.mag;em.IR.H" display="1" datatype="float" width="8" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0/2.3]? Error in Hmag (e_2hmag)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Ksmag" ucd="phot.mag;em.IR.K" display="1" datatype="float" width="8" precision="3" unit="mag"><!-- ucd="PHOT_JHN_K" -->
+      <DESCRIPTION>[0/14.5]? Apparent magnitude in 2MASS K_s_ band (2kmag) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Ksmag" ucd="stat.error;phot.mag;em.IR.K" display="1" datatype="float" width="8" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0/2.3]? Error in Ksmag (e_2kmag)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="YmagUK" ucd="phot.mag;em.IR.J" display="1" datatype="float" width="8" precision="3" unit="mag"><!-- ucd="PHOT_MAG_Y" -->
+      <DESCRIPTION>[0/20.1]? Apparent magnitude in UKIDSS Y band (uymag) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_YmagUK" ucd="stat.error;phot.mag;em.IR.J" display="1" datatype="float" width="8" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0/2.3]? Error in YmagUK (e_uymag)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="HmagUK" ucd="phot.mag;em.IR.H" display="1" datatype="float" width="8" precision="3" unit="mag"><!-- ucd="PHOT_MAG_H" -->
+      <DESCRIPTION>[0/18]? Apparent magnitude in UKIDSS H band (uhmag) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_HmagUK" ucd="stat.error;phot.mag;em.IR.H" display="1" datatype="float" width="8" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0/2.3]? Error in HmagUK (e_uhmag)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="KmagUK" ucd="phot.mag;em.IR.K" display="1" datatype="float" width="8" precision="3" unit="mag"><!-- ucd="PHOT_MAG_K" -->
+      <DESCRIPTION>[0/17.5]? Apparent magnitude in UKIDSS K band (ukmag) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_KmagUK" ucd="stat.error;phot.mag;em.IR.K" display="1" datatype="float" width="8" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0/2.3]? Error in KmagUK (e_ukmag)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="extnuv" ucd="phys.absorption;em.UV.200-300nm" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_EXTINCTION_ISM" -->
+      <DESCRIPTION>[0.029/1.8] Foreground extinction in GALEX NUV band</DESCRIPTION>
+    </FIELD>
+    <FIELD name="extu" ucd="phys.absorption;em.opt.U" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_EXTINCTION_ISM" -->
+      <DESCRIPTION>[0.016/1] Foreground extinction in SDSS u band</DESCRIPTION>
+    </FIELD>
+    <FIELD name="extg" ucd="phys.absorption;em.opt.B" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_EXTINCTION_ISM" -->
+      <DESCRIPTION>[0.012/0.8] Foreground extinction in SDSS g band</DESCRIPTION>
+    </FIELD>
+    <FIELD name="extr" ucd="phys.absorption;em.opt.R" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_EXTINCTION_ISM" -->
+      <DESCRIPTION>[0.009/0.6] Foreground extinction in SDSS r band</DESCRIPTION>
+    </FIELD>
+    <FIELD name="exti" ucd="phys.absorption;em.opt.I" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_EXTINCTION_ISM" -->
+      <DESCRIPTION>[0.007/0.4] Foreground extinction in SDSS i band</DESCRIPTION>
+    </FIELD>
+    <FIELD name="extz" ucd="phys.absorption;em.opt.I" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_EXTINCTION_ISM" -->
+      <DESCRIPTION>[0.005/0.3] Foreground extinction in SDSS z band</DESCRIPTION>
+    </FIELD>
+    <FIELD name="exty" ucd="phys.absorption;em.IR.J" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_EXTINCTION_ISM" -->
+      <DESCRIPTION>[0.004/0.23] Foreground extinction in UKIDSS Y band</DESCRIPTION>
+    </FIELD>
+    <FIELD name="extJ" ucd="phys.absorption;em.IR.J" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_EXTINCTION_ISM" -->
+      <DESCRIPTION>[0.003/0.2] Foreground extinction in 2MASS J band</DESCRIPTION>
+    </FIELD>
+    <FIELD name="extH" ucd="phys.absorption;em.IR.H" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_EXTINCTION_ISM" -->
+      <DESCRIPTION>[0.002/0.11] Foreground extinction in 2MASS and UKIDSS H bands</DESCRIPTION>
+    </FIELD>
+    <FIELD name="extK" ucd="phys.absorption;em.IR.K" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_EXTINCTION_ISM" -->
+      <DESCRIPTION>[0.001/0.07] Foreground extinction in 2MASS and UKIDSS K bands</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RejPhot" ucd="meta.note" display="0" datatype="char" arraysize="82*" unit="mag"><!-- ucd="NOTE" -->
+      <DESCRIPTION>Photometry rejected during SED fitting (rejectedphot)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Badr" ucd="meta.code" display="1" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/2] Bad r-band Photometry Flag (badrphot) (3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="logMs" ucd="phys.mass" display="1" datatype="float" width="5" precision="2" unit="log(solMass)"><!-- ucd="PHYS_MASS_MISC" -->
+      <DESCRIPTION>[6.9/12] Log Galaxy Stellar Mass (logmstar) (4)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="rMAG" ucd="phys.magAbs;em.opt.R" display="1" datatype="float" width="7" precision="3" unit="mag"><!-- ucd="PHOT_ABS-MAG_BAND" -->
+      <DESCRIPTION>[-24/-13.5] Absolute Magnitude in SDSS r Band (absrmag) (5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="rMAGe16" ucd="phys.magAbs;em.opt.R" display="0" datatype="float" width="7" precision="3" unit="mag"><!-- ucd="PHOT_ABS-MAG_BAND" -->
+      <DESCRIPTION>[-24/-13.5] Absolute Magnitude in SDSS r Band from E16 (Eckert+ 2016, J/ApJ/824/124) (absrmage16) (5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="rMAGMod" ucd="phys.magAbs;em.opt.R;meta.modelled" display="1" datatype="float" width="7" precision="3" unit="mag"><!-- ucd="PHOT_ABS-MAG_BAND" -->
+      <DESCRIPTION>[-24/-13.3] Rest Frame SED Modeled Absolute Magnitude in SDSS r Band (modelabsrmag) (6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="NUV-rMod" ucd="phot.color;em.UV.200-300nm;em.opt.R" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_CI_UV-OPT" -->
+      <DESCRIPTION>[0.5/6.5] Rest Frame SED Modeled (NUV-r) Color (modelnuvr) (6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="u-rMod" ucd="phot.color;em.opt.U;em.opt.R" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_CI_U-R" -->
+      <DESCRIPTION>[0.49/3.11] Rest Frame SED Modeled (u-r) Color (modelur) (6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="u-iMod" ucd="phot.color;em.opt.U;em.opt.I" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_CI_U-R" -->
+      <DESCRIPTION>[0.6/3.7] Rest Frame SED Modeled (u-i) Color (modelui) (6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="u-JMod" ucd="phot.color;em.opt.U;em.IR.J" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_CI_IR-OPT" -->
+      <DESCRIPTION>[1.5/5.5] Rest Frame SED Modeled (u-J) Color (modeluj) (6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="u-KMod" ucd="phot.color;em.opt.U;em.IR.K" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_CI_IR-OPT" -->
+      <DESCRIPTION>[2.2/6.5] Rest Frame SED Modeled (u-K) Color (modeluk) (6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="g-rMod" ucd="phot.color;em.opt.B;em.opt.R" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_CI_B-R" -->
+      <DESCRIPTION>[0.026/1.01] Rest Frame SED Modeled (g-r) Color (modelgr) (6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="g-iMod" ucd="phot.color;em.opt.B;em.opt.I" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_CI_B-I" -->
+      <DESCRIPTION>[0.049/1.51] Rest Frame SED Modeled (g-i) Color (modelgi) (6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="g-JMod" ucd="phot.color;em.opt.B;em.IR.J" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_CI_IR-OPT" -->
+      <DESCRIPTION>[0.9/3.32] Rest Frame SED Modeled (g-J) Color (modelgj) (6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="g-KMod" ucd="phot.color;em.opt.B;em.IR.K" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_CI_IR-OPT" -->
+      <DESCRIPTION>[1.6/4.4] Rest Frame SED Modeled (g-K) Color (modelgk) (6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="u-rModc" ucd="phot.color;em.opt.U;em.opt.R" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_CI_U-R" -->
+      <DESCRIPTION>[0.49/3.1] Rest Frame SED Modeled (u-r) Color Corrected for Internal Extinction (modelurcorr) (7)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="r50" ucd="phys.size.radius" display="1" datatype="double" width="8" precision="3" unit="arcsec"><!-- ucd="PHYS_SIZE_RADIUS_GENERAL" -->
+      <DESCRIPTION>[0.87/204]? Half-light Radius in r Band (8)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="r90" ucd="phys.size.radius" display="1" datatype="double" width="8" precision="3" unit="arcsec"><!-- ucd="PHYS_SIZE_RADIUS_GENERAL" -->
+      <DESCRIPTION>[1.9/222]? 90%-light Radius in rBand (8)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Ratio" ucd="phys.size.axisRatio" display="1" datatype="float" width="6" precision="3"><!-- ucd="PHYS_AXIS-RATIO" -->
+      <DESCRIPTION>[0.03/0.95] Axial Ratio (axialratio)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="muDelta" ucd="src.morph.param" display="1" datatype="float" width="7" precision="2" unit="log(solMass.kpc**-2)"><!-- ucd="MORPH_PARAM" -->
+      <DESCRIPTION>[4/12]? Morphological metric (mudelta) (9)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="M15" ucd="meta.ref.url" display="1" datatype="short" width="3"><!-- ucd="DATA_LINK" -->
+      <DESCRIPTION>Display data from the EOC catalog (Moffett+ 2015, J/ApJ/812/89)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="Simbad" ucd="meta.ref.url" display="1" datatype="char" arraysize="6*"><!-- ucd="DATA_LINK" -->
+      <DESCRIPTION>Simbad column added by the CDS</DESCRIPTION>
+<!-- ask the {\bf\fg{FireBrick}Simbad} data-base about this object -->
+
+    </FIELD>
+  </TABLE>
+<INFO name="matches" value="2">matching records</INFO>
+</RESOURCE>
+</VOTABLE>

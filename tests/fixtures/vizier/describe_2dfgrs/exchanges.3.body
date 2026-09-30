@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-29T05:42:23 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-29T05:42:23">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-source=VII%2F250%2F2dfgrs&amp;-meta.all=">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+
+<RESOURCE ID="yCat_7250_1" name="VII/250/2dfgrs" type="meta">
+  <INFO name="nrows" value="245591">Number of rows of the table</INFO>
+  <DESCRIPTION>
+    The 2dF Galaxy Redshift Survey (2dFGRS) (2dFGRS Team, 1998-2003)
+    Best observations of 2dFGRS
+  </DESCRIPTION>
+
+<!-- Best observations of 2dFGRS ({\fg{red3}low-quality redshifts are written in red}) -->
+  <PARAM name="-c" datatype="char" arraysize="32*" value="">
+    <DESCRIPTION>Query from a celestial position according to ASU syntax:
+      {RA{+|-}Dec|object_name}[,eq=equinox][,ep=epoch][,rm=[min/]max]
+      (see http://vizier.cds.unistra.fr/doc/asu.html)
+    </DESCRIPTION>
+  </PARAM>
+  <LINK content-role="query" action="votable?-source=VII/250/2dfgrs&amp;">
+    Action to Query the current RESOURCE, to be completed by PARAMs and FIELDs contents
+  </LINK>
+
+  <TABLE name="VII/250/2dfgrs" nrows="245591">
+    <COOSYS ID="J2000" system="eq_FK5" equinox="J2000"/>
+    <!-- Definitions of GROUPs and FIELDs -->
+    <FIELD name="recno" ucd="meta.record" display="0" datatype="int" width="8"><!-- ucd="RECORD" -->
+      <DESCRIPTION>Record number assigned by the VizieR team. Should Not be used for identification.</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-5?-info=XML&amp;-out.add=.&amp;-source=VII/250/2dfgrs,p*&amp;SeqNum=${SeqNum}"/>
+    </FIELD>
+    <FIELD name="SeqNum" ucd="meta.id" display="1" datatype="char" arraysize="6"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>2dFGRS serial number (SEQNUM)</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-5?-info=XML&amp;-out.add=.&amp;-source=VII/250/2dfgrs,p*&amp;SeqNum=${SeqNum}"/>
+    </FIELD>
+    <FIELD name="o_SeqNum" ucd="meta.number" display="0" datatype="unsignedByte" width="1"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>[1,6] Number of spectra obtained</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-4?-info=XML&amp;-out.add=.&amp;-source=VII/250/spectra&amp;SeqNum=${SeqNum}"/>
+    </FIELD>
+    <FIELD name="Name" ucd="meta.id;meta.main" display="1" datatype="char" arraysize="10"><!-- ucd="ID_MAIN" -->
+      <DESCRIPTION>2dFGRS name (NAME)</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-5?-info=XML&amp;-out.add=.&amp;-source=VII/250/2dfgrs&amp;recno=${recno}"/>
+    </FIELD>
+    <FIELD name="UKST" ucd="obs.field" display="0" datatype="char" arraysize="3"><!-- ucd="ID_FIELD" -->
+      <DESCRIPTION>UKST plate number (IFIELD)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RAJ2000" ucd="pos.eq.ra;meta.main" ref="J2000" display="1" datatype="char" arraysize="11" xtype="hms"><!-- ucd="POS_EQ_RA_MAIN" -->
+      <DESCRIPTION>Right ascension (J2000, hours)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DEJ2000" ucd="pos.eq.dec;meta.main" ref="J2000" display="1" datatype="char" arraysize="11" xtype="dms"><!-- ucd="POS_EQ_DEC_MAIN" -->
+      <DESCRIPTION>Declination (J2000, degrees)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Bjmag" ucd="phot.mag;em.opt.B" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_PHG_BJ" -->
+      <DESCRIPTION>Final bj magnitude (BJG) (1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Bjsel" ucd="phot.mag;em.opt.B" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_PHG_BJ" -->
+      <DESCRIPTION>Final bj magnitude corrected from extinction (BJSEL) (G2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Bjmag.o" ucd="phot.mag;em.opt.B" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_PHG_BJ" -->
+      <DESCRIPTION>Original bj magnitude (BJG_OLD) (1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Bjsel.o" ucd="phot.mag;em.opt.B" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_PHG_BJ" -->
+      <DESCRIPTION>Original bj magnitude corrected from extinction (BJSELOLD)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Gext" ucd="phys.absorption" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_EXTINCTION_ISM" -->
+      <DESCRIPTION>Galactic extinction value (GALEXT)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Bjmag.S" ucd="phot.mag;em.opt.B" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_PHG_BJ" -->
+      <DESCRIPTION>? SuperCosmos bj magnitude (SB_BJ) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Rmag.S" ucd="phot.mag;em.opt.R" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_PHG_R" -->
+      <DESCRIPTION>? SuperCosmos R magnitude (SR_R) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ObsRun" ucd="obs.param;obs" display="0" datatype="char" arraysize="5"><!-- ucd="OBS_RUN" -->
+      <DESCRIPTION>Observation run of best spectrum (OBSRUN)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="z.obs" ucd="src.redshift;pos.heliocentric" display="0" datatype="float" width="7" precision="4"><!-- ucd="REDSHIFT_HC" -->
+      <DESCRIPTION>? Best redshift (observed) (Z) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="z" ucd="src.redshift" display="1" datatype="float" width="7" precision="4"><!-- ucd="REDSHIFT_HC" -->
+      <DESCRIPTION>? Best redshift (heliocentric) (Z_HELIO) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="q_z" ucd="meta.code.qual;src.redshift" display="1" datatype="unsignedByte" width="1"><!-- ucd="CODE_QUALITY" -->
+      <DESCRIPTION>[1,5] Redshift quality for best spectrum (reliable redshifts have quality&gt;=3) (2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="n_z" ucd="meta.note" display="1" datatype="unsignedByte" width="1"><!-- ucd="NOTE" -->
+      <DESCRIPTION>Redshift type (abs=1, emi=2, man=3) (ABEMMA)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="z.abs" ucd="src.redshift;pos.heliocentric" display="0" datatype="float" width="7" precision="4"><!-- ucd="REDSHIFT_HC" -->
+      <DESCRIPTION>? Cross-correlation redshift (Z_ABS) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="T" ucd="stat.fit.param" display="0" datatype="unsignedByte" width="1"><!-- ucd="REDUCT_PARAM" -->
+      <DESCRIPTION>Cross-correlation template (KBESTR) (2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Rx" ucd="stat.fit.param" display="0" datatype="float" width="5" precision="2"><!-- ucd="REDUCT_PARAM" -->
+      <DESCRIPTION>? Cross-correlation R value (R_CRCOR) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="z.em" ucd="src.redshift;pos.heliocentric" display="0" datatype="float" width="7" precision="4"><!-- ucd="REDSHIFT_HC" -->
+      <DESCRIPTION>? Emission redshift (Z_EMI) (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="o_z.em" ucd="meta.number" display="0" datatype="unsignedByte" width="1"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of emission lines for Z_EMI (NMBEST) (2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="SNR" ucd="em.wl.central;stat.median" display="1" datatype="float" width="5" precision="1"><!-- ucd="INST_S/N" -->
+      <DESCRIPTION>Median signal to noise ratio per pixel (2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="eta" ucd="stat.fit.param" display="0" datatype="double" width="8" precision="4"><!-- ucd="REDUCT_PARAM" -->
+      <DESCRIPTION>? Eta spectral type parameter from best spectrum (ETA_TYPE) (G1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Sp" ucd="meta.ref.url" display="1" datatype="char" arraysize="2"><!-- ucd="DATA_LINK" -->
+      <DESCRIPTION>Show the Image and annotated Spectrum of this 2dF Object</DESCRIPTION>
+    </FIELD>
+  </TABLE>
+<INFO name="matches" value="2">matching records</INFO>
+</RESOURCE>
+</VOTABLE>

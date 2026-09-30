@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>Scholz's star</name>
+  <!-- Q8483497 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 0ms [0] -->
+    <INFO>from cache</INFO>
+    <oid>8537533</oid>
+    <otype>LM*</otype>
+    <jpos>07:20:03.25 -08:46:49.9</jpos>
+    <jradeg>110.013557</jradeg>
+    <jdedeg>-8.780529</jdedeg>
+    <refPos>2003yCat.2246....0C</refPos>
+    <errRAmas>60</errRAmas><errDEmas>60</errDEmas>
+    <pm>
+      <v>109.3</v><e>2.5</e><q>C</q><r>2018AJ....155..265H</r>
+      <pa>209</pa>
+      <pmRA>-52.7</pmRA><epmRA>1.6</epmRA>
+      <pmDE>-95.8</pmDE><epmDE>1.9</epmDE>
+    </pm>
+    <Vel><v>83.1</v><e>0.4</e><q>D</q><r>2015AJ....149..104B</r></Vel>
+    <plx><v>148.8</v><e>1.08</e><q>C</q><r>2018AJ....155..265H</r></plx>
+    <spType>M9.5+T5</spType><spNum>0.0002B700.0000.0000000000100000</spNum>
+    <oname>NAME Scholz's star</oname>
+    <alias>2MASS J07200325-0846499</alias>
+    <alias>** BUG 17</alias>
+    <alias>CNS5 1819</alias>
+    <alias>DENIS J072003.2-084650</alias>
+    <alias>NAME Scholz's star</alias>
+    <alias>TIC 318801864</alias>
+    <alias>USNO-B1.0 0812-00137383</alias>
+    <alias>WDS J07200-0847AB</alias>
+    <alias>WISEA J072003.20-084651.3</alias>
+    <alias>WISE J072003.20-084651.2</alias>
+    <alias>Gaia DR3 3048443305671969152</alias>
+    <alias>Gaia DR2 3048443305671969152</alias>
+    <nrefs>72</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ====Done (2026-Sep-29,05:02:03z)==== -->

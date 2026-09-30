@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>61 Cyg A</name>
+  <!-- Q8515996 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 125ms [3] -->
+    <oid>837</oid>
+    <otype>BY*</otype>
+    <jpos>21:06:53.93 +38:44:57.9</jpos>
+    <jradeg>316.72474829</jradeg>
+    <jdedeg>38.74941732</jdedeg>
+    <refPos>2020yCat.1350....0G</refPos>
+    <errRAmas>0.0388</errRAmas><errDEmas>0.0485</errDEmas>
+    <pm>
+      <v>5282.104</v><e>0.078</e><q>A</q><r>2020yCat.1350....0G</r>
+      <pa>52.033</pa>
+      <pmRA>4164.209</pmRA><epmRA>0.055</epmRA>
+      <pmDE>3249.614</pmDE><epmDE>0.055</epmDE>
+    </pm>
+    <Vel><v>-65.82</v><e>0.06</e><q>A</q><r>2018A&amp;A...619A..81H</r></Vel>
+    <plx><v>285.9949</v><e>0.0599</e><q>A</q><r>2020yCat.1350....0G</r></plx>
+    <spType>K5V</spType><spNum>0.00022600.0030.0000000000000000</spNum>
+    <oname>*  61 Cyg A</oname>
+    <nrefs>1111</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ****Total of 1 crashes -->
+<!-- Configuration tested: /run/sesame.conf -->

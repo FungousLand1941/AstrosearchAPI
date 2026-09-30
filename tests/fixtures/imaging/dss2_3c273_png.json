@@ -1,0 +1,14 @@
+{
+  "scenario": "dss2_3c273_png",
+  "recorded_outcome": "128x128 coverage=1.0",
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://alasky.cds.unistra.fr/hips-image-services/hips2fits?hips=CDS%2FP%2FDSS2%2Fcolor&width=128&height=128&fov=0.03333333333333333&projection=TAN&ra=187.2779154&dec=2.0523883&format=png",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "image/png",
+      "match": []
+    }
+  ]
+}

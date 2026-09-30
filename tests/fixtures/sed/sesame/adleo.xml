@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>AD Leo</name>
+  <!-- Q8483493 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 0ms [0] -->
+    <INFO>from cache</INFO>
+    <oid>1710375</oid>
+    <otype>PM*</otype>
+    <jpos>10:19:36.28 +19:52:12.0</jpos>
+    <jradeg>154.90117008</jradeg>
+    <jdedeg>19.8700029</jdedeg>
+    <refPos>2020yCat.1350....0G</refPos>
+    <errRAmas>0.0240</errRAmas><errDEmas>0.0243</errDEmas>
+    <pm>
+      <v>500.508</v><e>0.038</e><q>A</q><r>2020yCat.1350....0G</r>
+      <pa>265.022</pa>
+      <pmRA>-498.620</pmRA><epmRA>0.028</epmRA>
+      <pmDE>-43.428</pmDE><epmDE>0.026</epmDE>
+    </pm>
+    <Vel><v>12.43</v><e>0.0002</e><q>A</q><r>2018MNRAS.475.1960F</r></Vel>
+    <plx><v>201.4064</v><e>0.0296</e><q>A</q><r>2020yCat.1350....0G</r></plx>
+    <spType>dM3</spType><spNum>0.00027600.7C00.0000000000000000</spNum>
+    <oname>V* AD Leo</oname>
+    <alias>LHS 5167</alias>
+    <alias>** STF 1424C</alias>
+    <alias>ADS 7724 C</alias>
+    <alias>AG+20 1170</alias>
+    <alias>AP J10193634+1952122</alias>
+    <alias>ASCC 863621</alias>
+    <alias>1AXG J101937+1951</alias>
+    <alias>BD+20 2465</alias>
+    <alias>CCDM J10199+1951C</alias>
+    <alias>Ci 18 1244</alias>
+    <alias>Ci 20 574</alias>
+    <alias>CNS5 2533</alias>
+    <alias>2E 2259</alias>
+    <alias>2E 1016.8+2007</alias>
+    <alias>1ES 1016+20.1</alias>
+    <alias>2EUVE J1019+19.8</alias>
+    <alias>EUVE J1019+19.8</alias>
+    <alias>EXO 1016.8+2007</alias>
+    <alias>GC 14167</alias>
+    <alias>GCRV 6499</alias>
+    <alias>GEN# +0.02002465</alias>
+    <alias>GES J10193576+1952114</alias>
+    <alias>G 54-23</alias>
+    <alias>GJ 388</alias>
+    <alias>GPM 154.902458+19.870105</alias>
+    <alias>IRAS 10169+2007</alias>
+    <alias>JP11 62</alias>
+    <alias>Karmn J10196+198</alias>
+    <alias>Karmn J10196+198AB</alias>
+    <alias>LSPM J1019+1952</alias>
+    <alias>LTT 12761</alias>
+    <alias>2MASS J10193634+1952122</alias>
+    <alias>MCC 574</alias>
+    <alias>NLTT 24015</alias>
+    <alias>8pc 204.60</alias>
+    <alias>PLX 2420</alias>
+    <alias>PLX 2420.00</alias>
+    <alias>PM J10196+1952</alias>
+    <alias>PPM 127309</alias>
+    <alias>Pul -3 660015</alias>
+    <alias>RBS 855</alias>
+    <alias>2RE J101936+195209</alias>
+    <alias>2RE J1019+195</alias>
+    <alias>RE J1019+195</alias>
+    <alias>RE J101935+195212</alias>
+    <alias>RX J1019.6+1952</alias>
+    <alias>1RXS J101936.3+195215</alias>
+    <alias>SAO 81292</alias>
+    <alias>StKM 2-626</alias>
+    <alias>TIC 95431305</alias>
+    <alias>TYC 1423-174-1</alias>
+    <alias>UBV 9550</alias>
+    <alias>UCAC2 38796273</alias>
+    <alias>UCAC4 550-048962</alias>
+    <alias>USNO-B1.0 1098-00182796</alias>
+    <alias>V* AD Leo</alias>
+    <alias>WEB 9274</alias>
+    <alias>WISEA J101935.88+195211.9</alias>
+    <alias>Zkh 141</alias>
+    <alias>[CGL99] 10</alias>
+    <alias>[FS2003] 0555</alias>
+    <alias>[GKL99] 216</alias>
+    <alias>[JHC84] 155</alias>
+    <alias>[R97] NGC 3227 8</alias>
+    <alias>[RHG95] 1616</alias>
+    <alias>[ZEH2003] RX J1019.6+1952 3</alias>
+    <alias>Gaia DR3 625453654702751872</alias>
+    <alias>Gaia DR2 625453654702751872</alias>
+    <nrefs>1496</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ====Done (2026-Sep-29,05:02:01z)==== -->

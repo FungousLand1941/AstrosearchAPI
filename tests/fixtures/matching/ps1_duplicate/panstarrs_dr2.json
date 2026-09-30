@@ -1,0 +1,20 @@
+{
+  "catalog": "panstarrs_dr2",
+  "target": "ps1_duplicate",
+  "ra": 359.9999806544865,
+  "dec": 21.434972343632282,
+  "epoch": 2016.0,
+  "pm_ra_masyr": null,
+  "pm_dec_masyr": null,
+  "radius_arcsec": 3.0,
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://catalogs.mast.stsci.edu/api/v0.1/panstarrs/dr2/mean.json?ra=359.999980654&dec=21.434972344&radius=0.0197916667&columns=%5B%22objID%22%2C+%22objName%22%2C+%22raMean%22%2C+%22decMean%22%2C+%22raMeanErr%22%2C+%22decMeanErr%22%2C+%22epochMean%22%2C+%22nDetections%22%2C+%22qualityFlag%22%2C+%22gMeanPSFMag%22%2C+%22gMeanPSFMagErr%22%2C+%22rMeanPSFMag%22%2C+%22rMeanPSFMagErr%22%2C+%22iMeanPSFMag%22%2C+%22iMeanPSFMagErr%22%2C+%22zMeanPSFMag%22%2C+%22zMeanPSFMagErr%22%2C+%22yMeanPSFMag%22%2C+%22yMeanPSFMagErr%22%2C+%22iMeanKronMag%22%2C+%22distance%22%5D&sort_by=distance&pagesize=2001&nDetections.gt=1",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    }
+  ]
+}

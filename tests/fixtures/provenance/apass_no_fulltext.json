@@ -1,0 +1,72 @@
+{
+  "reference": "2015AAS...22533616H",
+  "recorded_check": {
+    "key": "2015AAS...22533616H",
+    "bibcode": "2015AAS...22533616H",
+    "exists": true,
+    "link_type": "ASSOCIATED",
+    "resolved_url": null,
+    "doi_from_ads": null,
+    "doi_matches": null,
+    "metadata": null,
+    "metadata_matches": null,
+    "problems": [],
+    "ok": true
+  },
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://ui.adsabs.harvard.edu/link_gateway/2015AAS...22533616H/PUB_HTML",
+      "accept": "*/*",
+      "status_code": 404,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      }
+    },
+    {
+      "method": "GET",
+      "url": "https://ui.adsabs.harvard.edu/link_gateway/2015AAS...22533616H/EPRINT_HTML",
+      "accept": "*/*",
+      "status_code": 404,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      }
+    },
+    {
+      "method": "GET",
+      "url": "https://ui.adsabs.harvard.edu/link_gateway/2015AAS...22533616H/ADS_PDF",
+      "accept": "*/*",
+      "status_code": 404,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      }
+    },
+    {
+      "method": "GET",
+      "url": "https://ui.adsabs.harvard.edu/link_gateway/2015AAS...22533616H/ADS_SCAN",
+      "accept": "*/*",
+      "status_code": 404,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      }
+    },
+    {
+      "method": "GET",
+      "url": "https://ui.adsabs.harvard.edu/link_gateway/2015AAS...22533616H/PUB_PDF",
+      "accept": "*/*",
+      "status_code": 404,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      }
+    },
+    {
+      "method": "GET",
+      "url": "https://ui.adsabs.harvard.edu/link_gateway/2015AAS...22533616H/ASSOCIATED",
+      "accept": "*/*",
+      "status_code": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      }
+    }
+  ]
+}

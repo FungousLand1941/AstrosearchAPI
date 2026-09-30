@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-29T05:43:12 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-29T05:43:12">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-source=I%2F259%2Ftyc2&amp;-meta.all=">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+
+<RESOURCE ID="yCat_1259_1" name="I/259/tyc2" type="meta">
+  <INFO name="nrows" value="2539913">Number of rows of the table</INFO>
+  <DESCRIPTION>
+    The Tycho-2 Catalogue (Hog+ 2000)
+    *The Tycho-2 main catalogue
+  </DESCRIPTION>
+  <PARAM name="-c" datatype="char" arraysize="32*" value="">
+    <DESCRIPTION>Query from a celestial position according to ASU syntax:
+      {RA{+|-}Dec|object_name}[,eq=equinox][,ep=epoch][,rm=[min/]max]
+      (see http://vizier.cds.unistra.fr/doc/asu.html)
+    </DESCRIPTION>
+  </PARAM>
+  <LINK content-role="query" action="votable?-source=I/259/tyc2&amp;">
+    Action to Query the current RESOURCE, to be completed by PARAMs and FIELDs contents
+  </LINK>
+
+  <TABLE name="I/259/tyc2" nrows="2539913">
+    <COOSYS ID="J2000" system="eq_FK5" equinox="J2000"/>
+    <!-- Definitions of GROUPs and FIELDs -->
+    <FIELD name="recno" ucd="meta.record" display="0" datatype="int" width="8"><!-- ucd="RECORD" -->
+      <DESCRIPTION>Record number assigned by the VizieR team. Should Not be used for identification.</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-5?-info=XML&amp;-out.add=.&amp;-source=I/259/tyc2&amp;recno=${recno}"/>
+    </FIELD>
+    <FIELD name="TYC1" ucd="meta.id.part;meta.main" display="1" datatype="short" width="4"><!-- ucd="ID_MAIN:1" -->
+      <DESCRIPTION>[1,9537]+= TYC1 from TYC or GSC (1)</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-5?-info=XML&amp;-out.add=.&amp;-source=I/259/tyc2&amp;recno=${recno}"/>
+    </FIELD>
+    <FIELD name="TYC2" ucd="meta.id.part;meta.main" display="1" datatype="short" width="5"><!-- ucd="ID_MAIN:2" -->
+      <DESCRIPTION>[1,12121] TYC2 from TYC or GSC (1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TYC3" ucd="meta.id.part;meta.main" display="1" datatype="unsignedByte" width="1"><!-- ucd="ID_MAIN:3" -->
+      <DESCRIPTION>[1,3] TYC3 from TYC (1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="pflag" ucd="meta.code" display="0" datatype="char" arraysize="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[ PX] mean position flag (2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RAmdeg" ucd="pos.eq.ra" display="0" datatype="double" width="12" precision="8" unit="deg"><!-- ucd="POS_EQ_RA_OTHER" -->
+      <DESCRIPTION>[]? Mean Right Asc, ICRS, epoch=J2000 (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="DEmdeg" ucd="pos.eq.dec" display="0" datatype="double" width="12" precision="8" unit="deg"><!-- ucd="POS_EQ_DEC_OTHER" -->
+      <DESCRIPTION>[]? Mean Decl, ICRS, at epoch=J2000 (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="pmRA" ucd="pos.pm;pos.eq.ra" ref="J2000" display="1" datatype="float" width="7" precision="1" unit="mas/yr"><!-- ucd="POS_EQ_PMRA" -->
+      <DESCRIPTION>[-4418.0,6544.2]? prop. mot. in RA*cos(dec)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="pmDE" ucd="pos.pm;pos.eq.dec" ref="J2000" display="1" datatype="float" width="7" precision="1" unit="mas/yr"><!-- ucd="POS_EQ_PMDEC" -->
+      <DESCRIPTION>[-5774.3,10277.3]? prop. mot. in Dec</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_RAmdeg" ucd="stat.error" display="0" datatype="short" width="3" unit="mas"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[3,183]? s.e. RA*cos(dec),at mean epoch (5)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="e_DEmdeg" ucd="stat.error" display="0" datatype="short" width="3" unit="mas"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[1,184]? s.e. of Dec at mean epoch (5)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="e_pmRA" ucd="stat.error" display="0" datatype="float" width="4" precision="1" unit="mas/yr"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0.2,11.5]? s.e. prop mot in RA*cos(dec)(5)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_pmDE" ucd="stat.error" display="0" datatype="float" width="4" precision="1" unit="mas/yr"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0.2,10.3]? s.e. of proper motion in Dec(5)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="EpRAm" ucd="time.epoch" display="0" datatype="float" width="7" precision="2" unit="yr"><!-- ucd="TIME_EPOCH" -->
+      <DESCRIPTION>[1915.95,1992.53]? mean epoch of RA (4)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="EpDEm" ucd="time.epoch" display="0" datatype="float" width="7" precision="2" unit="yr"><!-- ucd="TIME_EPOCH" -->
+      <DESCRIPTION>[1911.94,1992.01]? mean epoch of Dec (4)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Num" ucd="meta.id" display="0" datatype="short" width="2"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>[2,36]? Number of positions used</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="q_RAmdeg" ucd="meta.code.qual" display="0" datatype="float" width="4" precision="1"><!-- ucd="CODE_QUALITY" -->
+      <DESCRIPTION>[0.0,9.9]? Goodness of fit for mean RA (6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="q_DEmdeg" ucd="meta.code.qual" display="0" datatype="float" width="4" precision="1"><!-- ucd="CODE_QUALITY" -->
+      <DESCRIPTION>[0.0,9.9]? Goodness of fit for mean Dec (6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="q_pmRA" ucd="meta.code.qual" display="0" datatype="float" width="4" precision="1"><!-- ucd="CODE_QUALITY" -->
+      <DESCRIPTION>[0.0,9.9]? Goodness of fit for pmRA (6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="q_pmDE" ucd="meta.code.qual" display="0" datatype="float" width="4" precision="1"><!-- ucd="CODE_QUALITY" -->
+      <DESCRIPTION>[0.0,9.9]? Goodness of fit for pmDE (6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="BTmag" ucd="phot.mag;em.opt.B" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_TYCHO_B" -->
+      <DESCRIPTION>[2.183,16.581]? Tycho-2 BT magnitude (7)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_BTmag" ucd="stat.error" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0.014,1.977]? s.e. of BT (7)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="VTmag" ucd="phot.mag;em.opt.V" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_TYCHO_V" -->
+      <DESCRIPTION>[1.905,15.193]? Tycho-2 VT magnitude (7)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_VTmag" ucd="stat.error" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0.009,1.468]? s.e. of VT (7)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="prox" ucd="meta.code" display="0" datatype="short" width="3"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[3,999] proximity indicator (8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TYC" ucd="meta.code" display="0" datatype="char" arraysize="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[T] Tycho-1 star (9)</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-5?-info=XML&amp;-out.add=.&amp;-source=HIP/tyc_main&amp;TYC===${TYC1}+${TYC2}+${TYC3}"/>
+    </FIELD>
+    <FIELD name="HIP" ucd="meta.id" display="1" datatype="int" width="6"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>[1,120404]? Hipparcos number</DESCRIPTION>
+      <VALUES null="-2147483648" />
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-5?-info=XML&amp;-out.add=.&amp;-source=HIP/hip_main&amp;HIP=${HIP}"/>
+    </FIELD>
+    <FIELD name="CCDM" ucd="meta.code.multip" display="0" datatype="char" arraysize="3"><!-- ucd="CODE_MULT_INDEX" -->
+      <DESCRIPTION>CCDM component identifier for HIP stars(10)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RA(ICRS)" ucd="pos.eq.ra;meta.main" ref="J2000" display="1" datatype="double" width="12" precision="8" unit="deg"><!-- ucd="POS_EQ_RA_MAIN" -->
+      <DESCRIPTION>Observed Tycho-2 Right Ascension, ICRS</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DE(ICRS)" ucd="pos.eq.dec;meta.main" ref="J2000" display="1" datatype="double" width="12" precision="8" unit="deg"><!-- ucd="POS_EQ_DEC_MAIN" -->
+      <DESCRIPTION>Observed Tycho-2 Declination, ICRS</DESCRIPTION>
+    </FIELD>
+    <FIELD name="EpRA-1990" ucd="time.epoch" ref="J2000" display="0" datatype="float" width="5" precision="2" unit="yr"><!-- ucd="TIME_EPOCH" -->
+      <DESCRIPTION>[0.81,2.13] epoch-1990 of RAdeg</DESCRIPTION>
+    </FIELD>
+    <FIELD name="EpDE-1990" ucd="time.epoch" display="0" datatype="float" width="5" precision="2" unit="yr"><!-- ucd="TIME_EPOCH" -->
+      <DESCRIPTION>[0.72,2.36] epoch-1990 of DEdeg</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_RAdeg" ucd="stat.error" display="0" datatype="float" width="5" precision="1" unit="mas"><!-- ucd="ERROR" -->
+      <DESCRIPTION>s.e.RA*cos(dec), of observed Tycho-2 RA (5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_DEdeg" ucd="stat.error" display="0" datatype="float" width="5" precision="1" unit="mas"><!-- ucd="ERROR" -->
+      <DESCRIPTION>s.e. of observed Tycho-2 Dec (5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="posflg" ucd="meta.id;stat.fit" display="0" datatype="char" arraysize="1"><!-- ucd="FIT_TYPE" -->
+      <DESCRIPTION>[ DP] type of Tycho-2 solution (11)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="corr" ucd="stat.correlation" display="0" datatype="float" width="4" precision="1"><!-- ucd="STAT_CORRELATION" -->
+      <DESCRIPTION>[-1,1] correlation (RAdeg,DEdeg)</DESCRIPTION>
+    </FIELD>
+  </TABLE>
+<INFO name="matches" value="2">matching records</INFO>
+</RESOURCE>
+</VOTABLE>

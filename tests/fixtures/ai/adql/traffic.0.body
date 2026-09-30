@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VOTABLE version="1.3" xmlns="http://www.ivoa.net/xml/VOTable/v1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/votable-1.3.xsd">
+<RESOURCE type="results">
+<INFO name="QUERY_STATUS" value="OK"/>
+<INFO name="PROVIDER" value="CDS">SIMBAD TAP Service</INFO>
+<INFO name="QUERY" value="SELECT TOP 5 b.main_id AS main_id, b.plx_value AS plx_value, b.sp_type AS sp_type FROM basic AS b WHERE b.plx_value &gt; 500 ORDER BY plx_value DESC"/>
+<TABLE name="result_S1790588326156">
+<FIELD arraysize="*" datatype="char" name="main_id" ucd="meta.id;meta.main" utype="mango:MangoObject.identifier">
+<DESCRIPTION>Main identifier for an object</DESCRIPTION>
+</FIELD>
+<FIELD datatype="double" name="plx_value" ucd="pos.parallax.trig" unit="mas" utype="mango:EpochPosition.parallax[CS.spaceSys=ICRS CT.epoch=J2000]">
+<DESCRIPTION>Parallax</DESCRIPTION>
+</FIELD>
+<FIELD arraysize="*" datatype="char" name="sp_type" ucd="src.spType">
+<DESCRIPTION>MK spectral type</DESCRIPTION>
+</FIELD>
+<DATA>
+<BINARY>
+<STREAM encoding='base64'>
+AAAADk5BTUUgUHJveGltYSBkQIgAiDEm6XkAAAAA
+</STREAM>
+</BINARY>
+</DATA>
+</TABLE>
+<INFO name="QUERY_STATUS" value="OVERFLOW"/>
+</RESOURCE>
+</VOTABLE>

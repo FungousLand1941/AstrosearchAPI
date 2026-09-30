@@ -1,0 +1,34 @@
+{
+  "case": "usnob_field",
+  "catalog": "vizier:I/284/out",
+  "radius_arcsec": 20.0,
+  "targets": [
+    {
+      "id": "3C 273",
+      "ra": 187.27791594049,
+      "dec": 2.05238823055
+    }
+  ],
+  "strategy": "xmatch",
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "http://cdsxmatch.u-strasbg.fr/xmatch/api/v1/sync",
+      "request_content_type": "multipart/form-data",
+      "fields": {
+        "request": "xmatch",
+        "distMaxArcsec": "20.000",
+        "RESPONSEFORMAT": "votable",
+        "cat2": "vizier:I/284/out",
+        "colRA1": "t_ra",
+        "colDec1": "t_dec",
+        "selection": "all",
+        "MAXREC": "200000",
+        "cat1": "t_idx,t_ra,t_dec\n0,187.27791594049,2.05238823055\n"
+      },
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/x-votable+xml"
+    }
+  ]
+}

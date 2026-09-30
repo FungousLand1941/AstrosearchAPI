@@ -1,0 +1,45 @@
+{
+  "case": "search_vlass_registry",
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "http://reg.g-vo.org/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+200+r.ivoid%2C+r.res_title%2C+r.short_name%2C+r.waveband%2C+r.reference_url%2C+c.standard_id%2C+i.access_url+FROM+rr.resource+AS+r+NATURAL+JOIN+rr.capability+AS+c+NATURAL+JOIN+rr.interface+AS+i+WHERE+c.standard_id+IN+%28%27ivo%3A%2F%2Fivoa.net%2Fstd%2Fconesearch%27%2C+%27ivo%3A%2F%2Fivoa.net%2Fstd%2Ftap%27%29+AND+i.intf_role+%3D+%27std%27+AND+%281+%3D+ivo_hasword%28r.res_description%2C+%27VLASS%27%29+OR+1+%3D+ivo_hasword%28r.res_title%2C+%27VLASS%27%29%29+ORDER+BY+r.ivoid",
+      "status_code": 200,
+      "content_type": "application/x-votable+xml",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://vizier.cds.unistra.fr/viz-bin/votable?-meta=&-meta.max=50&-words=VLASS",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/x-votable+xml",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+100+table_name%2C+description%2C+nrows+FROM+TAP_SCHEMA.tables+WHERE+%28description+LIKE+%27%25VLASS%25%27+OR+description+LIKE+%27%25vlass%25%27+OR+description+LIKE+%27%25Vlass%25%27%29+ORDER+BY+nrows+DESC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://vizier.cds.unistra.fr/viz-bin/votable?-source=J%2FApJ%2F914%2F42+J%2FApJS%2F280%2F23+J%2FA%2BA%2F702%2FA178+J%2FApJS%2F267%2F37&-meta=",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/x-votable+xml",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+table_name%2C+description%2C+nrows+FROM+TAP_SCHEMA.tables+WHERE+table_name+LIKE+%27%22J%2FApJS%2F255%2F30%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F914%2F42%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJS%2F280%2F23%2F%25%27+OR+table_name+LIKE+%27%22J%2FA%2BA%2F702%2FA178%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJS%2F267%2F37%2F%25%27&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    }
+  ]
+}

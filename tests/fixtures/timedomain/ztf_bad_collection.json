@@ -1,0 +1,13 @@
+{
+  "case": "ztf_bad_collection",
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://irsa.ipac.caltech.edu/TAP/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&FORMAT=csv&QUERY=SELECT+oid%2C+ra%2C+dec%2C+filtercode%2C+field%2C+ccdid%2C+qid%2C+ngoodobs+FROM+ztf_objects_dr999+WHERE+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+10.7420190%2C+1.1261380%2C+0.00083333%29%29+%3D+1",
+      "status_code": 200,
+      "content_type": "text/xml",
+      "location": ""
+    }
+  ]
+}

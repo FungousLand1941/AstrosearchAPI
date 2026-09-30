@@ -1,0 +1,40 @@
+{
+  "case": "generic",
+  "catalog": "vizier:II/328/allwise",
+  "radius_arcsec": 5.0,
+  "targets": [
+    {
+      "id": "3c273",
+      "ra": 187.2779154,
+      "dec": 2.0523883
+    },
+    {
+      "id": "hd209458",
+      "ra": 330.79502,
+      "dec": 18.88432
+    }
+  ],
+  "strategy": "xmatch",
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "http://cdsxmatch.u-strasbg.fr/xmatch/api/v1/sync",
+      "request_content_type": "multipart/form-data",
+      "fields": {
+        "request": "xmatch",
+        "distMaxArcsec": "5.000",
+        "RESPONSEFORMAT": "votable",
+        "cat2": "vizier:II/328/allwise",
+        "colRA1": "t_ra",
+        "colDec1": "t_dec",
+        "selection": "all",
+        "MAXREC": "200000",
+        "cols2": "AllWISE,RAJ2000,DEJ2000,eeMaj,eeMin,eePA,W1mag,W2mag,W3mag,W4mag,e_W1mag,e_W2mag,e_W3mag,e_W4mag,Jmag,Hmag,Kmag,ccf,ex,var,qph,ID",
+        "cat1": "t_idx,t_ra,t_dec\n0,187.2779154,2.0523883\n1,330.79502,18.88432\n"
+      },
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/x-votable+xml"
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>NGC 5548</name>
+  <!-- Q8483444 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 194ms [3] -->
+    <oid>2251853</oid>
+    <otype>Sy1</otype>
+    <jpos>14:17:59.54 +25:08:12.6</jpos>
+    <jradeg>214.49808345</jradeg>
+    <jdedeg>25.1368342</jdedeg>
+    <refPos>2020yCat.1350....0G</refPos>
+    <errRAmas>0.0242</errRAmas><errDEmas>0.0270</errDEmas>
+    <pm>
+      <v>0.161</v><e>0.045</e><q>A</q><r>2020yCat.1350....0G</r>
+      <pa>294</pa>
+      <pmRA>-0.147</pmRA><epmRA>0.032</epmRA>
+      <pmDE>0.065</pmDE><epmDE>0.032</epmDE>
+    </pm>
+    <z><v>0.01668582</v><e>0.0005</e><q>C</q><r>2022ApJS..261....2K</r></z>
+    <MType>SA</MType>
+    <oname>NGC  5548</oname>
+    <alias>NGC 5548</alias>
+    <alias>2A 1415+255</alias>
+    <alias>3A 1415+253</alias>
+    <alias>AKARI-IRC-V1 J1417595+250812</alias>
+    <alias>2E 3236</alias>
+    <alias>2E 1415.7+2522</alias>
+    <alias>ECO 4631</alias>
+    <alias>2EUVE J1417+25.1</alias>
+    <alias>EUVE J1417+25.1</alias>
+    <alias>1H 1415+255</alias>
+    <alias>H 1416+256</alias>
+    <alias>H 1415+253</alias>
+    <alias>INTREF 597</alias>
+    <alias>IRAS 14156+2522</alias>
+    <alias>IRAS F14157+2522</alias>
+    <alias>KUG 1415+253</alias>
+    <alias>LEDA 51074</alias>
+    <alias>2MASS J14175955+2508126</alias>
+    <alias>2MASX J14175951+2508124</alias>
+    <alias>2MAXI J1417+253</alias>
+    <alias>MAXI J1418+251</alias>
+    <alias>MCG+04-34-013</alias>
+    <alias>Mrk 1509</alias>
+    <alias>PBC J1417.9+2508</alias>
+    <alias>PSCz Q14156+2522</alias>
+    <alias>QSO J1417+2508</alias>
+    <alias>RBS 1367</alias>
+    <alias>1RXP J141759.3+250811</alias>
+    <alias>RX J141759+25081</alias>
+    <alias>RX J1418.0+2508</alias>
+    <alias>RX J1417.9+2508</alias>
+    <alias>1RXS J141759.6+250817</alias>
+    <alias>2RXS J141759.5+250817</alias>
+    <alias>SDSS J141759.54+250812.7</alias>
+    <alias>SRGA J141759.0+250808</alias>
+    <alias>SWIFT J1417.9+2507</alias>
+    <alias>SWIFT J1418.2+2507</alias>
+    <alias>TIC 156602278</alias>
+    <alias>4U 1414+25</alias>
+    <alias>UGC 9149</alias>
+    <alias>UVQS J141759.54+250812.6</alias>
+    <alias>UZC J141759.6+250813</alias>
+    <alias>WISEA J141759.54+250812.6</alias>
+    <alias>WISE J141759.55+250812.7</alias>
+    <alias>2XMM J141759.5+250812</alias>
+    <alias>XSS J14181+2514</alias>
+    <alias>Z 133-25</alias>
+    <alias>Z 1415.7+2522</alias>
+    <alias>[BKB95] 1415+2522</alias>
+    <alias>[CHM2007] HDC 866 J141759.51+2508124</alias>
+    <alias>[CHM2007] LDC 1053 J141759.51+2508124</alias>
+    <alias>[DML87] 344</alias>
+    <alias>[HB91] 1415+253</alias>
+    <alias>[HSN2016] J214.49+25.13</alias>
+    <alias>[KRL2007b] 154</alias>
+    <alias>[KVC2005] 3</alias>
+    <alias>[VV2000c] J141759.6+250813</alias>
+    <alias>[VV2003c] J141759.6+250813</alias>
+    <alias>[VV2006c] J141759.6+250813</alias>
+    <alias>[VV2010c] J141759.6+250813</alias>
+    <alias>[VV98c] J141759.6+250813</alias>
+    <alias>[ZEH2003] RX J1418.0+2508 1</alias>
+    <alias>AAVSO 1413+25</alias>
+    <alias>Gaia DR3 1255795527649038720</alias>
+    <alias>Gaia DR2 1255795527649038720</alias>
+    <nrefs>2932</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ****Total of 1 crashes -->
+<!-- Configuration tested: /run/sesame.conf -->

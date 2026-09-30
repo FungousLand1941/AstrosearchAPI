@@ -1,0 +1,282 @@
+{
+  "catalog": "fink_backlog",
+  "params": {
+    "broker": "fink",
+    "options": {
+      "class_name": "SN candidate"
+    },
+    "until_mjd": 61306.3396,
+    "lookback_days": 0.1,
+    "reference_ids": [
+      "fink:ZTF26abhlzkx",
+      "fink:ZTF26abiavoi",
+      "fink:ZTF26abpbqtk",
+      "fink:ZTF26abszebr",
+      "fink:ZTF26abtamjw",
+      "fink:ZTF26abtnjsl",
+      "fink:ZTF26abuuisj"
+    ],
+    "polls": [
+      {
+        "broker": "fink",
+        "since_mjd": 61306.2396,
+        "until_mjd": 61306.3396,
+        "options": {
+          "class_name": "SN candidate"
+        },
+        "window": "new",
+        "fetched": 2,
+        "inserted": 2,
+        "updated": 0,
+        "unchanged": 0,
+        "crossmatched": 0,
+        "crossmatch_partial": 0,
+        "crossmatch_failed": 0,
+        "retried": 0,
+        "truncated": true,
+        "boundary_mjd": 61306.33365740022,
+        "backlog": {
+          "since_mjd": 61306.2396,
+          "until_mjd": 61306.33365740022
+        },
+        "alert_ids": [
+          "fink:ZTF26abtnjsl",
+          "fink:ZTF26abpbqtk"
+        ],
+        "new_alert_ids": [
+          "fink:ZTF26abtnjsl",
+          "fink:ZTF26abpbqtk"
+        ],
+        "warnings": [
+          "window truncated at limit=2: older alerts at or before MJD 61306.333657 were not fetched (backlog [61306.239600, 61306.333657] queued for the next polls)"
+        ],
+        "error": null,
+        "elapsed_ms": 461.3
+      },
+      {
+        "broker": "fink",
+        "since_mjd": 61306.2396,
+        "until_mjd": 61306.33365740022,
+        "options": {
+          "class_name": "SN candidate"
+        },
+        "window": "backlog",
+        "fetched": 2,
+        "inserted": 2,
+        "updated": 0,
+        "unchanged": 0,
+        "crossmatched": 0,
+        "crossmatch_partial": 0,
+        "crossmatch_failed": 0,
+        "retried": 0,
+        "truncated": true,
+        "boundary_mjd": 61306.294108800124,
+        "backlog": {
+          "since_mjd": 61306.2396,
+          "until_mjd": 61306.294108800124
+        },
+        "alert_ids": [
+          "fink:ZTF26abuuisj",
+          "fink:ZTF26abszebr"
+        ],
+        "new_alert_ids": [
+          "fink:ZTF26abuuisj",
+          "fink:ZTF26abszebr"
+        ],
+        "warnings": [
+          "window truncated at limit=2: older alerts at or before MJD 61306.294109 were not fetched (backlog [61306.239600, 61306.294109] queued for the next polls)"
+        ],
+        "error": null,
+        "elapsed_ms": 194.8
+      },
+      {
+        "broker": "fink",
+        "since_mjd": 61306.2396,
+        "until_mjd": 61306.294108800124,
+        "options": {
+          "class_name": "SN candidate"
+        },
+        "window": "backlog",
+        "fetched": 2,
+        "inserted": 1,
+        "updated": 0,
+        "unchanged": 1,
+        "crossmatched": 0,
+        "crossmatch_partial": 0,
+        "crossmatch_failed": 0,
+        "retried": 0,
+        "truncated": true,
+        "boundary_mjd": 61306.29363430012,
+        "backlog": {
+          "since_mjd": 61306.2396,
+          "until_mjd": 61306.29363430012
+        },
+        "alert_ids": [
+          "fink:ZTF26abszebr",
+          "fink:ZTF26abtamjw"
+        ],
+        "new_alert_ids": [
+          "fink:ZTF26abtamjw"
+        ],
+        "warnings": [
+          "window truncated at limit=2: older alerts at or before MJD 61306.293634 were not fetched (backlog [61306.239600, 61306.293634] queued for the next polls)"
+        ],
+        "error": null,
+        "elapsed_ms": 200.4
+      },
+      {
+        "broker": "fink",
+        "since_mjd": 61306.2396,
+        "until_mjd": 61306.29363430012,
+        "options": {
+          "class_name": "SN candidate"
+        },
+        "window": "backlog",
+        "fetched": 2,
+        "inserted": 1,
+        "updated": 0,
+        "unchanged": 1,
+        "crossmatched": 0,
+        "crossmatch_partial": 0,
+        "crossmatch_failed": 0,
+        "retried": 0,
+        "truncated": true,
+        "boundary_mjd": 61306.27405089978,
+        "backlog": {
+          "since_mjd": 61306.2396,
+          "until_mjd": 61306.27405089978
+        },
+        "alert_ids": [
+          "fink:ZTF26abtamjw",
+          "fink:ZTF26abiavoi"
+        ],
+        "new_alert_ids": [
+          "fink:ZTF26abiavoi"
+        ],
+        "warnings": [
+          "window truncated at limit=2: older alerts at or before MJD 61306.274051 were not fetched (backlog [61306.239600, 61306.274051] queued for the next polls)"
+        ],
+        "error": null,
+        "elapsed_ms": 225.8
+      },
+      {
+        "broker": "fink",
+        "since_mjd": 61306.2396,
+        "until_mjd": 61306.27405089978,
+        "options": {
+          "class_name": "SN candidate"
+        },
+        "window": "backlog",
+        "fetched": 1,
+        "inserted": 1,
+        "updated": 0,
+        "unchanged": 0,
+        "crossmatched": 0,
+        "crossmatch_partial": 0,
+        "crossmatch_failed": 0,
+        "retried": 0,
+        "truncated": false,
+        "boundary_mjd": null,
+        "backlog": null,
+        "alert_ids": [
+          "fink:ZTF26abhlzkx"
+        ],
+        "new_alert_ids": [
+          "fink:ZTF26abhlzkx"
+        ],
+        "warnings": [],
+        "error": null,
+        "elapsed_ms": 216.5
+      },
+      {
+        "broker": "fink",
+        "since_mjd": 61306.0896,
+        "until_mjd": 61306.3396,
+        "options": {
+          "class_name": "SN candidate"
+        },
+        "window": "new",
+        "fetched": 2,
+        "inserted": 0,
+        "updated": 0,
+        "unchanged": 2,
+        "crossmatched": 0,
+        "crossmatch_partial": 0,
+        "crossmatch_failed": 0,
+        "retried": 0,
+        "truncated": true,
+        "boundary_mjd": 61306.33365740022,
+        "backlog": null,
+        "alert_ids": [
+          "fink:ZTF26abtnjsl",
+          "fink:ZTF26abpbqtk"
+        ],
+        "new_alert_ids": [],
+        "warnings": [
+          "window truncated at limit=2: older alerts at or before MJD 61306.333657 were not fetched (already covered by earlier polls)",
+          "the re-covered overlap before MJD 61306.339600 was truncated: late alerts older than MJD 61306.333657 may be missed; raise the limit"
+        ],
+        "error": null,
+        "elapsed_ms": 232.8
+      }
+    ]
+  },
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://api.ztf.fink-portal.org/api/v1/latests?class=SN+candidate&n=3&startdate=2026-09-23+05%3A45%3A01&stopdate=2026-09-23+08%3A09%3A02&columns=i%3AobjectId%2Ci%3Acandid%2Ci%3Ara%2Ci%3Adec%2Ci%3Ajd%2Ci%3Amagpsf%2Ci%3Asigmapsf%2Ci%3Afid%2Ci%3Aisdiffpos%2Ci%3Ajdstarthist%2Ci%3Andethist%2Ci%3Adrb%2Ci%3Aclasstar%2Ci%3Asgscore1%2Ci%3Adistpsnr1%2Cd%3Asnn_snia_vs_nonia%2Cd%3Asnn_sn_vs_all%2Cd%3Arf_snia_vs_nonia%2Cd%3Arf_kn_vs_nonkn%2Cd%3Amulens%2Cd%3Aslsn_score%2Cd%3Acdsxmatch%2Cd%3Atns%2Cd%3ADR3Name%2Cd%3APlx%2Cd%3Ae_Plx%2Cd%3AgaiaVarFlag%2Cd%3Amangrove_HyperLEDA_name%2Cd%3Amangrove_ang_dist%2Cd%3Amangrove_lum_dist%2Cd%3Aroid",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.ztf.fink-portal.org/api/v1/latests?class=SN+candidate&n=3&startdate=2026-09-23+05%3A45%3A01&stopdate=2026-09-23+08%3A00%3A28&columns=i%3AobjectId%2Ci%3Acandid%2Ci%3Ara%2Ci%3Adec%2Ci%3Ajd%2Ci%3Amagpsf%2Ci%3Asigmapsf%2Ci%3Afid%2Ci%3Aisdiffpos%2Ci%3Ajdstarthist%2Ci%3Andethist%2Ci%3Adrb%2Ci%3Aclasstar%2Ci%3Asgscore1%2Ci%3Adistpsnr1%2Cd%3Asnn_snia_vs_nonia%2Cd%3Asnn_sn_vs_all%2Cd%3Arf_snia_vs_nonia%2Cd%3Arf_kn_vs_nonkn%2Cd%3Amulens%2Cd%3Aslsn_score%2Cd%3Acdsxmatch%2Cd%3Atns%2Cd%3ADR3Name%2Cd%3APlx%2Cd%3Ae_Plx%2Cd%3AgaiaVarFlag%2Cd%3Amangrove_HyperLEDA_name%2Cd%3Amangrove_ang_dist%2Cd%3Amangrove_lum_dist%2Cd%3Aroid",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.ztf.fink-portal.org/api/v1/latests?class=SN+candidate&n=3&startdate=2026-09-23+05%3A45%3A01&stopdate=2026-09-23+07%3A03%3A32&columns=i%3AobjectId%2Ci%3Acandid%2Ci%3Ara%2Ci%3Adec%2Ci%3Ajd%2Ci%3Amagpsf%2Ci%3Asigmapsf%2Ci%3Afid%2Ci%3Aisdiffpos%2Ci%3Ajdstarthist%2Ci%3Andethist%2Ci%3Adrb%2Ci%3Aclasstar%2Ci%3Asgscore1%2Ci%3Adistpsnr1%2Cd%3Asnn_snia_vs_nonia%2Cd%3Asnn_sn_vs_all%2Cd%3Arf_snia_vs_nonia%2Cd%3Arf_kn_vs_nonkn%2Cd%3Amulens%2Cd%3Aslsn_score%2Cd%3Acdsxmatch%2Cd%3Atns%2Cd%3ADR3Name%2Cd%3APlx%2Cd%3Ae_Plx%2Cd%3AgaiaVarFlag%2Cd%3Amangrove_HyperLEDA_name%2Cd%3Amangrove_ang_dist%2Cd%3Amangrove_lum_dist%2Cd%3Aroid",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.ztf.fink-portal.org/api/v1/latests?class=SN+candidate&n=3&startdate=2026-09-23+05%3A45%3A01&stopdate=2026-09-23+07%3A02%3A51&columns=i%3AobjectId%2Ci%3Acandid%2Ci%3Ara%2Ci%3Adec%2Ci%3Ajd%2Ci%3Amagpsf%2Ci%3Asigmapsf%2Ci%3Afid%2Ci%3Aisdiffpos%2Ci%3Ajdstarthist%2Ci%3Andethist%2Ci%3Adrb%2Ci%3Aclasstar%2Ci%3Asgscore1%2Ci%3Adistpsnr1%2Cd%3Asnn_snia_vs_nonia%2Cd%3Asnn_sn_vs_all%2Cd%3Arf_snia_vs_nonia%2Cd%3Arf_kn_vs_nonkn%2Cd%3Amulens%2Cd%3Aslsn_score%2Cd%3Acdsxmatch%2Cd%3Atns%2Cd%3ADR3Name%2Cd%3APlx%2Cd%3Ae_Plx%2Cd%3AgaiaVarFlag%2Cd%3Amangrove_HyperLEDA_name%2Cd%3Amangrove_ang_dist%2Cd%3Amangrove_lum_dist%2Cd%3Aroid",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.ztf.fink-portal.org/api/v1/latests?class=SN+candidate&n=3&startdate=2026-09-23+05%3A45%3A01&stopdate=2026-09-23+06%3A34%3A38&columns=i%3AobjectId%2Ci%3Acandid%2Ci%3Ara%2Ci%3Adec%2Ci%3Ajd%2Ci%3Amagpsf%2Ci%3Asigmapsf%2Ci%3Afid%2Ci%3Aisdiffpos%2Ci%3Ajdstarthist%2Ci%3Andethist%2Ci%3Adrb%2Ci%3Aclasstar%2Ci%3Asgscore1%2Ci%3Adistpsnr1%2Cd%3Asnn_snia_vs_nonia%2Cd%3Asnn_sn_vs_all%2Cd%3Arf_snia_vs_nonia%2Cd%3Arf_kn_vs_nonkn%2Cd%3Amulens%2Cd%3Aslsn_score%2Cd%3Acdsxmatch%2Cd%3Atns%2Cd%3ADR3Name%2Cd%3APlx%2Cd%3Ae_Plx%2Cd%3AgaiaVarFlag%2Cd%3Amangrove_HyperLEDA_name%2Cd%3Amangrove_ang_dist%2Cd%3Amangrove_lum_dist%2Cd%3Aroid",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.ztf.fink-portal.org/api/v1/latests?class=SN+candidate&n=3&startdate=2026-09-23+02%3A09%3A01&stopdate=2026-09-23+08%3A09%3A02&columns=i%3AobjectId%2Ci%3Acandid%2Ci%3Ara%2Ci%3Adec%2Ci%3Ajd%2Ci%3Amagpsf%2Ci%3Asigmapsf%2Ci%3Afid%2Ci%3Aisdiffpos%2Ci%3Ajdstarthist%2Ci%3Andethist%2Ci%3Adrb%2Ci%3Aclasstar%2Ci%3Asgscore1%2Ci%3Adistpsnr1%2Cd%3Asnn_snia_vs_nonia%2Cd%3Asnn_sn_vs_all%2Cd%3Arf_snia_vs_nonia%2Cd%3Arf_kn_vs_nonkn%2Cd%3Amulens%2Cd%3Aslsn_score%2Cd%3Acdsxmatch%2Cd%3Atns%2Cd%3ADR3Name%2Cd%3APlx%2Cd%3Ae_Plx%2Cd%3AgaiaVarFlag%2Cd%3Amangrove_HyperLEDA_name%2Cd%3Amangrove_ang_dist%2Cd%3Amangrove_lum_dist%2Cd%3Aroid",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.ztf.fink-portal.org/api/v1/latests?class=SN+candidate&n=101&startdate=2026-09-23+05%3A45%3A01&stopdate=2026-09-23+08%3A09%3A02&columns=i%3AobjectId%2Ci%3Acandid%2Ci%3Ara%2Ci%3Adec%2Ci%3Ajd%2Ci%3Amagpsf%2Ci%3Asigmapsf%2Ci%3Afid%2Ci%3Aisdiffpos%2Ci%3Ajdstarthist%2Ci%3Andethist%2Ci%3Adrb%2Ci%3Aclasstar%2Ci%3Asgscore1%2Ci%3Adistpsnr1%2Cd%3Asnn_snia_vs_nonia%2Cd%3Asnn_sn_vs_all%2Cd%3Arf_snia_vs_nonia%2Cd%3Arf_kn_vs_nonkn%2Cd%3Amulens%2Cd%3Aslsn_score%2Cd%3Acdsxmatch%2Cd%3Atns%2Cd%3ADR3Name%2Cd%3APlx%2Cd%3Ae_Plx%2Cd%3AgaiaVarFlag%2Cd%3Amangrove_HyperLEDA_name%2Cd%3Amangrove_ang_dist%2Cd%3Amangrove_lum_dist%2Cd%3Aroid",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    }
+  ]
+}

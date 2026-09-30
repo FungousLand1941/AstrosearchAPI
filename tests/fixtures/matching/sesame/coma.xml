@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>Coma Cluster</name>
+  <!-- Q8515965 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 118ms [2] -->
+    <oid>2044606</oid>
+    <otype>ClG</otype>
+    <jpos>12:59:44.40 +27:54:44.8</jpos>
+    <jradeg>194.93502</jradeg>
+    <jdedeg>27.91246</jdedeg>
+    <refPos>2020ApJS..246....2A</refPos>
+    <z><v>0.0234</v><q>C</q><r>2016ApJ...819...63R</r></z>
+    <oname>ACO  1656</oname>
+    <nrefs>5228</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ****Total of 1 crashes -->
+<!-- Configuration tested: /run/sesame.conf -->

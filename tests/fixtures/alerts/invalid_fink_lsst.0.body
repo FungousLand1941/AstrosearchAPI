@@ -1,0 +1,5 @@
+
+        nope is not a valid tag. Here is the list of tags:
+        ['extragalactic_lt20mag_candidate', 'extragalactic_new_candidate', 'extragalactic_svom', 'faint_trails', 'fast_transient_gvom', 'hostless_candidate', 'in_tns', 'most_likely_sn', 'remove_unlikely_transients', 'sn_near_galaxy_candidate', 'uniform_sample']
+        And you can always retrieve available tags at https://api.lsst.fink-portal.org/api/v1/tags
+        

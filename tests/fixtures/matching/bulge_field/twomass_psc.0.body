@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VOTABLE version="1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.ivoa.net/xml/VOTable/v1.3" xmlns:stc="http://www.ivoa.net/xml/STC/v1.30" xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/STC/v1.30 http://www.ivoa.net/xml/STC/v1.30">
+  <RESOURCE type="results">
+    <INFO name="QUERY_STATUS" value="OK"/>
+    <TABLE>
+      <FIELD name="designation" datatype="char" arraysize="*" ID="col_0" ucd="meta.id;meta.main">
+        <DESCRIPTION>source designation formed from sexigesimal coordinates</DESCRIPTION>
+      </FIELD>
+      <FIELD name="ra" datatype="double" ID="col_1" irsa_format="10.6f" precision="F6" ucd="pos.eq.ra;meta.main" unit="deg">
+        <DESCRIPTION>right ascension (J2000 decimal deg)</DESCRIPTION>
+      </FIELD>
+      <FIELD name="dec" datatype="double" ID="col_2" irsa_format="10.6f" precision="F6" ucd="pos.eq.dec;meta.main" unit="deg">
+        <DESCRIPTION>declination (J2000 decimal deg)</DESCRIPTION>
+      </FIELD>
+      <FIELD name="err_maj" datatype="float" ID="col_3" irsa_format="4.2f" precision="F2" unit="arcsec">
+        <DESCRIPTION>Semi-major axis length of the one sigma position uncertainty ellipse</DESCRIPTION>
+      </FIELD>
+      <FIELD name="err_min" datatype="float" ID="col_4" irsa_format="4.2f" precision="F2" unit="arcsec">
+        <DESCRIPTION>Semi-minor axis length of the one sigma position uncertainty ellipse</DESCRIPTION>
+      </FIELD>
+      <FIELD name="err_ang" datatype="int" ID="col_5" unit="deg">
+        <DESCRIPTION>angle of error ellipse major axis (E of N)</DESCRIPTION>
+      </FIELD>
+      <FIELD name="j_m" datatype="float" ID="col_6" irsa_format="6.3f" precision="F3" ucd="phot.mag;em.IR.J" unit="mag">
+        <DESCRIPTION>J band selected &quot;default&quot; magnitude</DESCRIPTION>
+      </FIELD>
+      <FIELD name="j_msigcom" datatype="float" ID="col_7" irsa_format="5.3f" precision="F3" unit="mag">
+        <DESCRIPTION>combined (total) J band photometric uncertainty</DESCRIPTION>
+      </FIELD>
+      <FIELD name="h_m" datatype="float" ID="col_8" irsa_format="6.3f" precision="F3" ucd="phot.mag;em.IR.H" unit="mag">
+        <DESCRIPTION>H band selected &quot;default&quot; magnitude</DESCRIPTION>
+      </FIELD>
+      <FIELD name="h_msigcom" datatype="float" ID="col_9" irsa_format="5.3f" precision="F3" unit="mag">
+        <DESCRIPTION>combined (total) H band photometric uncertainty</DESCRIPTION>
+      </FIELD>
+      <FIELD name="k_m" datatype="float" ID="col_10" irsa_format="6.3f" precision="F3" ucd="phot.mag;em.IR.K" unit="mag">
+        <DESCRIPTION>K band selected &quot;default&quot; magnitude</DESCRIPTION>
+      </FIELD>
+      <FIELD name="k_msigcom" datatype="float" ID="col_11" irsa_format="5.3f" precision="F3" unit="mag">
+        <DESCRIPTION>combined (total) K band photometric uncertainty</DESCRIPTION>
+      </FIELD>
+      <FIELD name="ph_qual" datatype="char" arraysize="*" ID="col_12" ucd="meta.code.qual">
+        <DESCRIPTION>flag indicating photometric quality of source</DESCRIPTION>
+      </FIELD>
+      <FIELD name="cc_flg" datatype="char" arraysize="*" ID="col_13">
+        <DESCRIPTION>indicates JHK artifact contamination and/or confusion</DESCRIPTION>
+      </FIELD>
+      <FIELD name="ext_key" datatype="long" ID="col_14">
+        <DESCRIPTION>key to extended source data DB record</DESCRIPTION>
+      </FIELD>
+      <FIELD name="jdate" datatype="double" ID="col_15" irsa_format="12.4f" precision="F4" ucd="time;obs.exposure" unit="d">
+        <DESCRIPTION>julian date of source measurement to +/- 30 sec</DESCRIPTION>
+      </FIELD>
+      <FIELD name="match_dist" datatype="double" ID="col_16" irsa_format="%15.6f" unit="arcsec"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>18075999-2700050</TD>
+            <TD>271.999973</TD>
+            <TD>-27.001404</TD>
+            <TD>0.07</TD>
+            <TD>0.06</TD>
+            <TD>176</TD>
+            <TD>13.683</TD>
+            <TD>0.060</TD>
+            <TD>13.374</TD>
+            <TD>0.090</TD>
+            <TD>13.310</TD>
+            <TD>0.094</TD>
+            <TD>AAA</TD>
+            <TD>ccc</TD>
+            <TD></TD>
+            <TD>2451327.6805</TD>
+            <TD>5.055142</TD>
+          </TR>
+          <TR>
+            <TD>18075962-2659568</TD>
+            <TD>271.998421</TD>
+            <TD>-26.999132</TD>
+            <TD>0.06</TD>
+            <TD>0.06</TD>
+            <TD>135</TD>
+            <TD>11.976</TD>
+            <TD>0.033</TD>
+            <TD>11.124</TD>
+            <TD>0.031</TD>
+            <TD>10.842</TD>
+            <TD>0.030</TD>
+            <TD>AAA</TD>
+            <TD>ccc</TD>
+            <TD></TD>
+            <TD>2451327.6805</TD>
+            <TD>5.951231</TD>
+          </TR>
+          <TR>
+            <TD>18080038-2700034</TD>
+            <TD>272.001613</TD>
+            <TD>-27.000959</TD>
+            <TD>0.06</TD>
+            <TD>0.06</TD>
+            <TD>90</TD>
+            <TD>14.289</TD>
+            <TD>0.051</TD>
+            <TD>13.488</TD>
+            <TD>0.045</TD>
+            <TD>13.408</TD>
+            <TD>0.050</TD>
+            <TD>AEE</TD>
+            <TD>ccc</TD>
+            <TD></TD>
+            <TD>2451327.6805</TD>
+            <TD>6.219971</TD>
+          </TR>
+          <TR>
+            <TD>18075947-2700076</TD>
+            <TD>271.997812</TD>
+            <TD>-27.002115</TD>
+            <TD>0.06</TD>
+            <TD>0.06</TD>
+            <TD>135</TD>
+            <TD>10.631</TD>
+            <TD>0.040</TD>
+            <TD>10.002</TD>
+            <TD>0.034</TD>
+            <TD>9.831</TD>
+            <TD>0.039</TD>
+            <TD>AAA</TD>
+            <TD>ccc</TD>
+            <TD></TD>
+            <TD>2451327.6805</TD>
+            <TD>10.355111</TD>
+          </TR>
+          <TR>
+            <TD>18075919-2659569</TD>
+            <TD>271.996647</TD>
+            <TD>-26.999140</TD>
+            <TD>0.06</TD>
+            <TD>0.06</TD>
+            <TD>90</TD>
+            <TD>12.538</TD>
+            <TD>0.028</TD>
+            <TD>11.723</TD>
+            <TD>0.031</TD>
+            <TD>11.520</TD>
+            <TD>0.025</TD>
+            <TD>AAA</TD>
+            <TD>ccc</TD>
+            <TD></TD>
+            <TD>2451327.6805</TD>
+            <TD>11.191944</TD>
+          </TR>
+          <TR>
+            <TD>18080075-2700059</TD>
+            <TD>272.003137</TD>
+            <TD>-27.001657</TD>
+            <TD>0.06</TD>
+            <TD>0.06</TD>
+            <TD>135</TD>
+            <TD>12.365</TD>
+            <TD>0.028</TD>
+            <TD>11.693</TD>
+            <TD>0.026</TD>
+            <TD>11.558</TD>
+            <TD>0.025</TD>
+            <TD>AAA</TD>
+            <TD>ccc</TD>
+            <TD></TD>
+            <TD>2451327.6805</TD>
+            <TD>11.697534</TD>
+          </TR>
+          <TR>
+            <TD>18075975-2659473</TD>
+            <TD>271.998976</TD>
+            <TD>-26.996473</TD>
+            <TD>0.06</TD>
+            <TD>0.06</TD>
+            <TD>45</TD>
+            <TD>13.926</TD>
+            <TD>0.034</TD>
+            <TD>13.160</TD>
+            <TD>0.039</TD>
+            <TD>12.970</TD>
+            <TD>0.071</TD>
+            <TD>AAA</TD>
+            <TD>ccc</TD>
+            <TD></TD>
+            <TD>2451327.6805</TD>
+            <TD>13.115177</TD>
+          </TR>
+          <TR>
+            <TD>18075917-2700094</TD>
+            <TD>271.996581</TD>
+            <TD>-27.002630</TD>
+            <TD>0.06</TD>
+            <TD>0.06</TD>
+            <TD>45</TD>
+            <TD>12.309</TD>
+            <TD>0.037</TD>
+            <TD>11.489</TD>
+            <TD>0.031</TD>
+            <TD>11.251</TD>
+            <TD>0.034</TD>
+            <TD>AAA</TD>
+            <TD>ccc</TD>
+            <TD></TD>
+            <TD>2451327.6805</TD>
+            <TD>14.488352</TD>
+          </TR>
+          <TR>
+            <TD>18075887-2700040</TD>
+            <TD>271.995321</TD>
+            <TD>-27.001118</TD>
+            <TD>0.06</TD>
+            <TD>0.06</TD>
+            <TD>135</TD>
+            <TD>12.624</TD>
+            <TD>0.046</TD>
+            <TD>11.960</TD>
+            <TD>0.049</TD>
+            <TD>11.738</TD>
+            <TD>0.046</TD>
+            <TD>AAA</TD>
+            <TD>ccc</TD>
+            <TD></TD>
+            <TD>2451327.6805</TD>
+            <TD>15.538692</TD>
+          </TR>
+          <TR>
+            <TD>18080044-2700144</TD>
+            <TD>272.001865</TD>
+            <TD>-27.004026</TD>
+            <TD>0.11</TD>
+            <TD>0.11</TD>
+            <TD>45</TD>
+            <TD>14.188</TD>
+            <TD>0.064</TD>
+            <TD>13.219</TD>
+            <TD></TD>
+            <TD>13.206</TD>
+            <TD></TD>
+            <TD>AUU</TD>
+            <TD>c00</TD>
+            <TD></TD>
+            <TD>2451327.6805</TD>
+            <TD>15.679608</TD>
+          </TR>
+          <TR>
+            <TD>18080077-2659459</TD>
+            <TD>272.003226</TD>
+            <TD>-26.996084</TD>
+            <TD>0.06</TD>
+            <TD>0.06</TD>
+            <TD>45</TD>
+            <TD>13.306</TD>
+            <TD>0.055</TD>
+            <TD>12.780</TD>
+            <TD>0.071</TD>
+            <TD>12.664</TD>
+            <TD>0.071</TD>
+            <TD>AAA</TD>
+            <TD>ccc</TD>
+            <TD></TD>
+            <TD>2451327.6805</TD>
+            <TD>17.487792</TD>
+          </TR>
+          <TR>
+            <TD>18080022-2659425</TD>
+            <TD>272.000953</TD>
+            <TD>-26.995159</TD>
+            <TD>0.06</TD>
+            <TD>0.06</TD>
+            <TD>90</TD>
+            <TD>9.889</TD>
+            <TD>0.021</TD>
+            <TD>8.848</TD>
+            <TD>0.021</TD>
+            <TD>8.412</TD>
+            <TD>0.022</TD>
+            <TD>AAA</TD>
+            <TD>s0s</TD>
+            <TD></TD>
+            <TD>2451327.6805</TD>
+            <TD>17.693673</TD>
+          </TR>
+          <TR>
+            <TD>18080129-2659548</TD>
+            <TD>272.005407</TD>
+            <TD>-26.998564</TD>
+            <TD>0.06</TD>
+            <TD>0.06</TD>
+            <TD>90</TD>
+            <TD>12.553</TD>
+            <TD>0.034</TD>
+            <TD>11.658</TD>
+            <TD>0.036</TD>
+            <TD>11.440</TD>
+            <TD>0.034</TD>
+            <TD>AAA</TD>
+            <TD>000</TD>
+            <TD></TD>
+            <TD>2451327.6805</TD>
+            <TD>18.097783</TD>
+          </TR>
+          <TR>
+            <TD>18075867-2659517</TD>
+            <TD>271.994484</TD>
+            <TD>-26.997713</TD>
+            <TD>0.06</TD>
+            <TD>0.06</TD>
+            <TD>90</TD>
+            <TD>12.666</TD>
+            <TD>0.032</TD>
+            <TD>11.814</TD>
+            <TD>0.033</TD>
+            <TD>11.647</TD>
+            <TD>0.034</TD>
+            <TD>AAA</TD>
+            <TD>ppp</TD>
+            <TD></TD>
+            <TD>2451327.6805</TD>
+            <TD>19.515201</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+  </RESOURCE>
+</VOTABLE>

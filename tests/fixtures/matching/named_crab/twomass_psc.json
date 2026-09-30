@@ -1,0 +1,19 @@
+{
+  "catalog": "twomass_psc",
+  "target": "named_crab",
+  "search": {
+    "name": "Crab Nebula",
+    "sesame": "crab",
+    "radius_arcsec": 10.0
+  },
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://irsa.ipac.caltech.edu/TAP/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+2001+designation%2C+ra%2C+dec%2C+err_maj%2C+err_min%2C+err_ang%2C+j_m%2C+j_msigcom%2C+h_m%2C+h_msigcom%2C+k_m%2C+k_msigcom%2C+ph_qual%2C+cc_flg%2C+ext_key%2C+jdate%2C+DISTANCE%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+POINT%28%27ICRS%27%2C+83.632400000%2C+22.017400000%29%29+AS+match_dist+FROM+fp_psc+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+83.632400000%2C+22.017400000%2C+0.0103611111%29%29+ORDER+BY+match_dist+ASC",
+      "status_code": 200,
+      "content_type": "application/x-votable+xml",
+      "match": []
+    }
+  ]
+}

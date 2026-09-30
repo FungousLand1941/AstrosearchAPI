@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>NGC 4807</name>
+  <!-- Q8398793 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 161ms [2] -->
+    <oid>1985032</oid>
+    <otype>GiP</otype>
+    <jpos>12:55:29.10 +27:31:17.1</jpos>
+    <jradeg>193.87125352</jradeg>
+    <jdedeg>27.52143231</jdedeg>
+    <refPos>2020yCat.1350....0G</refPos>
+    <errRAmas>1.7872</errRAmas><errDEmas>1.7609</errDEmas>
+    <z><v>0.02327</v><e>0.00001</e><q>C</q><r>2020ApJS..249....3A</r></z>
+    <MType>E-SO</MType>
+    <oname>NGC  4807</oname>
+    <nrefs>106</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ****Total of 1 crashes -->
+<!-- Configuration tested: /run/sesame.conf -->

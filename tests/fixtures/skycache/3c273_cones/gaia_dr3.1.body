@@ -1,0 +1,32 @@
+{"metadata":
+[
+{"name": "source_id", "datatype": "long", "xtype": null, "arraysize": null, "description": "Unique source identifier (unique within a particular Data Release)", "unit": null, "ucd": "meta.id", "utype": null},
+{"name": "ra", "datatype": "double", "xtype": null, "arraysize": null, "description": "Right ascension", "unit": "deg", "ucd": "pos.eq.ra;meta.main", "utype": "stc:AstroCoords.Position3D.Value3.C1"},
+{"name": "dec", "datatype": "double", "xtype": null, "arraysize": null, "description": "Declination", "unit": "deg", "ucd": "pos.eq.dec;meta.main", "utype": "stc:AstroCoords.Position3D.Value3.C2"},
+{"name": "ra_error", "datatype": "float", "xtype": null, "arraysize": null, "description": "Standard error of right ascension", "unit": "mas", "ucd": "stat.error;pos.eq.ra", "utype": "stc:AstroCoords.Position3D.Error3.C1"},
+{"name": "dec_error", "datatype": "float", "xtype": null, "arraysize": null, "description": "Standard error of declination", "unit": "mas", "ucd": "stat.error;pos.eq.dec", "utype": "stc:AstroCoords.Position3D.Error3.C2"},
+{"name": "ra_dec_corr", "datatype": "float", "xtype": null, "arraysize": null, "description": "Correlation between right ascension and declination", "unit": null, "ucd": "stat.correlation", "utype": null},
+{"name": "ref_epoch", "datatype": "double", "xtype": null, "arraysize": null, "description": "Reference epoch", "unit": "yr", "ucd": "meta.ref;time.epoch", "utype": "stc:AstroCoords.Time.TimeInstant"},
+{"name": "parallax", "datatype": "double", "xtype": null, "arraysize": null, "description": "Parallax", "unit": "mas", "ucd": "pos.parallax.trig", "utype": null},
+{"name": "parallax_error", "datatype": "float", "xtype": null, "arraysize": null, "description": "Standard error of parallax", "unit": "mas", "ucd": "stat.error;pos.parallax.trig", "utype": null},
+{"name": "pmra", "datatype": "double", "xtype": null, "arraysize": null, "description": "Proper motion in right ascension direction", "unit": "mas.yr**-1", "ucd": "pos.pm;pos.eq.ra", "utype": "stc:AstroCoords.Velocity3D.Value3.C1"},
+{"name": "pmdec", "datatype": "double", "xtype": null, "arraysize": null, "description": "Proper motion in declination direction", "unit": "mas.yr**-1", "ucd": "pos.pm;pos.eq.dec", "utype": "stc:AstroCoords.Velocity3D.Value3.C2"},
+{"name": "phot_g_mean_mag", "datatype": "float", "xtype": null, "arraysize": null, "description": "G-band mean magnitude", "unit": "mag", "ucd": "phot.mag;em.opt", "utype": null},
+{"name": "phot_bp_mean_mag", "datatype": "float", "xtype": null, "arraysize": null, "description": "Integrated BP mean magnitude", "unit": "mag", "ucd": "phot.mag;em.opt.B", "utype": null},
+{"name": "phot_rp_mean_mag", "datatype": "float", "xtype": null, "arraysize": null, "description": "Integrated RP mean magnitude", "unit": "mag", "ucd": "phot.mag;em.opt.R", "utype": null},
+{"name": "ruwe", "datatype": "float", "xtype": null, "arraysize": null, "description": "Renormalised unit weight error", "unit": null, "ucd": "stat.error", "utype": null},
+{"name": "astrometric_params_solved", "datatype": "short", "xtype": null, "arraysize": null, "description": "Which parameters have been solved for?", "unit": null, "ucd": "meta.number", "utype": null},
+{"name": "match_dist", "datatype": "double", "xtype": null, "arraysize": null, "description": null, "unit": null, "ucd": null, "utype": null}
+],
+"data":
+[
+[3700386905605055360,187.2779158387138,2.052388668185861,0.018106548,0.012910717,-0.45504186,2016.0,-0.015950290834234743,0.020795885,-0.022885672495060565,0.09846797908921764,12.8440895,12.989387,12.495527,1.1057829,31,5.725240187615575E-7],
+[3700386905605055616,187.28287824459952,2.0600535200519268,0.04022832,0.028382376,-0.47276953,2016.0,4.915752484040954,0.04633536,17.37501325634467,16.444845088149023,16.054256,17.141977,15.017798,1.0726675,31,0.00912982567756327],
+[3700386939964757120,187.26320369949033,2.0551507718508777,0.014248486,0.010467902,-0.45954478,2016.0,1.5517343413355875,0.016720848,-27.541448319361884,-0.8298772320194839,13.384202,13.691503,12.917662,1.0822622,31,0.014959525814475827],
+[3700386699446978560,187.28851506564234,2.040075682779377,24.833603,16.188408,-0.44778606,2016.0,null,null,null,null,21.49631,20.171886,18.649923,null,3,0.01624223550400138],
+[3700387073107750272,187.27790931744613,2.0701342524354596,0.11585636,0.08203264,-0.47737777,2016.0,0.08565282312621646,0.13431312,-2.4528404022535284,-2.0463319398017696,18.05546,18.46191,17.479,1.001682,31,0.01774595347653062],
+[3700386798229839872,187.29865552517523,2.0535372657384747,4.47809,4.091988,-0.5869041,2016.0,null,null,null,null,21.271275,19.96578,18.402777,null,3,0.020758634248391163],
+[3700385393776529920,187.26174505960842,2.037715508589185,0.07327586,0.053029608,-0.50733846,2016.0,3.0635089685230583,0.08836992,-15.276958243432228,-21.30680955102829,14.509799,15.130028,13.733825,3.7372828,31,0.02182745370825972],
+[3700386695150623360,187.2987629098668,2.0443501268923967,5.216307,3.538618,-0.1703275,2016.0,null,null,null,null,21.389973,21.109512,19.30069,null,3,0.02233104646396696]
+]
+}

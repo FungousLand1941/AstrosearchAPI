@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>SDSS J103027.10+052455.0</name>
+  <!-- Q8483476 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 692ms [3] -->
+    <oid>1731224</oid>
+    <otype>QSO</otype>
+    <jpos>10:30:27.09 +05:24:55.0</jpos>
+    <jradeg>157.612884</jradeg>
+    <jdedeg>5.415284</jdedeg>
+    <refPos>2020ApJS..249....3A</refPos>
+    <z><v>6.308</v><q>D</q><r>2023Natur.617..261K</r></z>
+    <oname>SDSS J103027.09+052455.0</oname>
+    <alias>QSO B1027+0540</alias>
+    <alias>KODIAQ J103027+052455</alias>
+    <alias>PSO J157.6129+05.4152</alias>
+    <alias>QSO J1030+0524</alias>
+    <alias>SDSS J103027.10+052455.0</alias>
+    <alias>SDSS J103027.09+052455.1</alias>
+    <alias>SDSS J103027.09+052455.0</alias>
+    <alias>SQUAD DR1 J103027+052455</alias>
+    <alias>WISE J103027.11+052454.6</alias>
+    <alias>2XMM J103027.1+052455</alias>
+    <alias>[NGV2020] XID21</alias>
+    <alias>[VV2003] J103027.1+052455</alias>
+    <alias>[VV2006] J103027.1+052455</alias>
+    <alias>[VV2010] J103027.1+052455</alias>
+    <nrefs>305</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ****Total of 1 crashes -->
+<!-- Configuration tested: /run/sesame.conf -->

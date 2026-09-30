@@ -1,0 +1,2354 @@
+{
+ "crossmatch_groups": [
+  {
+   "catalogs": [
+    "allwise",
+    "first",
+    "gaia_dr3",
+    "ned",
+    "nvss",
+    "panstarrs_dr2",
+    "rosat",
+    "simbad",
+    "twomass_psc",
+    "xmm"
+   ],
+   "group_id": "object-1",
+   "members": [
+    {
+     "catalog": "ned",
+     "confidence": 1.0,
+     "data": {
+      "dec": -5.78931254194444,
+      "match_dist": 4.956917378754153e-09,
+      "n_gphot": 352,
+      "pos_bibcode": "2019ApJS..242....5X",
+      "prefname": "3C 279",
+      "prefphytype": "QSO",
+      "ra": 194.046527414583,
+      "uncmaja": 0.0001,
+      "uncmina": 7.5e-05,
+      "uncposa": 0,
+      "z": 0.536199987,
+      "zflag": "SUN",
+      "zunc": 0.00039999999
+     },
+     "dec": -5.78931254194444,
+     "epoch": null,
+     "epoch_range": null,
+     "links": {
+      "LegacySurvey": "https://www.legacysurvey.org/viewer/fits-cutout?ra=194.04652741458304&dec=-5.78931254194444&pixscale=0.262&bands=griz",
+      "NED": "https://ned.ipac.caltech.edu/byname?objname=3C%20279"
+     },
+     "metadata": {
+      "catalog": null,
+      "catalog_has_proper_motions": false,
+      "citation": "NASA/IPAC Extragalactic Database (NED), DOI 10.26132/NED1",
+      "epoch_propagation": "none",
+      "epoch_separation_arcsec": 1.7844996047698992e-05,
+      "links": {
+       "IRSA": null,
+       "LegacySurvey": "https://www.legacysurvey.org/viewer/fits-cutout?ra=194.04652741458304&dec=-5.78931254194444&pixscale=0.262&bands=griz",
+       "MAST": null,
+       "NED": "https://ned.ipac.caltech.edu/byname?objname=3C%20279",
+       "SIMBAD": null
+      },
+      "physical": {
+       "object_type": "QSO",
+       "redshift": 0.536199987
+      },
+      "positional_error": {
+       "columns": [
+        "uncmaja",
+        "uncmina",
+        "uncposa"
+       ],
+       "divisor": 2.5,
+       "divisor_source": "assumed",
+       "ellipse_1sigma_arcsec": {
+        "major": 4e-05,
+        "minor": 2.9999999999999997e-05,
+        "pa_deg": 0.0
+       },
+       "kind": "ellipse",
+       "raw": {
+        "uncmaja": 0.0001,
+        "uncmina": 7.5e-05,
+        "uncposa": 0
+       },
+       "scale": null,
+       "sigma_arcsec": 3.535533905932738e-05,
+       "sigma_dec_arcsec": null,
+       "sigma_ra_arcsec": null,
+       "source": "catalog",
+       "statistical_sigma_arcsec": 3.535533905932738e-05,
+       "systematic_arcsec": null,
+       "units": [
+        "arcsec",
+        "arcsec",
+        "deg"
+       ]
+      },
+      "query_separation_arcsec": 1.7844996047698992e-05,
+      "single_epoch_positions": false,
+      "table": "NEDTAP.objdir",
+      "wavelength": "extragalactic"
+     },
+     "physical": {
+      "object_type": "QSO",
+      "redshift": 0.536199987
+     },
+     "positional_error_arcsec": 3.535533905932738e-05,
+     "proper_motion_dec_masyr": null,
+     "proper_motion_ra_masyr": null,
+     "provenance": {
+      "catalog": "ned",
+      "endpoint": "https://ned.ipac.caltech.edu/tap/sync",
+      "provider": "tap",
+      "query_parameters": {
+       "FORMAT": "json",
+       "LANG": "ADQL",
+       "QUERY": "SELECT TOP 201 prefname, ra, dec, uncmaja, uncmina, uncposa, pos_bibcode, prefphytype, z, zunc, zflag, n_gphot, DISTANCE(POINT('ICRS', ra, dec), POINT('ICRS', 194.046527410, -5.789312540)) AS match_dist FROM NEDTAP.objdir WHERE 1 = CONTAINS(POINT('ICRS', ra, dec), CIRCLE('ICRS', 194.046527410, -5.789312540, 0.0027777778)) ORDER BY match_dist ASC",
+       "REQUEST": "doQuery"
+      },
+      "retrieved_at": "2026-09-28T10:24:48.707812+00:00",
+      "search_radius_arcsec": 10.0,
+      "source_id": "3C 279"
+     },
+     "ra": 194.04652741458304,
+     "separation_arcsec": 1.7844996047698992e-05,
+     "source_id": "3C 279"
+    },
+    {
+     "catalog": "ned",
+     "confidence": 0.999763,
+     "data": {
+      "dec": -5.78931199266,
+      "match_dist": 6.042439528529025e-07,
+      "n_gphot": 0,
+      "pos_bibcode": "1998AJ....115..451S",
+      "prefname": "[HB89] 1253-055 ABS01",
+      "prefphytype": "AbLS",
+      "ra": 194.0465271527,
+      "uncmaja": 0.1,
+      "uncmina": 0.1,
+      "uncposa": 0,
+      "z": 0.532000005,
+      "zflag": "SUN",
+      "zunc": null
+     },
+     "dec": -5.78931199266,
+     "epoch": null,
+     "epoch_range": null,
+     "links": {
+      "LegacySurvey": "https://www.legacysurvey.org/viewer/fits-cutout?ra=194.0465271527&dec=-5.78931199266&pixscale=0.262&bands=griz",
+      "NED": "https://ned.ipac.caltech.edu/byname?objname=%5BHB89%5D%201253-055%20ABS01"
+     },
+     "metadata": {
+      "catalog": null,
+      "catalog_has_proper_motions": false,
+      "citation": "NASA/IPAC Extragalactic Database (NED), DOI 10.26132/NED1",
+      "epoch_propagation": "none",
+      "epoch_separation_arcsec": 0.0021752782317687636,
+      "links": {
+       "IRSA": null,
+       "LegacySurvey": "https://www.legacysurvey.org/viewer/fits-cutout?ra=194.0465271527&dec=-5.78931199266&pixscale=0.262&bands=griz",
+       "MAST": null,
+       "NED": "https://ned.ipac.caltech.edu/byname?objname=%5BHB89%5D%201253-055%20ABS01",
+       "SIMBAD": null
+      },
+      "physical": {
+       "object_type": "AbLS",
+       "redshift": 0.532000005
+      },
+      "positional_error": {
+       "columns": [
+        "uncmaja",
+        "uncmina",
+        "uncposa"
+       ],
+       "divisor": 2.5,
+       "divisor_source": "assumed",
+       "ellipse_1sigma_arcsec": {
+        "major": 0.04000000000000001,
+        "minor": 0.04000000000000001,
+        "pa_deg": 0.0
+       },
+       "kind": "ellipse",
+       "raw": {
+        "uncmaja": 0.1,
+        "uncmina": 0.1,
+        "uncposa": 0
+       },
+       "scale": null,
+       "sigma_arcsec": 0.04000000000000001,
+       "sigma_dec_arcsec": null,
+       "sigma_ra_arcsec": null,
+       "source": "catalog",
+       "statistical_sigma_arcsec": 0.04000000000000001,
+       "systematic_arcsec": null,
+       "units": [
+        "arcsec",
+        "arcsec",
+        "deg"
+       ]
+      },
+      "query_separation_arcsec": 0.0021752782317687636,
+      "single_epoch_positions": false,
+      "table": "NEDTAP.objdir",
+      "wavelength": "extragalactic"
+     },
+     "physical": {
+      "object_type": "AbLS",
+      "redshift": 0.532000005
+     },
+     "positional_error_arcsec": 0.04000000000000001,
+     "proper_motion_dec_masyr": null,
+     "proper_motion_ra_masyr": null,
+     "provenance": {
+      "catalog": "ned",
+      "endpoint": "https://ned.ipac.caltech.edu/tap/sync",
+      "provider": "tap",
+      "query_parameters": {
+       "FORMAT": "json",
+       "LANG": "ADQL",
+       "QUERY": "SELECT TOP 201 prefname, ra, dec, uncmaja, uncmina, uncposa, pos_bibcode, prefphytype, z, zunc, zflag, n_gphot, DISTANCE(POINT('ICRS', ra, dec), POINT('ICRS', 194.046527410, -5.789312540)) AS match_dist FROM NEDTAP.objdir WHERE 1 = CONTAINS(POINT('ICRS', ra, dec), CIRCLE('ICRS', 194.046527410, -5.789312540, 0.0027777778)) ORDER BY match_dist ASC",
+       "REQUEST": "doQuery"
+      },
+      "retrieved_at": "2026-09-28T10:24:48.707812+00:00",
+      "search_radius_arcsec": 10.0,
+      "source_id": "[HB89] 1253-055 ABS01"
+     },
+     "ra": 194.0465271527,
+     "separation_arcsec": 0.0021752782317687636,
+     "source_id": "[HB89] 1253-055 ABS01"
+    },
+    {
+     "catalog": "ned",
+     "confidence": 0.999763,
+     "data": {
+      "dec": -5.78931199266,
+      "match_dist": 6.042439528529025e-07,
+      "n_gphot": 0,
+      "pos_bibcode": "1998AJ....115..451S",
+      "prefname": "[HB89] 1253-055 ABS02",
+      "prefphytype": "AbLS",
+      "ra": 194.0465271527,
+      "uncmaja": 0.1,
+      "uncmina": 0.1,
+      "uncposa": 0,
+      "z": 0.395000011,
+      "zflag": "SUN",
+      "zunc": null
+     },
+     "dec": -5.78931199266,
+     "epoch": null,
+     "epoch_range": null,
+     "links": {
+      "LegacySurvey": "https://www.legacysurvey.org/viewer/fits-cutout?ra=194.0465271527&dec=-5.78931199266&pixscale=0.262&bands=griz",
+      "NED": "https://ned.ipac.caltech.edu/byname?objname=%5BHB89%5D%201253-055%20ABS02"
+     },
+     "metadata": {
+      "catalog": null,
+      "catalog_has_proper_motions": false,
+      "citation": "NASA/IPAC Extragalactic Database (NED), DOI 10.26132/NED1",
+      "epoch_propagation": "none",
+      "epoch_separation_arcsec": 0.0021752782317687636,
+      "links": {
+       "IRSA": null,
+       "LegacySurvey": "https://www.legacysurvey.org/viewer/fits-cutout?ra=194.0465271527&dec=-5.78931199266&pixscale=0.262&bands=griz",
+       "MAST": null,
+       "NED": "https://ned.ipac.caltech.edu/byname?objname=%5BHB89%5D%201253-055%20ABS02",
+       "SIMBAD": null
+      },
+      "physical": {
+       "object_type": "AbLS",
+       "redshift": 0.395000011
+      },
+      "positional_error": {
+       "columns": [
+        "uncmaja",
+        "uncmina",
+        "uncposa"
+       ],
+       "divisor": 2.5,
+       "divisor_source": "assumed",
+       "ellipse_1sigma_arcsec": {
+        "major": 0.04000000000000001,
+        "minor": 0.04000000000000001,
+        "pa_deg": 0.0
+       },
+       "kind": "ellipse",
+       "raw": {
+        "uncmaja": 0.1,
+        "uncmina": 0.1,
+        "uncposa": 0
+       },
+       "scale": null,
+       "sigma_arcsec": 0.04000000000000001,
+       "sigma_dec_arcsec": null,
+       "sigma_ra_arcsec": null,
+       "source": "catalog",
+       "statistical_sigma_arcsec": 0.04000000000000001,
+       "systematic_arcsec": null,
+       "units": [
+        "arcsec",
+        "arcsec",
+        "deg"
+       ]
+      },
+      "query_separation_arcsec": 0.0021752782317687636,
+      "single_epoch_positions": false,
+      "table": "NEDTAP.objdir",
+      "wavelength": "extragalactic"
+     },
+     "physical": {
+      "object_type": "AbLS",
+      "redshift": 0.395000011
+     },
+     "positional_error_arcsec": 0.04000000000000001,
+     "proper_motion_dec_masyr": null,
+     "proper_motion_ra_masyr": null,
+     "provenance": {
+      "catalog": "ned",
+      "endpoint": "https://ned.ipac.caltech.edu/tap/sync",
+      "provider": "tap",
+      "query_parameters": {
+       "FORMAT": "json",
+       "LANG": "ADQL",
+       "QUERY": "SELECT TOP 201 prefname, ra, dec, uncmaja, uncmina, uncposa, pos_bibcode, prefphytype, z, zunc, zflag, n_gphot, DISTANCE(POINT('ICRS', ra, dec), POINT('ICRS', 194.046527410, -5.789312540)) AS match_dist FROM NEDTAP.objdir WHERE 1 = CONTAINS(POINT('ICRS', ra, dec), CIRCLE('ICRS', 194.046527410, -5.789312540, 0.0027777778)) ORDER BY match_dist ASC",
+       "REQUEST": "doQuery"
+      },
+      "retrieved_at": "2026-09-28T10:24:48.707812+00:00",
+      "search_radius_arcsec": 10.0,
+      "source_id": "[HB89] 1253-055 ABS02"
+     },
+     "ra": 194.0465271527,
+     "separation_arcsec": 0.0021752782317687636,
+     "source_id": "[HB89] 1253-055 ABS02"
+    },
+    {
+     "catalog": "ned",
+     "confidence": 0.059781,
+     "data": {
+      "dec": -5.7893621,
+      "match_dist": 6.593419243271756e-05,
+      "n_gphot": 12,
+      "pos_bibcode": "2013wise.rept....1C",
+      "prefname": "WISEA J125611.15-054721.7",
+      "prefphytype": null,
+      "ra": 194.0464837,
+      "uncmaja": 0.078,
+      "uncmina": 0.077,
+      "uncposa": 0,
+      "z": null,
+      "zflag": null,
+      "zunc": null
+     },
+     "dec": -5.789362099999999,
+     "epoch": null,
+     "epoch_range": [
+      2010.0,
+      2011.2
+     ],
+     "links": {
+      "LegacySurvey": "https://www.legacysurvey.org/viewer/fits-cutout?ra=194.0464837&dec=-5.789362099999999&pixscale=0.262&bands=griz",
+      "NED": "https://ned.ipac.caltech.edu/byname?objname=WISEA%20J125611.15-054721.7"
+     },
+     "metadata": {
+      "catalog": null,
+      "catalog_has_proper_motions": false,
+      "citation": "NASA/IPAC Extragalactic Database (NED), DOI 10.26132/NED1",
+      "epoch_propagation": "target_pm_span",
+      "epoch_separation_arcsec": 0.23736309275404502,
+      "links": {
+       "IRSA": null,
+       "LegacySurvey": "https://www.legacysurvey.org/viewer/fits-cutout?ra=194.0464837&dec=-5.789362099999999&pixscale=0.262&bands=griz",
+       "MAST": null,
+       "NED": "https://ned.ipac.caltech.edu/byname?objname=WISEA%20J125611.15-054721.7",
+       "SIMBAD": null
+      },
+      "physical": {},
+      "positional_error": {
+       "columns": [
+        "uncmaja",
+        "uncmina",
+        "uncposa"
+       ],
+       "divisor": 2.5,
+       "divisor_source": "lookup",
+       "ellipse_1sigma_arcsec": {
+        "major": 0.031200000000000002,
+        "minor": 0.0308,
+        "pa_deg": 0.0
+       },
+       "kind": "ellipse",
+       "raw": {
+        "uncmaja": 0.078,
+        "uncmina": 0.077,
+        "uncposa": 0
+       },
+       "scale": null,
+       "sigma_arcsec": 0.031000645154577025,
+       "sigma_dec_arcsec": null,
+       "sigma_ra_arcsec": null,
+       "source": "catalog",
+       "statistical_sigma_arcsec": 0.031000645154577025,
+       "systematic_arcsec": null,
+       "units": [
+        "arcsec",
+        "arcsec",
+        "deg"
+       ]
+      },
+      "query_separation_arcsec": 0.23736309275404502,
+      "single_epoch_positions": false,
+      "table": "NEDTAP.objdir",
+      "wavelength": "extragalactic"
+     },
+     "physical": {},
+     "positional_error_arcsec": 0.031000645154577025,
+     "proper_motion_dec_masyr": null,
+     "proper_motion_ra_masyr": null,
+     "provenance": {
+      "catalog": "ned",
+      "endpoint": "https://ned.ipac.caltech.edu/tap/sync",
+      "provider": "tap",
+      "query_parameters": {
+       "FORMAT": "json",
+       "LANG": "ADQL",
+       "QUERY": "SELECT TOP 201 prefname, ra, dec, uncmaja, uncmina, uncposa, pos_bibcode, prefphytype, z, zunc, zflag, n_gphot, DISTANCE(POINT('ICRS', ra, dec), POINT('ICRS', 194.046527410, -5.789312540)) AS match_dist FROM NEDTAP.objdir WHERE 1 = CONTAINS(POINT('ICRS', ra, dec), CIRCLE('ICRS', 194.046527410, -5.789312540, 0.0027777778)) ORDER BY match_dist ASC",
+       "REQUEST": "doQuery"
+      },
+      "retrieved_at": "2026-09-28T10:24:48.708811+00:00",
+      "search_radius_arcsec": 10.0,
+      "source_id": "WISEA J125611.15-054721.7"
+     },
+     "ra": 194.0464837,
+     "separation_arcsec": 0.23736309275404502,
+     "source_id": "WISEA J125611.15-054721.7"
+    },
+    {
+     "catalog": "simbad",
+     "confidence": 1.0,
+     "data": {
+      "G": 15.44593,
+      "K": 10.941,
+      "V": 17.75,
+      "coo_bibcode": "2020A&A...644A.159C",
+      "coo_err_angle": 0,
+      "coo_err_maj": 0.0324621,
+      "coo_err_min": 0.0388,
+      "coo_qual": "A",
+      "coo_wavelength": "R",
+      "dec": -5.789312541944445,
+      "main_id": "3C 279",
+      "match_dist": 0,
+      "otype": "Bla",
+      "plx_value": 0.0214,
+      "pmdec": 0.187,
+      "pmra": 0.158,
+      "ra": 194.04652741491665,
+      "rvz_redshift": 0.5354184,
+      "sp_type": null
+     },
+     "dec": -5.789312541944445,
+     "epoch": 2000.0,
+     "epoch_range": null,
+     "links": {
+      "SIMBAD": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=3C%20279"
+     },
+     "metadata": {
+      "catalog": null,
+      "catalog_has_proper_motions": true,
+      "citation": "Wenger et al. 2000, A&AS 143, 9 (2000A&AS..143....9W)",
+      "epoch_propagation": "source_pm",
+      "epoch_separation_arcsec": 1.8949915843195326e-05,
+      "links": {
+       "IRSA": null,
+       "LegacySurvey": null,
+       "MAST": null,
+       "NED": null,
+       "SIMBAD": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=3C%20279"
+      },
+      "physical": {
+       "object_type": "Bla",
+       "parallax": 0.0214,
+       "redshift": 0.5354184
+      },
+      "positional_error": {
+       "columns": [
+        "coo_err_maj",
+        "coo_err_min",
+        "coo_err_angle"
+       ],
+       "divisor": null,
+       "divisor_source": null,
+       "ellipse_1sigma_arcsec": {
+        "major": 3.24621e-05,
+        "minor": 3.88e-05,
+        "pa_deg": 0.0
+       },
+       "epoch_growth": {
+        "note": "position propagated from an unknown epoch; the ellipse applies at that epoch",
+        "source_epoch": null,
+        "term_arcsec": null,
+        "to_epoch": 2000.0
+       },
+       "kind": "ellipse",
+       "raw": {
+        "coo_err_angle": 0,
+        "coo_err_maj": 0.0324621,
+        "coo_err_min": 0.0388
+       },
+       "scale": null,
+       "sigma_arcsec": 3.5771692274828154e-05,
+       "sigma_dec_arcsec": null,
+       "sigma_ra_arcsec": null,
+       "source": "catalog",
+       "statistical_sigma_arcsec": 3.5771692274828154e-05,
+       "systematic_arcsec": null,
+       "units": [
+        "mas",
+        "mas",
+        "deg"
+       ]
+      },
+      "query_separation_arcsec": 1.8949915843195326e-05,
+      "single_epoch_positions": false,
+      "table": "basic AS b LEFT OUTER JOIN allfluxes AS f ON f.oidref = b.oid",
+      "wavelength": "multi"
+     },
+     "physical": {
+      "object_type": "Bla",
+      "parallax": 0.0214,
+      "redshift": 0.5354184
+     },
+     "positional_error_arcsec": 3.5771692274828154e-05,
+     "proper_motion_dec_masyr": 0.187,
+     "proper_motion_ra_masyr": 0.158,
+     "provenance": {
+      "catalog": "simbad",
+      "endpoint": "https://simbad.cds.unistra.fr/simbad/sim-tap/sync",
+      "provider": "tap",
+      "query_parameters": {
+       "FORMAT": "json",
+       "LANG": "ADQL",
+       "QUERY": "SELECT TOP 201 b.main_id, b.ra, b.dec, b.coo_err_maj, b.coo_err_min, b.coo_err_angle, b.coo_qual, b.coo_wavelength, b.coo_bibcode, b.otype, b.sp_type, b.rvz_redshift, b.plx_value, b.pmra, b.pmdec, f.V, f.G, f.K, DISTANCE(POINT('ICRS', b.ra, b.dec), POINT('ICRS', 194.046527410, -5.789312540)) AS match_dist FROM basic AS b LEFT OUTER JOIN allfluxes AS f ON f.oidref = b.oid WHERE 1 = CONTAINS(POINT('ICRS', b.ra, b.dec), CIRCLE('ICRS', 194.046527410, -5.789312540, 0.0027777778)) ORDER BY match_dist ASC",
+       "REQUEST": "doQuery"
+      },
+      "retrieved_at": "2026-09-28T10:24:47.883523+00:00",
+      "search_radius_arcsec": 10.0,
+      "source_id": "3C 279"
+     },
+     "ra": 194.04652741491665,
+     "separation_arcsec": 1.8949915843195326e-05,
+     "source_id": "3C 279"
+    },
+    {
+     "catalog": "simbad",
+     "confidence": 0.991963,
+     "data": {
+      "G": null,
+      "K": null,
+      "V": null,
+      "coo_bibcode": null,
+      "coo_err_angle": null,
+      "coo_err_maj": null,
+      "coo_err_min": null,
+      "coo_qual": "E",
+      "coo_wavelength": null,
+      "dec": -5.789166666666667,
+      "main_id": "3C 279A",
+      "match_dist": 0.0007057760904260073,
+      "otype": "Rad",
+      "plx_value": null,
+      "pmdec": null,
+      "pmra": null,
+      "ra": 194.04583333333332,
+      "rvz_redshift": null,
+      "sp_type": null
+     },
+     "dec": -5.789166666666667,
+     "epoch": null,
+     "epoch_range": [
+      1990.0,
+      2025.0
+     ],
+     "links": {
+      "SIMBAD": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=3C%20279A"
+     },
+     "metadata": {
+      "catalog": null,
+      "catalog_has_proper_motions": true,
+      "citation": "Wenger et al. 2000, A&AS 143, 9 (2000A&AS..143....9W)",
+      "epoch_propagation": "target_pm_span",
+      "epoch_separation_arcsec": 2.5407939255639653,
+      "links": {
+       "IRSA": null,
+       "LegacySurvey": null,
+       "MAST": null,
+       "NED": null,
+       "SIMBAD": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=3C%20279A"
+      },
+      "physical": {
+       "object_type": "Rad"
+      },
+      "positional_error": {
+       "columns": [
+        "coo_err_maj",
+        "coo_err_min",
+        "coo_err_angle"
+       ],
+       "divisor": null,
+       "divisor_source": null,
+       "ellipse_1sigma_arcsec": null,
+       "kind": "ellipse",
+       "raw": {
+        "coo_err_angle": null,
+        "coo_err_maj": null,
+        "coo_err_min": null
+       },
+       "scale": null,
+       "sigma_arcsec": 20.0,
+       "sigma_dec_arcsec": null,
+       "sigma_ra_arcsec": null,
+       "source": "fallback",
+       "statistical_sigma_arcsec": null,
+       "systematic_arcsec": null,
+       "units": [
+        "mas",
+        "mas",
+        "deg"
+       ]
+      },
+      "query_separation_arcsec": 2.5407939255639653,
+      "single_epoch_positions": false,
+      "table": "basic AS b LEFT OUTER JOIN allfluxes AS f ON f.oidref = b.oid",
+      "wavelength": "multi"
+     },
+     "physical": {
+      "object_type": "Rad"
+     },
+     "positional_error_arcsec": 20.0,
+     "proper_motion_dec_masyr": null,
+     "proper_motion_ra_masyr": null,
+     "provenance": {
+      "catalog": "simbad",
+      "endpoint": "https://simbad.cds.unistra.fr/simbad/sim-tap/sync",
+      "provider": "tap",
+      "query_parameters": {
+       "FORMAT": "json",
+       "LANG": "ADQL",
+       "QUERY": "SELECT TOP 201 b.main_id, b.ra, b.dec, b.coo_err_maj, b.coo_err_min, b.coo_err_angle, b.coo_qual, b.coo_wavelength, b.coo_bibcode, b.otype, b.sp_type, b.rvz_redshift, b.plx_value, b.pmra, b.pmdec, f.V, f.G, f.K, DISTANCE(POINT('ICRS', b.ra, b.dec), POINT('ICRS', 194.046527410, -5.789312540)) AS match_dist FROM basic AS b LEFT OUTER JOIN allfluxes AS f ON f.oidref = b.oid WHERE 1 = CONTAINS(POINT('ICRS', b.ra, b.dec), CIRCLE('ICRS', 194.046527410, -5.789312540, 0.0027777778)) ORDER BY match_dist ASC",
+       "REQUEST": "doQuery"
+      },
+      "retrieved_at": "2026-09-28T10:24:47.885708+00:00",
+      "search_radius_arcsec": 10.0,
+      "source_id": "3C 279A"
+     },
+     "ra": 194.04583333333332,
+     "separation_arcsec": 2.5407939255639653,
+     "source_id": "3C 279A"
+    },
+    {
+     "catalog": "simbad",
+     "confidence": 0.991963,
+     "data": {
+      "G": null,
+      "K": null,
+      "V": null,
+      "coo_bibcode": null,
+      "coo_err_angle": null,
+      "coo_err_maj": null,
+      "coo_err_min": null,
+      "coo_qual": "E",
+      "coo_wavelength": null,
+      "dec": -5.789166666666667,
+      "main_id": "3C 279B",
+      "match_dist": 0.0007057760904260073,
+      "otype": "Rad",
+      "plx_value": null,
+      "pmdec": null,
+      "pmra": null,
+      "ra": 194.04583333333332,
+      "rvz_redshift": null,
+      "sp_type": null
+     },
+     "dec": -5.789166666666667,
+     "epoch": null,
+     "epoch_range": [
+      1990.0,
+      2025.0
+     ],
+     "links": {
+      "SIMBAD": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=3C%20279B"
+     },
+     "metadata": {
+      "catalog": null,
+      "catalog_has_proper_motions": true,
+      "citation": "Wenger et al. 2000, A&AS 143, 9 (2000A&AS..143....9W)",
+      "epoch_propagation": "target_pm_span",
+      "epoch_separation_arcsec": 2.5407939255639653,
+      "links": {
+       "IRSA": null,
+       "LegacySurvey": null,
+       "MAST": null,
+       "NED": null,
+       "SIMBAD": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=3C%20279B"
+      },
+      "physical": {
+       "object_type": "Rad"
+      },
+      "positional_error": {
+       "columns": [
+        "coo_err_maj",
+        "coo_err_min",
+        "coo_err_angle"
+       ],
+       "divisor": null,
+       "divisor_source": null,
+       "ellipse_1sigma_arcsec": null,
+       "kind": "ellipse",
+       "raw": {
+        "coo_err_angle": null,
+        "coo_err_maj": null,
+        "coo_err_min": null
+       },
+       "scale": null,
+       "sigma_arcsec": 20.0,
+       "sigma_dec_arcsec": null,
+       "sigma_ra_arcsec": null,
+       "source": "fallback",
+       "statistical_sigma_arcsec": null,
+       "systematic_arcsec": null,
+       "units": [
+        "mas",
+        "mas",
+        "deg"
+       ]
+      },
+      "query_separation_arcsec": 2.5407939255639653,
+      "single_epoch_positions": false,
+      "table": "basic AS b LEFT OUTER JOIN allfluxes AS f ON f.oidref = b.oid",
+      "wavelength": "multi"
+     },
+     "physical": {
+      "object_type": "Rad"
+     },
+     "positional_error_arcsec": 20.0,
+     "proper_motion_dec_masyr": null,
+     "proper_motion_ra_masyr": null,
+     "provenance": {
+      "catalog": "simbad",
+      "endpoint": "https://simbad.cds.unistra.fr/simbad/sim-tap/sync",
+      "provider": "tap",
+      "query_parameters": {
+       "FORMAT": "json",
+       "LANG": "ADQL",
+       "QUERY": "SELECT TOP 201 b.main_id, b.ra, b.dec, b.coo_err_maj, b.coo_err_min, b.coo_err_angle, b.coo_qual, b.coo_wavelength, b.coo_bibcode, b.otype, b.sp_type, b.rvz_redshift, b.plx_value, b.pmra, b.pmdec, f.V, f.G, f.K, DISTANCE(POINT('ICRS', b.ra, b.dec), POINT('ICRS', 194.046527410, -5.789312540)) AS match_dist FROM basic AS b LEFT OUTER JOIN allfluxes AS f ON f.oidref = b.oid WHERE 1 = CONTAINS(POINT('ICRS', b.ra, b.dec), CIRCLE('ICRS', 194.046527410, -5.789312540, 0.0027777778)) ORDER BY match_dist ASC",
+       "REQUEST": "doQuery"
+      },
+      "retrieved_at": "2026-09-28T10:24:47.887710+00:00",
+      "search_radius_arcsec": 10.0,
+      "source_id": "3C 279B"
+     },
+     "ra": 194.04583333333332,
+     "separation_arcsec": 2.5407939255639653,
+     "source_id": "3C 279B"
+    },
+    {
+     "catalog": "gaia_dr3",
+     "confidence": 0.999019,
+     "data": {
+      "astrometric_params_solved": 31,
+      "dec": -5.789312624452343,
+      "dec_error": 0.029517688,
+      "match_dist": 1.4800673820983755e-07,
+      "parallax": 0.021444812973637206,
+      "parallax_error": 0.055811033,
+      "phot_bp_mean_mag": 15.86899,
+      "phot_g_mean_mag": 15.44593,
+      "phot_rp_mean_mag": 14.75938,
+      "pmdec": 0.18652830175985644,
+      "pmra": 0.15813428394324056,
+      "ra": 194.04652728782938,
+      "ra_dec_corr": -0.5178182,
+      "ra_error": 0.046480518,
+      "ref_epoch": 2016.0,
+      "ruwe": 1.2571553,
+      "source_id": 3677618218816419456
+     },
+     "dec": -5.789312624452343,
+     "epoch": 2016.0,
+     "epoch_range": null,
+     "links": {
+      "LegacySurvey": "https://www.legacysurvey.org/viewer/fits-cutout?ra=194.04652728782938&dec=-5.789312624452343&pixscale=0.262&bands=griz"
+     },
+     "metadata": {
+      "catalog": null,
+      "catalog_has_proper_motions": true,
+      "citation": "Gaia Collaboration, Vallenari et al. 2023, A&A 674, A1 (2023A&A...674A...1G); Gaia Collaboration, Prusti et al. 2016, A&A 595, A1",
+      "epoch_propagation": "source_pm",
+      "epoch_separation_arcsec": 0.004429612630551449,
+      "links": {
+       "IRSA": null,
+       "LegacySurvey": "https://www.legacysurvey.org/viewer/fits-cutout?ra=194.04652728782938&dec=-5.789312624452343&pixscale=0.262&bands=griz",
+       "MAST": null,
+       "NED": null,
+       "SIMBAD": null
+      },
+      "physical": {
+       "parallax": 0.02144481297363721
+      },
+      "positional_error": {
+       "columns": [
+        "ra_error",
+        "dec_error"
+       ],
+       "divisor": null,
+       "divisor_source": null,
+       "ellipse_1sigma_arcsec": null,
+       "kind": "sigma",
+       "raw": {
+        "dec_error": 0.029517688,
+        "ra_error": 0.046480518
+       },
+       "scale": null,
+       "sigma_arcsec": 3.8934126793943045e-05,
+       "sigma_dec_arcsec": 2.9517688e-05,
+       "sigma_ra_arcsec": 4.6480518e-05,
+       "source": "catalog",
+       "statistical_sigma_arcsec": 3.8934126793943045e-05,
+       "systematic_arcsec": null,
+       "units": [
+        "mas",
+        "mas"
+       ]
+      },
+      "query_separation_arcsec": 0.000532824257594075,
+      "single_epoch_positions": false,
+      "table": "gaiadr3.gaia_source",
+      "wavelength": "optical"
+     },
+     "physical": {
+      "parallax": 0.02144481297363721
+     },
+     "positional_error_arcsec": 3.8934126793943045e-05,
+     "proper_motion_dec_masyr": 0.18652830175985644,
+     "proper_motion_ra_masyr": 0.15813428394324056,
+     "provenance": {
+      "catalog": "gaia_dr3",
+      "endpoint": "https://gea.esac.esa.int/tap-server/tap/sync",
+      "provider": "tap",
+      "query_parameters": {
+       "FORMAT": "json",
+       "LANG": "ADQL",
+       "QUERY": "SELECT TOP 271 source_id, ra, dec, ra_error, dec_error, ra_dec_corr, ref_epoch, parallax, parallax_error, pmra, pmdec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, ruwe, astrometric_params_solved, DISTANCE(POINT('ICRS', ra, dec), POINT('ICRS', 194.046527410, -5.789312540)) AS match_dist FROM gaiadr3.gaia_source WHERE 1 = CONTAINS(POINT('ICRS', ra, dec), CIRCLE('ICRS', 194.046527410, -5.789312540, 0.0032222222)) ORDER BY match_dist ASC",
+       "REQUEST": "doQuery"
+      },
+      "retrieved_at": "2026-09-28T10:24:48.101254+00:00",
+      "search_radius_arcsec": 10.0,
+      "source_id": "3677618218816419456"
+     },
+     "ra": 194.04652728782938,
+     "separation_arcsec": 0.004429612630551449,
+     "source_id": "3677618218816419456"
+    },
+    {
+     "catalog": "panstarrs_dr2",
+     "confidence": 0.956281,
+     "data": {
+      "decMean": -5.789320473130163,
+      "decMeanErr": 0.00034536792801055947,
+      "distance": 8.305799301979341e-06,
+      "epochMean": 55960.88315965172,
+      "gMeanPSFMag": 16.125099182128906,
+      "gMeanPSFMagErr": 0.003671000013127923,
+      "iMeanKronMag": 15.84060001373291,
+      "iMeanPSFMag": 15.854599952697754,
+      "iMeanPSFMagErr": 0.04216200113296509,
+      "nDetections": 36,
+      "objID": "101051940465833267",
+      "objName": "PSO J194.0465-05.7893",
+      "qualityFlag": 60,
+      "rMeanPSFMag": 16.13800048828125,
+      "rMeanPSFMagErr": null,
+      "raMean": 194.0465298826417,
+      "raMeanErr": 0.00035940340534671296,
+      "yMeanPSFMag": 15.524900436401367,
+      "yMeanPSFMagErr": 0.12480200082063675,
+      "zMeanPSFMag": 14.919699668884277,
+      "zMeanPSFMagErr": 0.22605399787425995
+     },
+     "dec": -5.789320473130163,
+     "epoch": 2012.0913981099295,
+     "epoch_range": null,
+     "links": {
+      "LegacySurvey": "https://www.legacysurvey.org/viewer/fits-cutout?ra=194.0465298826417&dec=-5.789320473130163&pixscale=0.262&bands=griz",
+      "MAST": "https://mast.stsci.edu/portal/Mashup/Clients/Mast/Portal.html?searchQuery=194.0465298826417%20-5.789320473130163"
+     },
+     "metadata": {
+      "catalog": null,
+      "catalog_has_proper_motions": false,
+      "citation": "Chambers et al. 2016, arXiv:1612.05560; Flewelling et al. 2020, ApJS 251, 7; DOI 10.17909/s0zg-jx37",
+      "epoch_propagation": "target_pm",
+      "epoch_separation_arcsec": 0.029900877494482017,
+      "links": {
+       "IRSA": null,
+       "LegacySurvey": "https://www.legacysurvey.org/viewer/fits-cutout?ra=194.0465298826417&dec=-5.789320473130163&pixscale=0.262&bands=griz",
+       "MAST": "https://mast.stsci.edu/portal/Mashup/Clients/Mast/Portal.html?searchQuery=194.0465298826417%20-5.789320473130163",
+       "NED": null,
+       "SIMBAD": null
+      },
+      "physical": {},
+      "positional_error": {
+       "columns": [
+        "raMeanErr",
+        "decMeanErr"
+       ],
+       "divisor": null,
+       "divisor_source": null,
+       "ellipse_1sigma_arcsec": null,
+       "kind": "sigma",
+       "raw": {
+        "decMeanErr": 0.00034536792801055947,
+        "raMeanErr": 0.00035940340534671296
+       },
+       "scale": null,
+       "sigma_arcsec": 0.015004140258833112,
+       "sigma_dec_arcsec": 0.00034536792801055947,
+       "sigma_ra_arcsec": 0.00035940340534671296,
+       "source": "catalog",
+       "statistical_sigma_arcsec": 0.00035245553866631224,
+       "systematic_arcsec": 0.015,
+       "units": [
+        "arcsec",
+        "arcsec"
+       ]
+      },
+      "query_separation_arcsec": 0.029900877491747958,
+      "single_epoch_positions": false,
+      "table": null,
+      "wavelength": "optical"
+     },
+     "physical": {},
+     "positional_error_arcsec": 0.015004140258833112,
+     "proper_motion_dec_masyr": null,
+     "proper_motion_ra_masyr": null,
+     "provenance": {
+      "catalog": "panstarrs_dr2",
+      "endpoint": "https://catalogs.mast.stsci.edu/api/v0.1/panstarrs/dr2/mean.json",
+      "provider": "mast",
+      "query_parameters": {
+       "columns": "[\"objID\", \"objName\", \"raMean\", \"decMean\", \"raMeanErr\", \"decMeanErr\", \"epochMean\", \"nDetections\", \"qualityFlag\", \"gMeanPSFMag\", \"gMeanPSFMagErr\", \"rMeanPSFMag\", \"rMeanPSFMagErr\", \"iMeanPSFMag\", \"iMeanPSFMagErr\", \"zMeanPSFMag\", \"zMeanPSFMagErr\", \"yMeanPSFMag\", \"yMeanPSFMagErr\", \"iMeanKronMag\", \"distance\"]",
+       "dec": "-5.789312540",
+       "nDetections.gt": "1",
+       "pagesize": "201",
+       "ra": "194.046527410",
+       "radius": "0.0027777778",
+       "sort_by": "distance"
+      },
+      "retrieved_at": "2026-09-28T10:24:47.663999+00:00",
+      "search_radius_arcsec": 10.0,
+      "source_id": "101051940465833267"
+     },
+     "ra": 194.0465298826417,
+     "separation_arcsec": 0.029900877494482017,
+     "source_id": "101051940465833267"
+    },
+    {
+     "catalog": "panstarrs_dr2",
+     "confidence": 0.0,
+     "data": {
+      "decMean": -5.788735,
+      "decMeanErr": 0.15211999416351318,
+      "distance": 0.0006940833914281963,
+      "epochMean": 56409.40133102,
+      "gMeanPSFMag": null,
+      "gMeanPSFMagErr": null,
+      "iMeanKronMag": 19.79759979248047,
+      "iMeanPSFMag": 20.860300064086914,
+      "iMeanPSFMagErr": 0.15137599408626556,
+      "nDetections": 3,
+      "objID": "101051940471093958",
+      "objName": "PSO J194.0469-05.7887",
+      "qualityFlag": 36,
+      "rMeanPSFMag": 19.599599838256836,
+      "rMeanPSFMagErr": 2.5999999706982635e-05,
+      "raMean": 194.04691435,
+      "raMeanErr": 0.15211999416351318,
+      "yMeanPSFMag": null,
+      "yMeanPSFMagErr": null,
+      "zMeanPSFMag": null,
+      "zMeanPSFMagErr": null
+     },
+     "dec": -5.788735,
+     "epoch": 2013.319373938453,
+     "epoch_range": null,
+     "links": {
+      "LegacySurvey": "https://www.legacysurvey.org/viewer/fits-cutout?ra=194.04691435&dec=-5.788735&pixscale=0.262&bands=griz",
+      "MAST": "https://mast.stsci.edu/portal/Mashup/Clients/Mast/Portal.html?searchQuery=194.04691435%20-5.788735"
+     },
+     "metadata": {
+      "catalog": null,
+      "catalog_has_proper_motions": false,
+      "citation": "Chambers et al. 2016, arXiv:1612.05560; Flewelling et al. 2020, ApJS 251, 7; DOI 10.17909/s0zg-jx37",
+      "epoch_propagation": "target_pm",
+      "epoch_separation_arcsec": 2.498700209116794,
+      "links": {
+       "IRSA": null,
+       "LegacySurvey": "https://www.legacysurvey.org/viewer/fits-cutout?ra=194.04691435&dec=-5.788735&pixscale=0.262&bands=griz",
+       "MAST": "https://mast.stsci.edu/portal/Mashup/Clients/Mast/Portal.html?searchQuery=194.04691435%20-5.788735",
+       "NED": null,
+       "SIMBAD": null
+      },
+      "physical": {},
+      "positional_error": {
+       "columns": [
+        "raMeanErr",
+        "decMeanErr"
+       ],
+       "divisor": null,
+       "divisor_source": null,
+       "ellipse_1sigma_arcsec": null,
+       "kind": "sigma",
+       "raw": {
+        "decMeanErr": 0.15211999416351318,
+        "raMeanErr": 0.15211999416351318
+       },
+       "scale": null,
+       "sigma_arcsec": 0.15285775290873305,
+       "sigma_dec_arcsec": 0.15211999416351318,
+       "sigma_ra_arcsec": 0.15211999416351318,
+       "source": "catalog",
+       "statistical_sigma_arcsec": 0.15211999416351318,
+       "systematic_arcsec": 0.015,
+       "units": [
+        "arcsec",
+        "arcsec"
+       ]
+      },
+      "query_separation_arcsec": 2.4987002091191757,
+      "single_epoch_positions": false,
+      "table": null,
+      "wavelength": "optical"
+     },
+     "physical": {},
+     "positional_error_arcsec": 0.15285775290873305,
+     "proper_motion_dec_masyr": null,
+     "proper_motion_ra_masyr": null,
+     "provenance": {
+      "catalog": "panstarrs_dr2",
+      "endpoint": "https://catalogs.mast.stsci.edu/api/v0.1/panstarrs/dr2/mean.json",
+      "provider": "mast",
+      "query_parameters": {
+       "columns": "[\"objID\", \"objName\", \"raMean\", \"decMean\", \"raMeanErr\", \"decMeanErr\", \"epochMean\", \"nDetections\", \"qualityFlag\", \"gMeanPSFMag\", \"gMeanPSFMagErr\", \"rMeanPSFMag\", \"rMeanPSFMagErr\", \"iMeanPSFMag\", \"iMeanPSFMagErr\", \"zMeanPSFMag\", \"zMeanPSFMagErr\", \"yMeanPSFMag\", \"yMeanPSFMagErr\", \"iMeanKronMag\", \"distance\"]",
+       "dec": "-5.789312540",
+       "nDetections.gt": "1",
+       "pagesize": "201",
+       "ra": "194.046527410",
+       "radius": "0.0027777778",
+       "sort_by": "distance"
+      },
+      "retrieved_at": "2026-09-28T10:24:47.665003+00:00",
+      "search_radius_arcsec": 10.0,
+      "source_id": "101051940471093958"
+     },
+     "ra": 194.04691435,
+     "separation_arcsec": 2.498700209116794,
+     "source_id": "101051940471093958"
+    },
+    {
+     "catalog": "panstarrs_dr2",
+     "confidence": 0.0,
+     "data": {
+      "decMean": -5.78984332,
+      "decMeanErr": 0.12363000214099884,
+      "distance": 0.0011256564213754663,
+      "epochMean": 55979.51002315,
+      "gMeanPSFMag": null,
+      "gMeanPSFMagErr": null,
+      "iMeanKronMag": null,
+      "iMeanPSFMag": null,
+      "iMeanPSFMagErr": null,
+      "nDetections": 2,
+      "objID": "101051940454582603",
+      "objName": "PSO J194.0455-05.7898",
+      "qualityFlag": 33,
+      "rMeanPSFMag": 22.33810043334961,
+      "rMeanPSFMagErr": 0.1987379938364029,
+      "raMean": 194.04552966,
+      "raMeanErr": 0.12363000214099884,
+      "yMeanPSFMag": null,
+      "yMeanPSFMagErr": null,
+      "zMeanPSFMag": 20.51420021057129,
+      "zMeanPSFMagErr": 0.1569020003080368
+     },
+     "dec": -5.78984332,
+     "epoch": 2012.14239568282,
+     "epoch_range": null,
+     "links": {
+      "LegacySurvey": "https://www.legacysurvey.org/viewer/fits-cutout?ra=194.04552966&dec=-5.78984332&pixscale=0.262&bands=griz",
+      "MAST": "https://mast.stsci.edu/portal/Mashup/Clients/Mast/Portal.html?searchQuery=194.04552966%20-5.78984332"
+     },
+     "metadata": {
+      "catalog": null,
+      "catalog_has_proper_motions": false,
+      "citation": "Chambers et al. 2016, arXiv:1612.05560; Flewelling et al. 2020, ApJS 251, 7; DOI 10.17909/s0zg-jx37",
+      "epoch_propagation": "target_pm",
+      "epoch_separation_arcsec": 4.052363116956345,
+      "links": {
+       "IRSA": null,
+       "LegacySurvey": "https://www.legacysurvey.org/viewer/fits-cutout?ra=194.04552966&dec=-5.78984332&pixscale=0.262&bands=griz",
+       "MAST": "https://mast.stsci.edu/portal/Mashup/Clients/Mast/Portal.html?searchQuery=194.04552966%20-5.78984332",
+       "NED": null,
+       "SIMBAD": null
+      },
+      "physical": {},
+      "positional_error": {
+       "columns": [
+        "raMeanErr",
+        "decMeanErr"
+       ],
+       "divisor": null,
+       "divisor_source": null,
+       "ellipse_1sigma_arcsec": null,
+       "kind": "sigma",
+       "raw": {
+        "decMeanErr": 0.12363000214099884,
+        "raMeanErr": 0.12363000214099884
+       },
+       "scale": null,
+       "sigma_arcsec": 0.12453665094815813,
+       "sigma_dec_arcsec": 0.12363000214099884,
+       "sigma_ra_arcsec": 0.12363000214099884,
+       "source": "catalog",
+       "statistical_sigma_arcsec": 0.12363000214099884,
+       "systematic_arcsec": 0.015,
+       "units": [
+        "arcsec",
+        "arcsec"
+       ]
+      },
+      "query_separation_arcsec": 4.052363116957695,
+      "single_epoch_positions": false,
+      "table": null,
+      "wavelength": "optical"
+     },
+     "physical": {},
+     "positional_error_arcsec": 0.12453665094815813,
+     "proper_motion_dec_masyr": null,
+     "proper_motion_ra_masyr": null,
+     "provenance": {
+      "catalog": "panstarrs_dr2",
+      "endpoint": "https://catalogs.mast.stsci.edu/api/v0.1/panstarrs/dr2/mean.json",
+      "provider": "mast",
+      "query_parameters": {
+       "columns": "[\"objID\", \"objName\", \"raMean\", \"decMean\", \"raMeanErr\", \"decMeanErr\", \"epochMean\", \"nDetections\", \"qualityFlag\", \"gMeanPSFMag\", \"gMeanPSFMagErr\", \"rMeanPSFMag\", \"rMeanPSFMagErr\", \"iMeanPSFMag\", \"iMeanPSFMagErr\", \"zMeanPSFMag\", \"zMeanPSFMagErr\", \"yMeanPSFMag\", \"yMeanPSFMagErr\", \"iMeanKronMag\", \"distance\"]",
+       "dec": "-5.789312540",
+       "nDetections.gt": "1",
+       "pagesize": "201",
+       "ra": "194.046527410",
+       "radius": "0.0027777778",
+       "sort_by": "distance"
+      },
+      "retrieved_at": "2026-09-28T10:24:47.666001+00:00",
+      "search_radius_arcsec": 10.0,
+      "source_id": "101051940454582603"
+     },
+     "ra": 194.04552966,
+     "separation_arcsec": 4.052363116956345,
+     "source_id": "101051940454582603"
+    },
+    {
+     "catalog": "twomass_psc",
+     "confidence": 0.719838,
+     "data": {
+      "cc_flg": "000",
+      "dec": -5.789311,
+      "designation": "12561117-0547215",
+      "err_ang": 5,
+      "err_maj": 0.07999999821186066,
+      "err_min": 0.07999999821186066,
+      "ext_key": null,
+      "h_m": 11.739999771118164,
+      "h_msigcom": 0.026000000536441803,
+      "j_m": 12.585000038146973,
+      "j_msigcom": 0.027000000700354576,
+      "jdate": 2451220.7645,
+      "k_m": 10.940999984741211,
+      "k_msigcom": 0.026000000536441803,
+      "match_dist": 0.081099,
+      "ph_qual": "AAA",
+      "ra": 194.04655
+     },
+     "dec": -5.789311,
+     "epoch": 1999.112291581109,
+     "epoch_range": null,
+     "links": {
+      "IRSA": "https://irsa.ipac.caltech.edu/applications/finderchart/servlet/api?locstr=194.04655%20-5.789311"
+     },
+     "metadata": {
+      "catalog": "fp_psc",
+      "catalog_has_proper_motions": false,
+      "citation": "Skrutskie et al. 2006, AJ 131, 1163 (2006AJ....131.1163S); DOI 10.26131/IRSA2",
+      "epoch_propagation": "target_pm_parallax",
+      "epoch_separation_arcsec": 0.08108381096168074,
+      "links": {
+       "IRSA": "https://irsa.ipac.caltech.edu/applications/finderchart/servlet/api?locstr=194.04655%20-5.789311",
+       "LegacySurvey": null,
+       "MAST": null,
+       "NED": null,
+       "SIMBAD": null
+      },
+      "physical": {},
+      "positional_error": {
+       "columns": [
+        "err_maj",
+        "err_min",
+        "err_ang"
+       ],
+       "divisor": null,
+       "divisor_source": null,
+       "ellipse_1sigma_arcsec": {
+        "major": 0.07999999821186066,
+        "minor": 0.07999999821186066,
+        "pa_deg": 5.0
+       },
+       "kind": "ellipse",
+       "raw": {
+        "err_ang": 5,
+        "err_maj": 0.07999999821186066,
+        "err_min": 0.07999999821186066
+       },
+       "scale": null,
+       "sigma_arcsec": 0.07999999821186066,
+       "sigma_dec_arcsec": null,
+       "sigma_ra_arcsec": null,
+       "source": "catalog",
+       "statistical_sigma_arcsec": 0.07999999821186066,
+       "systematic_arcsec": null,
+       "units": [
+        "arcsec",
+        "arcsec",
+        "deg"
+       ]
+      },
+      "query_separation_arcsec": 0.08109892885735333,
+      "single_epoch_positions": true,
+      "table": "fp_psc",
+      "wavelength": "infrared"
+     },
+     "physical": {},
+     "positional_error_arcsec": 0.07999999821186066,
+     "proper_motion_dec_masyr": null,
+     "proper_motion_ra_masyr": null,
+     "provenance": {
+      "catalog": "twomass_psc",
+      "endpoint": "https://irsa.ipac.caltech.edu/TAP/sync",
+      "provider": "tap",
+      "query_parameters": {
+       "LANG": "ADQL",
+       "QUERY": "SELECT TOP 201 designation, ra, dec, err_maj, err_min, err_ang, j_m, j_msigcom, h_m, h_msigcom, k_m, k_msigcom, ph_qual, cc_flg, ext_key, jdate, DISTANCE(POINT('ICRS', ra, dec), POINT('ICRS', 194.046527410, -5.789312540)) AS match_dist FROM fp_psc WHERE 1 = CONTAINS(POINT('ICRS', ra, dec), CIRCLE('ICRS', 194.046527410, -5.789312540, 0.0027777778)) ORDER BY match_dist ASC",
+       "REQUEST": "doQuery"
+      },
+      "retrieved_at": "2026-09-28T10:24:51.064828+00:00",
+      "search_radius_arcsec": 10.0,
+      "source_id": "12561117-0547215"
+     },
+     "ra": 194.04655,
+     "separation_arcsec": 0.08108381096168074,
+     "source_id": "12561117-0547215"
+    },
+    {
+     "catalog": "first",
+     "confidence": 0.566262,
+     "data": {
+      "dec": -5.78936667,
+      "fit_major_axis": 6.81,
+      "fit_minor_axis": 5.56,
+      "flux_20_cm": 9708.04,
+      "flux_20_cm_error": 1.256,
+      "int_flux_20_cm": 10641.53,
+      "match_dist": 5.612577852857319e-05,
+      "mean_epoch": 52022.7999999998,
+      "name": "FIRST J125611.1-054721",
+      "ra": 194.0465125,
+      "sidelobe_prob": 0.014
+     },
+     "dec": -5.78936667,
+     "epoch": 2001.3095140314847,
+     "epoch_range": null,
+     "links": {},
+     "metadata": {
+      "catalog": null,
+      "catalog_has_proper_motions": false,
+      "citation": "Becker, White & Helfand 1995, ApJ 450, 559; Helfand, White & Becker 2015, ApJ 801, 26",
+      "epoch_propagation": "target_pm_parallax",
+      "epoch_separation_arcsec": 0.20205375112422838,
+      "links": {
+       "IRSA": null,
+       "LegacySurvey": null,
+       "MAST": null,
+       "NED": null,
+       "SIMBAD": null
+      },
+      "physical": {},
+      "positional_error": {
+       "columns": [
+        "fit_major_axis",
+        "fit_minor_axis",
+        "flux_20_cm",
+        "flux_20_cm_error"
+       ],
+       "divisor": null,
+       "divisor_source": null,
+       "ellipse_1sigma_arcsec": {
+        "major": 0.20754496114815518,
+        "minor": 0.16944933685517516,
+        "pa_deg": null
+       },
+       "kind": "first",
+       "raw": {
+        "fit_major_axis": 6.81,
+        "fit_minor_axis": 5.56,
+        "flux_20_cm": 9708.04,
+        "flux_20_cm_error": 1.256
+       },
+       "scale": null,
+       "sigma_arcsec": 0.1894571041933343,
+       "sigma_dec_arcsec": null,
+       "sigma_ra_arcsec": null,
+       "source": "catalog",
+       "statistical_sigma_arcsec": 0.1894571041933343,
+       "systematic_arcsec": null,
+       "units": [
+        "arcsec",
+        "arcsec",
+        null,
+        null
+       ]
+      },
+      "query_separation_arcsec": 0.20205280271547918,
+      "single_epoch_positions": true,
+      "table": "first",
+      "wavelength": "radio"
+     },
+     "physical": {},
+     "positional_error_arcsec": 0.1894571041933343,
+     "proper_motion_dec_masyr": null,
+     "proper_motion_ra_masyr": null,
+     "provenance": {
+      "catalog": "first",
+      "endpoint": "https://heasarc.gsfc.nasa.gov/xamin/vo/tap/sync",
+      "provider": "tap",
+      "query_parameters": {
+       "LANG": "ADQL",
+       "QUERY": "SELECT TOP 201 name, ra, dec, flux_20_cm, int_flux_20_cm, flux_20_cm_error, fit_major_axis, fit_minor_axis, sidelobe_prob, mean_epoch, DISTANCE(POINT('ICRS', ra, dec), POINT('ICRS', 194.046527410, -5.789312540)) AS match_dist FROM first WHERE 1 = CONTAINS(POINT('ICRS', ra, dec), CIRCLE('ICRS', 194.046527410, -5.789312540, 0.0027777778)) ORDER BY match_dist ASC",
+       "REQUEST": "doQuery"
+      },
+      "retrieved_at": "2026-09-28T10:24:50.520141+00:00",
+      "search_radius_arcsec": 10.0,
+      "source_id": "FIRST J125611.1-054721"
+     },
+     "ra": 194.0465125,
+     "separation_arcsec": 0.20205375112422838,
+     "source_id": "FIRST J125611.1-054721"
+    },
+    {
+     "catalog": "allwise",
+     "confidence": 0.059781,
+     "data": {
+      "cc_flags": "0000",
+      "dec": -5.7893621,
+      "designation": "J125611.15-054721.7",
+      "ext_flg": 1,
+      "match_dist": 0.237363,
+      "ph_qual": "AAAA",
+      "ra": 194.0464837,
+      "sigdec": 0.0312,
+      "sigra": 0.0308,
+      "sigradec": -0.0066,
+      "tmass_key": 285144328,
+      "w1mjdmean": 55402.30092471,
+      "w1mpro": 11.02299976348877,
+      "w1sigmpro": 0.023000000044703484,
+      "w2mpro": 9.66100025177002,
+      "w2sigmpro": 0.019999999552965164,
+      "w3mpro": 7.190999984741211,
+      "w3sigmpro": 0.017000000923871994,
+      "w4mpro": 4.491000175476074,
+      "w4sigmpro": 0.024000000208616257
+     },
+     "dec": -5.789362099999999,
+     "epoch": 2010.562083298316,
+     "epoch_range": null,
+     "links": {
+      "IRSA": "https://irsa.ipac.caltech.edu/applications/finderchart/servlet/api?locstr=194.0464837%20-5.789362099999999"
+     },
+     "metadata": {
+      "catalog": "allwise_p3as_psd",
+      "catalog_has_proper_motions": false,
+      "citation": "Wright et al. 2010, AJ 140, 1868 (2010AJ....140.1868W); Mainzer et al. 2011, ApJ 731, 53; DOI 10.26131/IRSA1",
+      "epoch_propagation": "target_pm",
+      "epoch_separation_arcsec": 0.23736309275404502,
+      "links": {
+       "IRSA": "https://irsa.ipac.caltech.edu/applications/finderchart/servlet/api?locstr=194.0464837%20-5.789362099999999",
+       "LegacySurvey": null,
+       "MAST": null,
+       "NED": null,
+       "SIMBAD": null
+      },
+      "physical": {},
+      "positional_error": {
+       "columns": [
+        "sigra",
+        "sigdec"
+       ],
+       "divisor": null,
+       "divisor_source": null,
+       "ellipse_1sigma_arcsec": null,
+       "kind": "sigma",
+       "raw": {
+        "sigdec": 0.0312,
+        "sigra": 0.0308
+       },
+       "scale": null,
+       "sigma_arcsec": 0.031000645154577025,
+       "sigma_dec_arcsec": 0.0312,
+       "sigma_ra_arcsec": 0.0308,
+       "source": "catalog",
+       "statistical_sigma_arcsec": 0.031000645154577025,
+       "systematic_arcsec": null,
+       "units": [
+        "arcsec",
+        "arcsec"
+       ]
+      },
+      "query_separation_arcsec": 0.23736309275404502,
+      "single_epoch_positions": false,
+      "table": "allwise_p3as_psd",
+      "wavelength": "infrared"
+     },
+     "physical": {},
+     "positional_error_arcsec": 0.031000645154577025,
+     "proper_motion_dec_masyr": null,
+     "proper_motion_ra_masyr": null,
+     "provenance": {
+      "catalog": "allwise",
+      "endpoint": "https://irsa.ipac.caltech.edu/TAP/sync",
+      "provider": "tap",
+      "query_parameters": {
+       "LANG": "ADQL",
+       "QUERY": "SELECT TOP 201 designation, ra, dec, sigra, sigdec, sigradec, w1mpro, w1sigmpro, w2mpro, w2sigmpro, w3mpro, w3sigmpro, w4mpro, w4sigmpro, cc_flags, ext_flg, ph_qual, w1mjdmean, tmass_key, DISTANCE(POINT('ICRS', ra, dec), POINT('ICRS', 194.046527410, -5.789312540)) AS match_dist FROM allwise_p3as_psd WHERE 1 = CONTAINS(POINT('ICRS', ra, dec), CIRCLE('ICRS', 194.046527410, -5.789312540, 0.0027777778)) ORDER BY match_dist ASC",
+       "REQUEST": "doQuery"
+      },
+      "retrieved_at": "2026-09-28T10:24:51.233817+00:00",
+      "search_radius_arcsec": 10.0,
+      "source_id": "J125611.15-054721.7"
+     },
+     "ra": 194.0464837,
+     "separation_arcsec": 0.23736309275404502,
+     "source_id": "J125611.15-054721.7"
+    },
+    {
+     "catalog": "xmm",
+     "confidence": 0.825053,
+     "data": {
+      "dec": -5.78919682432086,
+      "end_time": 59747.2814699074,
+      "ep_det_ml": 3647170.0,
+      "ep_flux": 1.54697e-11,
+      "ep_flux_error": 3.24371e-14,
+      "error_ell_major": 0.0119281,
+      "error_ell_minor": 0.0111331,
+      "error_radius": 0.00982229,
+      "extent": 0.0,
+      "match_dist": 0.0001516026245515302,
+      "n_contrib": 3,
+      "n_obs": 3,
+      "name": "5XMM J125611.1-054721",
+      "ra": 194.046625857189,
+      "srcid": "3055603010100001",
+      "sum_flag": 1,
+      "time": 54852.7125810185
+     },
+     "dec": -5.78919682432086,
+     "epoch": null,
+     "epoch_range": [
+      2009.0573924189418,
+      2022.4579917040585
+     ],
+     "links": {},
+     "metadata": {
+      "catalog": null,
+      "catalog_has_proper_motions": false,
+      "citation": "Webb et al. 2020, A&A 641, A136 (2020A&A...641A.136W); Webb, Traulsen et al. 2026 (5XMM-DR15)",
+      "epoch_propagation": "target_pm_span",
+      "epoch_separation_arcsec": 0.5457694484048533,
+      "links": {
+       "IRSA": null,
+       "LegacySurvey": null,
+       "MAST": null,
+       "NED": null,
+       "SIMBAD": null
+      },
+      "physical": {},
+      "positional_error": {
+       "columns": [
+        "error_radius"
+       ],
+       "divisor": null,
+       "divisor_source": null,
+       "ellipse_1sigma_arcsec": null,
+       "kind": "radial",
+       "raw": {
+        "error_radius": 0.00982229
+       },
+       "scale": null,
+       "sigma_arcsec": 0.8800274079200159,
+       "sigma_dec_arcsec": null,
+       "sigma_ra_arcsec": null,
+       "source": "catalog",
+       "statistical_sigma_arcsec": 0.006945407865780813,
+       "systematic_arcsec": 0.88,
+       "units": [
+        "arcsec"
+       ]
+      },
+      "query_separation_arcsec": 0.5457694484048533,
+      "single_epoch_positions": false,
+      "table": "xmmssc",
+      "wavelength": "xray"
+     },
+     "physical": {},
+     "positional_error_arcsec": 0.8800274079200159,
+     "proper_motion_dec_masyr": null,
+     "proper_motion_ra_masyr": null,
+     "provenance": {
+      "catalog": "xmm",
+      "endpoint": "https://heasarc.gsfc.nasa.gov/xamin/vo/tap/sync",
+      "provider": "tap",
+      "query_parameters": {
+       "LANG": "ADQL",
+       "QUERY": "SELECT TOP 201 srcid, name, ra, dec, error_radius, error_ell_major, error_ell_minor, ep_flux, ep_flux_error, ep_det_ml, sum_flag, n_obs, n_contrib, extent, \"time\", end_time, DISTANCE(POINT('ICRS', ra, dec), POINT('ICRS', 194.046527410, -5.789312540)) AS match_dist FROM xmmssc WHERE 1 = CONTAINS(POINT('ICRS', ra, dec), CIRCLE('ICRS', 194.046527410, -5.789312540, 0.0027777778)) ORDER BY match_dist ASC",
+       "REQUEST": "doQuery"
+      },
+      "retrieved_at": "2026-09-28T10:24:51.815418+00:00",
+      "search_radius_arcsec": 10.0,
+      "source_id": "5XMM J125611.1-054721"
+     },
+     "ra": 194.046625857189,
+     "separation_arcsec": 0.5457694484048533,
+     "source_id": "5XMM J125611.1-054721"
+    },
+    {
+     "catalog": "nvss",
+     "confidence": 0.023917,
+     "data": {
+      "dec": -5.78891667,
+      "dec_error": 0.6,
+      "flux_20_cm": 9711.2,
+      "flux_20_cm_error": 291.3,
+      "major_axis": 16.0,
+      "match_dist": 0.00040179167674842605,
+      "minor_axis": 14.7,
+      "name": "NVSS J125611-054720",
+      "pol_flux": 249.48,
+      "position_angle": null,
+      "ra": 194.04645833,
+      "ra_error": 0.03
+     },
+     "dec": -5.78891667,
+     "epoch": null,
+     "epoch_range": [
+      1993.7,
+      1997.3
+     ],
+     "links": {},
+     "metadata": {
+      "catalog": null,
+      "catalog_has_proper_motions": false,
+      "citation": "Condon et al. 1998, AJ 115, 1693 (1998AJ....115.1693C)",
+      "epoch_propagation": "target_pm_span",
+      "epoch_separation_arcsec": 1.4464500362999575,
+      "links": {
+       "IRSA": null,
+       "LegacySurvey": null,
+       "MAST": null,
+       "NED": null,
+       "SIMBAD": null
+      },
+      "physical": {},
+      "positional_error": {
+       "columns": [
+        "ra_error",
+        "dec_error"
+       ],
+       "divisor": null,
+       "divisor_source": null,
+       "ellipse_1sigma_arcsec": null,
+       "kind": "sigma",
+       "raw": {
+        "dec_error": 0.6,
+        "ra_error": 0.03
+       },
+       "scale": null,
+       "sigma_arcsec": 0.5293580372335217,
+       "sigma_dec_arcsec": 0.6,
+       "sigma_ra_arcsec": 0.447705107372535,
+       "source": "catalog",
+       "statistical_sigma_arcsec": 0.5293580372335217,
+       "systematic_arcsec": null,
+       "units": [
+        "s_ra",
+        "arcsec"
+       ]
+      },
+      "query_separation_arcsec": 1.4464500362999575,
+      "single_epoch_positions": false,
+      "table": "nvss",
+      "wavelength": "radio"
+     },
+     "physical": {},
+     "positional_error_arcsec": 0.5293580372335217,
+     "proper_motion_dec_masyr": null,
+     "proper_motion_ra_masyr": null,
+     "provenance": {
+      "catalog": "nvss",
+      "endpoint": "https://heasarc.gsfc.nasa.gov/xamin/vo/tap/sync",
+      "provider": "tap",
+      "query_parameters": {
+       "LANG": "ADQL",
+       "QUERY": "SELECT TOP 201 name, ra, dec, flux_20_cm, flux_20_cm_error, ra_error, dec_error, major_axis, minor_axis, position_angle, pol_flux, DISTANCE(POINT('ICRS', ra, dec), POINT('ICRS', 194.046527410, -5.789312540)) AS match_dist FROM nvss WHERE 1 = CONTAINS(POINT('ICRS', ra, dec), CIRCLE('ICRS', 194.046527410, -5.789312540, 0.0027777778)) ORDER BY match_dist ASC",
+       "REQUEST": "doQuery"
+      },
+      "retrieved_at": "2026-09-28T10:24:53.671261+00:00",
+      "search_radius_arcsec": 10.0,
+      "source_id": "NVSS J125611-054720"
+     },
+     "ra": 194.04645833,
+     "separation_arcsec": 1.4464500362999575,
+     "source_id": "NVSS J125611-054720"
+    },
+    {
+     "catalog": "rosat",
+     "confidence": 0.684495,
+     "data": {
+      "count_rate": 2.1123,
+      "count_rate_error": 0.0874,
+      "dec": -5.78854,
+      "detection_likelihood": 2104.65,
+      "end_time": 48255.2787731482,
+      "exposure": 287.45,
+      "match_dist": 0.0009869828026109312,
+      "name": "2RXS J125611.0-054718",
+      "ra": 194.04591,
+      "source_extent": 0.118,
+      "source_quality_flag": 0,
+      "time": 48253.4106597222,
+      "x_pixel_error": 0.033027,
+      "y_pixel_error": 0.032715
+     },
+     "dec": -5.78854,
+     "epoch": 1990.9920457671053,
+     "epoch_range": null,
+     "links": {},
+     "metadata": {
+      "catalog": null,
+      "catalog_has_proper_motions": false,
+      "citation": "Boller et al. 2016, A&A 588, A103 (2016A&A...588A.103B); positional errors: Freund et al. 2022, A&A 664, A105",
+      "epoch_propagation": "target_pm_parallax",
+      "epoch_separation_arcsec": 3.553156361690367,
+      "links": {
+       "IRSA": null,
+       "LegacySurvey": null,
+       "MAST": null,
+       "NED": null,
+       "SIMBAD": null
+      },
+      "physical": {},
+      "positional_error": {
+       "columns": [
+        "x_pixel_error",
+        "y_pixel_error"
+       ],
+       "divisor": null,
+       "divisor_source": null,
+       "ellipse_1sigma_arcsec": null,
+       "kind": "sigma",
+       "raw": {
+        "x_pixel_error": 0.033027,
+        "y_pixel_error": 0.032715
+       },
+       "scale": 1.22,
+       "sigma_arcsec": 4.080725317140051,
+       "sigma_dec_arcsec": 1.472175,
+       "sigma_ra_arcsec": 1.486215,
+       "source": "catalog",
+       "statistical_sigma_arcsec": 1.479211657750506,
+       "systematic_arcsec": 3.0,
+       "units": [
+        45.0,
+        45.0
+       ]
+      },
+      "query_separation_arcsec": 3.553138089422078,
+      "single_epoch_positions": true,
+      "table": "rass2rxs",
+      "wavelength": "xray"
+     },
+     "physical": {},
+     "positional_error_arcsec": 4.080725317140051,
+     "proper_motion_dec_masyr": null,
+     "proper_motion_ra_masyr": null,
+     "provenance": {
+      "catalog": "rosat",
+      "endpoint": "https://heasarc.gsfc.nasa.gov/xamin/vo/tap/sync",
+      "provider": "tap",
+      "query_parameters": {
+       "LANG": "ADQL",
+       "QUERY": "SELECT TOP 201 name, ra, dec, x_pixel_error, y_pixel_error, count_rate, count_rate_error, detection_likelihood, exposure, source_extent, source_quality_flag, \"time\", end_time, DISTANCE(POINT('ICRS', ra, dec), POINT('ICRS', 194.046527410, -5.789312540)) AS match_dist FROM rass2rxs WHERE 1 = CONTAINS(POINT('ICRS', ra, dec), CIRCLE('ICRS', 194.046527410, -5.789312540, 0.0027777778)) ORDER BY match_dist ASC",
+       "REQUEST": "doQuery"
+      },
+      "retrieved_at": "2026-09-28T10:24:50.859811+00:00",
+      "search_radius_arcsec": 10.0,
+      "source_id": "2RXS J125611.0-054718"
+     },
+     "ra": 194.04591,
+     "separation_arcsec": 3.553156361690367,
+     "source_id": "2RXS J125611.0-054718"
+    }
+   ],
+   "wavelengths": [
+    "extragalactic",
+    "infrared",
+    "multi",
+    "optical",
+    "radio",
+    "xray"
+   ]
+  }
+ ],
+ "failures": [],
+ "provenance": {
+  "catalog_stats": {
+   "allwise": {
+    "dropped_rows": 0,
+    "elapsed_ms": 3875.0,
+    "epoch_incomplete": false,
+    "excess_row_count": 0,
+    "fallback": null,
+    "filtered_rows": 0,
+    "matched_count": 1,
+    "pad_row_count": 0,
+    "query_radius_arcsec": 10.0,
+    "raw_row_count": 1,
+    "returned_count": 1,
+    "row_count": 1,
+    "status": "success",
+    "truncated": false,
+    "warnings": []
+   },
+   "chandra": {
+    "dropped_rows": 0,
+    "elapsed_ms": 2813.0,
+    "epoch_incomplete": false,
+    "excess_row_count": 0,
+    "fallback": null,
+    "filtered_rows": 0,
+    "matched_count": 0,
+    "pad_row_count": 0,
+    "query_radius_arcsec": 10.0,
+    "raw_row_count": 0,
+    "returned_count": 0,
+    "row_count": 0,
+    "status": "empty",
+    "truncated": false,
+    "warnings": []
+   },
+   "exoplanet_archive": {
+    "dropped_rows": 0,
+    "elapsed_ms": 1515.0,
+    "epoch_incomplete": false,
+    "excess_row_count": 0,
+    "fallback": null,
+    "filtered_rows": 0,
+    "matched_count": 0,
+    "pad_row_count": 0,
+    "query_radius_arcsec": 11.55,
+    "raw_row_count": 0,
+    "returned_count": 0,
+    "row_count": 0,
+    "status": "empty",
+    "truncated": false,
+    "warnings": []
+   },
+   "first": {
+    "dropped_rows": 0,
+    "elapsed_ms": 3156.0,
+    "epoch_incomplete": false,
+    "excess_row_count": 0,
+    "fallback": null,
+    "filtered_rows": 0,
+    "matched_count": 1,
+    "pad_row_count": 0,
+    "query_radius_arcsec": 10.0,
+    "raw_row_count": 1,
+    "returned_count": 1,
+    "row_count": 1,
+    "status": "success",
+    "truncated": false,
+    "warnings": []
+   },
+   "gaia_dr3": {
+    "dropped_rows": 0,
+    "elapsed_ms": 750.0,
+    "epoch_incomplete": false,
+    "excess_row_count": 0,
+    "fallback": null,
+    "filtered_rows": 0,
+    "matched_count": 1,
+    "pad_row_count": 0,
+    "query_radius_arcsec": 11.6,
+    "raw_row_count": 1,
+    "returned_count": 1,
+    "row_count": 1,
+    "status": "success",
+    "truncated": false,
+    "warnings": []
+   },
+   "lotss": {
+    "dropped_rows": 0,
+    "elapsed_ms": 1094.0,
+    "epoch_incomplete": false,
+    "excess_row_count": 0,
+    "fallback": null,
+    "filtered_rows": 0,
+    "matched_count": 0,
+    "pad_row_count": 0,
+    "query_radius_arcsec": 10.0,
+    "raw_row_count": 0,
+    "returned_count": 0,
+    "row_count": 0,
+    "status": "empty",
+    "truncated": false,
+    "warnings": []
+   },
+   "ned": {
+    "dropped_rows": 0,
+    "elapsed_ms": 1359.0,
+    "epoch_incomplete": false,
+    "excess_row_count": 0,
+    "fallback": null,
+    "filtered_rows": 0,
+    "matched_count": 7,
+    "pad_row_count": 0,
+    "query_radius_arcsec": 10.0,
+    "raw_row_count": 7,
+    "returned_count": 7,
+    "row_count": 7,
+    "status": "success",
+    "truncated": false,
+    "warnings": []
+   },
+   "nvss": {
+    "dropped_rows": 0,
+    "elapsed_ms": 6297.0,
+    "epoch_incomplete": false,
+    "excess_row_count": 0,
+    "fallback": null,
+    "filtered_rows": 0,
+    "matched_count": 1,
+    "pad_row_count": 0,
+    "query_radius_arcsec": 10.0,
+    "raw_row_count": 1,
+    "returned_count": 1,
+    "row_count": 1,
+    "status": "success",
+    "truncated": false,
+    "warnings": []
+   },
+   "panstarrs_dr2": {
+    "dropped_rows": 0,
+    "elapsed_ms": 312.0,
+    "epoch_incomplete": false,
+    "excess_row_count": 0,
+    "fallback": null,
+    "filtered_rows": 0,
+    "matched_count": 3,
+    "pad_row_count": 0,
+    "query_radius_arcsec": 10.0,
+    "raw_row_count": 3,
+    "returned_count": 3,
+    "row_count": 3,
+    "status": "success",
+    "truncated": false,
+    "warnings": []
+   },
+   "rosat": {
+    "dropped_rows": 0,
+    "elapsed_ms": 3485.0,
+    "epoch_incomplete": false,
+    "excess_row_count": 0,
+    "fallback": null,
+    "filtered_rows": 0,
+    "matched_count": 1,
+    "pad_row_count": 0,
+    "query_radius_arcsec": 10.0,
+    "raw_row_count": 1,
+    "returned_count": 1,
+    "row_count": 1,
+    "status": "success",
+    "truncated": false,
+    "warnings": []
+   },
+   "sdss": {
+    "dropped_rows": 0,
+    "elapsed_ms": 22563.0,
+    "epoch_incomplete": false,
+    "excess_row_count": 0,
+    "fallback": null,
+    "filtered_rows": 0,
+    "matched_count": 0,
+    "pad_row_count": 0,
+    "query_radius_arcsec": 10.0,
+    "raw_row_count": 0,
+    "returned_count": 0,
+    "row_count": 0,
+    "status": "empty",
+    "truncated": false,
+    "warnings": []
+   },
+   "simbad": {
+    "dropped_rows": 0,
+    "elapsed_ms": 546.0,
+    "epoch_incomplete": false,
+    "excess_row_count": 0,
+    "fallback": null,
+    "filtered_rows": 0,
+    "matched_count": 25,
+    "pad_row_count": 0,
+    "query_radius_arcsec": 10.0,
+    "raw_row_count": 25,
+    "returned_count": 25,
+    "row_count": 25,
+    "status": "success",
+    "truncated": false,
+    "warnings": []
+   },
+   "twomass_psc": {
+    "dropped_rows": 0,
+    "elapsed_ms": 3703.0,
+    "epoch_incomplete": false,
+    "excess_row_count": 0,
+    "fallback": null,
+    "filtered_rows": 0,
+    "matched_count": 1,
+    "pad_row_count": 0,
+    "query_radius_arcsec": 10.0,
+    "raw_row_count": 1,
+    "returned_count": 1,
+    "row_count": 1,
+    "status": "success",
+    "truncated": false,
+    "warnings": []
+   },
+   "vlass": {
+    "dropped_rows": 0,
+    "elapsed_ms": 985.0,
+    "epoch_incomplete": false,
+    "excess_row_count": 0,
+    "fallback": null,
+    "filtered_rows": 0,
+    "matched_count": 0,
+    "pad_row_count": 0,
+    "query_radius_arcsec": 10.0,
+    "raw_row_count": 0,
+    "returned_count": 0,
+    "row_count": 0,
+    "status": "empty",
+    "truncated": false,
+    "warnings": []
+   },
+   "xmm": {
+    "dropped_rows": 0,
+    "elapsed_ms": 4453.0,
+    "epoch_incomplete": false,
+    "excess_row_count": 0,
+    "fallback": null,
+    "filtered_rows": 0,
+    "matched_count": 1,
+    "pad_row_count": 0,
+    "query_radius_arcsec": 10.0,
+    "raw_row_count": 1,
+    "returned_count": 1,
+    "row_count": 1,
+    "status": "success",
+    "truncated": false,
+    "warnings": []
+   }
+  },
+  "query_radius_arcsec": 10.0
+ },
+ "resolved_object": {
+  "aliases": [
+   "0FGL J1256.1-0547",
+   "1AGL J1256-0549",
+   "1AXG J125611-0547",
+   "1E 1253.5-0531",
+   "1ES 1253-05.5",
+   "1FGL J1256.2-0547",
+   "1FHL J1256.1-0547",
+   "1FLE J1256-0545",
+   "1Jy 1253-05",
+   "1Jy 1253-055",
+   "1RXS J125611.2-054719",
+   "2AGL J1255-0543",
+   "2E 1253.5-0531",
+   "2E 2900",
+   "2EG J1256-0546",
+   "2FGL J1256.1-0547",
+   "2FHL J1256.2-0548",
+   "2MASS J12561117-0547215",
+   "2MASSI J1256111-054721",
+   "3EG J1255-0549",
+   "3FGL J1256.1-0547",
+   "3FHL J1256.1-0547",
+   "4C -05.55",
+   "4FGL J1256.1-0547",
+   "9Y-MST J1256-0546",
+   "AAVSO 1251-05",
+   "AT20G J125611-054721",
+   "CGRaBS J1256-0547",
+   "CTA 56",
+   "Cul 1253-055",
+   "EGR J1256-0552",
+   "FIRST J125611.1-054721",
+   "FL8Y J1256.1-0547",
+   "G4Jy 1038",
+   "GLEAM J125611-054719",
+   "GRA B1254-05",
+   "Gaia DR1 3677618214520515968",
+   "Gaia DR2 3677618218816419456",
+   "Gaia DR3 3677618218816419456",
+   "GeV J1256-0546",
+   "HE 1253-0531",
+   "ICRF J125611.1-054721",
+   "IERS B1253-055",
+   "IGR J12562-0547",
+   "INTREF 530",
+   "IRAS F12535-0530",
+   "IVS B1253-055",
+   "JCMTSE J125611.1-054720",
+   "JCMTSF J125611.1-054720",
+   "LEDA 2817645",
+   "MRC 1253-055",
+   "MSH 12-0-02",
+   "NRAO 413",
+   "NVSS J125611-054720",
+   "OHIO N -089",
+   "PBC J1256.1-0547",
+   "PCCS2 143 G305.09+57.06",
+   "PKS 1253-05",
+   "PKS 1253-055",
+   "PKS J1256-0547",
+   "PLCKERC -857 G305.11+57.05",
+   "PMN J1256-0547",
+   "QSO B1253-05",
+   "QSO B1253-055",
+   "QSO B1253-055E",
+   "QSO J1256-0547",
+   "RBPL J1256-0547",
+   "RBS 1184",
+   "RORF 1253-055",
+   "RX J1256.1-0547",
+   "SPASS J125610-054734",
+   "SRGA J125611.4-054714",
+   "SWIFT J1256.1-0547",
+   "SWIFT J1256.2-0551",
+   "TGSSADR J125611.0-054720",
+   "TIC 175710789",
+   "TXS 1253-055",
+   "TeV J1256-057",
+   "UT 1253-055",
+   "VCS1 J1256-0547",
+   "VLSS J1256.1-0547",
+   "VLSSr J125611.1-054723",
+   "VSOP J1256-0547",
+   "WB 1253-0531",
+   "WISE J125611.15-054721.7",
+   "WISE J125611.17-054721.5",
+   "WISEA J125611.15-054721.7",
+   "WMAP 181",
+   "WMAP J1256-0546",
+   "WMAP J1256-0547",
+   "XMMSL1 J125611.0-054720",
+   "XSS J12565-0537",
+   "[BAG2012] 194.0513-05.7909",
+   "[BDW2002] q1253-0531",
+   "[CAB95] IRAS F12535-0530",
+   "[CGL99] 12",
+   "[CMG2008] 194.20-5.66",
+   "[DGT2001] B1253-055",
+   "[GGR94] 1253-055",
+   "[GR92] 1253-055",
+   "[GW2008] CoNFIG 151",
+   "[HB93] 1253-055",
+   "[HSN2016] J194.04-05.78",
+   "[IN88] 1253-055",
+   "[KRL2007b] 126",
+   "[MGL2009] BZQ J1256-0547",
+   "[MML2015] 5BZQ J1256-0547",
+   "[P82] 1253-055",
+   "[S77] 221",
+   "[VV2000] J125611.1-054721",
+   "[VV2003] J125611.1-054721",
+   "[VV2006] J125611.1-054721",
+   "[VV2010] J125611.1-054721",
+   "[VV96] J125611.1-054721",
+   "[VV98] J125611.1-054721",
+   "[VYP98] 1253-055",
+   "[WCO2009] J125612-054728",
+   "[WPW2003] J1256-0547",
+   "[WTW94] 1253-055"
+  ],
+  "canonical_name": "3C 279",
+  "dec_deg": -5.78931254,
+  "epoch": 2000.0,
+  "object_type": "Bla",
+  "pm_dec_masyr": 0.187,
+  "pm_ra_masyr": 0.158,
+  "query": "3C 279",
+  "ra_deg": 194.04652741,
+  "redshift": 0.5354184,
+  "resolver": "cds_sesame",
+  "resolver_metadata": {
+   "endpoint": "https://cds.unistra.fr/cgi-bin/nph-sesame/-oxpI/SNV",
+   "epoch_source": "SIMBAD positions are ICRS at epoch J2000",
+   "extragalactic": true,
+   "parallax_mas": 0.0214,
+   "proper_motion_applicable": false,
+   "radial_velocity_kms": null,
+   "raw_fields": {
+    "alias": [
+     "3C 279",
+     "1AGL J1256-0549",
+     "2AGL J1255-0543",
+     "AT20G J125611-054721",
+     "1AXG J125611-0547",
+     "4C -05.55",
+     "CGRaBS J1256-0547",
+     "CTA 56",
+     "Cul 1253-055",
+     "1E 1253.5-0531",
+     "2E 2900",
+     "2E 1253.5-0531",
+     "2EG J1256-0546",
+     "3EG J1255-0549",
+     "EGR J1256-0552",
+     "1ES 1253-05.5",
+     "0FGL J1256.1-0547",
+     "1FGL J1256.2-0547",
+     "2FGL J1256.1-0547",
+     "3FGL J1256.1-0547",
+     "4FGL J1256.1-0547",
+     "1FHL J1256.1-0547",
+     "2FHL J1256.2-0548",
+     "3FHL J1256.1-0547",
+     "FIRST J125611.1-054721",
+     "FL8Y J1256.1-0547",
+     "1FLE J1256-0545",
+     "G4Jy 1038",
+     "GeV J1256-0546",
+     "GLEAM J125611-054719",
+     "GRA B1254-05",
+     "HE 1253-0531",
+     "ICRF J125611.1-054721",
+     "IERS B1253-055",
+     "IGR J12562-0547",
+     "INTREF 530",
+     "IRAS F12535-0530",
+     "IVS B1253-055",
+     "JCMTSE J125611.1-054720",
+     "JCMTSF J125611.1-054720",
+     "1Jy 1253-055",
+     "1Jy 1253-05",
+     "LEDA 2817645",
+     "2MASS J12561117-0547215",
+     "2MASSI J1256111-054721",
+     "MRC 1253-055",
+     "MSH 12-0-02",
+     "NRAO 413",
+     "NVSS J125611-054720",
+     "OHIO N -089",
+     "PBC J1256.1-0547",
+     "PCCS2 143 G305.09+57.06",
+     "PKS 1253-05",
+     "PKS 1253-055",
+     "PKS J1256-0547",
+     "PLCKERC -857 G305.11+57.05",
+     "PMN J1256-0547",
+     "QSO B1253-055E",
+     "QSO B1253-055",
+     "QSO B1253-05",
+     "QSO J1256-0547",
+     "RBPL J1256-0547",
+     "RBS 1184",
+     "RORF 1253-055",
+     "RX J1256.1-0547",
+     "1RXS J125611.2-054719",
+     "SPASS J125610-054734",
+     "SRGA J125611.4-054714",
+     "SWIFT J1256.2-0551",
+     "SWIFT J1256.1-0547",
+     "TeV J1256-057",
+     "TGSSADR J125611.0-054720",
+     "TIC 175710789",
+     "TXS 1253-055",
+     "UT 1253-055",
+     "VCS1 J1256-0547",
+     "VLSSr J125611.1-054723",
+     "VLSS J1256.1-0547",
+     "VSOP J1256-0547",
+     "WB 1253-0531",
+     "WISEA J125611.15-054721.7",
+     "WISE J125611.17-054721.5",
+     "WISE J125611.15-054721.7",
+     "WMAP 181",
+     "WMAP J1256-0547",
+     "WMAP J1256-0546",
+     "XMMSL1 J125611.0-054720",
+     "XSS J12565-0537",
+     "9Y-MST J1256-0546",
+     "[BAG2012] 194.0513-05.7909",
+     "[BDW2002] q1253-0531",
+     "[CAB95] IRAS F12535-0530",
+     "[CGL99] 12",
+     "[CMG2008] 194.20-5.66",
+     "[DGT2001] B1253-055",
+     "[GGR94] 1253-055",
+     "[GR92] 1253-055",
+     "[GW2008] CoNFIG 151",
+     "[HB93] 1253-055",
+     "[HSN2016] J194.04-05.78",
+     "[IN88] 1253-055",
+     "[KRL2007b] 126",
+     "[MGL2009] BZQ J1256-0547",
+     "[MML2015] 5BZQ J1256-0547",
+     "[P82] 1253-055",
+     "[S77] 221",
+     "[VV2000] J125611.1-054721",
+     "[VV2003] J125611.1-054721",
+     "[VV2006] J125611.1-054721",
+     "[VV2010] J125611.1-054721",
+     "[VV96] J125611.1-054721",
+     "[VV98] J125611.1-054721",
+     "[VYP98] 1253-055",
+     "[WCO2009] J125612-054728",
+     "[WPW2003] J1256-0547",
+     "[WTW94] 1253-055",
+     "AAVSO 1251-05",
+     "Gaia DR3 3677618218816419456",
+     "Gaia DR1 3677618214520515968",
+     "Gaia DR2 3677618218816419456"
+    ],
+    "errdemas": [
+     "0.0325"
+    ],
+    "errramas": [
+     "0.038800"
+    ],
+    "info": [
+     "from cache"
+    ],
+    "jdedeg": [
+     "-5.78931254"
+    ],
+    "jpos": [
+     "12:56:11.16 -05:47:21.5"
+    ],
+    "jradeg": [
+     "194.04652741"
+    ],
+    "nrefs": [
+     "3239"
+    ],
+    "oid": [
+     "1999444"
+    ],
+    "oname": [
+     "3C 279"
+    ],
+    "otype": [
+     "Bla"
+    ],
+    "plx.e": [
+     "0.0558"
+    ],
+    "plx.q": [
+     "A"
+    ],
+    "plx.r": [
+     "2020yCat.1350....0G"
+    ],
+    "plx.v": [
+     "0.0214"
+    ],
+    "pm.e": [
+     "0.080"
+    ],
+    "pm.epmde": [
+     "0.046"
+    ],
+    "pm.epmra": [
+     "0.066"
+    ],
+    "pm.pa": [
+     "40"
+    ],
+    "pm.pmde": [
+     "0.187"
+    ],
+    "pm.pmra": [
+     "0.158"
+    ],
+    "pm.q": [
+     "A"
+    ],
+    "pm.r": [
+     "2020yCat.1350....0G"
+    ],
+    "pm.v": [
+     "0.245"
+    ],
+    "refpos": [
+     "2020A&A...644A.159C"
+    ],
+    "z.e": [
+     "0.0005"
+    ],
+    "z.q": [
+     "C"
+    ],
+    "z.r": [
+     "2022ApJS..261....2K"
+    ],
+    "z.v": [
+     "0.53541840"
+    ]
+   },
+   "resolver_name": "Sc=Simbad (CDS, via client/server)"
+  }
+ },
+ "target": {
+  "dec": -5.78931254,
+  "epoch": 2000.0,
+  "frame": "icrs",
+  "parallax_mas": 0.0214,
+  "pm_dec_masyr": 0.0,
+  "pm_ra_masyr": 0.0,
+  "ra": 194.04652741
+ }
+}

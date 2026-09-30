@@ -1,0 +1,27 @@
+{"metadata":
+[
+{"name": "source_id", "datatype": "long", "xtype": null, "arraysize": null, "description": "Unique source identifier (unique within a particular Data Release)", "unit": null, "ucd": "meta.id", "utype": null},
+{"name": "pmra_error", "datatype": "float", "xtype": null, "arraysize": null, "description": "Standard error of proper motion in right ascension direction", "unit": "mas.yr**-1", "ucd": "stat.error;pos.pm;pos.eq.ra", "utype": "stc:AstroCoords.Velocity3D.Error3.C1"},
+{"name": "pmdec_error", "datatype": "float", "xtype": null, "arraysize": null, "description": "Standard error of proper motion in declination direction", "unit": "mas.yr**-1", "ucd": "stat.error;pos.pm;pos.eq.dec", "utype": "stc:AstroCoords.Velocity3D.Error3.C2"},
+{"name": "pmra_pmdec_corr", "datatype": "float", "xtype": null, "arraysize": null, "description": "Correlation between proper motion in right ascension and proper motion in declination", "unit": null, "ucd": "stat.correlation", "utype": null},
+{"name": "parallax_over_error", "datatype": "float", "xtype": null, "arraysize": null, "description": "Parallax divided by its standard error", "unit": null, "ucd": "stat.snr;pos.parallax.trig", "utype": null},
+{"name": "ruwe", "datatype": "float", "xtype": null, "arraysize": null, "description": "Renormalised unit weight error", "unit": null, "ucd": "stat.error", "utype": null},
+{"name": "phot_g_mean_flux_over_error", "datatype": "float", "xtype": null, "arraysize": null, "description": "G-band mean flux divided by its error", "unit": null, "ucd": "stat.snr;phot.flux;em.opt", "utype": null},
+{"name": "phot_bp_mean_flux_over_error", "datatype": "float", "xtype": null, "arraysize": null, "description": "Integrated BP mean flux divided by its error", "unit": null, "ucd": "stat.snr;phot.flux;em.opt.B", "utype": null},
+{"name": "phot_rp_mean_flux_over_error", "datatype": "float", "xtype": null, "arraysize": null, "description": "Integrated RP mean flux divided by its error", "unit": null, "ucd": "stat.snr;phot.flux;em.opt.R", "utype": null},
+{"name": "classprob_dsc_combmod_quasar", "datatype": "float", "xtype": null, "arraysize": null, "description": "Probability from DSC-Combmod of being a quasar (data used: BP\/RP spectrum, photometry, astrometry)", "unit": null, "ucd": "stat.probability", "utype": null},
+{"name": "classprob_dsc_combmod_galaxy", "datatype": "float", "xtype": null, "arraysize": null, "description": "Probability from DSC-Combmod of being a galaxy (data used: BP\/RP spectrum, photometry, astrometry)", "unit": null, "ucd": "stat.probability", "utype": null},
+{"name": "classprob_dsc_combmod_star", "datatype": "float", "xtype": null, "arraysize": null, "description": "Probability from DSC-Combmod of being a single star (but not a white dwarf) (data used: BP\/RP spectrum, photometry, astrometry)", "unit": null, "ucd": "stat.probability", "utype": null},
+{"name": "in_qso_candidates", "datatype": "boolean", "xtype": null, "arraysize": null, "description": "Flag indicating the availability of additional information in the QSO candidates table", "unit": null, "ucd": "meta.code.status", "utype": null},
+{"name": "in_galaxy_candidates", "datatype": "boolean", "xtype": null, "arraysize": null, "description": "Flag indicating the availability of additional information in the galaxy candidates table", "unit": null, "ucd": "meta.code.status", "utype": null},
+{"name": "phot_bp_rp_excess_factor", "datatype": "float", "xtype": null, "arraysize": null, "description": "BP\/RP excess factor", "unit": null, "ucd": "arith.factor;phot.flux;em.opt", "utype": null},
+{"name": "astrometric_excess_noise", "datatype": "float", "xtype": null, "arraysize": null, "description": "Excess noise of the source", "unit": "mas", "ucd": "stat.value", "utype": null},
+{"name": "astrometric_excess_noise_sig", "datatype": "float", "xtype": null, "arraysize": null, "description": "Significance of excess noise", "unit": null, "ucd": "stat.value", "utype": null},
+{"name": "classprob_dsc_combmod_whitedwarf", "datatype": "float", "xtype": null, "arraysize": null, "description": "Probability from DSC-Combmod of being a white dwarf (data used: BP\/RP spectrum, photometry, astrometry)", "unit": null, "ucd": "stat.probability", "utype": null},
+{"name": "classprob_dsc_combmod_binarystar", "datatype": "float", "xtype": null, "arraysize": null, "description": "Probability from DSC-Combmod of being a binary star (data used: BP\/RP spectrum, photometry, astrometry)", "unit": null, "ucd": "stat.probability", "utype": null}
+],
+"data":
+[
+[3048443305671969152,null,null,null,null,null,781.38,47.18087,460.92682,0.0,0.0,0.9991654,false,false,1.7543181,33.423298,113727.875,0.0,8.3456584E-4]
+]
+}

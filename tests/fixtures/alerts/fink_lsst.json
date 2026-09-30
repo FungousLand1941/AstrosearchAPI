@@ -1,0 +1,26 @@
+{
+  "catalog": "fink_lsst",
+  "params": {
+    "broker": "fink_lsst",
+    "since_mjd": 61200.0,
+    "until_mjd": 61311.3842,
+    "limit": 3,
+    "options": {
+      "class_name": "extragalactic_new_candidate"
+    },
+    "n_alerts": 3,
+    "warnings": [],
+    "truncated": true,
+    "boundary_mjd": 61235.40427552896
+  },
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://api.lsst.fink-portal.org/api/v1/tags?tag=extragalactic_new_candidate&n=4&startdate=2026-06-09+00%3A00%3A37&stopdate=2026-09-28+09%3A13%3A52&columns=r%3AdiaObjectId%2Cr%3AdiaSourceId%2Cr%3Ara%2Cr%3Adec%2Cr%3AmidpointMjdTai%2Cr%3Aband%2Cr%3ApsfFlux%2Cr%3ApsfFluxErr%2Cr%3Areliability%2Cr%3Aextendedness%2Cr%3Asnr%2Cr%3AisNegative%2Cf%3Aclf_cats_class%2Cf%3Aclf_cats_score%2Cf%3Aclf_snnSnVsOthers_score%2Cf%3Aclf_earlySNIa_score%2Cf%3Axm_simbad_otype%2Cf%3Axm_gaiadr3_DR3Name%2Cf%3Axm_gaiadr3_Plx%2Cf%3Axm_gaiadr3_e_Plx%2Cf%3Axm_gaiadr3_VarFlag%2Cf%3Axm_mangrove_HyperLEDA_name%2Cf%3Axm_mangrove_ang_dist%2Cf%3Axm_tns_fullname%2Cf%3Axm_tns_type%2Cf%3Axm_tns_redshift%2Cf%3Axm_legacydr8_zphot",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    }
+  ]
+}

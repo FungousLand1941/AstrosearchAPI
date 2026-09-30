@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-29T05:42:37 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-29T05:42:38">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-source=IX%2F69%2Fxmm4d13s&amp;-meta.all=">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+
+<RESOURCE ID="yCat_9069_1" name="IX/69/xmm4d13s" type="meta">
+  <INFO name="nrows" value="656997">Number of rows of the table</INFO>
+  <DESCRIPTION>
+    XMM-Newton Serendipitous Source Catalogue 4XMM-DR13 (Webb+, 2023)
+    The 4XMM-DR13 Catalog, "slim" version
+  </DESCRIPTION>
+
+<!-- The 4XMM-DR13 Catalog, "slim" version (\originalcolumnnames) -->
+  <PARAM name="-c" datatype="char" arraysize="32*" value="">
+    <DESCRIPTION>Query from a celestial position according to ASU syntax:
+      {RA{+|-}Dec|object_name}[,eq=equinox][,ep=epoch][,rm=[min/]max]
+      (see http://vizier.cds.unistra.fr/doc/asu.html)
+    </DESCRIPTION>
+  </PARAM>
+  <LINK content-role="query" action="votable?-source=IX/69/xmm4d13s&amp;">
+    Action to Query the current RESOURCE, to be completed by PARAMs and FIELDs contents
+  </LINK>
+
+  <TABLE name="IX/69/xmm4d13s" nrows="656997">
+    <COOSYS ID="H" system="ICRS"/>
+    <!-- Definitions of GROUPs and FIELDs -->
+
+<!-- +++No column could be found to attach a LINK in table: IX/69/xmm4d13s -->
+    <FIELD name="recno" ucd="meta.record" display="0" datatype="int" width="8"><!-- ucd="RECORD" -->
+      <DESCRIPTION>Record number assigned by the VizieR team. Should Not be used for identification.</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-5?-info=XML&amp;-out.add=.&amp;-source=IX/69/xmm4d13s&amp;recno=${recno}"/>
+    </FIELD>
+    <FIELD name="Source" ucd="meta.id" display="0" datatype="long" width="15"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>[200001101010001/209119905010217] Unique source index (SRCID)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="4XMM" ucd="meta.id;meta.main" display="1" datatype="char" arraysize="16"><!-- ucd="ID_MAIN" -->
+      <DESCRIPTION>Unique source name (JHHMMSS.s+DDMMSS) (IAUNAME)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RA_ICRS" ucd="pos.eq.ra;meta.main" ref="H" display="1" datatype="double" width="10" precision="6" unit="deg"><!-- ucd="POS_EQ_RA_MAIN" -->
+      <DESCRIPTION>Mean source right ascension (ICRS) (SC_RA)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DE_ICRS" ucd="pos.eq.dec;meta.main" ref="H" display="1" datatype="double" width="10" precision="6" unit="deg"><!-- ucd="POS_EQ_DEC_MAIN" -->
+      <DESCRIPTION>Mean source declination (ICRS) (SC_DEC)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="ePos" ucd="stat.error" display="0" datatype="double" width="9" precision="6" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0.03/20] Mean error on position (SC_POSERR)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="srcML" ucd="stat.likelihood;instr.saturation" display="1" datatype="double" width="12" precision="E5"><!-- ucd="STAT_LIKELIHOOD" -->
+      <DESCRIPTION>Source detection likelihood (SC_DET_ML) (2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Flux1" ucd="phot.flux;em.X-ray" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>Mean flux in 0.2-0.5keV band (SC_EP_1_FLUX)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_Flux1" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Mean error on Flux1 (SC_EP_1_FLUX_ERR)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Flux2" ucd="phot.flux;em.X-ray" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>Mean flux in 0.5-1.0keV band (SC_EP_2_FLUX)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_Flux2" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Mean error on Flux2 (SC_EP_2_FLUX_ERR)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Flux3" ucd="phot.flux;em.X-ray" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>Mean flux in 1.0-2.0keV band (SC_EP_3_FLUX)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_Flux3" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Mean error on Flux3 (SC_EP_3_FLUX_ERR)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Flux4" ucd="phot.flux;em.X-ray" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>Mean flux in 2.0-4.5keV band (SC_EP_4_FLUX)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_Flux4" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Mean error on Flux4 (SC_EP_4_FLUX_ERR)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Flux5" ucd="phot.flux;em.X-ray" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>Mean flux in 4.5-12keV band (SC_EP_5_FLUX)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_Flux5" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Mean error on Flux5 (SC_EP_5_FLUX_ERR)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Flux8" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>Mean flux in 0.2-12keV band (SC_EP_8_FLUX)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_Flux8" ucd="stat.error" display="1" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Mean error on Flux8 (SC_EP_8_FLUX_ERR)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Flux9" ucd="phot.flux;em.X-ray" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Mean flux in 0.5-4.5keV band (SC_EP_9_FLUX)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Flux9" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on Flux9 (SC_EP_9_FLUX_ERR)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="HR1" ucd="phot.flux;arith.ratio" display="1" datatype="double" width="9" precision="6"><!-- ucd="SPECT_HARDNESS-RATIO" -->
+      <DESCRIPTION>[-1/1]? Hardness ratio, bands 1,2 (SC_HR1) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_HR1" ucd="stat.error" display="0" datatype="double" width="12" precision="E5"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on HR1 (SC_HR1_ERR)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="HR2" ucd="phot.flux;arith.ratio" display="1" datatype="double" width="9" precision="6"><!-- ucd="SPECT_HARDNESS-RATIO" -->
+      <DESCRIPTION>[-1/1]? Hardness ratio, bands 2,3 (SC_HR2) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_HR2" ucd="stat.error" display="0" datatype="double" width="12" precision="E5"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on HR2 (SC_HR2_ERR)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="HR3" ucd="phot.flux;arith.ratio" display="1" datatype="double" width="9" precision="6"><!-- ucd="SPECT_HARDNESS-RATIO" -->
+      <DESCRIPTION>[-1/1]? Hardness ratio, bands 3,4 (SC_HR3) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_HR3" ucd="stat.error" display="0" datatype="double" width="12" precision="E5"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on HR3 (SC_HR3_ERR)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="HR4" ucd="phot.flux;arith.ratio" display="1" datatype="double" width="9" precision="6"><!-- ucd="SPECT_HARDNESS-RATIO" -->
+      <DESCRIPTION>[-1/1]? Hardness ratio, bands 4,5 (SC_HR4) (1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_HR4" ucd="stat.error" display="0" datatype="double" width="12" precision="E5"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on HR4 (SC_HR4_ERR)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ext" ucd="phys.angSize" display="1" datatype="double" width="9" precision="6" unit="arcsec"><!-- ucd="EXTENSION_DIAM" -->
+      <DESCRIPTION>Total band extent (SC_EXTENT)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_ext" ucd="stat.error" display="0" datatype="double" width="10" precision="6" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on ext (SC_EXT_ERR)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="extML" ucd="stat.likelihood;instr.saturation" display="0" datatype="double" width="12" precision="E5"><!-- ucd="STAT_LIKELIHOOD" -->
+      <DESCRIPTION>Detection likelihood of the extended source (SC_EXT_ML) (3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Cst" ucd="stat.fit.goodness" display="0" datatype="double" width="9" precision="6"><!-- ucd="STAT_PROBABILITY" -->
+      <DESCRIPTION>[0/1]? Constant probability (SC_CHI2PROB) (4)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Fvar" ucd="src.var.index" display="0" datatype="double" width="12" precision="6"><!-- ucd="VAR_INDEX" -->
+      <DESCRIPTION>? fractional excess variance of the unique source (SC_FVAR) (6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Fvar" ucd="stat.error" display="0" datatype="double" width="12" precision="6"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on Fvar (SC_FVARERR)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="V" ucd="meta.code;src.var" display="1" datatype="unsignedByte" width="1"><!-- ucd="CODE_VARIAB" -->
+      <DESCRIPTION>[0/1] Variability flag (V=1) (SC_VAR_FLAG)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="S" ucd="meta.code.qual" display="1" datatype="unsignedByte" width="1"><!-- ucd="CODE_QUALITY" -->
+      <DESCRIPTION>[0/4] summary flag, 0=best (SC_SUM_FLAG) (5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="F8min" ucd="phot.flux;em.X-ray.medium;stat.min" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="SPECT_FLUX_VALUE" -->
+      <DESCRIPTION>Minimum flux in 0.5-4.5keV band (SC_EP_8_FMIN)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F8min" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Mean error on F8min (SC_EP_8_FMIN_ERR)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="F8max" ucd="phot.flux;em.X-ray.medium;stat.max" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="SPECT_FLUX_VALUE" -->
+      <DESCRIPTION>Maximum flux in 0.5-4.5keV band (SC_EP_8_FMAX)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F8max" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Mean error on F8max (SC_EP_8_FMAX_ERR)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MJD0" ucd="time.epoch" ref="time_5" display="0" datatype="double" width="10" precision="4" unit="d"><!-- ucd="TIME_DATE" -->
+      <DESCRIPTION>[51575/59912] Date of first observation (MJD) (MJD_FIRST)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MJD1" ucd="time.epoch" ref="time_2" display="0" datatype="double" width="10" precision="4" unit="d"><!-- ucd="TIME_DATE" -->
+      <DESCRIPTION>[51575/59913] Date of last observation (MJD) (MJD_LAST)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Nd" ucd="meta.number" display="1" datatype="short" width="2"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>[1/90]? Number of detections (N_DETECTIONS)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="c" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/1] (CONFUSED) Confusion flag (CONFUSED) (7)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="uIRAP" ucd="meta.ref.url" display="1" datatype="char" arraysize="54"><!-- ucd="DATA_LINK" -->
+      <DESCRIPTION>URL for details at IRAP (WEBPAGE_URL)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="xcatDB" ucd="meta.ref.url" display="1" datatype="char" arraysize="6*"><!-- ucd="DATA_LINK" -->
+      <DESCRIPTION>Show details from the Xcat-DB about that source</DESCRIPTION>
+      <LINK href="http://xcatdb.unistra.fr/4xmmdr13/xcatindex.html?mode=merged&amp;srcid=${Source}"/>
+    </FIELD>
+  </TABLE>
+<INFO name="matches" value="2">matching records</INFO>
+</RESOURCE>
+</VOTABLE>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>3C 351</name>
+  <!-- Q8483456 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 0ms [0] -->
+    <INFO>from cache</INFO>
+    <oid>361894</oid>
+    <otype>Bla</otype>
+    <jpos>17:04:41.37 +60:44:30.5</jpos>
+    <jradeg>256.17239267</jradeg>
+    <jdedeg>60.74181128</jdedeg>
+    <refPos>2020yCat.1350....0G</refPos>
+    <errRAmas>0.0209</errRAmas><errDEmas>0.0208</errDEmas>
+    <pm>
+      <v>0.060</v><e>0.037</e><q>A</q><r>2020yCat.1350....0G</r>
+      <pa>136</pa>
+      <pmRA>0.042</pmRA><epmRA>0.027</epmRA>
+      <pmDE>-0.043</pmDE><epmDE>0.026</epmDE>
+    </pm>
+    <z><v>0.37152</v><e>0.00009</e><q>C</q><r>2012ApJS..203...21A</r></z>
+    <oname>8C 1704+608</oname>
+    <alias>8C 1704+608</alias>
+    <alias>2A 1705+609</alias>
+    <alias>3A 1703+611</alias>
+    <alias>BWE 1704+6048</alias>
+    <alias>3C 351.0</alias>
+    <alias>3C 351</alias>
+    <alias>4C 60.24</alias>
+    <alias>6C 170404+604844</alias>
+    <alias>7C 1704+6048</alias>
+    <alias>7C 170404.70+604846.00</alias>
+    <alias>CJ1 1704+608</alias>
+    <alias>3CR 351</alias>
+    <alias>DA 430</alias>
+    <alias>1E 1704.0+6048</alias>
+    <alias>1E 1704+60.8</alias>
+    <alias>2E 3828</alias>
+    <alias>2E 1703.9+6048</alias>
+    <alias>1ES 1704+60.7</alias>
+    <alias>GB6 B1704+6048</alias>
+    <alias>87GB 170404.7+604847</alias>
+    <alias>1H 1704+605</alias>
+    <alias>HS 1704+6048</alias>
+    <alias>IRAS F17040+6048</alias>
+    <alias>IRAS 17037+6047</alias>
+    <alias>IRAS F17038+6047</alias>
+    <alias>1Jy 1704+60</alias>
+    <alias>1Jy 1704+608</alias>
+    <alias>LEDA 2817694</alias>
+    <alias>2MASS J17044138+6044305</alias>
+    <alias>MY 170405.5+604435.6</alias>
+    <alias>MY 170405.5+604836.2</alias>
+    <alias>NRAO 522</alias>
+    <alias>NVSS J170443+604449</alias>
+    <alias>OHIO T 607</alias>
+    <alias>PG 1704+60</alias>
+    <alias>PG 1704+608</alias>
+    <alias>QSO J1704+6044</alias>
+    <alias>QSO B1704+6048</alias>
+    <alias>QSO B1704+608</alias>
+    <alias>RGB J1704.7+6044</alias>
+    <alias>RGB J1704+607</alias>
+    <alias>RX J1704.6+6044</alias>
+    <alias>1RXS J170441.9+604423</alias>
+    <alias>S4 1704+608</alias>
+    <alias>S4 1704+60</alias>
+    <alias>SBSG 1704+608</alias>
+    <alias>SBSS 1704+608</alias>
+    <alias>SDSS J170441.38+604430.4</alias>
+    <alias>SDSS J170441.37+604430.5</alias>
+    <alias>SDSS J170441.37+604430.4</alias>
+    <alias>SDSS J170441.28+604430.5</alias>
+    <alias>SDSS J170441.38+604430.5</alias>
+    <alias>SDSS J170441.38+604430.7</alias>
+    <alias>SRGA J170442.4+604435</alias>
+    <alias>TGSSADR J170442.5+604447</alias>
+    <alias>TIC 459983986</alias>
+    <alias>TXS 1704+608</alias>
+    <alias>WB 1704+6048</alias>
+    <alias>WISEA J170441.37+604430.6</alias>
+    <alias>WISE J170441.37+604430.5</alias>
+    <alias>WN B1704.0+6048</alias>
+    <alias>[BDW2002] q1704+6048</alias>
+    <alias>[GW2008] CoNFIG 266</alias>
+    <alias>[HB93] 1704+608</alias>
+    <alias>[IN88] 1704+608</alias>
+    <alias>[KB2007] J170441.3+604430.0</alias>
+    <alias>[KSS94] J170441.3+604430 34</alias>
+    <alias>[LBT95] 1704+6048 150</alias>
+    <alias>[S77] 342</alias>
+    <alias>[VV2000] J170441.5+604428</alias>
+    <alias>[VV2003] J170441.5+604428</alias>
+    <alias>[VV2006] J170441.5+604428</alias>
+    <alias>[VV2010] J170441.5+604428</alias>
+    <alias>[VV96] J170441.5+604428</alias>
+    <alias>[VV98] J170441.5+604428</alias>
+    <alias>[WTW94] 1704+608</alias>
+    <alias>Gaia DR3 1437984673091380352</alias>
+    <alias>Gaia DR2 1437984673091380352</alias>
+    <nrefs>783</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ====Done (2026-Sep-29,05:01:45z)==== -->

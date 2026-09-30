@@ -1,0 +1,20 @@
+{
+  "catalog": "exoplanet_archive",
+  "target": "barnard_j2000",
+  "ra": 269.45207696,
+  "dec": 4.69336497,
+  "epoch": 2000.0,
+  "radius_arcsec": 10.0,
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://exoplanetarchive.ipac.caltech.edu/TAP/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+2001+pl_name%2C+hostname%2C+ra%2C+dec%2C+sy_dist%2C+sy_vmag%2C+sy_kmag%2C+sy_gaiamag%2C+sy_pmra%2C+sy_pmdec%2C+pl_orbper%2C+pl_rade%2C+pl_bmasse%2C+discoverymethod%2C+disc_year%2C+gaia_dr3_id%2C+DISTANCE%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+POINT%28%27ICRS%27%2C+269.452076960%2C+4.693364970%29%29+AS+match_dist+FROM+pscomppars+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+269.452076960%2C+4.693364970%2C+0.0479861111%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": [
+        "FROM pscomppars "
+      ]
+    }
+  ]
+}

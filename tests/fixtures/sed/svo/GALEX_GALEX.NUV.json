@@ -1,0 +1,13 @@
+{
+  "catalog": "GALEX_GALEX.NUV",
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://svo2.cab.inta-csic.es/theory/fps/fps.php?ID=GALEX%2FGALEX.NUV",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "text/xml",
+      "match": []
+    }
+  ]
+}

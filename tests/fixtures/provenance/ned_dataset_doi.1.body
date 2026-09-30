@@ -1,0 +1,21 @@
+{
+  "type": "article",
+  "id": "https://doi.org/10.26132/ned1",
+  "author": [
+    {
+      "literal": "NASA/IPAC Extragalactic Database (NED)"
+    }
+  ],
+  "issued": {
+    "date-parts": [
+      [
+        2019
+      ]
+    ]
+  },
+  "abstract": "NASA/IPAC Extragalactic Database (NED) is a comprehensive database of multiwavelength data for extragalactic objects, providing a systematic, ongoing fusion of information integrated from hundreds of large sky surveys and hundreds of thousands of research publications. The contents and services span the entire observed spectrum from gamma rays through radio frequencies. As new observations are published, they are cross-identified or statistically associated with previous data and integrated into a unified database to simplify queries and retrieval.",
+  "DOI": "10.26132/NED1",
+  "publisher": "IPAC",
+  "title": "NASA/IPAC Extragalactic Database (NED)",
+  "URL": "https://catcopy.ipac.caltech.edu/dois/doi.php?id=10.26132/NED1"
+}

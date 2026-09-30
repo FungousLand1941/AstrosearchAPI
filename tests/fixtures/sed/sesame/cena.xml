@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>NGC 5128</name>
+  <!-- Q8483458 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 318ms [2] -->
+    <oid>3392496</oid>
+    <otype>BLL</otype>
+    <jpos>13:25:27.61 -43:01:08.8</jpos>
+    <jradeg>201.36506338</jradeg>
+    <jdedeg>-43.01911251</jdedeg>
+    <refPos>2020A&amp;A...644A.159C</refPos>
+    <errRAmas>0.39980</errRAmas><errDEmas>0.2003</errDEmas>
+    <z><v>0.00187695</v><e>0.0005</e><q>C</q><r>2022ApJS..261....2K</r></z>
+    <MType>S0pec</MType>
+    <oname>NAME Centaurus A</oname>
+    <alias>QSO B1322-428</alias>
+    <alias>2A 1322-427</alias>
+    <alias>3A 1322-427</alias>
+    <alias>AM 1322-424</alias>
+    <alias>APG 153</alias>
+    <alias>AT20G J132527-430104</alias>
+    <alias>AT20G J132527.7-430107</alias>
+    <alias>CTA 59</alias>
+    <alias>Cul 1322-42</alias>
+    <alias>Cul 1322-427</alias>
+    <alias>6dFGS gJ132527.7-430108</alias>
+    <alias>2E 3038</alias>
+    <alias>2E 1322.5-4245</alias>
+    <alias>2EG J1324-4317</alias>
+    <alias>3EG J1324-4314</alias>
+    <alias>EGR J1328-4337</alias>
+    <alias>1ES 1322-42.7</alias>
+    <alias>ESO 270-9</alias>
+    <alias>ESO-LV 270-0090</alias>
+    <alias>0FGL J1325.4-4303</alias>
+    <alias>1FGL J1325.6-4300</alias>
+    <alias>1FGL J1322.0-4515</alias>
+    <alias>2FGL J1325.6-4300</alias>
+    <alias>3FGL J1325.4-4301</alias>
+    <alias>4FGL J1325.5-4300</alias>
+    <alias>1FHL J1326.1-4303</alias>
+    <alias>2FHL J1325.6-4301</alias>
+    <alias>3FHL J1325.5-4300</alias>
+    <alias>FL8Y J1325.5-4301</alias>
+    <alias>1FLE J1324-4319</alias>
+    <alias>GRO J1314-42</alias>
+    <alias>1H 1323-428</alias>
+    <alias>H 1322-427</alias>
+    <alias>HIPASS J1324-42</alias>
+    <alias>ICRF J132527.6-430108</alias>
+    <alias>IERS B1322-427</alias>
+    <alias>INTEGRAL1 11</alias>
+    <alias>INTREF 559</alias>
+    <alias>IRAS 13225-4245</alias>
+    <alias>IRAS F13225-4245</alias>
+    <alias>ISOSS J13253-4300</alias>
+    <alias>1Jy 1322-428</alias>
+    <alias>1Jy 1322-42</alias>
+    <alias>LEDA 46957</alias>
+    <alias>1M 1322-427</alias>
+    <alias>2MASX J13252775-4301073</alias>
+    <alias>2MAXI J1325-429</alias>
+    <alias>MCG-07-28-001</alias>
+    <alias>Mills 13-4A</alias>
+    <alias>MOST 1322-427</alias>
+    <alias>MRC 1322-427</alias>
+    <alias>MSH 13-4-02</alias>
+    <alias>NAME Cen A</alias>
+    <alias>NAME Cen-A</alias>
+    <alias>NAME Centaurus A</alias>
+    <alias>NGC 5128</alias>
+    <alias>NRL 7</alias>
+    <alias>PBC J1325.4-4301</alias>
+    <alias>PCCS2 143 G309.51+19.42</alias>
+    <alias>PKS 1322-428</alias>
+    <alias>PKS J1325-4303</alias>
+    <alias>PKS 1322-42</alias>
+    <alias>PKS 1322-427</alias>
+    <alias>PLCKERC -857 G309.51+19.41</alias>
+    <alias>PMN J1325-4257</alias>
+    <alias>PRC C-45</alias>
+    <alias>PSCz Q13225-4245</alias>
+    <alias>QDOT B1322304-424530</alias>
+    <alias>RORF 1322-427</alias>
+    <alias>RR95 245a</alias>
+    <alias>RX J132524.4-430100</alias>
+    <alias>RX J1325.5-4301</alias>
+    <alias>SGC 132233-4245.4</alias>
+    <alias>SPB 216</alias>
+    <alias>SRGA J132527.9-430111</alias>
+    <alias>SUMSS J132528-430110</alias>
+    <alias>SWIFT J1325.4-4301</alias>
+    <alias>SWIFT J1325.4-4300</alias>
+    <alias>TeV J1325-430</alias>
+    <alias>2U 1322-42</alias>
+    <alias>3U 1322-42</alias>
+    <alias>4U 1322-42</alias>
+    <alias>VSOP J1325-4301</alias>
+    <alias>WMAP J1325-4301</alias>
+    <alias>2XMM J132527.6-430109</alias>
+    <alias>XSS J13253-4302</alias>
+    <alias>[A94] 35</alias>
+    <alias>[CHM2007] HDC 790 J132527.75-4301073</alias>
+    <alias>[CHM2007] LDC 993 J132527.75-4301073</alias>
+    <alias>[CRA98] 4</alias>
+    <alias>[HSN2016] J201.36-43.01</alias>
+    <alias>[IN88] 1322-428</alias>
+    <alias>[KJK2017] J1325-4301</alias>
+    <alias>[KRL2007b] 139</alias>
+    <alias>[M98c] 132233.0-424524</alias>
+    <alias>[MEM2008] 179</alias>
+    <alias>[MGL2009] BZU J1325-4301</alias>
+    <alias>[MML2015] 5BZU J1325-4301</alias>
+    <alias>[NZ2007] 25</alias>
+    <alias>[OKM2018] SWIFT J1325.4-4301</alias>
+    <alias>[PT56] 27</alias>
+    <alias>[SLK2004] 837</alias>
+    <alias>[VDD93] 184</alias>
+    <alias>[VV2000b] J132528.0-430100</alias>
+    <alias>[VV2003b] J132528.0-430100</alias>
+    <alias>[VV2006b] J132528.0-430100</alias>
+    <alias>[VV2010b] J132528.0-430100</alias>
+    <alias>[VV98b] J132528.0-430100</alias>
+    <alias>[WCO2009] J132533-425925</alias>
+    <alias>Gaia DR3 6088704625623244416</alias>
+    <nrefs>4835</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ****Total of 1 crashes -->
+<!-- Configuration tested: /run/sesame.conf -->

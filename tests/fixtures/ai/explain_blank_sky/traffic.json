@@ -1,0 +1,13 @@
+{
+  "set": "explain_blank_sky",
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://simbad.cds.unistra.fr/simbad/sim-tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&FORMAT=json&QUERY=SELECT+TOP+50+b.oid+AS+oid%2C+b.ra+AS+ra%2C+b.dec+AS+dec%2C+b.pmra+AS+pmra%2C+b.pmdec+AS+pmdec%2C+b.nbref+AS+nbref%2C+DISTANCE%28POINT%28%27ICRS%27%2C+b.ra%2C+b.dec%29%2C+POINT%28%27ICRS%27%2C+150.123400000%2C+-30.456700000%29%29+AS+dist_deg+FROM+basic+AS+b+WHERE+CONTAINS%28POINT%28%27ICRS%27%2C+b.ra%2C+b.dec%29%2C+CIRCLE%28%27ICRS%27%2C+150.123400000%2C+-30.456700000%2C+0.0013888889%29%29+%3D+1+ORDER+BY+dist_deg+ASC%2C+oid+ASC",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    }
+  ]
+}

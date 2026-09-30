@@ -1,0 +1,14 @@
+{
+  "scenario": "panstarrs_m87_jpg",
+  "recorded_outcome": "200x100 coverage=None",
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://alasky.cds.unistra.fr/hips-image-services/hips2fits?hips=CDS%2FP%2FPanSTARRS%2FDR1%2Fcolor-z-zg-g&width=200&height=100&fov=0.05&projection=TAN&ra=187.7059308&dec=12.3911233&format=jpg",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "image/jpeg",
+      "match": []
+    }
+  ]
+}

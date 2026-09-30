@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-29T05:43:31 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-29T05:43:31">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-source=J%2FApJ%2F956%2F51&amp;-meta=">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+
+<RESOURCE ID="yCat_19560051" name="J/ApJ/956/51" type="meta">
+  <DESCRIPTION>RESOLVE DR4 and ECO DR3 G3 groups HI catalogs (Hutchens+, 2023)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apj/956/51">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apj/956/51">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Hutchens Z.L.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2023ApJ...956...51H">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJ">    Journal name  </INFO>
+  <INFO name="original_date" value="2023">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJ/956/51">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier/ba-xw-1k">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.607256">popularity index</INFO>
+  <INFO name="cpopu" value="21916">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="UV"/>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Wavelength" value="IR"/>
+  <INFO name="-kw.Wavelength" value="Radio"/>
+  <INFO name="-kw.Astronomy" value="Galaxies"/>
+  <INFO name="-kw.Astronomy" value="Photometry:wide-band"/>
+  <INFO name="-kw.Astronomy" value="Redshifts"/>
+<INFO name="media" value="SED"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJ/956/51"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+<INFO name="matches" value="2">matching records</INFO>
+</VOTABLE>

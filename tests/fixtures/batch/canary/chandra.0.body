@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<VOTABLE xmlns="http://www.ivoa.net/xml/VOTable/v1.3" xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.4">
+ <RESOURCE type="results">
+  <INFO name="QUERY_STATUS" value="OK">No errors detected in query preprocessing</INFO>
+  <TABLE>
+   <DESCRIPTION>Query result for:&#xA;SELECT tu.t_idx AS t_idx, name AS name, ra AS ra, dec AS dec, error_ellipse_r0 AS error_ellipse_r0, error_ellipse_r1 AS error_ellipse_r1, error_ellipse_angle AS error_ellipse_angle, significance AS significance, b_flux_ap AS b_flux_ap, b_flux_ap_lo AS b_flux_ap_lo, b_flux_ap_hi AS b_flux_ap_hi, hardness_ratio_hs AS hardness_ratio_hs, hardness_ratio_hm AS hardness_ratio_hm, var_flag AS var_flag, conf_flag AS conf_flag, extent_flag AS extent_flag, sat_src_flag AS sat_src_flag, pileup_flag AS pileup_flag, acis_num AS acis_num, hrc_num AS hrc_num FROM csc, tap_upload_1790594745528_targets AS tu WHERE 1 = CONTAINS(POINT(&apos;ICRS&apos;, ra, dec), CIRCLE(&apos;ICRS&apos;, tu.t_ra, tu.t_dec, tu.t_rad))</DESCRIPTION>
+   <FIELD datatype="int" name="t_idx">
+    <VALUES null="-2147483648"/>
+   </FIELD>
+   <FIELD datatype="char" arraysize="*" ucd="meta.id;meta.main" name="name">
+    <DESCRIPTION>Source Designation (2CXO JHHMMSS.SsDDMMSS[X])</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="deg" datatype="double" ucd="pos.eq.ra;meta.main" precision="F6" name="ra">
+    <DESCRIPTION>Right Ascension</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="deg" datatype="double" ucd="pos.eq.dec;meta.main" precision="F6" name="dec">
+    <DESCRIPTION>Declination</DESCRIPTION>
+   </FIELD>
+   <FIELD datatype="double" name="error_ellipse_r0"/>
+   <FIELD datatype="double" name="error_ellipse_r1"/>
+   <FIELD datatype="double" name="error_ellipse_angle"/>
+   <FIELD datatype="double" ucd="stat.snr" precision="E3" name="significance">
+    <DESCRIPTION>Highest Source Signal-to-Noise Ratio Across All Stacked Obs. and Energy Bands</DESCRIPTION>
+   </FIELD>
+   <FIELD datatype="double" name="b_flux_ap"/>
+   <FIELD datatype="float" name="b_flux_ap_lo"/>
+   <FIELD datatype="float" name="b_flux_ap_hi"/>
+   <FIELD datatype="double" name="hardness_ratio_hs"/>
+   <FIELD datatype="double" name="hardness_ratio_hm"/>
+   <FIELD datatype="char" arraysize="*" name="var_flag"/>
+   <FIELD datatype="char" arraysize="*" name="conf_flag"/>
+   <FIELD datatype="char" arraysize="*" name="extent_flag"/>
+   <FIELD datatype="char" arraysize="*" name="sat_src_flag"/>
+   <FIELD datatype="char" arraysize="*" name="pileup_flag"/>
+   <FIELD datatype="short" name="acis_num">
+    <VALUES null="-32768"/>
+   </FIELD>
+   <FIELD datatype="short" name="hrc_num">
+    <VALUES null="-32768"/>
+   </FIELD>
+   <DATA>
+    <BINARY>
+     <STREAM encoding="base64">
+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
+     </STREAM>
+    </BINARY>
+   </DATA>
+  </TABLE>
+ </RESOURCE>
+</VOTABLE>

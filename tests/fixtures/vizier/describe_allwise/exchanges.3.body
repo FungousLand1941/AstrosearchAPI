@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-29T05:43:24 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-29T05:43:24">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-source=II%2F328%2Fallwise&amp;-meta.all=">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+
+<RESOURCE ID="yCat_2328_1" name="II/328/allwise" type="meta">
+  <INFO name="nrows" value="747634026">Number of rows of the table</INFO>
+  <DESCRIPTION>
+    AllWISE Data Release (Cutri+ 2013)
+    *the AllWISE data release (among 747,634,026 sources) (updated version, 16-Feb-2021)
+  </DESCRIPTION>
+
+<!-- The AllWISE data Release (updated version, 16-Feb-2021); please {\bf\em\aW{_640x160}{/vizier/VizieR/intro/wise.htx}{acknowledge}} the usage of the WISE data products -->
+  <PARAM name="-c" datatype="char" arraysize="32*" value="">
+    <DESCRIPTION>Query from a celestial position according to ASU syntax:
+      {RA{+|-}Dec|object_name}[,eq=equinox][,ep=epoch][,rm=[min/]max]
+      (see http://vizier.cds.unistra.fr/doc/asu.html)
+    </DESCRIPTION>
+  </PARAM>
+  <LINK content-role="query" action="votable?-source=II/328/allwise&amp;">
+    Action to Query the current RESOURCE, to be completed by PARAMs and FIELDs contents
+  </LINK>
+
+  <TABLE name="II/328/allwise" nrows="747634026">
+    <COOSYS ID="J2000" system="eq_FK5" equinox="J2000"/>
+    <!-- Definitions of GROUPs and FIELDs -->
+    <FIELD name="AllWISE" ucd="meta.id;meta.main" display="1" datatype="char" arraysize="19*"><!-- ucd="ID_MAIN" -->
+      <DESCRIPTION>WISE All-Sky Release Catalog name, based on J2000 position, &lt;WISEA JHHMMSS.ss+DDMMSS.s&gt; (designation)</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-5?-info=XML&amp;-out.add=.&amp;-source=II/328/allwise&amp;AllWISE===${AllWISE}"/>
+    </FIELD>
+    <FIELD name="RAJ2000" ucd="pos.eq.ra;meta.main" ref="J2000" display="1" datatype="double" width="11" precision="7" unit="deg"><!-- ucd="POS_EQ_RA_MAIN" -->
+      <DESCRIPTION>Right ascension (J2000)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DEJ2000" ucd="pos.eq.dec;meta.main" ref="J2000" display="1" datatype="double" width="11" precision="7" unit="deg"><!-- ucd="POS_EQ_DEC_MAIN" -->
+      <DESCRIPTION>Declination (J2000)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="eeMaj" ucd="stat.error" display="0" datatype="double" width="7" precision="4" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Semi-major axis of the error ellipse (1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="eeMin" ucd="stat.error" display="0" datatype="double" width="7" precision="4" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Semi-minor axis of the error ellipse (1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="eePA" ucd="pos.posAng;pos.errorEllipse" display="0" datatype="float" width="5" precision="1" unit="deg"><!-- ucd="POS_POS-ANG" -->
+      <DESCRIPTION>Position angle of the error ellipse (1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Im" ucd="meta.ref.url" display="1" datatype="char" arraysize="2"><!-- ucd="DATA_LINK" -->
+      <DESCRIPTION>Image of the 4 bands from the IRSA server (IPAC)</DESCRIPTION>
+      <LINK gref="WISE.IRSA.ALLWISE,w ${+RAJ2000}${+DEJ2000} 0.20 allwise-multiband"/>
+    </FIELD>
+    <FIELD name="W1mag" ucd="phot.mag;em.IR.3-4um" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_IR_3.4" -->
+      <DESCRIPTION>? W1 magnitude (3.35um)</DESCRIPTION>
+<!-- ? W1 magnitude (3.35um) {\fg{red4}Red values} correspond to upper limits (S/N&lt;2) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_W1mag" ucd="stat.error;phot.mag" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on W1 magnitude</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="W2mag" ucd="phot.mag;em.IR.4-8um" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_IR_4.2" -->
+      <DESCRIPTION>? W2 magnitude (4.6um)</DESCRIPTION>
+<!-- ? W2 magnitude (4.6um) {\fg{red4}Red values} correspond to upper limits (S/N&lt;2) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_W2mag" ucd="stat.error;phot.mag" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on W2 magnitude</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="W3mag" ucd="phot.flux.density;em.IR.8-15um" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_FLUX_IR_12" -->
+      <DESCRIPTION>? W3 magnitude (11.6um)</DESCRIPTION>
+<!-- ? W3 magnitude (11.6um) {\fg{red4}Red values} correspond to upper limits (S/N&lt;2) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_W3mag" ucd="stat.error;phot.mag" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on W3 magnitude</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="W4mag" ucd="phot.flux.density;em.IR.15-30um" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_FLUX_IR_25" -->
+      <DESCRIPTION>? W4 magnitude (22.1um)</DESCRIPTION>
+<!-- ? W4 magnitude (22.1um) {\fg{red4}Red values} correspond to upper limits (S/N&lt;2) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_W4mag" ucd="stat.error;phot.mag" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on W4 magnitude</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Jmag" ucd="phot.mag;em.IR.J" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_JHN_J" -->
+      <DESCRIPTION>? 2MASS J magnitude (1.25um)</DESCRIPTION>
+<!-- ? 2MASS J magnitude (1.25um) {\fg{red4}Red values} correspond to upper limits (S/N&lt;2) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Jmag" ucd="stat.error;phot.mag" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on J magnitude</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Hmag" ucd="phot.mag;em.IR.H" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_JHN_H" -->
+      <DESCRIPTION>? 2MASS H magnitude (1.65um)</DESCRIPTION>
+<!-- ? 2MASS H magnitude (1.65um) {\fg{red4}Red values} correspond to upper limits (S/N&lt;2) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Hmag" ucd="stat.error;phot.mag" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on H magnitude</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Kmag" ucd="phot.mag;em.IR.K" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_JHN_K" -->
+      <DESCRIPTION>? 2MASS Ks magnitude (2.17um)</DESCRIPTION>
+<!-- ? 2MASS Ks magnitude (2.17um) {\fg{red4}Red values} correspond to upper limits (S/N&lt;2) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Kmag" ucd="stat.error;phot.mag" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on Ks magnitude</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="wx" ucd="pos.cartesian.x;instr.det" display="0" datatype="double" width="8" precision="3" unit="pix"><!-- ucd="POS_CCD_X" -->
+      <DESCRIPTION>x-pixel coordinate on the Atlas Image</DESCRIPTION>
+    </FIELD>
+    <FIELD name="wy" ucd="pos.cartesian.y;instr.det" display="0" datatype="double" width="8" precision="3" unit="pix"><!-- ucd="POS_CCD_Y" -->
+      <DESCRIPTION>y-pixel coordinate on the Atlas Image</DESCRIPTION>
+    </FIELD>
+    <FIELD name="ID" ucd="meta.id.part;meta.main" display="0" datatype="long" width="19"><!-- ucd="ID_MAIN:2" -->
+      <DESCRIPTION>Unique source ID</DESCRIPTION>
+    </FIELD>
+    <FIELD name="snr1" ucd="stat.snr" display="0" datatype="double" width="7" precision="1"><!-- ucd="INST_S/N" -->
+      <DESCRIPTION>? Signal to noise ratio for W1 filter</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="chi2W1" ucd="stat.fit.chi2" display="0" datatype="float" width="9" precision="E2"><!-- ucd="FIT_CHI2" -->
+      <DESCRIPTION>? Reduced {chi}^2^ of the W1 profile fit</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="snr2" ucd="stat.snr" display="0" datatype="double" width="7" precision="1"><!-- ucd="INST_S/N" -->
+      <DESCRIPTION>? Signal to noise ratio for W2 filter</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="chi2W2" ucd="stat.fit.chi2" display="0" datatype="float" width="9" precision="E2"><!-- ucd="FIT_CHI2" -->
+      <DESCRIPTION>? Reduced {chi}^2^ of the W2 profile fit</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="snr3" ucd="stat.snr" display="0" datatype="double" width="7" precision="1"><!-- ucd="INST_S/N" -->
+      <DESCRIPTION>? Signal to noise ratio for W3 filter</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="chi2W3" ucd="stat.fit.chi2" display="0" datatype="float" width="9" precision="E2"><!-- ucd="FIT_CHI2" -->
+      <DESCRIPTION>? Reduced {chi}^2^ of the W3 profile fit</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="snr4" ucd="stat.snr" display="0" datatype="double" width="8" precision="1"><!-- ucd="INST_S/N" -->
+      <DESCRIPTION>? Signal to noise ratio for W4 filter</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="chi2W4" ucd="stat.fit.chi2" display="0" datatype="float" width="9" precision="E2"><!-- ucd="FIT_CHI2" -->
+      <DESCRIPTION>? Reduced {chi}^2^ of the W4 profile fit</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="chi2" ucd="stat.fit.chi2" display="0" datatype="float" width="9" precision="E2"><!-- ucd="FIT_CHI2" -->
+      <DESCRIPTION>All-band combined reduced {chi}^2^</DESCRIPTION>
+    </FIELD>
+    <FIELD name="nb" ucd="meta.number" display="0" datatype="unsignedByte" width="1"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>[1/4] Number of PSF components used simultaneously in the profile-fitting</DESCRIPTION>
+    </FIELD>
+    <FIELD name="na" ucd="meta.number" display="0" datatype="unsignedByte" width="1"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>[0/1] Active deblending flag (1 if a detection was split into multiple sources)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="sat1" ucd="instr.saturation" display="0" datatype="float" width="6" precision="3"><!-- ucd="INST_DET_MISC" -->
+      <DESCRIPTION>? Saturated pixel fraction in W1 (w1sat)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="sat2" ucd="instr.saturation" display="0" datatype="float" width="6" precision="3"><!-- ucd="INST_DET_MISC" -->
+      <DESCRIPTION>? Saturated pixel fraction in W2 (w2sat)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="sat3" ucd="instr.saturation" display="0" datatype="float" width="6" precision="3"><!-- ucd="INST_DET_MISC" -->
+      <DESCRIPTION>? Saturated pixel fraction in W3 (w3sat)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="sat4" ucd="instr.saturation" display="0" datatype="float" width="6" precision="3"><!-- ucd="INST_DET_MISC" -->
+      <DESCRIPTION>? Saturated pixel fraction in W4 (w4sat)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ccf" ucd="meta.code" display="1" datatype="char" arraysize="4"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0DHOPdhop] Contamination and confusion flag, one per band (cc_flags) (2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="ex" ucd="meta.code" display="1" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0-5] Extended source flag (ext_flg) (3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="var" ucd="meta.code;src.var" display="1" datatype="char" arraysize="4"><!-- ucd="CODE_VARIAB" -->
+      <DESCRIPTION>Variability flag, one per band (var_flg) (4)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="nW1" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Frame detection count in W1 (w1nm) (5)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="mW1" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Integer frame coverage in W1 (w1m) (6)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="nW2" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Frame detection count in W2 (w2nm) (5)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="mW2" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Integer frame coverage in W2 (w2m) (6)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="nW3" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Frame detection count in W3 (w3nm) (5)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="mW3" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Integer frame coverage in W3 (w3m) (6)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="nW4" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Frame detection count in W4 (w4nm) (5)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="mW4" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Integer frame coverage in W4 (w4m) (6)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="satnum" ucd="instr.saturation" display="0" datatype="short" width="4"><!-- ucd="INST_DET_MISC" -->
+      <DESCRIPTION>Minimum sample at which saturation occurs in each band</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RA_pm" ucd="pos.eq.ra" display="0" datatype="double" width="11" precision="7" unit="deg"><!-- ucd="POS_EQ_RA_OTHER" -->
+      <DESCRIPTION>? Right ascension at epoch MJD=55400.0 (2010.5589) from the profile-fitting measurement model that includes motion.</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_RA_pm" ucd="stat.error;pos.eq.ra" display="0" datatype="double" width="7" precision="4" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error on RA_pm</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="DE_pm" ucd="pos.eq.dec" display="0" datatype="double" width="11" precision="7" unit="deg"><!-- ucd="POS_EQ_DEC_OTHER" -->
+      <DESCRIPTION>? Declination at epoch MJD=55400.0 (2010.5589) from the profile-fitting measurement model that includes motion.</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_DE_pm" ucd="stat.error;pos.eq.dec" display="0" datatype="double" width="7" precision="4" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error on DE_pm</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="cosig_pm" ucd="pos.posAng" display="0" datatype="double" width="8" precision="4" unit="arcsec"><!-- ucd="POS_POS-ANG" -->
+      <DESCRIPTION>? co-sigma of the equatorial position uncertainties</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="pmRA" ucd="pos.pm" display="1" datatype="int" width="7" unit="mas/yr"><!-- ucd="POS_PM_NON-EQ" -->
+      <DESCRIPTION>? Apparent motion in RA (9)</DESCRIPTION>
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="e_pmRA" ucd="stat.error;pos.pm;pos.eq.ra" display="1" datatype="int" width="7" unit="mas/yr"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on pmRA (9)</DESCRIPTION>
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="pmDE" ucd="pos.pm" display="1" datatype="int" width="7" unit="mas/yr"><!-- ucd="POS_PM_NON-EQ" -->
+      <DESCRIPTION>? Apparent motion in DE (9)</DESCRIPTION>
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="e_pmDE" ucd="stat.error;pos.pm;pos.eq.dec" display="1" datatype="int" width="7" unit="mas/yr"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on pmDE (9)</DESCRIPTION>
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="chi2W1_pm" ucd="stat.fit.chi2" display="0" datatype="float" width="9" precision="E2"><!-- ucd="FIT_CHI2" -->
+      <DESCRIPTION>? Reduced {chi}^2^ of the W1 profile fit including motion estimation</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="chi2W2_pm" ucd="stat.fit.chi2" display="0" datatype="float" width="9" precision="E2"><!-- ucd="FIT_CHI2" -->
+      <DESCRIPTION>? Reduced {chi}^2^ of the W2 profile fit including motion estimation</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="chi2W3_pm" ucd="stat.fit.chi2" display="0" datatype="float" width="9" precision="E2"><!-- ucd="FIT_CHI2" -->
+      <DESCRIPTION>? Reduced {chi}^2^ of the W3 profile fit including motion estimation</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="chi2W4_pm" ucd="stat.fit.chi2" display="0" datatype="float" width="9" precision="E2"><!-- ucd="FIT_CHI2" -->
+      <DESCRIPTION>? Reduced {chi}^2^ of the W4 profile fit including motion estimation</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="chi2pm" ucd="stat.fit.chi2" display="0" datatype="float" width="9" precision="E2"><!-- ucd="FIT_CHI2" -->
+      <DESCRIPTION>? Combined reduced {chi}^2^ profile fit including motion estimation</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="qpm" ucd="meta.code.qual" display="0" datatype="char" arraysize="5*"><!-- ucd="CODE_QUALITY" -->
+      <DESCRIPTION>? Motion estimation quality (pmcode) (7)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="qph" ucd="meta.code.qual;phot" display="1" datatype="char" arraysize="4"><!-- ucd="CODE_QUALITY" -->
+      <DESCRIPTION>[ABCUXZ] Photometric quality flag (8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="fdet" ucd="meta.code" display="0" datatype="short" width="2"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/15] Bit-encoded integer indicating bands in which a source has a w?snr&gt;2 detection</DESCRIPTION>
+    </FIELD>
+    <FIELD name="fmoon" ucd="meta.code" display="0" datatype="short" width="4"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Scattered moonlight contamination flag</DESCRIPTION>
+    </FIELD>
+    <FIELD name="covW1" ucd="src.sample;stat.mean" display="0" datatype="double" width="7" precision="3"><!-- ucd="STAT_MEAN" -->
+      <DESCRIPTION>? Mean pixel coverage in W1</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="covW2" ucd="src.sample;stat.mean" display="0" datatype="double" width="7" precision="3"><!-- ucd="STAT_MEAN" -->
+      <DESCRIPTION>? Mean pixel coverage in W2</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="covW3" ucd="src.sample;stat.mean" display="0" datatype="double" width="7" precision="3"><!-- ucd="STAT_MEAN" -->
+      <DESCRIPTION>? Mean pixel coverage in W3</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="covW4" ucd="src.sample;stat.mean" display="0" datatype="double" width="7" precision="3"><!-- ucd="STAT_MEAN" -->
+      <DESCRIPTION>? Mean pixel coverage in W4</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="2Mkey" ucd="meta.id.assoc" display="0" datatype="long" width="10"><!-- ucd="ID_ASSOCIATED" -->
+      <DESCRIPTION>? 2MASS PSC association (not identification)</DESCRIPTION>
+      <VALUES null="-9223372036854775808" />
+    </FIELD>
+    <FIELD name="d2M" ucd="pos;arith.diff" display="1" datatype="float" width="6" precision="3" unit="arcsec"><!-- ucd="POS_OFFSET" -->
+      <DESCRIPTION>? Distance separating the positions of the WISE source and associated 2MASS PSC source</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="2M" ucd="meta.ref.url" display="1" datatype="char" arraysize="2"><!-- ucd="DATA_LINK" -->
+      <DESCRIPTION>Display the 2MASS data (Cutri et al. 2003, Cat. II/246)</DESCRIPTION>
+    </FIELD>
+  </TABLE>
+<INFO name="matches" value="2">matching records</INFO>
+</RESOURCE>
+</VOTABLE>

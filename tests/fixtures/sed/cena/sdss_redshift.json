@@ -1,0 +1,21 @@
+{
+  "catalog": "sdss_redshift",
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://skyserver.sdss.org/dr18/SkyServerWS/SearchTools/SqlSearch?cmd=SELECT+TOP+5+CAST%28n.specObjID+AS+VARCHAR%2824%29%29+AS+specObjID%2C+n.distance%2A60.0+AS+dist_arcsec%2C+s.ra%2C+s.dec%2C+s.z%2C+s.zErr%2C+s.zWarning%2C+s.class%2C+s.subClass%2C+s.survey%2C+s.sciencePrimary+FROM+dbo.fGetNearbySpecObjEq%28201.365016590%2C+-43.019303613%2C+0.0333333333%29+AS+n+JOIN+SpecObj+AS+s+ON+s.specObjID+%3D+n.specObjID+ORDER+BY+s.sciencePrimary+DESC%2C+n.distance&format=json",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://skyserver.sdss.org/dr18/SkyServerWS/SearchTools/SqlSearch?cmd=SELECT+TOP+3+CAST%28n.objID+AS+VARCHAR%2824%29%29+AS+objID%2C+n.distance%2A60.0+AS+dist_arcsec%2C+pz.z%2C+pz.zErr%2C+pz.photoErrorClass%2C+pz.nnCount+FROM+dbo.fGetNearbyObjEq%28201.365016590%2C+-43.019303613%2C+0.0333333333%29+AS+n+JOIN+PhotoPrimary+AS+p+ON+p.objID+%3D+n.objID+JOIN+Photoz+AS+pz+ON+pz.objID+%3D+n.objID+ORDER+BY+n.distance&format=json",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    }
+  ]
+}

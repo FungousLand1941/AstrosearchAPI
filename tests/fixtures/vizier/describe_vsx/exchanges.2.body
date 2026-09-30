@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-29T05:43:17 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-29T05:43:18">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-source=B%2Fvsx%2Fvsx&amp;-meta.all=">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+
+<RESOURCE ID="yCat_102027_1" name="B/vsx/vsx" type="meta">
+  <INFO name="nrows" value="10304640">Number of rows of the table</INFO>
+  <DESCRIPTION>
+    AAVSO International Variable Star Index VSX (Watson+, 2006-)
+    Variable Star indeX, Version 2026-08-09 (\originalcolumnnames)
+  </DESCRIPTION>
+  <PARAM name="-c" datatype="char" arraysize="32*" value="">
+    <DESCRIPTION>Query from a celestial position according to ASU syntax:
+      {RA{+|-}Dec|object_name}[,eq=equinox][,ep=epoch][,rm=[min/]max]
+      (see http://vizier.cds.unistra.fr/doc/asu.html)
+    </DESCRIPTION>
+  </PARAM>
+  <LINK content-role="query" action="votable?-source=B/vsx/vsx&amp;">
+    Action to Query the current RESOURCE, to be completed by PARAMs and FIELDs contents
+  </LINK>
+
+  <TABLE name="B/vsx/vsx" nrows="10304640">
+    <COOSYS ID="J2000" system="eq_FK5" equinox="J2000"/>
+    <!-- Definitions of GROUPs and FIELDs -->
+
+<!-- +++No column could be found to attach a LINK in table: B/vsx/vsx -->
+    <FIELD name="recno" ucd="meta.record" display="0" datatype="int" width="8"><!-- ucd="RECORD" -->
+      <DESCRIPTION>Record number assigned by the VizieR team. Should Not be used for identification.</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-5?-info=XML&amp;-out.add=.&amp;-source=B/vsx/vsx&amp;recno=${recno}"/>
+    </FIELD>
+    <FIELD name="OID" ucd="meta.id" display="1" datatype="int" width="8"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>Internal identifier, can be used to link out to the VSX database (1)</DESCRIPTION>
+      <LINK href="http://www.aavso.org/vsx/index.php?view=detail.top&amp;oid=${OID}"/>
+    </FIELD>
+    <FIELD name="Name" ucd="meta.id;meta.main" display="1" datatype="char" arraysize="30"><!-- ucd="?" -->
+      <DESCRIPTION>Variable star identifier</DESCRIPTION>
+      <VALUES null=" " />
+    </FIELD>
+    <FIELD name="V" ucd="src.var" display="1" datatype="unsignedByte" width="1"><!-- ucd="?" -->
+      <DESCRIPTION>Variability flag (2) (VarFlag)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RAJ2000" ucd="pos.eq.ra;meta.main" ref="J2000" display="1" datatype="float" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_RA_MAIN" -->
+      <DESCRIPTION>[0.0/360.0] Right ascension (J2000)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DEJ2000" ucd="pos.eq.dec;meta.main" ref="J2000" display="1" datatype="float" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_DEC_MAIN" -->
+      <DESCRIPTION>[-89.93/89.91] Declination (J2000)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Type" ucd="src.class" display="1" datatype="char" arraysize="30"><!-- ucd="?" -->
+      <DESCRIPTION>? Variability type, ariability type, as in GCVS catalog Variability type (see details of VSX type list)</DESCRIPTION>
+      <VALUES null=" " />
+
+<!-- No link in: \sed{s!/! / !g}{${}} -->
+    </FIELD>
+    <FIELD name="l_max" ucd="meta.code.error;src.var.amplitude" display="1" datatype="char" arraysize="1"><!-- ucd="?" -->
+      <DESCRIPTION>? Limit flag on max (LimitFlagOnMax)</DESCRIPTION>
+      <VALUES null=" " />
+    </FIELD>
+    <FIELD name="max" ucd="src.var.amplitude" display="1" datatype="double" width="7" precision="3" unit="mag"><!-- ucd="?" -->
+      <DESCRIPTION>[-6.0/25.2]? Magnitude at maximum, or amplitude (MagMax)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="u_max" ucd="meta.code.error;src.var.amplitude" display="1" datatype="char" arraysize="1"><!-- ucd="?" -->
+      <DESCRIPTION>? Uncertainty flag on max (MaxUncertaintyFlag)</DESCRIPTION>
+      <VALUES null=" " />
+    </FIELD>
+    <FIELD name="n_max" ucd="meta.note;src.var.amplitude" display="1" datatype="char" arraysize="10"><!-- ucd="?" -->
+      <DESCRIPTION>? Passband on max magnitude (4) (MaxPassband)</DESCRIPTION>
+      <VALUES null=" " />
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR?-6N&amp;-info=XML&amp;-out.add=.&amp;&amp;lt;&amp;quot;Note&amp;quot;&amp;catid=102027&amp;notid=3&amp;-out.emph=${n_max}"/>
+    </FIELD>
+    <FIELD name="f_min" ucd="meta.code;src.var.amplitude" display="1" datatype="char" arraysize="1"><!-- ucd="?" -->
+      <DESCRIPTION>? Flag to indicate an amplitude (MinIsAmplitude)</DESCRIPTION>
+      <VALUES null=" " />
+    </FIELD>
+    <FIELD name="l_min" ucd="meta.code.error;src.var.amplitude" display="1" datatype="char" arraysize="1"><!-- ucd="?" -->
+      <DESCRIPTION>? Limit flag on min (LimitFlagOnMin)</DESCRIPTION>
+      <VALUES null=" " />
+    </FIELD>
+    <FIELD name="min" ucd="src.var.amplitude" display="1" datatype="double" width="7" precision="3" unit="mag"><!-- ucd="?" -->
+      <DESCRIPTION>[-0.02/28.0]? Magnitude at minimum, or amplitude (MagMin)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="u_min" ucd="meta.code.error;src.var.amplitude" display="1" datatype="char" arraysize="1"><!-- ucd="?" -->
+      <DESCRIPTION>? Uncertainty flag on min (MinUncertaintyFlag)</DESCRIPTION>
+      <VALUES null=" " />
+    </FIELD>
+    <FIELD name="n_min" ucd="meta.note;src.var.amplitude" display="1" datatype="char" arraysize="8"><!-- ucd="?" -->
+      <DESCRIPTION>? Passband on min magnitude (MinPassband)</DESCRIPTION>
+      <VALUES null=" " />
+    </FIELD>
+    <FIELD name="Epoch" ucd="time.epoch" ref="time_0" display="0" datatype="double" width="14" precision="5" unit="d"><!-- ucd="?" -->
+      <DESCRIPTION>? Epoch of maximum or minimum (HJD)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="u_Epoch" ucd="meta.code.error;time.epoch" display="0" datatype="char" arraysize="1"><!-- ucd="?" -->
+      <DESCRIPTION>? Uncertainty flag on epoch (EpochUncertaintyFlag)</DESCRIPTION>
+      <VALUES null=" " />
+    </FIELD>
+    <FIELD name="l_Period" ucd="time.period" display="1" datatype="char" arraysize="1"><!-- ucd="?" -->
+      <DESCRIPTION>? Limit flag on period (3) (LimitFlagOnPeriod)</DESCRIPTION>
+      <VALUES null=" " />
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR?-6N&amp;-info=XML&amp;-out.add=.&amp;&amp;lt;&amp;quot;Note&amp;quot;&amp;catid=102027&amp;notid=4&amp;-out.emph=${l_Period}"/>
+    </FIELD>
+    <FIELD name="Period" ucd="time.period" display="1" datatype="double" width="19" precision="12" unit="d"><!-- ucd="?" -->
+      <DESCRIPTION>[0.0/27400.0]? Period of the variable in days</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="u_Period" ucd="meta.code.error" display="1" datatype="char" arraysize="1"><!-- ucd="?" -->
+      <DESCRIPTION>? Uncertainty flag on Period (3) (PeriodUncertaintyFlag)</DESCRIPTION>
+      <VALUES null=" " />
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR?-6N&amp;-info=XML&amp;-out.add=.&amp;&amp;lt;&amp;quot;Note&amp;quot;&amp;catid=102027&amp;notid=5&amp;-out.emph=${u_Period}"/>
+    </FIELD>
+    <FIELD name="Sp" ucd="src.spType" display="1" datatype="char" arraysize="29"><!-- ucd="SPECT_TYPE_MK" -->
+      <DESCRIPTION>? Spectral type (SpectralType)</DESCRIPTION>
+      <VALUES null=" " />
+    </FIELD>
+    <FIELD name="n_OID" display="0" datatype="char" arraysize="1"><!-- ucd="(unassigned)" -->
+      <DESCRIPTION>B indicates bibliography (in file "refs.dat")</DESCRIPTION>
+<!-- {\bf B} indicates bibliography (in file "refs.dat") -->
+
+      <VALUES null=" " />
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-4?-info=XML&amp;-out.add=.&amp;-source=102027&amp;-out.all&amp;-corr=FK=OID&amp;-out.max=9999&amp;OID===${OID}" value="${n_OID}"/>
+    </FIELD>
+  </TABLE>
+<INFO name="matches" value="2">matching records</INFO>
+</RESOURCE>
+</VOTABLE>

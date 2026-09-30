@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>47 Tuc</name>
+  <!-- Q8398818 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 106ms [2] -->
+    <oid>3280200</oid>
+    <otype>GlC</otype>
+    <jpos>00:24:05.35 -72:04:53.1</jpos>
+    <jradeg>6.02232917</jradeg>
+    <jdedeg>-72.08144444</jdedeg>
+    <refPos>2006AJ....131.1163S</refPos>
+    <pm>
+      <v>5.83</v><e>0.01</e><q>C</q><r>2019MNRAS.482.5138B</r>
+      <pa>115.7</pa>
+      <pmRA>5.25</pmRA><epmRA>0.01</epmRA>
+      <pmDE>-2.53</pmDE><epmDE>0.01</epmDE>
+    </pm>
+    <Vel><v>-17.2</v><e>0.1</e><q>A</q><r>2018MNRAS.478.1520B</r></Vel>
+    <plx><v>0.232</v><e>0.009</e><q>C</q><r>2021MNRAS.505.5978V</r></plx>
+    <oname>NGC   104</oname>
+    <nrefs>4210</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ****Total of 1 crashes -->
+<!-- Configuration tested: /run/sesame.conf -->

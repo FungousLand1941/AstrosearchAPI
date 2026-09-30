@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-29T05:43:37 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-29T05:43:38">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-source=J%2FApJS%2F210%2F18%2Fcxogbs&amp;-meta.all=">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+
+<RESOURCE ID="yCat_22100018_1" name="J/ApJS/210/18/cxogbs" type="meta">
+  <INFO name="nrows" value="1658">Number of rows of the table</INFO>
+  <DESCRIPTION>
+    X-ray survey of the Galactic Bulge (CXOGBS) (Jonker+, 2014)
+    The GBS X-ray full X-ray source catalog (includes the sources published in J/ApJS/194/18)
+  </DESCRIPTION>
+  <PARAM name="-c" datatype="char" arraysize="32*" value="">
+    <DESCRIPTION>Query from a celestial position according to ASU syntax:
+      {RA{+|-}Dec|object_name}[,eq=equinox][,ep=epoch][,rm=[min/]max]
+      (see http://vizier.cds.unistra.fr/doc/asu.html)
+    </DESCRIPTION>
+  </PARAM>
+  <LINK content-role="query" action="votable?-source=J/ApJS/210/18/cxogbs&amp;">
+    Action to Query the current RESOURCE, to be completed by PARAMs and FIELDs contents
+  </LINK>
+
+  <TABLE name="J/ApJS/210/18/cxogbs" nrows="1658">
+    <COOSYS ID="J2000" system="eq_FK5" equinox="J2000"/>
+    <!-- Definitions of GROUPs and FIELDs -->
+
+<!-- +++No column could be found to attach a LINK in table: J/ApJS/210/18/cxogbs -->
+    <FIELD name="recno" ucd="meta.record" display="0" datatype="int" width="8"><!-- ucd="RECORD" -->
+      <DESCRIPTION>Record number assigned by the VizieR team. Should Not be used for identification.</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-5?-info=XML&amp;-out.add=.&amp;-source=J/ApJS/210/18/cxogbs&amp;recno=${recno}"/>
+    </FIELD>
+    <FIELD name="CXOGBS" ucd="meta.id;meta.main" display="1" datatype="char" arraysize="16"><!-- ucd="ID_MAIN" -->
+      <DESCRIPTION>Source name (JHHMMSS.s+DDMMSS)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="CX" ucd="meta.id" display="1" datatype="char" arraysize="4"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>Source index number (1-1234;B1-B424) (1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RAJ2000" ucd="pos.eq.ra;meta.main" ref="J2000" display="1" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_RA_MAIN" -->
+      <DESCRIPTION>Right Ascension (J2000)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_RAJ2000" ucd="stat.error;pos.eq.ra" display="1" datatype="float" width="5" precision="2" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Error in RAdeg (3{sigma})</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DEJ2000" ucd="pos.eq.dec;meta.main" ref="J2000" display="1" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_DEC_MAIN" -->
+      <DESCRIPTION>Declination (J2000)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_DEJ2000" ucd="stat.error;pos.eq.dec" display="1" datatype="float" width="5" precision="2" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Error in DEdeg (3{sigma})</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Total" ucd="phot.count;em.X-ray" display="1" datatype="short" width="4" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>Number of counts detected</DESCRIPTION>
+    </FIELD>
+    <FIELD name="ObsID" ucd="meta.id" display="1" datatype="int" width="5"><!-- ucd="OBS_ID" -->
+      <DESCRIPTION>Chandra observation identification number</DESCRIPTION>
+<!-- Chandra observation identification number \linkRole{the Chandra Archive Log (Cat. B/chandra)} -->
+
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-4?-info=XML&amp;-out.add=.&amp;-source=B/chandra/chandra&amp;ObsID=${ObsID}"/>
+    </FIELD>
+    <FIELD name="OAxis" ucd="instr.offset" display="1" datatype="float" width="5" precision="2" unit="arcmin"><!-- ucd="INST_ANG_OFFAXIS" -->
+      <DESCRIPTION>Off-axis angle source detected</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Ndet" ucd="meta.number" display="1" datatype="unsignedByte" width="1"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of detections</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Dpos" ucd="stat.error;stat.fit.param" display="1" datatype="float" width="5" precision="2" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>95% confidence positional uncertainty</DESCRIPTION>
+    </FIELD>
+    <FIELD name="HR" ucd="phot.flux;arith.ratio" display="1" datatype="float" width="5" precision="2"><!-- ucd="SPECT_HARDNESS-RATIO" -->
+      <DESCRIPTION>[-2/1]? Hardness ratio (2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_HR" ucd="stat.error" display="1" datatype="float" width="5" precision="2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error in HR</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+  </TABLE>
+<INFO name="matches" value="2">matching records</INFO>
+</RESOURCE>
+</VOTABLE>

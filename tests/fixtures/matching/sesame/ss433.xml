@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>SS 433</name>
+  <!-- Q8506007 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 0ms [0] -->
+    <INFO>from cache</INFO>
+    <oid>2674710</oid>
+    <otype>HXB</otype>
+    <jpos>19:11:49.56 +04:58:57.8</jpos>
+    <jradeg>287.95651987</jradeg>
+    <jdedeg>4.98272976</jdedeg>
+    <refPos>2020yCat.1350....0G</refPos>
+    <errRAmas>0.0184</errRAmas><errDEmas>0.0184</errDEmas>
+    <pm>
+      <v>5.655</v><e>0.034</e><q>A</q><r>2020yCat.1350....0G</r>
+      <pa>212.4</pa>
+      <pmRA>-3.027</pmRA><epmRA>0.024</epmRA>
+      <pmDE>-4.777</pmDE><epmDE>0.024</epmDE>
+    </pm>
+    <Vel><v>27.0</v><q>E</q><r>1995A&amp;AS..114..269D</r></Vel>
+    <plx><v>0.1182</v><e>0.0233</e><q>A</q><r>2020yCat.1350....0G</r></plx>
+    <spType>A7Ib</spType><spNum>0.00010E00.0010.0000000000000000</spNum>
+    <oname>SS 433</oname>
+    <nrefs>2290</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ====Done (2026-Sep-29,10:36:17z)==== -->

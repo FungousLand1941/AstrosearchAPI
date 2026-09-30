@@ -1,0 +1,14 @@
+[
+  {
+    "TableName": "Table1",
+    "Rows": []
+  },
+  {
+    "TableName": "SqlQuery",
+    "Rows": [
+      {
+        "query": "SELECT TOP 5 CAST(n.specObjID AS VARCHAR(24)) AS specObjID, n.distance*60.0 AS dist_arcsec, s.ra, s.dec, s.z, s.zErr, s.zWarning, s.class, s.subClass, s.survey, s.sciencePrimary FROM dbo.fGetNearbySpecObjEq(20.131929579, -27.023512690, 0.0333333333) AS n JOIN SpecObj AS s ON s.specObjID = n.specObjID ORDER BY s.sciencePrimary DESC, n.distance"
+      }
+    ]
+  }
+]

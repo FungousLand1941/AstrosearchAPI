@@ -1,0 +1,1801 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-29T07:47:15 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-29T07:47:15">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-source=J%2FA%2BA%2F588%2FA103%2Fcat2rxs&amp;-meta.all=">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+
+<RESOURCE ID="yCat_35880103_1" name="J/A+A/588/A103/cat2rxs" type="meta">
+  <INFO name="nrows" value="135118">Number of rows of the table</INFO>
+  <DESCRIPTION>
+    Second ROSAT all-sky survey (2RXS) source catalog (Boller+, 2016)
+    Catalogue of 135118 2RXS ROSAT sources
+  </DESCRIPTION>
+
+<!-- Catalogue of 135118 2RXS ROSAT sources (\originalcolumnnames); {\fg{red4} the full fits table is available {\aFile{J/A+A/588/A103/cat2rxs.fits}{here} (59M, gzipped). }}There is a link to images, light curves and spectra at the end of the catalog -->
+  <PARAM name="-c" datatype="char" arraysize="32*" value="">
+    <DESCRIPTION>Query from a celestial position according to ASU syntax:
+      {RA{+|-}Dec|object_name}[,eq=equinox][,ep=epoch][,rm=[min/]max]
+      (see http://vizier.cds.unistra.fr/doc/asu.html)
+    </DESCRIPTION>
+  </PARAM>
+  <LINK content-role="query" action="votable?-source=J/A+A/588/A103/cat2rxs&amp;">
+    Action to Query the current RESOURCE, to be completed by PARAMs and FIELDs contents
+  </LINK>
+
+  <TABLE name="J/A+A/588/A103/cat2rxs" nrows="135118">
+    <COOSYS ID="J2000" system="eq_FK5" equinox="J2000"/>
+    <!-- Definitions of GROUPs and FIELDs -->
+
+<!-- +++No column could be found to attach a LINK in table: J/A+A/588/A103/cat2rxs -->
+    <FIELD name="recno" ucd="meta.record" display="0" datatype="int" width="8"><!-- ucd="RECORD" -->
+      <DESCRIPTION>Record number assigned by the VizieR team. Should Not be used for identification.</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-5?-info=XML&amp;-out.add=.&amp;-source=J/A+A/588/A103/cat2rxs&amp;recno=${recno}"/>
+    </FIELD>
+    <FIELD name="Ximg" ucd="meta.ref.url" display="1" datatype="char" arraysize="4"><!-- ucd="DATA_LINK" -->
+      <DESCRIPTION>Ximage in pdf</DESCRIPTION>
+      <LINK content-type="image/pdf" href="http://vizier.cds.unistra.fr/viz-bin/nph-Cat?-plus=-+&amp;J/A+A/588/A103/Ximg/Ximg/Ximage_${Seq}_0${IndDet}.pdf"/>
+    </FIELD>
+    <FIELD name="2RXS" ucd="meta.id;meta.main" display="1" datatype="char" arraysize="21"><!-- ucd="ID_MAIN" -->
+      <DESCRIPTION>IAU name (IAU_NAME) (1)</DESCRIPTION>
+<!-- IAU name (\original{IAU_NAME}) (1) -->
+
+    </FIELD>
+    <FIELD name="Seq" ucd="meta.id;obs.field" display="0" datatype="int" width="6"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>? Sky field number (SEQ_ID)</DESCRIPTION>
+<!-- ? Sky field number (\original{SEQ_ID}) -->
+
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="IndDet" ucd="meta.id;obs.field" display="0" datatype="char" arraysize="3"><!-- ucd="ID_FIELD" -->
+      <DESCRIPTION>? Source number in a certain sky field (IND_DET)</DESCRIPTION>
+<!-- ? Source number in a certain sky field (\original{IND_DET}) -->
+
+      <VALUES null=" " />
+    </FIELD>
+    <FIELD name="ExiML" ucd="stat.likelihood" display="0" datatype="double" width="9" precision="2"><!-- ucd="STAT_LIKELIHOOD" -->
+      <DESCRIPTION>Detection likelihood (EXI_ML)</DESCRIPTION>
+<!-- Detection likelihood (\original{EXI_ML}) -->
+
+    </FIELD>
+    <FIELD name="Cts" ucd="phot.count;em.X-ray" display="1" datatype="double" width="9" precision="2" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>Background corrected source counts (CTS)</DESCRIPTION>
+<!-- Background corrected source counts (\original{CTS}) -->
+
+    </FIELD>
+    <FIELD name="e_Cts" ucd="stat.error" display="1" datatype="double" width="10" precision="6" unit="ct"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Error of the source counts (CERR)</DESCRIPTION>
+<!-- Error of the source counts (\original{CERR}) -->
+
+    </FIELD>
+    <FIELD name="CRate" ucd="phot.count;em.X-ray" display="0" datatype="double" width="8" precision="4" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>Source count rate (RATE)</DESCRIPTION>
+<!-- Source count rate (\original{RATE}) -->
+
+    </FIELD>
+    <FIELD name="e_CRate" ucd="stat.error" display="0" datatype="float" width="7" precision="4" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Error of the count rate (ERATE)</DESCRIPTION>
+<!-- Error of the count rate (\original{ERATE}) -->
+
+    </FIELD>
+    <FIELD name="ExpTime" ucd="time.duration;obs.exposure" display="0" datatype="double" width="8" precision="2" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>Source exposure time (EXPOSURE)</DESCRIPTION>
+<!-- Source exposure time (\original{EXPOSURE}) -->
+
+    </FIELD>
+    <FIELD name="RAJ2000" ucd="pos.eq.ra;meta.main" ref="J2000" display="1" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_RA_MAIN" -->
+      <DESCRIPTION>Right ascension (J2000) (RA_DEG)</DESCRIPTION>
+<!-- Right ascension (J2000) (\original{RA_DEG}) -->
+
+    </FIELD>
+    <FIELD name="DEJ2000" ucd="pos.eq.dec;meta.main" ref="J2000" display="1" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_DEC_MAIN" -->
+      <DESCRIPTION>Declination (J2000) (DEC_DEG)</DESCRIPTION>
+<!-- Declination (J2000) (\original{DEC_DEG}) -->
+
+    </FIELD>
+    <FIELD name="RAhms" ucd="pos.eq.ra" display="0" datatype="char" arraysize="12"><!-- ucd="POS_EQ_RA_OTHER" -->
+      <DESCRIPTION>Sexadecimal right ascension (J2000) (RA_HMS)</DESCRIPTION>
+<!-- Sexadecimal right ascension (J2000) (\original{RA_HMS}) -->
+
+    </FIELD>
+    <FIELD name="DEdms" ucd="pos.eq.dec" display="0" datatype="char" arraysize="12"><!-- ucd="POS_EQ_DEC_OTHER" -->
+      <DESCRIPTION>Sexadecimal declination (J2000) (DEC_DMS)</DESCRIPTION>
+<!-- Sexadecimal declination (J2000) (\original{DEC_DMS}) -->
+
+    </FIELD>
+    <FIELD name="GLON" ucd="pos.galactic.lon" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_GAL_LON" -->
+      <DESCRIPTION>Latitude in galactic coordinate  (LII)</DESCRIPTION>
+<!-- Latitude in galactic coordinate (\original{LII}) -->
+
+    </FIELD>
+    <FIELD name="GLAT" ucd="pos.galactic.lat" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_GAL_LAT" -->
+      <DESCRIPTION>Longitude in galactic coordinate (BII)</DESCRIPTION>
+<!-- Longitude in galactic coordinate (\original{BII}) -->
+
+    </FIELD>
+    <FIELD name="Lambda" ucd="pos.ecliptic.lat" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EC_LAT" -->
+      <DESCRIPTION>Latitude in ecliptic coordinate (LAMBDA)</DESCRIPTION>
+<!-- Latitude in ecliptic coordinate (\original{LAMBDA}) -->
+
+    </FIELD>
+    <FIELD name="Beta" ucd="pos.ecliptic.lon" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EC_LON" -->
+      <DESCRIPTION>Longitude in ecliptic coordinate (BETA)</DESCRIPTION>
+<!-- Longitude in ecliptic coordinate (\original{BETA}) -->
+
+    </FIELD>
+    <FIELD name="Ext" ucd="phys.angSize;arith.ratio" display="0" datatype="double" width="9" precision="3" unit="pix"><!-- ucd="INST_DET_SIZE" -->
+      <DESCRIPTION>Source extent in units of image pixels (EXT)</DESCRIPTION>
+<!-- Source extent in units of image pixels (\original{EXT}) -->
+
+    </FIELD>
+    <FIELD name="e_Ext" ucd="stat.error" display="0" datatype="float" width="7" precision="3" unit="pix"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Error of the source extent (EXTERR)</DESCRIPTION>
+<!-- Error of the source extent (\original{EXTERR}) -->
+
+    </FIELD>
+    <FIELD name="ExtML" ucd="stat.likelihood" display="0" datatype="float" width="7" precision="2"><!-- ucd="STAT_LIKELIHOOD" -->
+      <DESCRIPTION>Proability of the source extend (EXT_ML)</DESCRIPTION>
+<!-- Proability of the source extend (\original{EXT_ML}) -->
+
+    </FIELD>
+    <FIELD name="HR1" ucd="phot.flux;arith.ratio" display="1" datatype="float" width="6" precision="3"><!-- ucd="SPECT_HARDNESS-RATIO" -->
+      <DESCRIPTION>? Hardness ratio 1 value (HR_1) (2)</DESCRIPTION>
+<!-- ? Hardness ratio 1 value (\original{HR_1}) (2) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_HR1" ucd="stat.error" display="1" datatype="double" width="8" precision="3"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error of HR1 (HR_1_err)</DESCRIPTION>
+<!-- ? Error of HR1 (\original{HR_1_err}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="HR2" ucd="phot.flux;arith.ratio" display="1" datatype="float" width="6" precision="3"><!-- ucd="SPECT_HARDNESS-RATIO" -->
+      <DESCRIPTION>? Hardness ratio 2 value (HR_2) (2)</DESCRIPTION>
+<!-- ? Hardness ratio 2 value (\original{HR_2}) (2) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_HR2" ucd="stat.error" display="1" datatype="double" width="9" precision="3"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error of HR2 (HR_2_err)</DESCRIPTION>
+<!-- ? Error of HR2 (\original{HR_2_err}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="USKY" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>? Unique flag (USKY) (3)</DESCRIPTION>
+<!-- ? Unique flag (\original{USKY}) (3) -->
+
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="Masked" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[1]? Extended emission regions (0=yes 1=no) (Masked)</DESCRIPTION>
+<!-- [1]? Extended emission regions (0=yes 1=no) (\original{Masked}) -->
+
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="FAll" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0]? Detection flag of nearby sources (FLAG_all) 0=best</DESCRIPTION>
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="Sflag" ucd="meta.code" display="0" datatype="short" width="3"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>? S flag (0=good) (S_flag) (4)</DESCRIPTION>
+<!-- ? S flag (0=good) (\original{S_flag}) (4) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="Index" ucd="meta.id" display="0" datatype="short" width="3"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>? Running number in catalogue (INDEX)</DESCRIPTION>
+<!-- ? Running number in catalogue (\original{INDEX}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="AmpMax" ucd="src.var.amplitude" display="0" datatype="double" width="9" precision="4"><!-- ucd="VAR_AMPLITUDE_VALUE" -->
+      <DESCRIPTION>? Maximum amplitude variability (AMPL_MAX)</DESCRIPTION>
+<!-- ? Maximum amplitude variability (\original{AMPL_MAX}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="CM" ucd="phot.count;em.X-ray" display="0" datatype="double" width="9" precision="5" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>? Mean count rate value (CM)</DESCRIPTION>
+<!-- ? Mean count rate value (\original{CM}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="CD" ucd="stat.error" display="0" datatype="double" width="9" precision="5" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Standard deviation of CM (CD)</DESCRIPTION>
+<!-- ? Standard deviation of CM (\original{CD}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="CTSlc" ucd="phot.count" display="0" datatype="double" width="9" precision="2" unit="ct"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Number of counts calculated from the light curve analysis (CTS_lc)</DESCRIPTION>
+<!-- ? Number of counts calculated from the light curve analysis (\original{CTS_lc}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Cmin" ucd="phot.count;em.X-ray" display="0" datatype="double" width="9" precision="5" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>? Minimum count rate ( CMIN)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Cmax" ucd="phot.count;em.X-ray" display="0" datatype="double" width="9" precision="5" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>? Maximum count rate ( CMAX)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Cmin" ucd="stat.error" display="0" datatype="double" width="9" precision="5" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error of CMIN (EMIN)</DESCRIPTION>
+<!-- ? Error of CMIN (\original{EMIN}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Cmax" ucd="stat.error" display="0" datatype="double" width="9" precision="5" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error of CMAX (EMAX)</DESCRIPTION>
+<!-- ? Error of CMAX (\original{EMAX}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Chi2lc" ucd="stat.fit.chi2" display="0" datatype="double" width="9" precision="3"><!-- ucd="FIT_CHI2" -->
+      <DESCRIPTION>? Chi^2^ value from the LC analysis (CHI2_lc)</DESCRIPTION>
+<!-- ? Chi^2^ value from the LC analysis (\original{CHI2_lc}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ExcVar" ucd="stat.variance" display="0" datatype="double" width="12" precision="E5"><!-- ucd="STAT_DISP" -->
+      <DESCRIPTION>? Normalized excess variance (EXCESS_VAR)</DESCRIPTION>
+<!-- ? Normalized excess variance (\original{EXCESS_VAR}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_ExcVar" ucd="stat.error" display="0" datatype="double" width="12" precision="E5"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? One-sigma uncertainty of Exc_Var (UNCERTAINTY)</DESCRIPTION>
+<!-- ? One-sigma uncertainty of Exc_Var (\original{UNCERTAINTY}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="sigExc" ucd="stat.variance" display="0" datatype="double" width="10" precision="6"><!-- ucd="STAT_DISP" -->
+      <DESCRIPTION>? Excess variance in units of sigma (Sigma_Excess)</DESCRIPTION>
+<!-- ? Excess variance in units of sigma (\original{Sigma_Excess}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="NHgal" ucd="phys.density;pos.galactic" display="0" datatype="double" width="9" precision="4" unit="1e+21cm**-2"><!-- ucd="PHYS_COLUMN_DENSITY" -->
+      <DESCRIPTION>? Galactic neutral hydrogen density (NH_gal)</DESCRIPTION>
+<!-- ? Galactic neutral hydrogen density (\original{NH_gal}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="NHfitp" ucd="phys.columnDensity" display="0" datatype="double" width="9" precision="4" unit="1e+21cm**-2"><!-- ucd="PHYS_COLUMN_DENSITY" -->
+      <DESCRIPTION>? neutral hydrogen density of PL fits (NH_fit_p)</DESCRIPTION>
+<!-- ? neutral hydrogen density of PL fits (\original{NH_fit_p}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_NHfitp" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="1e+21cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error of NHfitp (NH_err_p)</DESCRIPTION>
+<!-- ? Error of NHfitp (\original{NH_err_p}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Normp" ucd="stat.fit.param" display="0" datatype="float" width="11" precision="E4"><!-- ucd="FIT_PARAM_VALUE" -->
+      <DESCRIPTION>? Normalization for PL fits (NORM_p)</DESCRIPTION>
+<!-- ? Normalization for PL fits (\original{NORM_p}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Normp" ucd="stat.error" display="0" datatype="float" width="11" precision="E4"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error of NORM_p  (NORM_err_p)</DESCRIPTION>
+<!-- ? Error of NORM_p (\original{NORM_err_p}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Gammap" ucd="spect.index" display="0" datatype="float" width="7" precision="4"><!-- ucd="SPECT_SP-INDEX" -->
+      <DESCRIPTION>? Photon index (GAMMA_p)</DESCRIPTION>
+<!-- ? Photon index (\original{GAMMA_p}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Gammap" ucd="stat.error" display="0" datatype="double" width="12" precision="E5"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error of GAMMA_p (GAMMA_err_p)</DESCRIPTION>
+<!-- ? Error of GAMMA_p (\original{GAMMA_err_p}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="CTRspep" ucd="phot.count;em.X-ray" display="0" datatype="double" width="9" precision="6" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>? Count rate obtained from the PL fit (CTR_spec_p)</DESCRIPTION>
+<!-- ? Count rate obtained from the PL fit (\original{CTR_spec_p}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Fluxp" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="11" precision="E4" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Absorption corrected flux of PL-fit (FLUX_p)</DESCRIPTION>
+<!-- ? Absorption corrected flux of PL-fit (\original{FLUX_p}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Chi2rspp" ucd="stat.fit.chi2" display="0" datatype="double" width="9" precision="4"><!-- ucd="FIT_CHI2" -->
+      <DESCRIPTION>? Reduced chi^2 value for the PL-fits (Chi2red_spec_p)</DESCRIPTION>
+<!-- ? Reduced chi^2 value for the PL-fits (\original{Chi2red_spec_p}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Chi2spp" ucd="stat.fit.chi2" display="0" datatype="double" width="9" precision="4"><!-- ucd="FIT_CHI2" -->
+      <DESCRIPTION>? Chi^2 value for the  power-law-fits (Chi2_spec_p)</DESCRIPTION>
+<!-- ? Chi^2 value for the power-law-fits (\original{Chi2_spec_p}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="NDptp" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Number of data points for the PL-fits (Num_Data_pts_p)</DESCRIPTION>
+<!-- ? Number of data points for the PL-fits (\original{Num_Data_pts_p}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="NDFp" ucd="meta.number" display="0" datatype="short" width="4"><!-- ucd="STAT_N-DOF" -->
+      <DESCRIPTION>? Number of degrees of freedom (PL) (Num_Deg_free_p)</DESCRIPTION>
+<!-- ? Number of degrees of freedom (PL) (\original{Num_Deg_free_p}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="NHfitm" ucd="phys.columnDensity" display="0" datatype="double" width="11" precision="6" unit="1e+21cm**-2"><!-- ucd="PHYS_COLUMN_DENSITY" -->
+      <DESCRIPTION>? Neutral hydrogen density (mekal fits) (NH_fit_m)</DESCRIPTION>
+<!-- ? Neutral hydrogen density (mekal fits) (\original{NH_fit_m}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_NHfitm" ucd="stat.error" display="0" datatype="float" width="11" precision="E4" unit="1e+21cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error of NH_fit_m (NH_err_m)</DESCRIPTION>
+<!-- ? Error of NH_fit_m (\original{NH_err_m}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Normm" ucd="stat.fit.param" display="0" datatype="float" width="11" precision="E4"><!-- ucd="FIT_PARAM_VALUE" -->
+      <DESCRIPTION>? Normalization for the mekal fits (NORM_m)</DESCRIPTION>
+<!-- ? Normalization for the mekal fits (\original{NORM_m}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Normm" ucd="stat.error" display="0" datatype="float" width="11" precision="E4"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error of NORM_m (NORM_err_m)</DESCRIPTION>
+<!-- ? Error of NORM_m (\original{NORM_err_m}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Tempfitm" ucd="phys.temperature" display="0" datatype="double" width="9" precision="6"><!-- ucd="PHYS_TEMP_MISC" -->
+      <DESCRIPTION>? Temperature of the mekal fits (Temp_fit_m)</DESCRIPTION>
+<!-- ? Temperature of the mekal fits (\original{Temp_fit_m}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Tempfitm" ucd="stat.error" display="0" datatype="float" width="11" precision="E4"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error of Temp_fit_m (Temp_err_m)</DESCRIPTION>
+<!-- ? Error of Temp_fit_m (\original{Temp_err_m}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="CTRspm" ucd="phot.count;em.X-ray" display="0" datatype="double" width="9" precision="6" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>? Count rate obtained for the mekal fits (CTR_spec_m)</DESCRIPTION>
+<!-- ? Count rate obtained for the mekal fits (\original{CTR_spec_m}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Fluxm" ucd="phot.flux;em.X-ray" display="0" datatype="double" width="9" precision="6" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Absorption corrected flux (mekal fits) (FLUX_m)</DESCRIPTION>
+<!-- ? Absorption corrected flux (mekal fits) (\original{FLUX_m}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Chi2rspm" ucd="stat.fit.chi2" display="0" datatype="float" width="11" precision="E4"><!-- ucd="FIT_CHI2" -->
+      <DESCRIPTION>? Reduced chi^2 value for mekal fits (Chi2red_spec_m)</DESCRIPTION>
+<!-- ? Reduced chi^2 value for mekal fits (\original{Chi2red_spec_m}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Chi2spm" ucd="stat.fit.chi2" display="0" datatype="float" width="11" precision="E4"><!-- ucd="FIT_CHI2" -->
+      <DESCRIPTION>? Chi^2 value for the  mekal fits (Chi2_spec_m)</DESCRIPTION>
+<!-- ? Chi^2 value for the mekal fits (\original{Chi2_spec_m}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="NDptm" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Number of data points (mekal fits) (Num_Data_pts_m)</DESCRIPTION>
+<!-- ? Number of data points (mekal fits) (\original{Num_Data_pts_m}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="NDFm" ucd="meta.number" display="0" datatype="short" width="4"><!-- ucd="STAT_N-DOF" -->
+      <DESCRIPTION>? Number of degrees of freedom (mekal) (Num_Deg_free_m)</DESCRIPTION>
+<!-- ? Number of degrees of freedom (mekal) (\original{Num_Deg_free_m}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="NHfitb" ucd="phys.columnDensity" display="0" datatype="double" width="10" precision="5" unit="1e+21cm**-2"><!-- ucd="PHYS_COLUMN_DENSITY" -->
+      <DESCRIPTION>? Neutral hydrogen density (bbdy fits) (NH_fit_b)</DESCRIPTION>
+<!-- ? Neutral hydrogen density (bbdy fits) (\original{NH_fit_b}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_NHfitb" ucd="stat.error" display="0" datatype="float" width="11" precision="E4" unit="1e+21cm**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error of NH_fit_b (NH_err_b)</DESCRIPTION>
+<!-- ? Error of NH_fit_b (\original{NH_err_b}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Normb" ucd="stat.fit.param" display="0" datatype="float" width="11" precision="E4"><!-- ucd="FIT_PARAM_VALUE" -->
+      <DESCRIPTION>? Normalization for the black body fits (NORM_b)</DESCRIPTION>
+<!-- ? Normalization for the black body fits (\original{NORM_b}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Normb" ucd="stat.error" display="0" datatype="float" width="11" precision="E4"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error of the normalization (bbdy fits) (NORM_err_b)</DESCRIPTION>
+<!-- ? Error of the normalization (bbdy fits) (\original{NORM_err_b}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Tempfitb" ucd="phys.temperature" display="0" datatype="double" width="10" precision="6"><!-- ucd="PHYS_TEMP_MISC" -->
+      <DESCRIPTION>? Temperature of the black body fits (Temp_fit_b)</DESCRIPTION>
+<!-- ? Temperature of the black body fits (\original{Temp_fit_b}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Tempfitb" ucd="stat.error" display="0" datatype="float" width="11" precision="E4"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error of Temp_fit_bbdy (Temp_err_b)</DESCRIPTION>
+<!-- ? Error of Temp_fit_bbdy (\original{Temp_err_b}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="CTRspb" ucd="phot.count;em.X-ray" display="0" datatype="double" width="9" precision="6" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>? Count rate for the black body fit (CTR_spec_b)</DESCRIPTION>
+<!-- ? Count rate for the black body fit (\original{CTR_spec_b}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Fluxb" ucd="phot.flux;em.X-ray" display="0" datatype="float" width="11" precision="E4" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? Absorption corrected flux (black body) (FLUX_b)</DESCRIPTION>
+<!-- ? Absorption corrected flux (black body) (\original{FLUX_b}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Chi2rspb" ucd="stat.fit.chi2" display="0" datatype="float" width="11" precision="E4"><!-- ucd="FIT_CHI2" -->
+      <DESCRIPTION>? Reduced chi^2^ value (black body) (Chi2red_spec_b)</DESCRIPTION>
+<!-- ? Reduced chi^2^ value (black body) (\original{Chi2red_spec_b}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Chi2spb" ucd="stat.fit.chi2" display="0" datatype="float" width="11" precision="E4"><!-- ucd="FIT_CHI2" -->
+      <DESCRIPTION>? Chi^2^ value for the black body fits (Chi2_spec_b)</DESCRIPTION>
+<!-- ? Chi^2^ value for the black body fits (\original{Chi2_spec_b}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="NDptb" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Number of data points (black body) (Num_Data_pts_b)</DESCRIPTION>
+<!-- ? Number of data points (black body) (\original{Num_Data_pts_b}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="NDFb" ucd="meta.number" display="0" datatype="short" width="4"><!-- ucd="STAT_N-DOF" -->
+      <DESCRIPTION>? Number of degrees of freedom (bbdy) (Num_Deg_free_b)</DESCRIPTION>
+<!-- ? Number of degrees of freedom (bbdy) (\original{Num_Deg_free_b}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="Xima" ucd="pos.cartesian.x;instr.det" display="0" datatype="double" width="8" precision="4" unit="pix"><!-- ucd="POS_CCD_X" -->
+      <DESCRIPTION>X image coordinate (45 arcsec) in image pixel (X_IMA)</DESCRIPTION>
+<!-- X image coordinate (45 arcsec) in image pixel (\original{X_IMA}) -->
+
+    </FIELD>
+    <FIELD name="Yima" ucd="pos.cartesian.y;instr.det" display="0" datatype="double" width="8" precision="4" unit="pix"><!-- ucd="POS_CCD_Y" -->
+      <DESCRIPTION>Y image coordinate (45 arcsec) in image pixel (Y_IMA)</DESCRIPTION>
+<!-- Y image coordinate (45 arcsec) in image pixel (\original{Y_IMA}) -->
+
+    </FIELD>
+    <FIELD name="e_Xima" ucd="stat.error" display="0" datatype="double" width="9" precision="6" unit="pix"><!-- ucd="ERROR" -->
+      <DESCRIPTION>One-sigma error of X_IMA in image pixel (XERR)</DESCRIPTION>
+<!-- One-sigma error of X_IMA in image pixel (\original{XERR}) -->
+
+    </FIELD>
+    <FIELD name="e_Yima" ucd="stat.error" display="0" datatype="double" width="9" precision="6" unit="pix"><!-- ucd="ERROR" -->
+      <DESCRIPTION>One-sigma error of Y_IMA in image pixel (YERR)</DESCRIPTION>
+<!-- One-sigma error of Y_IMA in image pixel (\original{YERR}) -->
+
+    </FIELD>
+    <FIELD name="Xsky" ucd="pos.cartesian.x;instr.det" display="0" datatype="double" width="9" precision="2" unit="pix"><!-- ucd="POS_CCD_X" -->
+      <DESCRIPTION>X sky coordinates (0.5 arcsec) in sky pixel (X_SKY)</DESCRIPTION>
+<!-- X sky coordinates (0.5 arcsec) in sky pixel (\original{X_SKY}) -->
+
+    </FIELD>
+    <FIELD name="Ysky" ucd="pos.cartesian.y;instr.det" display="0" datatype="double" width="9" precision="2" unit="pix"><!-- ucd="POS_CCD_Y" -->
+      <DESCRIPTION>Y sky coordinates (0.5 arcsec) in sky pixel (Y_SKY)</DESCRIPTION>
+<!-- Y sky coordinates (0.5 arcsec) in sky pixel (\original{Y_SKY}) -->
+
+    </FIELD>
+    <FIELD name="CuRad" ucd="phys.angSize" display="0" datatype="short" width="3" unit="pix"><!-- ucd="REDUCT_EXTR-RAD" -->
+      <DESCRIPTION>[600]? Source extraction radius in sky pixels (CUT_RAD)</DESCRIPTION>
+<!-- [600]? Source extraction radius in sky pixels (\original{CUT_RAD}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="FA" ucd="stat.fit.param" display="0" datatype="float" width="4" precision="1"><!-- ucd="FIT_PARAM_VALUE" -->
+      <DESCRIPTION>Analyzed fraction of cut radius (FA)</DESCRIPTION>
+<!-- Analyzed fraction of cut radius (\original{FA}) -->
+
+    </FIELD>
+    <FIELD name="TotNum" ucd="phot.count;em.X-ray" display="0" datatype="short" width="4"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>? Total number of photons read from the PET and analyzed by the maximum likelihood  algorithm (TOTNUM)</DESCRIPTION>
+<!-- ? Total number of photons read from the PET and analyzed by the maximum likelihood algorithm (\original{TOTNUM}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="BGR" ucd="instr.background" display="0" datatype="float" width="7" precision="4" unit="pixel**-1"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>Background in source extraction region in 1/pix_image (BGR)</DESCRIPTION>
+<!-- Background in source extraction region in 1/pix_image (\original{BGR}) -->
+
+    </FIELD>
+    <FIELD name="VigCor" ucd="instr.param" display="0" datatype="float" width="7" precision="4"><!-- ucd="INST_CORR-FACTOR" -->
+      <DESCRIPTION>Vignetting correction factor (VIG_COR)</DESCRIPTION>
+<!-- Vignetting correction factor (\original{VIG_COR}) -->
+
+    </FIELD>
+    <FIELD name="Rem" ucd="meta.note" display="0" datatype="char" arraysize="12"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[source nrby?] on flags originating from ML-detection (REMARKS)</DESCRIPTION>
+<!-- [source nrby?] on flags originating from ML-detection (\original{REMARKS}) -->
+
+    </FIELD>
+    <FIELD name="SB1" ucd="phot.count;em.X-ray" display="0" datatype="double" width="8" precision="2" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>? Counts in band A (SB1)</DESCRIPTION>
+<!-- ? Counts in band A (\original{SB1}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="SB2" ucd="phot.count;em.X-ray" display="0" datatype="double" width="8" precision="2" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>? Counts in band B (SB2)</DESCRIPTION>
+<!-- ? Counts in band B (\original{SB2}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="SB3" ucd="phot.count;em.X-ray" display="0" datatype="double" width="8" precision="2" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>? Counts in band C (SB3)</DESCRIPTION>
+<!-- ? Counts in band C (\original{SB3}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="SB4" ucd="phot.count;em.X-ray" display="0" datatype="double" width="8" precision="2" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>? Counts in band D (SB4)</DESCRIPTION>
+<!-- ? Counts in band D (\original{SB4}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B1" ucd="instr.background;meta.table" display="0" datatype="double" width="8" precision="2" unit="ct"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>? Background band A with other catalogue entries excised (B1)</DESCRIPTION>
+<!-- ? Background band A with other catalogue entries excised (\original{B1}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B2" ucd="instr.background;em.opt.B;meta.table" display="0" datatype="double" width="8" precision="2" unit="ct"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>? Background band B with other catalogue entries excised (B2)</DESCRIPTION>
+<!-- ? Background band B with other catalogue entries excised (\original{B2}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B3" ucd="instr.background;meta.table" display="0" datatype="double" width="8" precision="2" unit="ct"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>? Background band C with other catalogue entries excised (B3)</DESCRIPTION>
+<!-- ? Background band C with other catalogue entries excised (\original{B3}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="B4" ucd="instr.background;meta.table" display="0" datatype="double" width="8" precision="2" unit="ct"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>? Background band D with other catalogue entries excised (B4)</DESCRIPTION>
+<!-- ? Background band D with other catalogue entries excised (\original{B4}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Bspa" ucd="instr.background" display="0" datatype="float" width="7" precision="3" unit="arcmin**2"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>? Remaining bkg area in square arcmin</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="S1" ucd="phot.count;em.X-ray" display="0" datatype="double" width="8" precision="2" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>? Source counts in band A (SB1 - B1*sb_spa/b_spa) (S1)</DESCRIPTION>
+<!-- ? Source counts in band A (SB1 - B1*sb_spa/b_spa) (\original{S1}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="S2" ucd="phot.count;em.X-ray" display="0" datatype="double" width="8" precision="2" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>? Source counts in band B (SB2 - B2*sb_spa/b_spa) (S2)</DESCRIPTION>
+<!-- ? Source counts in band B (SB2 - B2*sb_spa/b_spa) (\original{S2}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="S3" ucd="phot.count;em.X-ray" display="0" datatype="double" width="8" precision="2" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>? Source counts in band c (SB3 - B3*sb_spa/b_spa) (S3)</DESCRIPTION>
+<!-- ? Source counts in band c (SB3 - B3*sb_spa/b_spa) (\original{S3}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="S4" ucd="phot.count;em.X-ray" display="0" datatype="double" width="8" precision="2" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>? Source counts in band D (SB4 - B4*sb_spa/b_spa) (S4)</DESCRIPTION>
+<!-- ? Source counts in band D (SB4 - B4*sb_spa/b_spa) (\original{S4}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="mXMMSL1" ucd="meta.number" display="0" datatype="short" width="2"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Number of counterparts in the XMM Slew Survey within the distance of 60" (mult_xmmsl1)</DESCRIPTION>
+<!-- ? Number of counterparts in the XMM Slew Survey within the distance of 60" (\original{mult_xmmsl1}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="eXMMSL1" ucd="meta.id" display="0" datatype="int" width="5"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>? Source number of nearest counterpart in the XMM Slew Survey (entr_xmmsl1)</DESCRIPTION>
+<!-- ? Source number of nearest counterpart in the XMM Slew Survey (\original{entr_xmmsl1}) -->
+
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="dXMMSL1" ucd="pos.angDistance;src.orbital" display="1" datatype="float" width="6" precision="1" unit="arcsec"><!-- ucd="ORBIT_SEPARATION" -->
+      <DESCRIPTION>?=0 Distance of nearest XMMSL1  counterpart (dist_xmmsl1)</DESCRIPTION>
+<!-- ? Distance of nearest XMMSL1 counterpart (\original{dist_xmmsl1}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="RA1deg" ucd="pos.eq.ra" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_RA_OTHER" -->
+      <DESCRIPTION>XMMSL Right ascension (J2000) (RA_xmmsl1)</DESCRIPTION>
+<!-- XMMSL Right ascension (J2000) (\original{RA_xmmsl1}) -->
+
+    </FIELD>
+    <FIELD name="DE1deg" ucd="pos.eq.dec" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_DEC_OTHER" -->
+      <DESCRIPTION>XMMSL Declination (J2000) (DEC_xmmsl1)</DESCRIPTION>
+<!-- XMMSL Declination (J2000) (\original{DEC_xmmsl1}) -->
+
+    </FIELD>
+    <FIELD name="XMMSL1" ucd="meta.id" display="0" datatype="char" arraysize="16"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>Source name in the XMM Slew Survey (SRCNAME_xmmsl1)</DESCRIPTION>
+<!-- Source name in the XMM Slew Survey (\original{SRCNAME_xmmsl1}) -->
+
+    </FIELD>
+    <FIELD name="CRB0" ucd="phot.count;em.X-ray" display="0" datatype="double" width="10" precision="6" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>? Broad Band Count rate (RATE_B0_xmmsl1)</DESCRIPTION>
+<!-- ? Broad Band Count rate (\original{RATE_B0_xmmsl1}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_CRB0" ucd="stat.error" display="0" datatype="double" width="9" precision="6" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Broad Band Count rate error (RATE_B0e_xmmsl1)</DESCRIPTION>
+<!-- ? Broad Band Count rate error (\original{RATE_B0e_xmmsl1}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="CRB5" ucd="phot.count;em.X-ray" display="0" datatype="double" width="10" precision="6" unit="c.s**-1"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>? Count rate, energy band 0.5-2keV (RATE_B5_xmmsl1)</DESCRIPTION>
+<!-- ? Count rate, energy band 0.5-2keV (\original{RATE_B5_xmmsl1}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_CRB5" ucd="stat.error" display="0" datatype="double" width="9" precision="6" unit="c.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Count rate error, 0.5-2keV (RATE_B5e_xmmsl1)</DESCRIPTION>
+<!-- ? Count rate error, 0.5-2keV (\original{RATE_B5e_xmmsl1}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="m3XMM" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Number of 3XMM counterparts within the distance of 60"(mult_3xmm)</DESCRIPTION>
+<!-- ? Number of 3XMM counterparts within the distance of 60"(\original{mult_3xmm}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="e3XMM" ucd="meta.id" display="0" datatype="int" width="6"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>? Source number of nearest counterpart in the 3XMM Catalogue (entr_3xmm)</DESCRIPTION>
+<!-- ? Source number of nearest counterpart in the 3XMM Catalogue (\original{entr_3xmm}) -->
+
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="d3XMM" ucd="pos.angDistance;src.orbital" display="1" datatype="float" width="6" precision="1" unit="arcsec"><!-- ucd="ORBIT_SEPARATION" -->
+      <DESCRIPTION>?=0 Distance of nearest 3XMM counterpart (dist_3xmm)</DESCRIPTION>
+<!-- ? Distance of nearest 3XMM counterpart (\original{dist_3xmm}) -->
+
+      <VALUES null="NaN" />
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-4?-info=XML&amp;-out.add=.&amp;-source=IX/46/xmm3r5s&amp;3XMM=${3XMM}"/>
+    </FIELD>
+    <FIELD name="RA2deg" ucd="pos.eq.ra" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_RA_OTHER" -->
+      <DESCRIPTION>3XMM Right ascension (J2000) (RA_3xmm)</DESCRIPTION>
+<!-- 3XMM Right ascension (J2000) (\original{RA_3xmm}) -->
+
+    </FIELD>
+    <FIELD name="DE2deg" ucd="pos.eq.dec" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_DEC_OTHER" -->
+      <DESCRIPTION>3XMM Declination (J2000) (DEC_3xmm)</DESCRIPTION>
+<!-- 3XMM Declination (J2000) (\original{DEC_3xmm}) -->
+
+    </FIELD>
+    <FIELD name="3XMM" ucd="meta.id" display="0" datatype="char" arraysize="16"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>Source name in the 3XMM Catalogue (SRCNAME_3xmm)</DESCRIPTION>
+<!-- Source name in the 3XMM Catalogue (\original{SRCNAME_3xmm}) -->
+
+    </FIELD>
+    <FIELD name="CREP8" ucd="phot.count;em.X-ray" display="0" datatype="double" width="12" precision="E5" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>? 3XMM Count rate (RATE_EP8_3xmm)</DESCRIPTION>
+<!-- ? 3XMM Count rate (\original{RATE_EP8_3xmm}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_CREP8" ucd="stat.error" display="0" datatype="double" width="9" precision="6" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 3XMM Count rate error (RATE_EP8e_3xmm)</DESCRIPTION>
+<!-- ? 3XMM Count rate error (\original{RATE_EP8e_3xmm}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FluxR" ucd="phot.flux;em.X-ray" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>? 3XMM Flux (FLUX_R_3xmm)</DESCRIPTION>
+<!-- ? 3XMM Flux (\original{FLUX_R_3xmm}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_FluxR" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 3XMM Flux error (FLUX_R_err_3xmm)</DESCRIPTION>
+<!-- ? 3XMM Flux error (\original{FLUX_R_err_3xmm}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="m2RXP" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Number of 2RXP counterparts within the distance of 300" (mult_2rxp)</DESCRIPTION>
+<!-- ? Number of 2RXP counterparts within the distance of 300" (\original{mult_2rxp}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="e2RXP" ucd="meta.id" display="0" datatype="int" width="5"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>? Source number of nearest counterpart in the 2RXP catalogue (entr_2rxp)</DESCRIPTION>
+<!-- ? Source number of nearest counterpart in the 2RXP catalogue (\original{entr_2rxp}) -->
+
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="d2RXP" ucd="pos.angDistance;src.orbital" display="1" datatype="float" width="6" precision="1" unit="arcsec"><!-- ucd="ORBIT_SEPARATION" -->
+      <DESCRIPTION>?=0 Distance of 2RXP nearest counterpart (dist_2rxp)</DESCRIPTION>
+<!-- ? Distance of 2RXP nearest counterpart (\original{dist_2rxp}) -->
+
+      <VALUES null="NaN" />
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-4?-info=XML&amp;-out.add=.&amp;-source=IX/30/2rxp&amp;2RXP=${2RXP}"/>
+    </FIELD>
+    <FIELD name="RA3deg" ucd="pos.eq.ra" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_RA_OTHER" -->
+      <DESCRIPTION>2RXP Right ascension (J2000) (RA_2rxp)</DESCRIPTION>
+<!-- 2RXP Right ascension (J2000) (\original{RA_2rxp}) -->
+
+    </FIELD>
+    <FIELD name="DE3deg" ucd="pos.eq.dec" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_DEC_OTHER" -->
+      <DESCRIPTION>2RXP Declination  (J2000) (DEC_2rxp)</DESCRIPTION>
+<!-- 2RXP Declination (J2000) (\original{DEC_2rxp}) -->
+
+    </FIELD>
+    <FIELD name="2RXP" ucd="meta.id" display="0" datatype="char" arraysize="16"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>Source name in the 2RXP (SRCNAME_2rxp)</DESCRIPTION>
+<!-- Source name in the 2RXP (\original{SRCNAME_2rxp}) -->
+
+    </FIELD>
+    <FIELD name="CR2RXP" ucd="phot.count;em.X-ray" display="0" datatype="double" width="9" precision="6" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>? 2RXP Count rate (CRATE_2rxp)</DESCRIPTION>
+<!-- ? 2RXP Count rate (\original{CRATE_2rxp}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_CR2RXP" ucd="stat.error" display="0" datatype="double" width="9" precision="6" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 2RXP Count rate error (CRATE_err_2rxp)</DESCRIPTION>
+<!-- ? 2RXP Count rate error (\original{CRATE_err_2rxp}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ETim2RXP" ucd="time.duration;obs.exposure" display="0" datatype="int" width="5" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>? 2RXP Source exposure time (ExpTime_2rxp) (132)</DESCRIPTION>
+<!-- ? 2RXP Source exposure time (\original{ExpTime_2rxp}) (132) -->
+
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="ObsID" ucd="meta.id;obs" display="0" datatype="char" arraysize="15*"><!-- ucd="OBS_ID" -->
+      <DESCRIPTION>Field number of 2RXP counterpart (ObsID_2rxp) (133)</DESCRIPTION>
+<!-- Field number of 2RXP counterpart (\original{ObsID_2rxp}) (133) -->
+
+    </FIELD>
+    <FIELD name="m1RXS" ucd="meta.number" display="0" datatype="unsignedByte" width="1"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Number of 1RXS counterparts within a distance of 60" (mult_1rxs)</DESCRIPTION>
+<!-- ? Number of 1RXS counterparts within a distance of 60" (\original{mult_1rxs}) -->
+
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="e1RXS" ucd="meta.id" display="0" datatype="int" width="6"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>? Source number of nearest counterpart in the 1RXS catalogue (entr_1rxs)</DESCRIPTION>
+<!-- ? Source number of nearest counterpart in the 1RXS catalogue (\original{entr_1rxs}) -->
+
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="d1RXS" ucd="pos.angDistance;src.orbital" display="1" datatype="float" width="6" precision="1" unit="arcsec"><!-- ucd="ORBIT_SEPARATION" -->
+      <DESCRIPTION>?=0 Distance to nearest 1RXS counterpart (dist_1rxs) (136)</DESCRIPTION>
+<!-- ? Distance to nearest 1RXS counterpart (\original{dist_1rxs}) (136) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="RA4deg" ucd="pos.eq.ra" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_RA_OTHER" -->
+      <DESCRIPTION>1RXS Right ascension (J2000) (RA_1rxs)</DESCRIPTION>
+<!-- 1RXS Right ascension (J2000) (\original{RA_1rxs}) -->
+
+    </FIELD>
+    <FIELD name="DE4deg" ucd="pos.eq.dec" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_DEC_OTHER" -->
+      <DESCRIPTION>1RXS Declination (J2000) (DEC_1rxs)</DESCRIPTION>
+<!-- 1RXS Declination (J2000) (\original{DEC_1rxs}) -->
+
+    </FIELD>
+    <FIELD name="1RXS" ucd="meta.id" display="1" datatype="char" arraysize="16"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>Source name in the 1RXS catalogue (SRCNAME_1rxs)</DESCRIPTION>
+<!-- Source name in the 1RXS catalogue (\original{SRCNAME_1rxs}) -->
+
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-4?-info=XML&amp;-out.add=.&amp;-source=IX/10A/1rxs,IX/29/rass_fsc&amp;1RXS=${1RXS}"/>
+    </FIELD>
+    <FIELD name="CR1RXS" ucd="phot.count;em.X-ray" display="0" datatype="double" width="9" precision="6" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>? Source count rate in the 1RXS (RATE_1rxs)</DESCRIPTION>
+<!-- ? Source count rate in the 1RXS (\original{RATE_1rxs}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_CR1RXS" ucd="stat.error" display="0" datatype="double" width="9" precision="6" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error of RATE_1rxs (RATE_err_1rxs)</DESCRIPTION>
+<!-- ? Error of RATE_1rxs (\original{RATE_err_1rxs}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="CTS1RXS" ucd="phot.count;em.X-ray" display="0" datatype="double" width="12" precision="E5"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>? Background corrected src counts 1RXS (CTS_1rxs)</DESCRIPTION>
+<!-- ? Background corrected src counts 1RXS (\original{CTS_1rxs}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_CTS1RXS" ucd="stat.error" display="0" datatype="double" width="10" precision="6"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error of CTS_1rxs (CTS_err_1rxs)</DESCRIPTION>
+<!-- ? Error of CTS_1rxs (\original{CTS_err_1rxs}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ExiML1RXS" ucd="stat.likelihood" display="0" datatype="short" width="4"><!-- ucd="STAT_LIKELIHOOD" -->
+      <DESCRIPTION>? Background corrected src counts 1RXS (EXI_ML_1rxs)</DESCRIPTION>
+<!-- ? Background corrected src counts 1RXS (\original{EXI_ML_1rxs}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="ExPos1RXS" ucd="time.duration;obs.exposure" display="0" datatype="int" width="5" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>? Source exposure time in 1RXS (EXPOS_1rxs) (145)</DESCRIPTION>
+<!-- ? Source exposure time in 1RXS (\original{EXPOS_1rxs}) (145) -->
+
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="HR11RXS" ucd="phot.flux;arith.ratio" display="0" datatype="double" width="9" precision="6"><!-- ucd="SPECT_HARDNESS-RATIO" -->
+      <DESCRIPTION>? 1RXS Hardness ratio 1 value (HR1_1rxs) (5)</DESCRIPTION>
+<!-- ? 1RXS Hardness ratio 1 value (\original{HR1_1rxs}) (5) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_HR11RXS" ucd="stat.error" display="0" datatype="double" width="9" precision="6"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error of HR1 in the 1RXS (HR1e_1rxs)</DESCRIPTION>
+<!-- ? Error of HR1 in the 1RXS (\original{HR1e_1rxs}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="HR21RXS" ucd="phot.flux;arith.ratio" display="0" datatype="double" width="9" precision="6"><!-- ucd="SPECT_HARDNESS-RATIO" -->
+      <DESCRIPTION>? 1RXS Hardness ratio 2 value (HR2_1rxs) (5)</DESCRIPTION>
+<!-- ? 1RXS Hardness ratio 2 value (\original{HR2_1rxs}) (5) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_HR21RXS" ucd="stat.error" display="0" datatype="double" width="9" precision="6"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error of HR2 in the 1RXS (HR2e_1rxs)</DESCRIPTION>
+<!-- ? Error of HR2 in the 1RXS (\original{HR2e_1rxs}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="mVV10" ucd="meta.number" display="0" datatype="short" width="2"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Number of counterparts in the Veron and Verson Catalogue within the distance of 60" (mult_vv10)</DESCRIPTION>
+<!-- ? Number of counterparts in the Veron and Verson Catalogue within the distance of 60" (\original{mult_vv10}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="eVV10" ucd="meta.id" display="0" datatype="int" width="6"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>? Source number of VV10 nearest counterpart (entr_vv10)</DESCRIPTION>
+<!-- ? Source number of VV10 nearest counterpart (\original{entr_vv10}) -->
+
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="dVV10" ucd="pos.angDistance;src.orbital" display="1" datatype="float" width="6" precision="1" unit="arcsec"><!-- ucd="ORBIT_SEPARATION" -->
+      <DESCRIPTION>?=0 Distance to nearest VV10 counterpart (dist_vv10)</DESCRIPTION>
+<!-- ? Distance to nearest VV10 counterpart (\original{dist_vv10}) -->
+
+      <VALUES null="NaN" />
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-4?-info=XML&amp;-out.add=.&amp;-source=VII/258/vv10&amp;Name=${VV10}"/>
+    </FIELD>
+    <FIELD name="VV10" ucd="meta.id" display="0" datatype="char" arraysize="17*"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>VV10 Catalogue name (NAME_vv10)</DESCRIPTION>
+<!-- VV10 Catalogue name (\original{NAME_vv10}) -->
+
+    </FIELD>
+    <FIELD name="TypeVV10" ucd="src.class" display="0" datatype="char" arraysize="1"><!-- ucd="CLASS_OBJECT" -->
+      <DESCRIPTION>[B/A/Q] VV10 Object type (Type_vv10)</DESCRIPTION>
+<!-- [B/A/Q] VV10 Object type (\original{Type_vv10}) -->
+
+    </FIELD>
+    <FIELD name="VmagVV10" ucd="phot.mag;em.opt.V" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_MAG_V" -->
+      <DESCRIPTION>? VV10 V magnitude (Vmag_vv10)</DESCRIPTION>
+<!-- ? VV10 V magnitude (\original{Vmag_vv10}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="zVV10" ucd="src.redshift;pos.heliocentric" display="0" datatype="float" width="6" precision="3"><!-- ucd="REDSHIFT_HC" -->
+      <DESCRIPTION>? VV10 Redshift (z_vv10)</DESCRIPTION>
+<!-- ? VV10 Redshift (\original{z_vv10}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="IndexVV10" ucd="meta.id" display="0" datatype="int" width="6"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>? VV10 Running catalogue number (Index_vv10) (157)</DESCRIPTION>
+<!-- ? VV10 Running catalogue number (\original{Index_vv10}) (157) -->
+
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="RA5deg" ucd="pos.eq.ra" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_RA_OTHER" -->
+      <DESCRIPTION>VV10 Right ascension (J2000) (RA_vv10)</DESCRIPTION>
+<!-- VV10 Right ascension (J2000) (\original{RA_vv10}) -->
+
+    </FIELD>
+    <FIELD name="DE5deg" ucd="pos.eq.dec" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_DEC_OTHER" -->
+      <DESCRIPTION>VV10 Declination (J2000) (DEC_vv10)</DESCRIPTION>
+<!-- VV10 Declination (J2000) (\original{DEC_vv10}) -->
+
+    </FIELD>
+    <FIELD name="mTYC2" ucd="meta.number" display="0" datatype="short" width="2"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Number of the nearest counterpart in the Tycho2 Catalogue (mult_tyc2)</DESCRIPTION>
+<!-- ? Number of the nearest counterpart in the Tycho2 Catalogue (\original{mult_tyc2}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="eTYC2" ucd="meta.id" display="0" datatype="int" width="7"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>? Source number of nearest Tyc2 counterpart (entr_tyc2)</DESCRIPTION>
+<!-- ? Source number of nearest Tyc2 counterpart (\original{entr_tyc2}) -->
+
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="dTYC2" ucd="pos.angDistance;src.orbital" display="1" datatype="float" width="6" precision="1" unit="arcsec"><!-- ucd="ORBIT_SEPARATION" -->
+      <DESCRIPTION>?=0 Distance to nearest Tyc2 counterpart (dist_tyc2) (162)</DESCRIPTION>
+<!-- ? Distance to nearest Tyc2 counterpart (\original{dist_tyc2}) (162) -->
+
+      <VALUES null="NaN" />
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-4?-info=XML&amp;-out.add=.&amp;-source=I/259/tyc2&amp;TYC1=${TYC1}&amp;TYC2=${TYC2}&amp;TYC3=${TYC3}"/>
+    </FIELD>
+    <FIELD name="RA6deg" ucd="pos.eq.ra" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_RA_OTHER" -->
+      <DESCRIPTION>Tyc2 Right ascension (J2000) (RA_tyc2)</DESCRIPTION>
+<!-- Tyc2 Right ascension (J2000) (\original{RA_tyc2}) -->
+
+    </FIELD>
+    <FIELD name="DE6deg" ucd="pos.eq.dec" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_DEC_OTHER" -->
+      <DESCRIPTION>Tyc2 Declination (J2000) (DEC_tyc2)</DESCRIPTION>
+<!-- Tyc2 Declination (J2000) (\original{DEC_tyc2}) -->
+
+    </FIELD>
+    <FIELD name="RecnoTYC2" ucd="meta.id" display="0" datatype="int" width="7"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>? Tyc2 Catalogue number (RecNo_tyc2)</DESCRIPTION>
+<!-- ? Tyc2 Catalogue number (\original{RecNo_tyc2}) -->
+
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="VTmag" ucd="phot.mag;em.opt.V" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_TYCHO_V" -->
+      <DESCRIPTION>? Tyc2 VT magnitude (VTmag_tyc2) (6)</DESCRIPTION>
+<!-- ? Tyc2 VT magnitude (\original{VTmag_tyc2}) (6) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="BTmag" ucd="phot.mag;em.opt.B" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_TYCHO_B" -->
+      <DESCRIPTION>? Tyc2 BT magnitude (BTmag_tyc2) (6)</DESCRIPTION>
+<!-- ? Tyc2 BT magnitude (\original{BTmag_tyc2}) (6) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="TYC1" ucd="meta.id" display="0" datatype="short" width="4"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>? Tyc2 TYC1 number (TYC1_tyc2) (7)</DESCRIPTION>
+<!-- ? Tyc2 TYC1 number (\original{TYC1_tyc2}) (7) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="TYC2" ucd="meta.id" display="0" datatype="int" width="5"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>? Tyc2 TYC2 number (TYC2_tyc2) (7)</DESCRIPTION>
+<!-- ? Tyc2 TYC2 number (\original{TYC2_tyc2}) (7) -->
+
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="TYC3" ucd="meta.id" display="0" datatype="unsignedByte" width="1"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>? Tyc2 TYC3 number (TYC3_tyc2) (7)</DESCRIPTION>
+<!-- ? Tyc2 TYC3 number (\original{TYC3_tyc2}) (7) -->
+
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="mBSC" ucd="meta.number" display="0" datatype="unsignedByte" width="1"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Number of counterparts in the Catalogue of Bright Stars (BSC) within the distance of 300" (mult_bri)</DESCRIPTION>
+<!-- ? Number of counterparts in the Catalogue of Bright Stars (BSC) within the distance of 300" (\original{mult_bri}) -->
+
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="eBSC" ucd="meta.id" display="0" datatype="short" width="4"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>? Source number of nearest BSC counterpart (entr_bri)</DESCRIPTION>
+<!-- ? Source number of nearest BSC counterpart (\original{entr_bri}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="dBSC" ucd="pos.angDistance;src.orbital" display="1" datatype="float" width="6" precision="1" unit="arcsec"><!-- ucd="ORBIT_SEPARATION" -->
+      <DESCRIPTION>?=0 Distance to nearest BSC counterpart (dist_bri)</DESCRIPTION>
+<!-- ? Distance to nearest BSC counterpart (\original{dist_bri}) -->
+
+      <VALUES null="NaN" />
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-4?-info=XML&amp;-out.add=.&amp;-source=V/50/catalog&amp;HD=${HD}"/>
+    </FIELD>
+    <FIELD name="RA7deg" ucd="pos.eq.ra" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_RA_OTHER" -->
+      <DESCRIPTION>BSC Right ascension (J2000) (RA_bri)</DESCRIPTION>
+<!-- BSC Right ascension (J2000) (\original{RA_bri}) -->
+
+    </FIELD>
+    <FIELD name="DE7deg" ucd="pos.eq.dec" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_DEC_OTHER" -->
+      <DESCRIPTION>BSC Declination (J2000) (DEC_bri)</DESCRIPTION>
+<!-- BSC Declination (J2000) (\original{DEC_bri}) -->
+
+    </FIELD>
+    <FIELD name="VmagBSC" ucd="phot.mag;em.opt.V" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_MAG_V" -->
+      <DESCRIPTION>? BSC V magnitude (Vmag_bri)</DESCRIPTION>
+<!-- ? BSC V magnitude (\original{Vmag_bri}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="SpTypeBSC" ucd="src.spType" display="0" datatype="char" arraysize="20*"><!-- ucd="SPECT_TYPE_MK" -->
+      <DESCRIPTION>BSC spectral type (SpType_bri)</DESCRIPTION>
+<!-- BSC spectral type (\original{SpType_bri}) -->
+
+    </FIELD>
+    <FIELD name="RecnoBSC" ucd="meta.id" display="0" datatype="short" width="4"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>? BSC Record catalogue number (RecNo_bri)</DESCRIPTION>
+<!-- ? BSC Record catalogue number (\original{RecNo_bri}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="HD" ucd="meta.id" display="0" datatype="int" width="6"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>? Henry Draper Catalogue Number (HD_bri)</DESCRIPTION>
+<!-- ? Henry Draper Catalogue Number (\original{HD_bri}) -->
+
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="mHMXB" ucd="meta.number" display="0" datatype="unsignedByte" width="1"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Number of counterparts in the Catalog of High Mass X-Ray Binaries (HMXBCAT) within the distance of 60" (mult_hmxb)</DESCRIPTION>
+<!-- ? Number of counterparts in the Catalog of High Mass X-Ray Binaries (HMXBCAT) within the distance of 60" (\original{mult_hmxb}) -->
+
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="eHMXB" ucd="meta.id" display="0" datatype="short" width="3"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>? Source number of nearest HMXBCAT counterpart (entr_hmxb)</DESCRIPTION>
+<!-- ? Source number of nearest HMXBCAT counterpart (\original{entr_hmxb}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="dHMXB" ucd="pos.angDistance;src.orbital" display="1" datatype="float" width="6" precision="1" unit="arcsec"><!-- ucd="ORBIT_SEPARATION" -->
+      <DESCRIPTION>?=0 Distance of nearest HMXBCAT  counterpart (dist_hmxb)</DESCRIPTION>
+<!-- ? Distance of nearest HMXBCAT counterpart (\original{dist_hmxb}) -->
+
+      <VALUES null="NaN" />
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-4?-info=XML&amp;-out.add=.&amp;-source=V/106/hmxbcat&amp;-c=${+RAJ2000}${+DEJ2000}&amp;-c.eq=J2000.000,rm=3&amp;-out.max=1"/>
+    </FIELD>
+    <FIELD name="RA8deg" ucd="pos.eq.ra" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_RA_OTHER" -->
+      <DESCRIPTION>HMXBCAT Right ascension (J2000) (RA_hmxb)</DESCRIPTION>
+<!-- HMXBCAT Right ascension (J2000) (\original{RA_hmxb}) -->
+
+    </FIELD>
+    <FIELD name="DE8deg" ucd="pos.eq.dec" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_DEC_OTHER" -->
+      <DESCRIPTION>HMXBCAT Declination (J2000) (DEC_hmxb)</DESCRIPTION>
+<!-- HMXBCAT Declination (J2000) (\original{DEC_hmxb}) -->
+
+    </FIELD>
+    <FIELD name="NameHMXB" ucd="meta.id" display="0" datatype="char" arraysize="21*"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>HMXBCAT Catalogue name  (Name_hmxb)</DESCRIPTION>
+<!-- HMXBCAT Catalogue name (\original{Name_hmxb}) -->
+
+    </FIELD>
+    <FIELD name="Name2HMXB" ucd="meta.id" display="0" datatype="char" arraysize="21*"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>HMXBCAT Alternative catalogue name (Name2_hmxb)</DESCRIPTION>
+<!-- HMXBCAT Alternative catalogue name (\original{Name2_hmxb}) -->
+
+    </FIELD>
+    <FIELD name="VmagHMXB" ucd="phot.mag;em.opt.V" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_MAG_V" -->
+      <DESCRIPTION>? HMXBCAT V magnitude (Vmag_hmxb)</DESCRIPTION>
+<!-- ? HMXBCAT V magnitude (\original{Vmag_hmxb}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="mLMXB" ucd="meta.number" display="0" datatype="unsignedByte" width="1"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Number of counterparts in the Catalog of Low Mass X-Ray Binaries (LMXBCAT) within the distance of 60" (mult_lmxb)</DESCRIPTION>
+<!-- ? Number of counterparts in the Catalog of Low Mass X-Ray Binaries (LMXBCAT) within the distance of 60" (\original{mult_lmxb}) -->
+
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="eLMXB" ucd="meta.id" display="0" datatype="short" width="3"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>? Source number of nearest LMXBCAT counterpart (entr_lmxb)</DESCRIPTION>
+<!-- ? Source number of nearest LMXBCAT counterpart (\original{entr_lmxb}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="dLMXB" ucd="pos.angDistance;src.orbital" display="1" datatype="float" width="6" precision="1" unit="arcsec"><!-- ucd="ORBIT_SEPARATION" -->
+      <DESCRIPTION>?=0 Distance to nearest LMXBCAT  counterpart (dist_lmxb)</DESCRIPTION>
+<!-- ? Distance to nearest LMXBCAT counterpart (\original{dist_lmxb}) -->
+
+      <VALUES null="NaN" />
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-4?-info=XML&amp;-out.add=.&amp;-source=J/A+A/455/1165/table1&amp;-c=${+RAJ2000}${+DEJ2000}&amp;-c.eq=J2000.000,rm=3&amp;-out.max=1"/>
+    </FIELD>
+    <FIELD name="RA9deg" ucd="pos.eq.ra" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_RA_OTHER" -->
+      <DESCRIPTION>LMXBCAT Right ascension (J2000) (RA_lmxb)</DESCRIPTION>
+<!-- LMXBCAT Right ascension (J2000) (\original{RA_lmxb}) -->
+
+    </FIELD>
+    <FIELD name="DE9deg" ucd="pos.eq.dec" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_DEC_OTHER" -->
+      <DESCRIPTION>LMXBCAT Declination (J2000) (DEC_lmxb)</DESCRIPTION>
+<!-- LMXBCAT Declination (J2000) (\original{DEC_lmxb}) -->
+
+    </FIELD>
+    <FIELD name="NameLMXB" ucd="meta.id" display="0" datatype="char" arraysize="16*"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>LMXBCAT Catalogue name (Name_lmxb)</DESCRIPTION>
+<!-- LMXBCAT Catalogue name (\original{Name_lmxb}) -->
+
+    </FIELD>
+    <FIELD name="Name2LMXB" ucd="meta.id" display="0" datatype="char" arraysize="13*"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>LMXBCAT Alternative catalogue name (Name2_lmxb) (194)</DESCRIPTION>
+<!-- LMXBCAT Alternative catalogue name (\original{Name2_lmxb}) (194) -->
+
+    </FIELD>
+    <FIELD name="VmagLMXB" ucd="phot.mag;em.opt.V" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_MAG_V" -->
+      <DESCRIPTION>? LMXBCAT V magnitude (Vmag_lmxb)</DESCRIPTION>
+<!-- ? LMXBCAT V magnitude (\original{Vmag_lmxb}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="mATNF" ucd="meta.number" display="0" datatype="short" width="2"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Number of counterparts in the Pulsar Catalogue (ATNF) within the distance of 60" (mult_atnf)</DESCRIPTION>
+<!-- ? Number of counterparts in the Pulsar Catalogue (ATNF) within the distance of 60" (\original{mult_atnf}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="eATNF" ucd="meta.id" display="0" datatype="short" width="4"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>? Source number of nearest ATNF counterpart (entr_atnf)</DESCRIPTION>
+<!-- ? Source number of nearest ATNF counterpart (\original{entr_atnf}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="dATNF" ucd="pos.angDistance;src.orbital" display="1" datatype="float" width="6" precision="1" unit="arcsec"><!-- ucd="ORBIT_SEPARATION" -->
+      <DESCRIPTION>?=0 Distance to nearest ATNF counterpart (dist_atnf)</DESCRIPTION>
+<!-- ? Distance to nearest ATNF counterpart (\original{dist_atnf}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="RA10deg" ucd="pos.eq.ra" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_RA_OTHER" -->
+      <DESCRIPTION>ATNF Right ascension (J2000) (RA_atnf)</DESCRIPTION>
+<!-- ATNF Right ascension (J2000) (\original{RA_atnf}) -->
+
+    </FIELD>
+    <FIELD name="DE10deg" ucd="pos.eq.dec" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_DEC_OTHER" -->
+      <DESCRIPTION>ATNF Declination (J2000) (DEC_atnf)</DESCRIPTION>
+<!-- ATNF Declination (J2000) (\original{DEC_atnf}) -->
+
+    </FIELD>
+    <FIELD name="ATNF" ucd="meta.id" display="0" datatype="char" arraysize="16*"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>ATNF Pulsar name  (Name_atnf)</DESCRIPTION>
+<!-- ATNF Pulsar name (\original{Name_atnf}) -->
+
+    </FIELD>
+    <FIELD name="TypeATNF" ucd="src.class" display="0" datatype="char" arraysize="11*"><!-- ucd="CLASS_OBJECT" -->
+      <DESCRIPTION>ATNF Pulsar type (Type_atnf)</DESCRIPTION>
+<!-- ATNF Pulsar type (\original{Type_atnf}) -->
+
+    </FIELD>
+    <FIELD name="PerATNF" ucd="time.period" display="0" datatype="char" arraysize="21*" unit="s"><!-- ucd="TIME_PERIOD" -->
+      <DESCRIPTION>ATNF Pulsar period  (Period_atnf)</DESCRIPTION>
+<!-- ATNF Pulsar period (\original{Period_atnf}) -->
+
+    </FIELD>
+    <FIELD name="mFUH" ucd="meta.number" display="0" datatype="unsignedByte" width="1"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Number of counterparts in the Catalog of Variable Sources from Fuhrmeister and Schmitt within the distance of 60" (mult_fuh)</DESCRIPTION>
+<!-- ? Number of counterparts in the Catalog of Variable Sources from Fuhrmeister and Schmitt within the distance of 60" (\original{mult_fuh}) -->
+
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="eFUH" ucd="meta.id" display="0" datatype="short" width="4"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>? Source number of nearest FUH counterpart (entr_fuh)</DESCRIPTION>
+<!-- ? Source number of nearest FUH counterpart (\original{entr_fuh}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="dFUH" ucd="pos.angDistance;src.orbital" display="1" datatype="float" width="6" precision="1" unit="arcsec"><!-- ucd="ORBIT_SEPARATION" -->
+      <DESCRIPTION>?=0 Distance to nearest FUH counterpart (dist_fuh)</DESCRIPTION>
+<!-- ? Distance to nearest FUH counterpart (\original{dist_fuh}) -->
+
+      <VALUES null="NaN" />
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-4?-info=XML&amp;-out.add=.&amp;-source=J/A+A/403/247&amp;Seq=${SeqFUH}"/>
+    </FIELD>
+    <FIELD name="RA11deg" ucd="pos.eq.ra" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_RA_OTHER" -->
+      <DESCRIPTION>FUH Right ascension (J2000) (RA_fuh)</DESCRIPTION>
+<!-- FUH Right ascension (J2000) (\original{RA_fuh}) -->
+
+    </FIELD>
+    <FIELD name="DE11deg" ucd="pos.eq.dec" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_DEC_OTHER" -->
+      <DESCRIPTION>FUH Declination (J2000) (DEC_fuh)</DESCRIPTION>
+<!-- FUH Declination (J2000) (\original{DEC_fuh}) -->
+
+    </FIELD>
+    <FIELD name="SeqFUH" ucd="meta.id" display="0" datatype="char" arraysize="4"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>FUH Object number (Seq_fuh)</DESCRIPTION>
+<!-- FUH Object number (\original{Seq_fuh}) -->
+
+    </FIELD>
+    <FIELD name="NameFUH" ucd="meta.id" display="0" datatype="char" arraysize="30*"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>FUH Object name (Name_fuh)</DESCRIPTION>
+<!-- FUH Object name (\original{Name_fuh}) -->
+
+    </FIELD>
+    <FIELD name="m1SXPS" ucd="meta.number" display="0" datatype="short" width="2"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Number of counterparts in Swift 1SXPS catalogue within a distance of 120" (mult_1sxps)</DESCRIPTION>
+<!-- ? Number of counterparts in Swift 1SXPS catalogue within a distance of 120" (\original{mult_1sxps}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="e1SXPS" ucd="meta.id" display="0" datatype="int" width="6"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>? Source number of nearest 1SXPS counterpart (entr_1sxps)</DESCRIPTION>
+<!-- ? Source number of nearest 1SXPS counterpart (\original{entr_1sxps}) -->
+
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="d1SXPS" ucd="pos.angDistance;src.orbital" display="1" datatype="float" width="6" precision="1" unit="arcsec"><!-- ucd="ORBIT_SEPARATION" -->
+      <DESCRIPTION>?=0 Distance to nearest 1SXPS  counterparts (dist_1sxps)</DESCRIPTION>
+<!-- ? Distance to nearest 1SXPS counterparts (\original{dist_1sxps}) -->
+
+      <VALUES null="NaN" />
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-4?-info=XML&amp;-out.add=.&amp;-source=IX/43/sources&amp;recno=${1SXPS}"/>
+    </FIELD>
+    <FIELD name="RA12deg" ucd="pos.eq.ra" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_RA_OTHER" -->
+      <DESCRIPTION>1SXPS Right ascension (J2000) (RA_1sxps)</DESCRIPTION>
+<!-- 1SXPS Right ascension (J2000) (\original{RA_1sxps}) -->
+
+    </FIELD>
+    <FIELD name="DE12deg" ucd="pos.eq.dec" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_DEC_OTHER" -->
+      <DESCRIPTION>1SXPS Declination (J2000) (DEC_1sxps)</DESCRIPTION>
+<!-- 1SXPS Declination (J2000) (\original{DEC_1sxps}) -->
+
+    </FIELD>
+    <FIELD name="Exp1SXPS" ucd="time.duration;obs.exposure" display="0" datatype="int" width="7" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>? 1SXPS Source exposure time (Expos_1sxps)</DESCRIPTION>
+<!-- ? 1SXPS Source exposure time (\original{Expos_1sxps}) -->
+
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="Det1SXPS" ucd="meta.code" display="0" datatype="short" width="2"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>? 1SXPS Total(0.3-10keV)-band detection flag (DET_1sxps)</DESCRIPTION>
+<!-- ? 1SXPS Total(0.3-10keV)-band detection flag (\original{DET_1sxps}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="Det01SXPS" ucd="meta.code" display="0" datatype="short" width="3"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>? 1SXPS Total(0.3-10keV)-band detection flag (DET0_1sxps)</DESCRIPTION>
+<!-- ? 1SXPS Total(0.3-10keV)-band detection flag (\original{DET0_1sxps}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="Det11SXPS" ucd="meta.code" display="0" datatype="short" width="3"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>? 1SXPS Soft(0.3-1keV)-band detection flag (DET1_1sxps)</DESCRIPTION>
+<!-- ? 1SXPS Soft(0.3-1keV)-band detection flag (\original{DET1_1sxps}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="Det21SXPS" ucd="meta.code" display="0" datatype="short" width="3"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>? 1SXPS Meduin(2-2keV)-band detection flag (DET2_1sxps)</DESCRIPTION>
+<!-- ? 1SXPS Meduin(2-2keV)-band detection flag (\original{DET2_1sxps}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="Det31SXPS" ucd="meta.code" display="0" datatype="short" width="3"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>? 1SXPS Hard(2-10keV)-band detection flag (DET3_1sxps)</DESCRIPTION>
+<!-- ? 1SXPS Hard(2-10keV)-band detection flag (\original{DET3_1sxps}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="1SXPS" ucd="meta.id" display="0" datatype="int" width="6"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>? Running catalogue number in Swift (INDEX_1sxps)</DESCRIPTION>
+<!-- ? Running catalogue number in Swift (\original{INDEX_1sxps}) -->
+
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="CR01SXPS" ucd="phot.count;em.X-ray" display="0" datatype="double" width="10" precision="6" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>? Swift Total (0.3-10 keV)-band count rate (Rate0_1sxps)</DESCRIPTION>
+<!-- ? Swift Total (0.3-10 keV)-band count rate (\original{Rate0_1sxps}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_CR01SXPS" ucd="stat.error" display="0" datatype="double" width="9" precision="6" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Swift Error of Rate0_1sxps (ERate0_1sxps)</DESCRIPTION>
+<!-- ? Swift Error of Rate0_1sxps (\original{ERate0_1sxps}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="m1RXH" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Number of counterparts in the 1RXH catalogue within the distance of 120" (mult_1rxh)</DESCRIPTION>
+<!-- ? Number of counterparts in the 1RXH catalogue within the distance of 120" (\original{mult_1rxh}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="e1RXH" ucd="meta.id" display="0" datatype="int" width="5"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>? Source number of nearest 1RXH counterpart (entr_1rxh)</DESCRIPTION>
+<!-- ? Source number of nearest 1RXH counterpart (\original{entr_1rxh}) -->
+
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="d1RXH" ucd="pos.angDistance;src.orbital" display="1" datatype="float" width="6" precision="1" unit="arcsec"><!-- ucd="ORBIT_SEPARATION" -->
+      <DESCRIPTION>?=0 Distance to nearest 1RXH counterpart (dist_1rxh)</DESCRIPTION>
+<!-- ? Distance to nearest 1RXH counterpart (\original{dist_1rxh}) -->
+
+      <VALUES null="NaN" />
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-4?-info=XML&amp;-out.add=.&amp;-source=IX/28/hricat&amp;1RXH=${1RXH}"/>
+    </FIELD>
+    <FIELD name="RA13deg" ucd="pos.eq.ra" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_RA_OTHER" -->
+      <DESCRIPTION>1RXH Right ascension (J2000) (RA_1rxh)</DESCRIPTION>
+<!-- 1RXH Right ascension (J2000) (\original{RA_1rxh}) -->
+
+    </FIELD>
+    <FIELD name="DE13deg" ucd="pos.eq.dec" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_DEC_OTHER" -->
+      <DESCRIPTION>1RXH Declination (J2000) (DEC_1rxh)</DESCRIPTION>
+<!-- 1RXH Declination (J2000) (\original{DEC_1rxh}) -->
+
+    </FIELD>
+    <FIELD name="1RXH" ucd="meta.id" display="0" datatype="char" arraysize="21"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>Source name in the 1RXH (SRCNAME_1rxh)</DESCRIPTION>
+<!-- Source name in the 1RXH (\original{SRCNAME_1rxh}) -->
+
+    </FIELD>
+    <FIELD name="CR1RXH" ucd="phot.count;em.X-ray" display="0" datatype="double" width="9" precision="6" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>? 1RXH Source count rate (CRATE_1rxh)</DESCRIPTION>
+<!-- ? 1RXH Source count rate (\original{CRATE_1rxh}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_CR1RXH" ucd="stat.error" display="0" datatype="double" width="9" precision="6" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error of CRATE_1RXH (CRATE_err_1rxh)</DESCRIPTION>
+<!-- ? Error of CRATE_1RXH (\original{CRATE_err_1rxh}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ETim1RXH" ucd="time.duration;obs.exposure" display="0" datatype="int" width="6" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>? 1RXH Source exposure time (ExpTime_1rxh)</DESCRIPTION>
+<!-- ? 1RXH Source exposure time (\original{ExpTime_1rxh}) -->
+
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="SNR1RXH" ucd="stat.snr" display="0" datatype="float" width="5" precision="1"><!-- ucd="INST_S/N" -->
+      <DESCRIPTION>? 1RXH Signal-to-noise ratio (SNR_1rxh)</DESCRIPTION>
+<!-- ? 1RXH Signal-to-noise ratio (\original{SNR_1rxh}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="mFlem" ucd="meta.number" display="0" datatype="unsignedByte" width="1"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Number of counterparts in the Catalog of White Dwarfs from Flemming within the distance of 60"  (mult_flem)</DESCRIPTION>
+<!-- ? Number of counterparts in the Catalog of White Dwarfs from Flemming within the distance of 60" (\original{mult_flem}) -->
+
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="eFlem" ucd="meta.id" display="0" datatype="short" width="3"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>? Source number of nearest Flemming counterpart (entr_flem)</DESCRIPTION>
+<!-- ? Source number of nearest Flemming counterpart (\original{entr_flem}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="dFlem" ucd="pos.angDistance;src.orbital" display="1" datatype="float" width="6" precision="1" unit="arcsec"><!-- ucd="ORBIT_SEPARATION" -->
+      <DESCRIPTION>?=0 Distance to nearest Flemming  counterpart (dist_flem)</DESCRIPTION>
+<!-- ? Distance to nearest Flemming counterpart (\original{dist_flem}) -->
+
+      <VALUES null="NaN" />
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-4?-info=XML&amp;-out.add=.&amp;-source=J/A+A/316/147/table1&amp;-c=${+RAJ2000}${+DEJ2000}&amp;-c.eq=J2000.000,rm=3&amp;-out.max=1"/>
+    </FIELD>
+    <FIELD name="RA14deg" ucd="pos.eq.ra" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_RA_OTHER" -->
+      <DESCRIPTION>Flemming Right ascension (J2000) (RA_flem)</DESCRIPTION>
+<!-- Flemming Right ascension (J2000) (\original{RA_flem}) -->
+
+    </FIELD>
+    <FIELD name="DE14deg" ucd="pos.eq.dec" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_DEC_OTHER" -->
+      <DESCRIPTION>Flemming Declination (J2000) (DEC_flem)</DESCRIPTION>
+<!-- Flemming Declination (J2000) (\original{DEC_flem}) -->
+
+    </FIELD>
+    <FIELD name="Flem" ucd="meta.id" display="0" datatype="char" arraysize="14*"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>Source name in the Flemming Catalogue (SRCNAME_flem)</DESCRIPTION>
+<!-- Source name in the Flemming Catalogue (\original{SRCNAME_flem}) -->
+
+    </FIELD>
+    <FIELD name="TypeFlem" ucd="src.class" display="0" datatype="char" arraysize="10*"><!-- ucd="CLASS_OBJECT" -->
+      <DESCRIPTION>Flemming  Object type (Type_flem)</DESCRIPTION>
+<!-- Flemming Object type (\original{Type_flem}) -->
+
+    </FIELD>
+    <FIELD name="WFCFlem" ucd="meta.code" display="0" datatype="char" arraysize="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[Y/N] Flemming Wide Field Camera detection?  (WFC_flem)</DESCRIPTION>
+<!-- [Y/N] Flemming Wide Field Camera detection? (\original{WFC_flem}) -->
+
+    </FIELD>
+    <FIELD name="CRFlem" ucd="phot.count;em.X-ray" display="0" datatype="float" width="6" precision="3" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>? Flemming count rate (Rate_flem)</DESCRIPTION>
+<!-- ? Flemming count rate (\original{Rate_flem}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_CRFlem" ucd="stat.error" display="0" datatype="double" width="9" precision="6" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error of the Flemming count rate (e_Rate_flem)</DESCRIPTION>
+<!-- ? Error of the Flemming count rate (\original{e_Rate_flem}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="mWD" ucd="meta.number" display="0" datatype="unsignedByte" width="1"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Number of counterparts in the Catalog of White Dwarfs within the distance of 60 " (mult_wd)</DESCRIPTION>
+<!-- ? Number of counterparts in the Catalog of White Dwarfs within the distance of 60 " (\original{mult_wd}) -->
+
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="eWD" ucd="meta.id" display="0" datatype="int" width="5"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>? Source number of nearest WD counterpart (entr_wd)</DESCRIPTION>
+<!-- ? Source number of nearest WD counterpart (\original{entr_wd}) -->
+
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="dWD" ucd="pos.angDistance;src.orbital" display="1" datatype="float" width="6" precision="1" unit="arcsec"><!-- ucd="ORBIT_SEPARATION" -->
+      <DESCRIPTION>?=0 Distance to nearest WD counterpart (dist_wd)</DESCRIPTION>
+<!-- ? Distance to nearest WD counterpart (\original{dist_wd}) -->
+
+      <VALUES null="NaN" />
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-4?-info=XML&amp;-out.add=.&amp;-source=III/235/catalog&amp;WD=${WD}"/>
+    </FIELD>
+    <FIELD name="RA15deg" ucd="pos.eq.ra" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_RA_OTHER" -->
+      <DESCRIPTION>WD Rigth ascension (J2000) (RA_wd)</DESCRIPTION>
+<!-- WD Rigth ascension (J2000) (\original{RA_wd}) -->
+
+    </FIELD>
+    <FIELD name="DE15deg" ucd="pos.eq.dec" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_DEC_OTHER" -->
+      <DESCRIPTION>WD Declination (J2000) (DEC_wd)</DESCRIPTION>
+<!-- WD Declination (J2000) (\original{DEC_wd}) -->
+
+    </FIELD>
+    <FIELD name="WD" ucd="meta.id" display="0" datatype="char" arraysize="10"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>WD Source name in the Catalogue (SRCNAME_wd)</DESCRIPTION>
+<!-- WD Source name in the Catalogue (\original{SRCNAME_wd}) -->
+
+    </FIELD>
+    <FIELD name="VmagWD" ucd="phot.mag;em.opt.V" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_MAG_V" -->
+      <DESCRIPTION>? WD V-magnitude (Vmag_wd)</DESCRIPTION>
+<!-- ? WD V-magnitude (\original{Vmag_wd}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="VsphotWD" ucd="phot.mag;em.opt.V" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_MAG_V" -->
+      <DESCRIPTION>? WD V mag: multichannel spectrophotometry (Vsphot_wd)</DESCRIPTION>
+<!-- ? WD V mag: multichannel spectrophotometry (\original{Vsphot_wd}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="mSDSS" ucd="meta.number" display="0" datatype="unsignedByte" width="1"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Source number of the nearest counterpart in the Sloan Catalogue (mult_sdss)</DESCRIPTION>
+<!-- ? Source number of the nearest counterpart in the Sloan Catalogue (\original{mult_sdss}) -->
+
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="eSDSS" ucd="meta.id" display="0" datatype="short" width="3"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>? Source number of SDSS nearest counterpart (entr_sdss)</DESCRIPTION>
+<!-- ? Source number of SDSS nearest counterpart (\original{entr_sdss}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="dSDSS" ucd="pos.angDistance;src.orbital" display="1" datatype="float" width="6" precision="1" unit="arcsec"><!-- ucd="ORBIT_SEPARATION" -->
+      <DESCRIPTION>?=0 Distance to nearest SDSS counterpart (dist_sdss)</DESCRIPTION>
+<!-- ? Distance to nearest SDSS counterpart (\original{dist_sdss}) -->
+
+      <VALUES null="NaN" />
+
+<!-- No link in: \Aglu{SDSS3.pos,w ${$posglu}}{${}} -->
+    </FIELD>
+    <FIELD name="RA16deg" ucd="pos.eq.ra" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_RA_OTHER" -->
+      <DESCRIPTION>SDSS Right ascension (J2000) (RA_sdss)</DESCRIPTION>
+<!-- SDSS Right ascension (J2000) (\original{RA_sdss}) -->
+
+    </FIELD>
+    <FIELD name="DE16deg" ucd="pos.eq.dec" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_DEC_OTHER" -->
+      <DESCRIPTION>SDSS Declination (J2000) (DEC_sdss)</DESCRIPTION>
+<!-- SDSS Declination (J2000) (\original{DEC_sdss}) -->
+
+    </FIELD>
+    <FIELD name="SDSS" ucd="meta.id" display="0" datatype="char" arraysize="24"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>SDSS Object name (SDSS_NAME)</DESCRIPTION>
+<!-- SDSS Object name (\original{SDSS_NAME}) -->
+
+    </FIELD>
+    <FIELD name="LambdaS" ucd="pos.ecliptic.lat" display="0" datatype="double" width="10" precision="6" unit="deg"><!-- ucd="POS_EC_LAT" -->
+      <DESCRIPTION>? SDSS Latitude in elliptical coordinate (LAMBDA_sdss)</DESCRIPTION>
+<!-- ? SDSS Latitude in elliptical coordinate (\original{LAMBDA_sdss}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="BetaS" ucd="pos.ecliptic.lon" display="0" datatype="double" width="10" precision="6" unit="deg"><!-- ucd="POS_EC_LON" -->
+      <DESCRIPTION>? SDSS  Longitude in elliptical coordinate (BETA_sdss)</DESCRIPTION>
+<!-- ? SDSS Longitude in elliptical coordinate (\original{BETA_sdss}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="m2RXS" ucd="meta.number" display="0" datatype="short" width="2"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Number of counterparts in the 2RXS catalogue within the distance of 60" (mult_2rxs)</DESCRIPTION>
+<!-- ? Number of counterparts in the 2RXS catalogue within the distance of 60" (\original{mult_2rxs}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="e2RXS" ucd="meta.id" display="0" datatype="int" width="6"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>? Source number of 2RXS counterpart (entr_2rxs)</DESCRIPTION>
+<!-- ? Source number of 2RXS counterpart (\original{entr_2rxs}) -->
+
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="d2RXS" ucd="pos.angDistance;src.orbital" display="0" datatype="float" width="6" precision="1" unit="arcsec"><!-- ucd="ORBIT_SEPARATION" -->
+      <DESCRIPTION>?=0 Distance to 2RXS counterpart  (dist_2rxs)</DESCRIPTION>
+<!-- ? Distance to 2RXS counterpart (\original{dist_2rxs}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="I2RXS" ucd="meta.id" display="0" datatype="int" width="6"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>? Index of the nearest 2RXS counterpart (INDEX_2rxs)</DESCRIPTION>
+<!-- ? Index of the nearest 2RXS counterpart (\original{INDEX_2rxs}) -->
+
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="Seq2RXS" ucd="meta.id;obs.field" display="0" datatype="int" width="6"><!-- ucd="ID_FIELD" -->
+      <DESCRIPTION>? Number of sky field of 2RXS nearest counterpart (SEQ_ID_2rxs)</DESCRIPTION>
+<!-- ? Number of sky field of 2RXS nearest counterpart (\original{SEQ_ID_2rxs}) -->
+
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="IndD2RXS" ucd="meta.id;obs.field" display="0" datatype="short" width="4"><!-- ucd="ID_FIELD" -->
+      <DESCRIPTION>? Field detection number of 2RXS nearest counterpart (IND_DET_2rxs)</DESCRIPTION>
+<!-- ? Field detection number of 2RXS nearest counterpart (\original{IND_DET_2rxs}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="ExiML2RXS" ucd="stat.likelihood" display="0" datatype="double" width="9" precision="2"><!-- ucd="STAT_LIKELIHOOD" -->
+      <DESCRIPTION>? Detection likelihood of 2RXS  nearest counterpart (EXI_ML_2rxs)</DESCRIPTION>
+<!-- ? Detection likelihood of 2RXS nearest counterpart (\original{EXI_ML_2rxs}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="CR2RXS" ucd="phot.count;em.X-ray" display="0" datatype="double" width="8" precision="4" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>? Source count rate of 2RXS nearest counterpart (RATE_2rxs)</DESCRIPTION>
+<!-- ? Source count rate of 2RXS nearest counterpart (\original{RATE_2rxs}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="RA17deg" ucd="pos.eq.ra" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_RA_OTHER" -->
+      <DESCRIPTION>2RXS Right ascension (J2000) (RA_2rxs)</DESCRIPTION>
+<!-- 2RXS Right ascension (J2000) (\original{RA_2rxs}) -->
+
+    </FIELD>
+    <FIELD name="DE17deg" ucd="pos.eq.dec" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_DEC_OTHER" -->
+      <DESCRIPTION>2RXS Declination (J2000) (DEC_2rxs)</DESCRIPTION>
+<!-- 2RXS Declination (J2000) (\original{DEC_2rxs}) -->
+
+    </FIELD>
+    <FIELD name="USKY2rxs" ucd="meta.code" display="0" datatype="short" width="2"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[-1/9]? Sub-field detection cell of 2RXS nearest counterpart (USKY_2rxs)</DESCRIPTION>
+<!-- [-1/9]? Sub-field detection cell of 2RXS nearest counterpart (\original{USKY_2rxs}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="Flag2rxs" ucd="meta.code.error" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/1]? Nearby flag of 2RXS nearest counterpart, 0=best (FLAG_2rxs)</DESCRIPTION>
+<!-- [0/1]? Nearby flag of 2RXS nearest counterpart, 0=best (\original{FLAG_2rxs}) -->
+
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="BkgId" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>? Selected background (BKG_id)</DESCRIPTION>
+<!-- ? Selected background (\original{BKG_id}) -->
+
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="Xbkg1" ucd="pos.cartesian.x;instr.det" display="0" datatype="double" width="9" precision="2" unit="pix"><!-- ucd="POS_CCD_X" -->
+      <DESCRIPTION>? X_sky coordinate of background center 1 in sky pixel (X_BKG_1)</DESCRIPTION>
+<!-- ? X_sky coordinate of background center 1 in sky pixel (\original{X_BKG_1}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Ybkg1" ucd="pos.cartesian.y;instr.det" display="0" datatype="double" width="9" precision="2" unit="pix"><!-- ucd="POS_CCD_Y" -->
+      <DESCRIPTION>? Y_sky coordinate of background center 1 in sky pixel (Y_BKG_1)</DESCRIPTION>
+<!-- ? Y_sky coordinate of background center 1 in sky pixel (\original{Y_BKG_1}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Xbkg2" ucd="pos.cartesian.x;instr.det" display="0" datatype="double" width="9" precision="2" unit="pix"><!-- ucd="POS_CCD_X" -->
+      <DESCRIPTION>? X_sky coordinate of background center 2 in sky pixel (X_BKG_2)</DESCRIPTION>
+<!-- ? X_sky coordinate of background center 2 in sky pixel (\original{X_BKG_2}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Ybkg2" ucd="pos.cartesian.y;instr.det" display="0" datatype="double" width="9" precision="2" unit="pix"><!-- ucd="POS_CCD_Y" -->
+      <DESCRIPTION>? Y_sky coordinate of background center 2 in sky pixel (Y_BKG_2)</DESCRIPTION>
+<!-- ? Y_sky coordinate of background center 2 in sky pixel (\original{Y_BKG_2}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="BGR1rxs" ucd="arith.rate;instr.background" display="0" datatype="float" width="9" precision="E2" unit="count.s**-1.arcmin**-2"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>? Background count rate per square arcmin from 1RXS (BGR_1rxs)</DESCRIPTION>
+<!-- ? Background count rate per square arcmin from 1RXS (\original{BGR_1rxs}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="BGR2rxs" ucd="arith.rate;instr.background" display="0" datatype="double" width="12" precision="E5" unit="count.s**-1.arcmin**-2"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>Background count rate per square arcmin from 2RXS (BGR_2rxs)</DESCRIPTION>
+<!-- Background count rate per square arcmin from 2RXS (\original{BGR_2rxs}) -->
+
+    </FIELD>
+    <FIELD name="Lflag" ucd="meta.code;src.var" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_VARIAB" -->
+      <DESCRIPTION>? Variability flag  0=good,1=bkg (LFLAG) (8)</DESCRIPTION>
+<!-- ? Variability flag 0=good,1=bkg (\original{LFLAG}) (8) -->
+
+      <VALUES null="255" />
+    </FIELD>
+    <FIELD name="CM6" ucd="phot.count;em.X-ray" display="0" datatype="double" width="9" precision="5" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>? Count rate for light curve with less than 6s exposure (CM6)</DESCRIPTION>
+<!-- ? Count rate for light curve with less than 6s exposure (\original{CM6}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="CD6" ucd="stat.error" display="0" datatype="double" width="9" precision="5" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Standard deviation of light curves with less than 6s exposure (CD6)</DESCRIPTION>
+<!-- ? Standard deviation of light curves with less than 6s exposure (\original{CD6}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ExVAR6" ucd="stat.variance" display="0" datatype="double" width="12" precision="E5"><!-- ucd="STAT_DISP" -->
+      <DESCRIPTION>? Excess variance for light curves with less than 6s exposure (EXCESSVAR6)</DESCRIPTION>
+<!-- ? Excess variance for light curves with less than 6s exposure (\original{EXCESSVAR6}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_ExVAR6" ucd="stat.error" display="0" datatype="double" width="12" precision="E5"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Excess variance uncertainty (UNCERTAINTY6)</DESCRIPTION>
+<!-- ? Excess variance uncertainty (\original{UNCERTAINTY6}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="NbinsA" ucd="meta.number" display="0" datatype="short" width="4"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Number of data points in the LC (NBINS_A)</DESCRIPTION>
+<!-- ? Number of data points in the LC (\original{NBINS_A}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="Nbins6" ucd="meta.number" display="0" datatype="short" width="4"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Number of data points with exposures times less than 6s (NBINS_6)</DESCRIPTION>
+<!-- ? Number of data points with exposures times less than 6s (\original{NBINS_6}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="Nbins1" ucd="meta.number" display="0" datatype="short" width="2"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Number of data points with exposures times less than 1s (NBINS_1)</DESCRIPTION>
+<!-- ? Number of data points with exposures times less than 1s (\original{NBINS_1}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="NbinsN" ucd="meta.number" display="0" datatype="short" width="2"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>? Number of data points with exposure times greater than 6s (NBINS_N)</DESCRIPTION>
+<!-- ? Number of data points with exposure times greater than 6s (\original{NBINS_N}) -->
+
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="Cmin6" ucd="phot.count;em.X-ray" display="0" datatype="double" width="10" precision="6" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>? Minimum count rate for light curves with exposure times of less than 6s (CMIN6)</DESCRIPTION>
+<!-- ? Minimum count rate for light curves with exposure times of less than 6s (\original{CMIN6}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Cmax6" ucd="phot.count;em.X-ray" display="0" datatype="double" width="10" precision="6" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>? Maximum count rate for light curves with exposure times of less than 6s (CMAX6)</DESCRIPTION>
+<!-- ? Maximum count rate for light curves with exposure times of less than 6s (\original{CMAX6}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Cmin6" ucd="stat.error" display="0" datatype="double" width="9" precision="6" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error of CMIN6 (EMIN6)</DESCRIPTION>
+<!-- ? Error of CMIN6 (\original{EMIN6}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Cmax6" ucd="stat.error" display="0" datatype="double" width="9" precision="6" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error of CMAX6 (EMAX6)</DESCRIPTION>
+<!-- ? Error of CMAX6 (\original{EMAX6}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="CTSlc6" ucd="phot.count" display="0" datatype="float" width="9" precision="2" unit="ct"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>[-]? Number of counts for light curves with exposure times of less than 6s (CTS_lc6) Not used</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="sigex6" ucd="stat.variance" display="0" datatype="double" width="10" precision="6"><!-- ucd="STAT_DISP" -->
+      <DESCRIPTION>? Excess variance for light curves with exposure times of less than 6s (SIGMA_excess6)</DESCRIPTION>
+<!-- ? Excess variance for light curves with exposure times of less than 6s (\original{SIGMA_excess6}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="CM+CD" ucd="stat.fit.param" display="0" datatype="double" width="10" precision="6"><!-- ucd="FIT_PARAM_VALUE" -->
+      <DESCRIPTION>? Sum of count rate + standard deviation</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="SPX" ucd="meta.code" display="1" datatype="char" arraysize="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/1] graphical illustrations from spectral fits available in spx subdirectory</DESCRIPTION>
+    </FIELD>
+    <FIELD name="gp" ucd="meta.ref.url" display="1" datatype="char" arraysize="2"><!-- ucd="DATA_LINK" -->
+      <DESCRIPTION>Display the gamma*pow spectrum</DESCRIPTION>
+    </FIELD>
+    <FIELD name="gm" ucd="meta.ref.url" display="1" datatype="char" arraysize="2"><!-- ucd="DATA_LINK" -->
+      <DESCRIPTION>Display the gamma*meka spectrum</DESCRIPTION>
+    </FIELD>
+    <FIELD name="gb" ucd="meta.ref.url" display="1" datatype="char" arraysize="2"><!-- ucd="DATA_LINK" -->
+      <DESCRIPTION>Display the gamma*blackbody spectrum</DESCRIPTION>
+    </FIELD>
+    <FIELD name="LCX" ucd="meta.code" display="1" datatype="char" arraysize="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/1] light curve exists as graphical illustration in clx subdirectory</DESCRIPTION>
+    </FIELD>
+    <FIELD name="i" ucd="meta.ref.url" display="1" datatype="char" arraysize="1"><!-- ucd="DATA_LINK" -->
+      <DESCRIPTION>Display the ibroad image</DESCRIPTION>
+    </FIELD>
+    <FIELD name="l" ucd="meta.ref.url" display="1" datatype="char" arraysize="1"><!-- ucd="DATA_LINK" -->
+      <DESCRIPTION>Display the x-ray light curve</DESCRIPTION>
+    </FIELD>
+    <FIELD name="b" ucd="meta.ref.url" display="1" datatype="char" arraysize="1"><!-- ucd="DATA_LINK" -->
+      <DESCRIPTION>Display the source and background light curve</DESCRIPTION>
+    </FIELD>
+    <FIELD name="ObsClock1" ucd="time.start;obs.exposure" display="0" datatype="double" width="11" precision="1" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>? Start time of exposure when source is within FOV and detector ons (OBS_CLOCK_1)</DESCRIPTION>
+<!-- ? Start time of exposure when source is within FOV and detector ons (\original{OBS_CLOCK_1}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ObsClock2" ucd="time.end;obs.exposure" display="0" datatype="double" width="11" precision="1" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>? End time of exposure when source is within FOV and detector ons (OBS_CLOCK_2)</DESCRIPTION>
+<!-- ? End time of exposure when source is within FOV and detector ons (\original{OBS_CLOCK_2}) -->
+
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Obs.date1" ucd="time.start;obs.exposure" display="0" datatype="char" arraysize="10" xtype="timestamp"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>? Start time of exposure when source is within FOV and detector on (OBS_DATE_1)</DESCRIPTION>
+<!-- ? Start time of exposure when source is within FOV and detector on (\original{OBS_DATE_1}) -->
+
+      <VALUES null=" " />
+    </FIELD>
+    <FIELD name="Obs.time1" ucd="time.epoch" display="0" datatype="char" arraysize="10" xtype="hms"><!-- ucd="TIME_DATE" -->
+      <DESCRIPTION>? Start time (OBS_UT_1)</DESCRIPTION>
+<!-- ? Start time (\original{OBS_UT_1}) -->
+
+      <VALUES null=" " />
+    </FIELD>
+    <FIELD name="Obs.date2" ucd="time.end;obs.exposure" display="0" datatype="char" arraysize="10" xtype="timestamp"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>? End time of exposure when source is within FOV and detector on (OBS_DATE_2)</DESCRIPTION>
+<!-- ? End time of exposure when source is within FOV and detector on (\original{OBS_DATE_2}) -->
+
+      <VALUES null=" " />
+    </FIELD>
+    <FIELD name="Obs.time2" ucd="time.epoch" display="0" datatype="char" arraysize="10" xtype="hms"><!-- ucd="TIME_DATE" -->
+      <DESCRIPTION>? End time (OBS_UT_2)</DESCRIPTION>
+<!-- ? End time (\original{OBS_UT_2}) -->
+
+      <VALUES null=" " />
+    </FIELD>
+  </TABLE>
+<INFO name="matches" value="2">matching records</INFO>
+</RESOURCE>
+</VOTABLE>

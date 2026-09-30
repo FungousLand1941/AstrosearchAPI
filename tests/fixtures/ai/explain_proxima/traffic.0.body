@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>Proxima Centauri</name>
+  <!-- Q8398801 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 0ms [0] -->
+    <INFO>from cache</INFO>
+    <oid>3379714</oid>
+    <otype>PM*</otype>
+    <jpos>14:29:42.94 -62:40:46.1</jpos>
+    <jradeg>217.42894222</jradeg>
+    <jdedeg>-62.67949019</jdedeg>
+    <refPos>2020yCat.1350....0G</refPos>
+    <errRAmas>0.0240</errRAmas><errDEmas>0.0344</errDEmas>
+    <pm>
+      <v>3859.228</v><e>0.060</e><q>A</q><r>2020yCat.1350....0G</r>
+      <pa>281.501</pa>
+      <pmRA>-3781.741</pmRA><epmRA>0.031</epmRA>
+      <pmDE>769.465</pmDE><epmDE>0.051</epmDE>
+    </pm>
+    <Vel><v>-20.578199</v><e>0.004684</e><q>A</q><r>2020AJ....160..120J</r></Vel>
+    <plx><v>768.0665</v><e>0.0499</e><q>A</q><r>2020yCat.1350....0G</r></plx>
+    <spType>M5.5Ve</spType><spNum>0.00028F00.0030.0000000001000000</spNum>
+    <oname>NAME Proxima Centauri</oname>
+    <nrefs>1514</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ====Done (2026-Sep-28,11:03:33z)==== -->

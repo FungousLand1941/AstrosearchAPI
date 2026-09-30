@@ -1,0 +1,40 @@
+{
+  "reference": "HEASARC TAP_SCHEMA.tables",
+  "recorded_releases": {
+    "first": {
+      "release": "Faint Images of the Radio Sky at Twenty cm (FIRST) (HEASARC table first)",
+      "source": "live: https://heasarc.gsfc.nasa.gov/xamin/vo/tap/sync TAP_SCHEMA.tables (first)"
+    },
+    "nvss": {
+      "release": "NRAO VLA Sky Survey Catalog (HEASARC table nvss)",
+      "source": "live: https://heasarc.gsfc.nasa.gov/xamin/vo/tap/sync TAP_SCHEMA.tables (nvss)"
+    },
+    "rosat": {
+      "release": "Second ROSAT All-Sky Survey Point Source Catalog (2RXS) (HEASARC table rass2rxs)",
+      "source": "live: https://heasarc.gsfc.nasa.gov/xamin/vo/tap/sync TAP_SCHEMA.tables (rass2rxs)"
+    },
+    "rosat_bsc": {
+      "release": "ROSAT All-Sky Survey: Bright Sources (HEASARC table rassbsc)",
+      "source": "live: https://heasarc.gsfc.nasa.gov/xamin/vo/tap/sync TAP_SCHEMA.tables (rassbsc)"
+    },
+    "chandra": {
+      "release": "Chandra Source Catalog, v2.1.1 (HEASARC table csc)",
+      "source": "live: https://heasarc.gsfc.nasa.gov/xamin/vo/tap/sync TAP_SCHEMA.tables (csc)"
+    },
+    "xmm": {
+      "release": "XMM-Newton Serendipitous Source Catalog: 5XMM-DR15 Version (HEASARC table xmmssc)",
+      "source": "live: https://heasarc.gsfc.nasa.gov/xamin/vo/tap/sync TAP_SCHEMA.tables (xmmssc)"
+    }
+  },
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://heasarc.gsfc.nasa.gov/xamin/vo/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+table_name%2C+description+FROM+TAP_SCHEMA.tables+WHERE+table_name+IN+%28%27csc%27%2C+%27first%27%2C+%27nvss%27%2C+%27rass2rxs%27%2C+%27rassbsc%27%2C+%27xmmssc%27%2C+%27%22csc%22%27%2C+%27%22first%22%27%2C+%27%22nvss%22%27%2C+%27%22rass2rxs%22%27%2C+%27%22rassbsc%22%27%2C+%27%22xmmssc%22%27%29",
+      "status_code": 200,
+      "headers": {
+        "content-type": "text/xml"
+      }
+    }
+  ]
+}

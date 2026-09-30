@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>GD 71</name>
+  <!-- Q8483453 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 102ms [2] -->
+    <oid>842231</oid>
+    <otype>WD*</otype>
+    <jpos>05:52:27.61 +15:53:13.2</jpos>
+    <jradeg>88.11508275</jradeg>
+    <jdedeg>15.88700802</jdedeg>
+    <refPos>2020yCat.1350....0G</refPos>
+    <errRAmas>0.0445</errRAmas><errDEmas>0.0354</errDEmas>
+    <pm>
+      <v>189.215</v><e>0.065</e><q>A</q><r>2020yCat.1350....0G</r>
+      <pa>156.08</pa>
+      <pmRA>76.728</pmRA><epmRA>0.053</epmRA>
+      <pmDE>-172.960</pmDE><epmDE>0.038</epmDE>
+    </pm>
+    <Vel><v>-6.45</v><e>0.86</e><q>A</q><r>2023ApJS..264...17Z</r></Vel>
+    <plx><v>19.5638</v><e>0.0551</e><q>A</q><r>2020yCat.1350....0G</r></plx>
+    <spType>DA1.5</spType><spNum>0.00410F00.0000.0000000000000000</spNum>
+    <oname>GD 71</oname>
+    <alias>GD 71</alias>
+    <alias>EGGR 210</alias>
+    <alias>2EUVE J0552+15.8</alias>
+    <alias>EUVE J0552+15.8</alias>
+    <alias>FB 45</alias>
+    <alias>FS 12</alias>
+    <alias>GCRV 21689</alias>
+    <alias>GEN# +6.10060071</alias>
+    <alias>KPD 0549+1552</alias>
+    <alias>LAMOST J055227.67+155311.4</alias>
+    <alias>L 1243-36</alias>
+    <alias>LP 418-13</alias>
+    <alias>LSPM J0552+1553</alias>
+    <alias>LTT 11733</alias>
+    <alias>2MASS J05522761+1553137</alias>
+    <alias>NLTT 15730</alias>
+    <alias>2RE J0552+155</alias>
+    <alias>2RE J055226+155251</alias>
+    <alias>RE J0552+15</alias>
+    <alias>RE J055226+155248</alias>
+    <alias>RE J0552+155</alias>
+    <alias>2RXF J055227.7+155320</alias>
+    <alias>RX J0552.4+1553</alias>
+    <alias>1RXS J055228.1+155313</alias>
+    <alias>TIC 247923021</alias>
+    <alias>UBV M 42518</alias>
+    <alias>UCAC2 37320791</alias>
+    <alias>USNO-B1.0 1058-00090877</alias>
+    <alias>WD 0549+158</alias>
+    <alias>[HMT98] AS 12-0</alias>
+    <alias>Gaia DR2 3348071631670500736</alias>
+    <alias>Gaia DR3 3348071631670500736</alias>
+    <nrefs>412</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ****Total of 1 crashes -->
+<!-- Configuration tested: /run/sesame.conf -->

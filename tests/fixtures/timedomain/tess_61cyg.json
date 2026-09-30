@@ -1,0 +1,61 @@
+{
+  "case": "tess_61cyg",
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://mast.stsci.edu/api/v0/invoke",
+      "request_body": "request=%7B%22service%22%3A+%22Mast.Caom.Filtered.Position%22%2C+%22format%22%3A+%22json%22%2C+%22params%22%3A+%7B%22columns%22%3A+%22obsid%2Cobs_id%2Ctarget_name%2Csequence_number%2Ct_exptime%2Cs_ra%2Cs_dec%22%2C+%22filters%22%3A+%5B%7B%22paramName%22%3A+%22obs_collection%22%2C+%22values%22%3A+%5B%22TESS%22%5D%7D%2C+%7B%22paramName%22%3A+%22dataproduct_type%22%2C+%22values%22%3A+%5B%22timeseries%22%5D%7D%2C+%7B%22paramName%22%3A+%22provenance_name%22%2C+%22values%22%3A+%5B%22SPOC%22%5D%7D%5D%2C+%22position%22%3A+%22316.7247500%2C+38.7494200%2C+0.01250000%22%7D%7D",
+      "status_code": 200,
+      "content_type": "application/json; charset=utf-8",
+      "location": ""
+    },
+    {
+      "method": "POST",
+      "url": "https://mast.stsci.edu/api/v0/invoke",
+      "request_body": "request=%7B%22service%22%3A+%22Mast.Caom.Products%22%2C+%22format%22%3A+%22json%22%2C+%22params%22%3A+%7B%22obsid%22%3A+%22233045718%22%7D%7D",
+      "status_code": 200,
+      "content_type": "application/json; charset=utf-8",
+      "location": ""
+    },
+    {
+      "method": "GET",
+      "url": "https://mast.stsci.edu/api/v0.1/Download/file?uri=mast%3ATESS%2Fproduct%2Ftess2024249191853-s0083-0000000165602000-0280-s_lc.fits",
+      "request_body": "",
+      "status_code": 302,
+      "content_type": "",
+      "location": "https://stpubdata.s3.us-east-1.amazonaws.com/tess/public/tid/s0083/0000/0001/6560/2000/tess2024249191853-s0083-0000000165602000-0280-s_lc.fits"
+    },
+    {
+      "method": "GET",
+      "url": "https://stpubdata.s3.us-east-1.amazonaws.com/tess/public/tid/s0083/0000/0001/6560/2000/tess2024249191853-s0083-0000000165602000-0280-s_lc.fits",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/fits",
+      "location": ""
+    },
+    {
+      "method": "POST",
+      "url": "https://mast.stsci.edu/api/v0/invoke",
+      "request_body": "request=%7B%22service%22%3A+%22Mast.Caom.Products%22%2C+%22format%22%3A+%22json%22%2C+%22params%22%3A+%7B%22obsid%22%3A+%22232641025%22%7D%7D",
+      "status_code": 200,
+      "content_type": "application/json; charset=utf-8",
+      "location": ""
+    },
+    {
+      "method": "GET",
+      "url": "https://mast.stsci.edu/api/v0.1/Download/file?uri=mast%3ATESS%2Fproduct%2Ftess2024223182411-s0082-0000000165602000-0278-s_lc.fits",
+      "request_body": "",
+      "status_code": 302,
+      "content_type": "",
+      "location": "https://stpubdata.s3.us-east-1.amazonaws.com/tess/public/tid/s0082/0000/0001/6560/2000/tess2024223182411-s0082-0000000165602000-0278-s_lc.fits"
+    },
+    {
+      "method": "GET",
+      "url": "https://stpubdata.s3.us-east-1.amazonaws.com/tess/public/tid/s0082/0000/0001/6560/2000/tess2024223182411-s0082-0000000165602000-0278-s_lc.fits",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/fits",
+      "location": ""
+    }
+  ]
+}

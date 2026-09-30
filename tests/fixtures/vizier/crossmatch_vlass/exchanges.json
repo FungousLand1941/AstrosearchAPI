@@ -1,0 +1,13 @@
+{
+  "case": "crossmatch_vlass",
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+%22CompName%22%2C+%22RAJ2000%22%2C+%22DEJ2000%22%2C+%22e_RAJ2000%22%2C+%22e_DEJ2000%22%2C+%22CompId%22%2C+%22Ftot%22%2C+%22e_Ftot%22%2C+%22Fpeak%22%2C+%22e_Fpeak%22%2C+%22Islrms%22%2C+%22SCode%22%2C+%22DCMaj%22%2C+%22DCMin%22%2C+%22DCPA%22%2C+%22Subtile%22%2C+%22NVSSdist%22%2C+%22FIRSTdist%22%2C+%22PeakToRing%22%2C+%22DupFlag%22%2C+%22QualFlag%22%2C+%22NNdist%22%2C+%22MainSample%22%2C+%22QLcutout%22%2C+DISTANCE%28POINT%28%27ICRS%27%2C+%22RAJ2000%22%2C+%22DEJ2000%22%29%2C+POINT%28%27ICRS%27%2C+166.113808681%2C+38.208832916%29%29+AS+match_dist+FROM+%22J%2FApJS%2F255%2F30%2Fcomp%22+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAJ2000%22%2C+%22DEJ2000%22%29%2C+CIRCLE%28%27ICRS%27%2C+166.113808681%2C+38.208832916%2C+0.0008333333%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    }
+  ]
+}

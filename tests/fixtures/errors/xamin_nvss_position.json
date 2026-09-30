@@ -1,0 +1,12 @@
+{
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://heasarc.gsfc.nasa.gov/xamin/query?table=nvss&position=187.2779154%2C2.0523883&radius=0.16666667&format=json",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    }
+  ]
+}

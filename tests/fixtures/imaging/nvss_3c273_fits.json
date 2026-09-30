@@ -1,0 +1,14 @@
+{
+  "scenario": "nvss_3c273_fits",
+  "recorded_outcome": "64x64 coverage=1.0",
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://alasky.cds.unistra.fr/hips-image-services/hips2fits?hips=CDS%2FP%2FNVSS&width=64&height=64&fov=0.1&projection=TAN&ra=187.2779154&dec=2.0523883&format=fits",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/fits",
+      "match": []
+    }
+  ]
+}

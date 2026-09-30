@@ -1,0 +1,13 @@
+{
+  "catalog": "2MASS_2MASS.Ks",
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://svo2.cab.inta-csic.es/theory/fps/fps.php?ID=2MASS%2F2MASS.Ks",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "text/xml",
+      "match": []
+    }
+  ]
+}

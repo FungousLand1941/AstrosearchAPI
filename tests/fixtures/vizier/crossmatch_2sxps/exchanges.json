@@ -1,0 +1,13 @@
+{
+  "case": "crossmatch_2sxps",
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+%222SXPS%22%2C+%22RAJ2000%22%2C+%22DEJ2000%22%2C+%22Err90%22%2C+%22IAUName%22%2C+%22Det%22%2C+%22CR0%22%2C+%22E_CR0%22%2C+%22e_CR0%22%2C+%22HR1%22%2C+%22HR2%22%2C+%22PcstS0%22%2C+%22FPO0%22%2C+%22FPU0%22%2C+DISTANCE%28POINT%28%27ICRS%27%2C+%22RAJ2000%22%2C+%22DEJ2000%22%29%2C+POINT%28%27ICRS%27%2C+187.277915940%2C+2.052388231%29%29+AS+match_dist+FROM+%22IX%2F58%2F2sxps%22+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAJ2000%22%2C+%22DEJ2000%22%29%2C+CIRCLE%28%27ICRS%27%2C+187.277915940%2C+2.052388231%2C+0.0013888889%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    }
+  ]
+}

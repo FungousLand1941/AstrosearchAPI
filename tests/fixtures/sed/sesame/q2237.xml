@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>Q2237+030</name>
+  <!-- Q8483491 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 0ms [0] -->
+    <INFO>from cache</INFO>
+    <oid>1400760</oid>
+    <otype>QSO</otype>
+    <jpos>22:40:30.23 +03:21:30.6</jpos>
+    <jradeg>340.125975</jradeg>
+    <jdedeg>3.35850833</jdedeg>
+    <refPos>2006AJ....131.1163S</refPos>
+    <z><v>1.695</v><q>C</q><r>2017AJ....154..114O</r></z>
+    <oname>QSO J2240+0321</oname>
+    <alias>QSO J2240+0321</alias>
+    <alias>BWSH C</alias>
+    <alias>KODIAQ J224030+032130</alias>
+    <alias>LAMOST J224030.22+032130.3</alias>
+    <alias>NAME Einstein Cross</alias>
+    <alias>NAME Huchra's Lens</alias>
+    <alias>QSO B2237+0305</alias>
+    <alias>QSO B2237+030</alias>
+    <alias>[HB93] 2237+030</alias>
+    <alias>[HVG99b] 22379+0305</alias>
+    <alias>[VV2000] J224030.3+032130</alias>
+    <alias>[VV2003] J224030.3+032130</alias>
+    <alias>[VV2006] J224030.3+032130</alias>
+    <alias>[VV2010] J224030.3+032130</alias>
+    <alias>[VV96] J224030.3+032130</alias>
+    <alias>[VV98] J224030.3+032130</alias>
+    <alias>[WBS99] 1</alias>
+    <alias>[Y88] G</alias>
+    <nrefs>712</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ====Done (2026-Sep-29,05:02:01z)==== -->

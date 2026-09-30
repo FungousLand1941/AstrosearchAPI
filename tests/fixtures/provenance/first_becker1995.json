@@ -1,0 +1,63 @@
+{
+  "reference": "1995ApJ...450..559B",
+  "recorded_check": {
+    "key": "1995ApJ...450..559B",
+    "bibcode": "1995ApJ...450..559B",
+    "exists": true,
+    "link_type": "EPRINT_HTML",
+    "resolved_url": "http://$SIMBAD$/simbo.pl?bibcode=1995ApJ...450..559B",
+    "doi_from_ads": null,
+    "doi_matches": null,
+    "metadata": {
+      "title": "The FIRST Survey: Faint Images of the Radio Sky at Twenty Centimeters",
+      "year": 1995,
+      "volume": "450",
+      "page": "559",
+      "container": "The Astrophysical Journal",
+      "doi": "10.1086/176166"
+    },
+    "metadata_matches": true,
+    "problems": [],
+    "ok": true
+  },
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://ui.adsabs.harvard.edu/link_gateway/1995ApJ...450..559B/PUB_HTML",
+      "accept": "*/*",
+      "status_code": 404,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      }
+    },
+    {
+      "method": "GET",
+      "url": "https://ui.adsabs.harvard.edu/link_gateway/1995ApJ...450..559B/EPRINT_HTML",
+      "accept": "*/*",
+      "status_code": 302,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "location": "http://$SIMBAD$/simbo.pl?bibcode=1995ApJ...450..559B"
+      }
+    },
+    {
+      "method": "GET",
+      "url": "https://doi.org/10.1086/176166",
+      "accept": "application/vnd.citationstyles.csl+json",
+      "status_code": 302,
+      "headers": {
+        "content-type": "text/html;charset=utf-8",
+        "location": "https://api.crossref.org/v1/works/10.1086%2F176166/transform"
+      }
+    },
+    {
+      "method": "GET",
+      "url": "https://api.crossref.org/v1/works/10.1086%2F176166/transform",
+      "accept": "application/vnd.citationstyles.csl+json",
+      "status_code": 200,
+      "headers": {
+        "content-type": "application/vnd.citationstyles.csl+json"
+      }
+    }
+  ]
+}

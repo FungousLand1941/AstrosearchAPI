@@ -1,0 +1,13 @@
+{
+  "catalog": "simbad_extra",
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://simbad.cds.unistra.fr/simbad/sim-tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&FORMAT=json&QUERY=SELECT+b.main_id%2C+b.rvz_type%2C+b.rvz_redshift%2C+b.rvz_err%2C+b.rvz_nature%2C+b.rvz_qual%2C+b.rvz_bibcode%2C+f.filter%2C+f.flux%2C+f.flux_err%2C+f.qual+AS+flux_qual%2C+f.bibcode+AS+flux_bibcode+FROM+basic+AS+b+LEFT+OUTER+JOIN+flux+AS+f+ON+f.oidref+%3D+b.oid+AND+f.filter+IN+%28%27V%27%2C+%27G%27%2C+%27K%27%29+WHERE+b.main_id+%3D+%27%2A+51+Peg%27",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    }
+  ]
+}

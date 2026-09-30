@@ -1,0 +1,28 @@
+{
+  "reference": "2013wise.rept....1C",
+  "recorded_check": {
+    "key": "2013wise.rept....1C",
+    "bibcode": "2013wise.rept....1C",
+    "exists": true,
+    "link_type": "PUB_HTML",
+    "resolved_url": "http://wise2.ipac.caltech.edu/docs/release/allwise/expsup/index.html",
+    "doi_from_ads": null,
+    "doi_matches": null,
+    "metadata": null,
+    "metadata_matches": null,
+    "problems": [],
+    "ok": true
+  },
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://ui.adsabs.harvard.edu/link_gateway/2013wise.rept....1C/PUB_HTML",
+      "accept": "*/*",
+      "status_code": 302,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "location": "http://wise2.ipac.caltech.edu/docs/release/allwise/expsup/index.html"
+      }
+    }
+  ]
+}
