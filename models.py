@@ -313,6 +313,8 @@ class Settings:
             return overrides.get(name, os.getenv(name, default))
 
         self.default_radius_arcsec = float(val("DEFAULT_RADIUS_ARCSEC", 3.0))
+        # Largest cone a single search may send to every archive (30', as ai.MAX_CONE_RADIUS_ARCSEC).
+        self.max_radius_arcsec = float(val("API_MAX_RADIUS_ARCSEC", 1800.0))
         self.request_timeout_seconds = float(val("REQUEST_TIMEOUT_SECONDS", 30.0))
         # Upper bound on every catalog's own timeout_seconds (registry values are 60-90 s).
         # CATALOG_TIMEOUT_CAP_SECONDS wins; otherwise an explicitly set
@@ -328,6 +330,10 @@ class Settings:
 
         if not math.isfinite(self.default_radius_arcsec) or self.default_radius_arcsec <= 0:
             raise ValueError("DEFAULT_RADIUS_ARCSEC must be finite and greater than zero.")
+        if not math.isfinite(self.max_radius_arcsec) or self.max_radius_arcsec <= 0:
+            raise ValueError("API_MAX_RADIUS_ARCSEC must be finite and greater than zero.")
+        if self.default_radius_arcsec > self.max_radius_arcsec:
+            raise ValueError("DEFAULT_RADIUS_ARCSEC must not exceed API_MAX_RADIUS_ARCSEC.")
         if not math.isfinite(self.request_timeout_seconds) or self.request_timeout_seconds <= 0:
             raise ValueError("REQUEST_TIMEOUT_SECONDS must be finite and greater than zero.")
         cap_value = self.catalog_timeout_cap_seconds
