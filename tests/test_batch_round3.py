@@ -374,8 +374,10 @@ def test_booleans_are_not_numbers(item):
 
 
 @pytest.mark.parametrize("ra, dec, message", [
-    ("0e400", "1", "no usable precision"), ("1e300", "0", "too coarse"), ("1", "0e400", "no usable precision"),
-    ("1e5", "0", "too coarse"),
+    ("0e400", "1", "no usable precision"), ("1", "0e400", "no usable precision"),
+    # '1e300' and '1e5' were refused as too coarse; they are refused sooner now, as an RA outside
+    # [0, 360) that is never wrapped (every in-range RA is fine enough, so 'too coarse' is a backstop).
+    ("1e300", "0", r"RA must be within \[0, 360\).*not wrapped"), ("1e5", "0", r"RA must be within \[0, 360\).*not wrapped"),
 ])
 def test_unusable_coordinate_precision_is_a_batch_error(ra, dec, message):
     with pytest.raises(BatchError, match=message):
