@@ -46,8 +46,8 @@ modules with generic names (`api`, `main`, `cli`, `models`, `datasets`, `batch`,
 next to another distribution with the same module name (for example Hugging Face `datasets`) one
 of the two is shadowed and the CLI and API fail to start (`ImportError: cannot import name
 'MetadataStore' from 'datasets'`). A script named `main.py` or `api.py` in the working directory
-shadows them too. Moving the modules into an `astrosearch` package is planned (DOCUMENTATION.md,
-section 10).
+shadows them too; `astrosearch verify` names every shadowed module and the file it resolves to.
+Moving the modules into an `astrosearch` package is planned (DOCUMENTATION.md, section 10).
 
 The dependency floors are the lowest versions that install on Python 3.12 and pass the suite:
 astropy 8 (the first release whose fast Lomb-Scargle gives the same powers on sub-grids of a
@@ -86,6 +86,11 @@ astrosearch alerts poll --broker alerce --limit 20
 ```
 
 `astrosearch --help` lists every command; `astrosearch <command> --help` documents each one.
+Searches are limited to a cone of `API_MAX_RADIUS_ARCSEC` (default 1800" = 30'); `dataset
+--catalogs` must belong to `--profile`, and its `--output` may be any unused path (over REST,
+`output_path` must stay inside `DATASET_STORAGE_PATH`). VizieR-hosted catalogs (`vlass`, `lotss`,
+tables added with `vizier add`) are batch-matched through CDS XMatch by default, and a registered
+table is cited with its own paper.
 
 Search over HTTP:
 
@@ -95,6 +100,9 @@ curl -s -X POST http://127.0.0.1:8000/api/v1/search \
      -d '{"name": "3C 273", "radius_arcsec": 10, "catalogs": ["gaia_dr3", "simbad", "nvss"]}'
 curl -N "http://127.0.0.1:8000/api/v1/search/stream?name=3C%20273&radius_arcsec=10"
 ```
+
+When the name resolver (CDS Sesame) is down, both answer 503 with `Retry-After: 30` (502 for an
+unusable resolver answer, 404 for an unknown name).
 
 From Python:
 

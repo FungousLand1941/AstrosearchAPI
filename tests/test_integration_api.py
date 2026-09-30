@@ -252,6 +252,8 @@ NON_FINITE_BODIES = [
     ("/api/v1/search", {"ra": float("nan"), "dec": 1.0}),
     ("/api/v1/search", {"ra": 1.0, "dec": 1.0, "radius_arcsec": float("inf")}),
     ("/api/v1/search/batch", [{"ra": 1.0, "dec": float("-inf")}]),
+    ("/api/v1/batch/crossmatch", {"targets": [{"id": "a", "ra": 1, "dec": 1}], "catalogs": ["simbad"],
+                                  "radius_arcsec": float("nan")}),
     ("/api/v1/queries", {"name": "q", "query": {"ra": float("nan"), "dec": 1.0}}),
     ("/api/v1/datasets/create", {"name": "d", "profile": "full", "targets": [{"ra": float("nan"), "dec": 0.0}]}),
     ("/api/v1/sed", {"ra": float("nan"), "dec": 1.0}),

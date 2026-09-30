@@ -4163,7 +4163,11 @@ async def citation_references(citation: str | None, *, client: httpx.AsyncClient
         for bibcode in bibcodes:
             try:
                 ref = await asyncio.wait_for(provenance.lookup_reference(active, bibcode), budget)
-            except (httpx.HTTPError, TimeoutError, provenance.UnparsableAnswerError) as exc:
+            except Exception as exc:  # noqa: BLE001 - optional: any failure (network, a transport or mock
+                # raising something other than httpx.HTTPError, an unparsable answer) leaves it unverified
+                if not isinstance(exc, (httpx.HTTPError, TimeoutError, provenance.UnparsableAnswerError)):
+                    logger.warning("reference lookup for %s failed unexpectedly: %s: %s", bibcode,
+                                   exc.__class__.__name__, exc)
                 notes.append(f"citation: {bibcode} not resolved through ADS/doi.org ({exc.__class__.__name__}); "
                              "cited from the citation text, unverified.")
                 continue

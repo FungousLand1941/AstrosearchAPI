@@ -343,6 +343,24 @@ class Settings:
             raise ValueError("MAX_RESPONSE_BYTES must be greater than zero.")
 
 
+def check_search_radius(radius_arcsec: float | None, *, settings: Settings | None = None,
+                        field: str = "radius_arcsec") -> None:
+    """ValueError (an HTTP 422 / CLI input error) when a search cone exceeds
+    ``Settings.max_radius_arcsec`` (API_MAX_RADIUS_ARCSEC, default 1800" = 30').
+
+    Every search sends its cone to every archive, and a degree-sized cone is a full-table scan
+    (seen live: a 28-degree cone ran Gaia and NED into their TAP time budgets). The one check
+    behind main.check_search_radius (/api/v1/search, /search/batch, /search/stream, saved
+    queries, the search/stream CLI) and provenance.check_radius_limit (manifests, replays); the
+    request models add the static ceiling MAX_SEARCH_RADIUS_ARCSEC (3600") as a schema bound."""
+    if radius_arcsec is None:
+        return
+    limit = (settings or Settings()).max_radius_arcsec
+    if float(radius_arcsec) > limit:
+        raise ValueError(f"{field} {float(radius_arcsec):g} exceeds the largest search radius, {limit:g} arcsec "
+                         "(API_MAX_RADIUS_ARCSEC)")
+
+
 # ---------------------------------------------------------------------------
 # Coordinate Validation
 # ---------------------------------------------------------------------------

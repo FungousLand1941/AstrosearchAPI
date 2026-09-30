@@ -486,6 +486,7 @@ const cases = {
   badInput: new m.ApiError(422, 'radius_arcsec: Input should be less than or equal to 60', 'sed'),
   upstream: new m.ApiError(502, 'hips2fits unavailable', 'sed'),
   unconfigured: new m.ApiError(503, 'ANTHROPIC_API_KEY is not set', 'aiExplain'),
+  resolverDown: new m.ApiError(503, 'Name resolver unavailable: timed out', 'search', 30),
   rateLimited: new m.ApiError(429, 'Rate limit exceeded', 'sed', 42),
   plain: new Error('boom'),
   aborted: new DOMException('stop', 'AbortError'),
@@ -510,6 +511,12 @@ for (const [name, err] of Object.entries(cases)) {
         assert out["panels"][name]["state"] == "error" and "The SED service failed:" in out["panels"][name]["text"], name
     assert "Could not resolve 'Nonexistent'" in out["panels"]["unresolved"]["text"]
     assert kinds["unconfigured"] == "unconfigured" and out["panels"]["unconfigured"]["state"] == "unavailable"
+    assert "The SED service is not configured: ANTHROPIC_API_KEY is not set" in out["panels"]["unconfigured"]["text"]
+    # 503 + Retry-After: the resolver/archive is down for now (not a configuration problem).
+    assert kinds["resolverDown"] == "temporarily-unavailable" and out["panels"]["resolverDown"]["state"] == "rate-limited"
+    text = out["panels"]["resolverDown"]["text"]
+    assert "The SED service is temporarily unavailable, retry in 30 s" in text and "Name resolver unavailable" in text
+    assert "not configured" not in text
     assert kinds["rateLimited"] == "rate-limited" and out["panels"]["rateLimited"]["state"] == "rate-limited"
     assert "rate limited by the server; retry in 42 s" in out["panels"]["rateLimited"]["text"]
     assert kinds["aborted"] == "aborted" and out["panels"]["aborted"]["state"] == "loading"  # left untouched

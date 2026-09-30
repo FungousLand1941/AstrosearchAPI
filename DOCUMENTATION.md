@@ -291,7 +291,11 @@ with one request per catalog per chunk:
 - **upload**: IVOA TAP 1.1 table upload joined server-side with ADQL `CONTAINS` per target cone
   (SIMBAD, VizieR, HEASARC, IRSA);
 - **xmatch**: the CDS XMatch service against any VizieR table (`gaia_dr3` through
-  `vizier:I/355/gaiadr3`, and any `vizier:<table>` catalog), at most 180" per pair;
+  `vizier:I/355/gaiadr3`, and any `vizier:<table>` catalog), at most 180" per pair. It is the
+  default strategy of every VizieR-hosted catalog: `vizier:<table>`, the registry catalogs
+  served by TAPVizieR (`vlass`, `lotss`) and tables registered with `vizier add` /
+  `POST /api/v1/vizier/register` (CDS XMatch answers in seconds, while TAPVizieR uploads can
+  stall for minutes; `upload` stays available as an explicit `strategies` choice);
 - **cone**: paced per-target cone searches for archives without uploads (NED, Exoplanet
   Archive, Pan-STARRS, SDSS), at most `BATCH_MAX_CONE_TARGETS` (5000) targets.
 
@@ -325,6 +329,12 @@ for the VizieR TAP service with the positional-error convention read from the co
 descriptions (e.g. 2SXPS `Err90`: 90% Rayleigh radius, sigma = r90 / 2.146). Choices the metadata
 does not settle are recorded as assumptions and can be overridden (`overrides`: `pos_error`,
 `epoch`, `systematic_arcsec`, ...). Entries are written under an inter-process lock.
+A registered table is batch-crossmatched with the CDS XMatch strategy by default (section 4.2).
+Registration also resolves the bibcodes of the table's citation (its own paper) through the ADS
+link gateway and doi.org and stores them in the entry, so `astrosearch cite` and
+`/api/v1/citations` cite the table's paper next to VizieR; when the paper cannot be resolved
+(network failure, no DOI, time budget) the table is still registered and the paper is cited
+from the citation text, marked unverified (an assumption note says so).
 `VIZIER_ASU_URL` can point at a mirror (e.g. `http://vizier.nao.ac.jp/viz-bin/votable`).
 
 ### 4.5 SED, classification and redshift (`sed.py`)
@@ -415,6 +425,17 @@ parallax inversion) are computed in Python. Credentials: `ANTHROPIC_API_KEY` (or
 `POST /api/v1/datasets/create` (or `astrosearch dataset`) crossmatches a list of targets and
 streams the filtered rows to JSON, CSV, Parquet (zstd, 1000-row batches) or FITS.
 
+- **Catalogs and profile.** `catalogs` (`--catalogs`) are intersected with the required
+  `profile`, so every named catalog must belong to that profile (`astrosearch catalogs --name X`
+  shows its `profiles`); a catalog outside it is refused instead of being dropped silently
+  (HTTP 422, CLI exit status 2).
+- **Radius.** `radius_arcsec` (`--radius`) must be in (0, `API_MAX_RADIUS_ARCSEC`] (default
+  1800"): every target's cone goes to every archive of the profile (HTTP 422, CLI exit 2).
+- **Export path.** Over REST, `output_path` must lie inside `DATASET_STORAGE_PATH`, be unused
+  and carry the extension of `export_format` (else 422); without it the export is
+  `DATASET_STORAGE_PATH/<id>.<format>`. The local CLI's `--output` may be any unused path with
+  the extension of `--format` (checked before any query runs).
+
 - **Batch mode.** Lists of at least `DATASET_BATCH_MIN_TARGETS` (default 50; 0 disables) targets
   are fetched with the batch engine (one upload/XMatch request per catalog and chunk) and
   associated per target by `CrossmatchService.finalize`; the result is identical to per-target
@@ -455,9 +476,9 @@ exceeded, 502 upstream failure, 503 unavailable dependency.
 | GET | `/api/v1/health` | Liveness (no authentication, no quota). |
 | GET | `/api/v1/catalogs` | Every catalog definition (embedded + registered). |
 | GET | `/api/v1/catalogs/{catalog_name}` | One definition; 404 if unknown. |
-| POST | `/api/v1/search` | Crossmatch by `ra`/`dec` or `name` (`SearchRequest`: radius_arcsec, profile, catalogs, epoch, pm_ra_masyr, pm_dec_masyr, parallax_mas, min_confidence, filters). 404 unresolvable name, 422 invalid input, 502 search failure. |
-| POST | `/api/v1/search/batch` | Up to `API_MAX_BATCH_SIZE` searches concurrently (`max_concurrent`); errors per item. |
-| POST | `/api/v1/datasets/create` | Submit a dataset job: 202 with `Location`; 413 over `API_MAX_TARGETS`; 422 invalid. |
+| POST | `/api/v1/search` | Crossmatch by `ra`/`dec` or `name` (`SearchRequest`: radius_arcsec, profile, catalogs, epoch, pm_ra_masyr, pm_dec_masyr, parallax_mas, min_confidence, filters). 404 unresolvable name, 422 invalid input (including a radius above `API_MAX_RADIUS_ARCSEC`), 502 search failure or an unusable resolver answer, 503 with `Retry-After: 30` when the name resolver (CDS Sesame) is unreachable or answers 5xx/429 (the name may be valid: retry later). |
+| POST | `/api/v1/search/batch` | Up to `API_MAX_BATCH_SIZE` searches concurrently (`max_concurrent`); errors per item (an item above `API_MAX_RADIUS_ARCSEC` fails with `status_code` 422; a radius above the static 3600" schema ceiling makes the whole request a 422). |
+| POST | `/api/v1/datasets/create` | Submit a dataset job: 202 with `Location`; 413 over `API_MAX_TARGETS`; 422 invalid (a catalog outside `profile`, a radius above `API_MAX_RADIUS_ARCSEC`, an `output_path` outside `DATASET_STORAGE_PATH`, already used or with the wrong extension). |
 | GET | `/api/v1/datasets` | Datasets with their status. |
 | GET | `/api/v1/datasets/{dataset_name}` | Metadata and status (`queued`, `running`, `completed`, `failed`). |
 | GET | `/api/v1/datasets/{dataset_name}/export` | The export file; 409 while not completed. |
@@ -472,7 +493,7 @@ exceeded, 502 upstream failure, 503 unavailable dependency.
 
 | Method | Path | Description |
 |---|---|---|
-| GET | `/api/v1/search/stream` | SSE crossmatch. Query: ra, dec (as typed) or name, radius_arcsec (<= 3600), profile, catalogs (comma-separated), epoch, pm_ra_masyr, pm_dec_masyr, parallax_mas, target_uncertainty_arcsec, target_pm_error_masyr, completeness, target_class. |
+| GET | `/api/v1/search/stream` | SSE crossmatch. Query: ra, dec (as typed) or name, radius_arcsec (<= `API_MAX_RADIUS_ARCSEC`, else 422), profile, catalogs (comma-separated), epoch, pm_ra_masyr, pm_dec_masyr, parallax_mas, target_uncertainty_arcsec, target_pm_error_masyr, completeness, target_class. A name is resolved before the stream opens: an unreachable resolver is a 503 with `Retry-After: 30`, an unusable answer a 502, an unknown name a 404 (as `POST /api/v1/search`). |
 
 ### Batch
 
@@ -576,10 +597,10 @@ VO errors are DALI error VOTables; request bodies over `vo_server.MAX_REQUEST_BY
 |---|---|---|
 | `serve [--host --port --reload]` | Run the API and UI with uvicorn. | |
 | `search (--name N | --ra --dec) [--radius --profile --catalogs --epoch --pm-ra --pm-dec --parallax --format json|summary]` | One crossmatch; `--format json` prints only JSON. | 1 error |
-| `dataset --name --profile --targets FILE [--radius --catalogs --min-confidence --count-threshold --format --output]` | Build a dataset from a JSON target list. | 1 missing file, 2 invalid input |
+| `dataset --name --profile --targets FILE [--radius --catalogs --min-confidence --count-threshold --format --output]` | Build a dataset from a JSON target list. `--catalogs` must belong to `--profile`; `--output` may be any unused path (the REST `output_path` must stay inside `DATASET_STORAGE_PATH`). | 1 missing file, 2 invalid input (a catalog outside the profile, a radius above `API_MAX_RADIUS_ARCSEC`, a used output path) |
 | `catalogs [--name]` | List or show catalog definitions (embedded + registered). | 1 unknown |
 | `benchmark [--rows --format]` | Export throughput benchmark. | |
-| `verify` | Offline self-test (13 checks, including every router and CLI). | 1 failed check |
+| `verify` | Offline self-test (14 checks, including every router and CLI, and that no AstroSearch module is shadowed by another package or script: each shadowed one is named with the file it resolves to). | 1 failed check |
 | `stream (--ra --dec | --name) [--radius --catalogs --epoch --pm-ra --pm-dec --parallax --target-sigma --format jsonl|sse --sources --record]` | Stream a crossmatch. | 1 error event, 2 invalid input |
 | `xmatch-calibrate [--fields --seed --radius --threshold --completeness ...]` | Monte-Carlo calibration of the association. | |
 | `batch --targets FILE [--catalogs --radius --out --format --strategy --nearest --no-data]` | Batch crossmatch. | 1 upstream, 2 invalid input |
@@ -642,7 +663,7 @@ missing here.
 | Variable | Default | Meaning |
 |---|---|---|
 | `DEFAULT_RADIUS_ARCSEC` | 3.0 | Default search radius. |
-| `API_MAX_RADIUS_ARCSEC` | 1800 (30') | Largest cone radius a single search may request (API, CLI, AI queries); `DEFAULT_RADIUS_ARCSEC` must not exceed it. |
+| `API_MAX_RADIUS_ARCSEC` | 1800 (30') | Largest cone radius a search may send to every archive: `POST /api/v1/search`, every `/api/v1/search/batch` item, `/api/v1/search/stream`, saved queries (`/api/v1/queries`), `/api/v1/datasets/create`, provenance manifests and replays, AI queries, and the `search`, `stream`, `dataset` and `manifest` CLI commands (one shared check, `models.check_search_radius`; 422 / CLI exit 2). The request models keep a static hard ceiling of 3600" (`MAX_SEARCH_RADIUS_ARCSEC`), so a larger radius is a schema error, e.g. for the whole `/api/v1/search/batch` request. The batch crossmatch engine (`/api/v1/batch/crossmatch`) has its own limit of 180" per pair. `DEFAULT_RADIUS_ARCSEC` must not exceed it. |
 | `REQUEST_TIMEOUT_SECONDS` | 30 | HTTP timeout of archive requests. Setting it explicitly also caps every catalog's own timeout (Gaia, 2MASS and AllWISE use 90 s, NED/SDSS/VLASS 60 s): `.env.example` leaves it commented out for that reason. |
 | `CATALOG_TIMEOUT_CAP_SECONDS` | none | Upper bound of every catalog's own timeout. |
 | `MAX_RESPONSE_BYTES` | 10000000 | Largest archive response read. |
@@ -763,9 +784,11 @@ missing here.
   `api`, `cli`, `main`). They clash with other distributions of the same module name (installed
   next to Hugging Face `datasets`, `astrosearch verify` fails with `ImportError: cannot import name
   'MetadataStore' from 'datasets'`) and with user scripts of those names in the working directory.
-  Install AstroSearch in a dedicated virtual environment. Follow-up: move the modules into an
-  `astrosearch` package (relative imports, console script `astrosearch.main:main`, `web/` as
-  package data) and add a `verify` check that reports a shadowed module by name.
+  Install AstroSearch in a dedicated virtual environment. `astrosearch verify` reports every
+  shadowed module by name with the file it resolves to (and the CLI names them instead of a
+  traceback when the shadowing breaks its own imports). Follow-up: move the modules into an
+  `astrosearch` package (relative imports, console script `astrosearch.cli:main`, `web/` as
+  package data).
 
 ---
 

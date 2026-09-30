@@ -17,9 +17,11 @@ from __future__ import annotations
 import argparse
 import asyncio
 import importlib
+import importlib.util
 import inspect
 import sys
 from collections.abc import Callable, Sequence
+from pathlib import Path
 from typing import Any
 
 DESCRIPTION = "AstroSearch: astronomical catalog cross-matching, time-domain, imaging and dataset engine."
@@ -50,6 +52,53 @@ FEATURE_COMMANDS: dict[str, dict[str, str]] = {
 
 COMMAND_MODULES: dict[str, str] = {command: module for module, commands in FEATURE_COMMANDS.items()
                                    for command in commands}
+
+
+# The top-level modules this distribution ships ([tool.setuptools] py-modules; tests/test_packaging.py
+# keeps the two lists equal). Their names are generic, so another distribution's module or a script
+# in the working directory can shadow one of them (`verify` reports it: shadowed_modules).
+DISTRIBUTION_MODULES = (
+    "models", "providers", "crossmatch", "astrometry", "streaming", "batch", "skycache", "vizier", "sed",
+    "timedomain", "imaging", "ai", "provenance", "vo_server", "alerts", "datasets", "api", "cli", "main",
+)
+
+
+def shadowed_modules(names: Sequence[str] = DISTRIBUTION_MODULES, *,
+                     home: str | Path | None = None) -> dict[str, str]:
+    """{module name: where it resolves} for every AstroSearch top-level module whose import resolves
+    to a file outside this distribution (the directory holding this file, or ``home``): another
+    package of that name (Hugging Face ``datasets``) or a script of that name earlier on sys.path.
+    A module already imported is checked where it was loaded from; the others where an import
+    would find them (without importing them). Empty when installed as a package."""
+    if __package__:
+        return {}  # relative imports: the modules cannot be shadowed
+    root = Path(home if home is not None else Path(__file__).resolve().parent).resolve()
+    found: dict[str, str] = {}
+    for name in names:
+        module = sys.modules.get(name)
+        origin = getattr(module, "__file__", None) if module is not None else None
+        if module is None:
+            try:
+                spec = importlib.util.find_spec(name)
+            except (ImportError, ValueError):
+                spec = None
+            origin = spec.origin if spec is not None and spec.has_location else None
+        if origin is None:
+            found[name] = "not importable" if module is None else "a module without a file"
+            continue
+        if Path(origin).resolve().parent != root:
+            found[name] = str(origin)
+    return found
+
+
+def shadowing_report(shadowed: dict[str, str]) -> str:
+    """The error lines ``verify`` prints for :func:`shadowed_modules`."""
+    home = Path(__file__).resolve().parent
+    lines = [f"AstroSearch module '{name}' resolves to {origin}, not to {home / (name + '.py')}"
+             for name, origin in shadowed.items()]
+    lines.append("Another package or a script of the same name shadows it: install AstroSearch in a dedicated "
+                 "virtual environment and rename or move scripts with these names out of the working directory.")
+    return "\n".join(lines)
 
 
 def _module(name: str) -> Any:
@@ -175,7 +224,16 @@ def main(argv: list[str] | None = None) -> None:
         parser.print_help()
         return
     if args.command in CORE_COMMANDS:
-        core = _module("main")
+        try:
+            core = _module("main")
+        except ImportError:
+            shadowed = shadowed_modules()
+            if not shadowed:
+                raise
+            # A shadowed module (Hugging Face `datasets`, a script named batch.py ...) breaks the
+            # imports of main.py: name it instead of a traceback.
+            print(f"Error: {shadowing_report(shadowed)}", file=sys.stderr)
+            sys.exit(1)
         if args.command == "verify":
             sys.exit(0 if core.run_verification() else 1)
         handler = {"search": core._cmd_search, "dataset": core._cmd_dataset, "catalogs": core._cmd_catalogs,

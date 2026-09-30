@@ -61,6 +61,7 @@ from models import (
     Settings,
     Target,
     UnifiedRecord,
+    check_search_radius,
     every_catalog_failed,
     normalize_source_record,
     parse_ipac_records,
@@ -245,19 +246,6 @@ def search_query(fields: Mapping[str, Any], spec: Mapping[str, Any] | None = Non
         "max_distance_pc": fields.get("max_distance_pc"),
         "metadata": metadata or None,
     })
-
-
-def check_search_radius(radius_arcsec: float | None, *, settings: Settings | None = None,
-                        field: str = "radius_arcsec") -> None:
-    """ValueError (an HTTP 422 / CLI input error) when a cone radius exceeds
-    ``Settings.max_radius_arcsec`` (API_MAX_RADIUS_ARCSEC, default 1800" = 30'): every
-    search sends its cone to every archive, and a degree-sized cone is a full-table scan."""
-    if radius_arcsec is None:
-        return
-    limit = (settings or Settings()).max_radius_arcsec
-    if float(radius_arcsec) > limit:
-        raise ValueError(f"{field} {float(radius_arcsec):g} exceeds the largest search radius, {limit:g} arcsec "
-                         "(API_MAX_RADIUS_ARCSEC)")
 
 
 async def api_search(service: Any, fields: Mapping[str, Any], resolver: Any = None) -> UnifiedRecord:
@@ -663,6 +651,13 @@ def run_verification() -> bool:
         assert not missing, f"subcommands not registered: {sorted(missing)}"
 
     check("Feature CLI subcommands registered", test_cli_commands)
+
+    # 14. No AstroSearch module is shadowed by another package or a script of the same name
+    def test_not_shadowed() -> None:
+        shadowed = cli.shadowed_modules()
+        assert not shadowed, "; ".join(f"'{name}' resolves to {origin}" for name, origin in shadowed.items())
+
+    check("No AstroSearch module shadowed by another", test_not_shadowed)
 
     print("=" * 70)
     print(f"Verification Results: {passed}/{total} tests passed ({passed/total*100:.1f}%)")

@@ -71,11 +71,16 @@ def run(argv: list[str]) -> int:
     return 0
 
 
-def upstream(*exchanges: Any, sesame: bool = True, strict: bool = False) -> respx.MockRouter:
+def upstream(*exchanges: Any, sesame: bool = True, strict: bool = False, ads: bool = False) -> respx.MockRouter:
+    """A respx router replaying ``exchanges`` (Sesame answers 3C 273 unless ``sesame=False``).
+    ``ads``: the ADS link gateway answers 404 (no DOI link for a bibcode), as a registered
+    table's paper lookup (vizier.citation_references) then finds -- it is cited unverified."""
     router = respx.mock(assert_all_called=False, assert_all_mocked=True)
     if sesame:
         router.get(url__startswith="https://cds.unistra.fr/cgi-bin/nph-sesame").respond(
             200, text=SESAME_3C273, headers={"content-type": "text/xml"})
+    if ads:
+        router.get(url__startswith="https://ui.adsabs.harvard.edu/link_gateway/").respond(404, text="Not Found")
     handler = replay_side_effect(list(exchanges), strict=strict) if exchanges else None
     router.route().mock(side_effect=handler or AssertionError("no upstream request expected"))
     return router
@@ -122,7 +127,46 @@ def test_verify_passes(isolated: Path, monkeypatch: pytest.MonkeyPatch, capsys: 
     monkeypatch.chdir(isolated)
     assert run(["verify"]) == 0
     out = capsys.readouterr().out
-    assert "Verification Results: 13/13 tests passed" in out
+    assert "Verification Results: 14/14 tests passed" in out
+    assert "No AstroSearch module shadowed" in out
+
+
+def test_verify_names_a_shadowed_module(isolated: Path, monkeypatch: pytest.MonkeyPatch,
+                                        capsys: pytest.CaptureFixture[str]) -> None:
+    """A module of the same name elsewhere (Hugging Face `datasets`, a user's batch.py in the
+    working directory) replaces an AstroSearch module: `verify` reports it by name."""
+    import types
+
+    import cli
+
+    elsewhere = isolated / "site"
+    elsewhere.mkdir()
+    (elsewhere / "sed.py").write_text("VALUE = 1\n", encoding="utf-8")
+    imposter = types.ModuleType("ai")
+    imposter.__file__ = str(elsewhere / "ai" / "__init__.py")
+    monkeypatch.setitem(sys.modules, "ai", imposter)  # imported from another distribution
+    monkeypatch.delitem(sys.modules, "sed", raising=False)  # not imported yet: found first on sys.path
+    monkeypatch.syspath_prepend(str(elsewhere))
+    shadowed = cli.shadowed_modules()
+    assert set(shadowed) == {"ai", "sed"}, shadowed
+    assert Path(shadowed["sed"]) == elsewhere / "sed.py"
+    assert cli.shadowed_modules(["models", "cli", "main"]) == {}
+
+    monkeypatch.chdir(isolated)
+    assert run(["verify"]) == 1
+    out = capsys.readouterr().out
+    assert "Verification Results: 14/14" not in out  # (the imposters break the CLI registration check too)
+    failed = next(line for line in out.splitlines() if "No AstroSearch module shadowed" in line)
+    assert "FAILED" in failed and "'ai' resolves to" in failed and "'sed' resolves to" in failed
+
+    # When the shadowing breaks main.py's own imports, the CLI names the module instead of a traceback.
+    def broken(name: str) -> Any:
+        raise ImportError("cannot import name 'MetadataStore' from 'datasets'")
+
+    monkeypatch.setattr(cli, "_module", broken)
+    assert run(["verify"]) == 1
+    err = capsys.readouterr().err
+    assert "AstroSearch module 'ai' resolves to" in err and "AstroSearch module 'sed' resolves to" in err
 
 
 # ---------------------------------------------------------------------------
@@ -236,11 +280,14 @@ def test_vizier_commands(isolated: Path, capsys: pytest.CaptureFixture[str]) -> 
     capsys.readouterr()
     assert run(["vizier", "list", "--registry-path", registry, "--json"]) == 0
     assert json.loads(capsys.readouterr().out)["catalogs"] == {}
-    with upstream(*load_exchanges("vizier/describe_2sxps"), sesame=False, strict=True):
+    with upstream(*load_exchanges("vizier/describe_2sxps"), sesame=False, strict=True, ads=True):
         assert run(["vizier", "describe", "IX/58/2sxps", "--json"]) == 0
         assert json.loads(capsys.readouterr().out)["table_id"] == "IX/58/2sxps"
         assert run(["vizier", "add", "IX/58/2sxps", "--name", "swift_2sxps", "--registry-path", registry]) == 0
-    capsys.readouterr()
+    added = capsys.readouterr().out
+    assert "Registered 'swift_2sxps'" in added
+    # ADS has no DOI link for the table's paper: registered anyway, the paper cited unverified.
+    assert "ADS gives no DOI for" in added and "unverified" in added
     assert run(["vizier", "list", "--registry-path", registry, "--json"]) == 0
     assert list(json.loads(capsys.readouterr().out)["catalogs"]) == ["swift_2sxps"]
 

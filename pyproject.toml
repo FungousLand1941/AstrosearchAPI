@@ -67,7 +67,7 @@ worker = [
 ]
 
 [project.scripts]
-astrosearch = "main:main"
+astrosearch = "cli:main"
 
 [tool.setuptools]
 py-modules = [

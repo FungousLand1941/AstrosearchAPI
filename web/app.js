@@ -260,12 +260,13 @@ async function apiError(response, endpoint) {
 }
 
 // How a failed call is shown: 'aborted' (ignored), 'unavailable' (endpoint missing),
-// 'unconfigured' (503), 'rate-limited' (429) or 'error'.
+// 'temporarily-unavailable' (503 with Retry-After: the name resolver or an archive is down for
+// now), 'unconfigured' (503 without Retry-After, e.g. AI without a key), 'rate-limited' (429) or 'error'.
 function errorKind(err) {
   if (err?.name === 'AbortError') return 'aborted';
   if (err instanceof ApiError) {
     if (err.unavailable) return 'unavailable';
-    if (err.status === 503) return 'unconfigured';
+    if (err.status === 503) return err.retryAfter != null ? 'temporarily-unavailable' : 'unconfigured';
     if (err.status === 429) return 'rate-limited';
   }
   return 'error';
@@ -275,6 +276,8 @@ function errorMessage(err, what) {
   switch (errorKind(err)) {
     case 'unavailable': return `${what} is unavailable on this server.`;
     case 'unconfigured': return `${what} is not configured: ${err.detail}`;
+    case 'temporarily-unavailable':
+      return `${what} is temporarily unavailable, retry in ${err.retryAfter} s${err.detail ? ` (${err.detail})` : ''}.`;
     case 'rate-limited':
       return `${what} is rate limited by the server${err.retryAfter != null ? `; retry in ${err.retryAfter} s` : ''}.`;
     default: return `${what} failed: ${err?.detail || err?.message || err}`;
@@ -399,8 +402,9 @@ function note(text, kind = '') {
 function panelError(el, err, what) {
   const kind = errorKind(err);
   if (kind === 'aborted') return;
-  const panelState = kind === 'error' ? 'error' : kind === 'rate-limited' ? 'rate-limited' : 'unavailable';
-  const badge = kind === 'error' ? 'error' : kind === 'rate-limited' ? 'busy' : 'unavailable';
+  const transient = kind === 'rate-limited' || kind === 'temporarily-unavailable';
+  const panelState = kind === 'error' ? 'error' : transient ? 'rate-limited' : 'unavailable';
+  const badge = kind === 'error' ? 'error' : transient ? 'busy' : 'unavailable';
   setPanel(el, panelState, note(errorMessage(err, what), badge));
 }
 
@@ -1341,7 +1345,7 @@ async function loadCutouts(target, signal) {
     }).catch((err) => {
       if (err.name === 'AbortError' || !current()) return;
       frame.replaceChildren(h('span', { class: 'small', style: { color: 'var(--err)', padding: '8px', textAlign: 'center' } },
-        errorKind(err) === 'rate-limited' ? errorMessage(err, 'This cutout') : err.detail || err.message));
+        ['rate-limited', 'temporarily-unavailable'].includes(errorKind(err)) ? errorMessage(err, 'This cutout') : err.detail || err.message));
     }));
   }
   await Promise.all(pending);

@@ -200,6 +200,27 @@ def test_vizier_add_stores_the_resolved_paper(monkeypatch) -> None:
     assert refs == [] and len(notes) == 1 and GAIA_DR2 in notes[0] and "unverified" in notes[0]
 
 
+@pytest.mark.parametrize("error", [RuntimeError("transport broke"), AssertionError("no recording for ADS"),
+                                   httpx.ReadError("reset")])
+def test_vizier_add_survives_an_unexpected_transport_error(error: Exception) -> None:
+    """The paper lookup is optional: a transport raising something other than httpx.HTTPError (a
+    respx side effect without a recording, a broken custom transport) leaves the paper unverified
+    instead of failing ``vizier add``."""
+    citation = _registered()["entry"]["citation"]
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        raise error
+
+    async def run() -> tuple[list[dict[str, Any]], list[str]]:
+        async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
+            return await vizier.citation_references(citation, client=client)
+
+    refs, notes = asyncio.run(run())
+    assert refs == [] and len(notes) == 1 and GAIA_DR2 in notes[0] and "unverified" in notes[0]
+    if not isinstance(error, httpx.HTTPError):  # an httpx error is already an unanswered lookup (provenance)
+        assert type(error).__name__ in notes[0]
+
+
 # ---------------------------------------------------------------------------
 # Search radius limit (API_MAX_RADIUS_ARCSEC)
 # ---------------------------------------------------------------------------
@@ -220,6 +241,25 @@ def test_search_fields_refuse_a_radius_above_the_configured_limit(monkeypatch) -
         api.SearchRequest.model_validate({"ra": 200.0, "dec": -30.0, "radius_arcsec": 61.0})
     with pytest.raises(ValueError, match="API_MAX_RADIUS_ARCSEC"):
         asyncio.run(P.run_basic_search(object(), ra=1.0, dec=1.0, radius_arcsec=61.0))  # before any request
+
+
+def test_search_radius_checks_share_one_implementation(monkeypatch) -> None:
+    """main.check_search_radius (search, stream, saved queries) and provenance.check_radius_limit
+    (manifests, replays) are one check against models.Settings().max_radius_arcsec: same limit, same message."""
+    import main
+    import models
+
+    assert main.check_search_radius is models.check_search_radius
+    monkeypatch.setenv("API_MAX_RADIUS_ARCSEC", "2400")
+    messages = []
+    for check in (main.check_search_radius, P.check_radius_limit):
+        check(None)
+        check(2400.0)
+        with pytest.raises(ValueError, match="API_MAX_RADIUS_ARCSEC") as raised:
+            check(2401.0)
+        messages.append(str(raised.value))
+    assert messages[0] == messages[1] == ("radius_arcsec 2401 exceeds the largest search radius, 2400 arcsec "
+                                          "(API_MAX_RADIUS_ARCSEC)")
 
 
 def test_manifest_route_refuses_a_wide_cone_before_searching() -> None:

@@ -109,6 +109,7 @@ from models import (
     InvalidCoordinateError,
     Target,
     UnifiedRecord,
+    check_search_radius,
     haversine_arcsec,
     plan_cone,
     validate_target,
@@ -4196,17 +4197,9 @@ class SearchFields(BaseModel):
 
 def check_radius_limit(radius_arcsec: float | None) -> None:
     """ValueError when a search cone exceeds ``Settings.max_radius_arcsec`` (API_MAX_RADIUS_ARCSEC, default
-    1800" = 30'). Every search sends its cone to every archive, and a degree-sized cone is a full-table scan
-    (seen live: a 28-degree cone ran Gaia and NED into their TAP time budgets); /api/v1/search, its batch
-    items, saved queries and search manifests all validate their radius here."""
-    if radius_arcsec is None:
-        return
-    from models import Settings
-
-    limit = min(Settings().max_radius_arcsec, MAX_SEARCH_RADIUS_ARCSEC)
-    if float(radius_arcsec) > limit:
-        raise ValueError(f"radius_arcsec {float(radius_arcsec):g} exceeds the largest search radius, {limit:g} arcsec "
-                         "(API_MAX_RADIUS_ARCSEC)")
+    1800"): /api/v1/search, its batch items, saved queries and search manifests all validate their radius
+    with the one check, :func:`models.check_search_radius` (as main.check_search_radius)."""
+    check_search_radius(radius_arcsec)
 
 
 class ManifestRequest(SearchFields):

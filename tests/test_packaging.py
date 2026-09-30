@@ -49,10 +49,14 @@ def _imports(path: Path) -> set[str]:
 
 def test_every_application_module_is_shipped() -> None:
     """A module that main/api import but the wheel leaves out breaks the installed console script
-    (cli.py, the light entry point main.py hands over to, was missing)."""
+    (cli.py, the console script's entry point, was missing)."""
     shipped = set(PYPROJECT["tool"]["setuptools"]["py-modules"])
-    needed = {"main"}
-    pending = ["main", "api"]
+    import cli
+
+    # The console script's module, plus what cli.py imports on demand (importlib, not an import statement).
+    lazy = {"main", *cli.FEATURE_COMMANDS}
+    needed = {"cli"} | lazy
+    pending = ["cli", "api", *sorted(lazy)]
     while pending:
         module = pending.pop()
         for name in _imports(ROOT / f"{module}.py") & MODULES:
@@ -60,7 +64,13 @@ def test_every_application_module_is_shipped() -> None:
                 needed.add(name)
                 pending.append(name)
     assert not needed - shipped, f"imported by the application but not in py-modules: {sorted(needed - shipped)}"
-    assert PYPROJECT["project"]["scripts"]["astrosearch"] == "main:main"
+    assert PYPROJECT["project"]["scripts"]["astrosearch"] == "cli:main"
+
+
+def test_verify_checks_every_shipped_module_for_shadowing() -> None:
+    import cli
+
+    assert list(cli.DISTRIBUTION_MODULES) == PYPROJECT["tool"]["setuptools"]["py-modules"]
 
 
 def test_dev_extra_declares_what_the_offline_suite_imports() -> None:
@@ -142,7 +152,7 @@ def test_web_ui_of_a_user_or_prefix_scheme_install_is_found(tmp_path: Path, monk
 
 
 def test_the_installed_console_script_runs_outside_the_checkout(tmp_path: Path) -> None:
-    """`astrosearch` as installed (the console-script entry point main:main), run from a directory
+    """`astrosearch` as installed (the console-script entry point cli:main), run from a directory
     without the sources, not `python main.py` from the checkout."""
     import importlib.metadata
     import json
@@ -154,7 +164,7 @@ def test_the_installed_console_script_runs_outside_the_checkout(tmp_path: Path) 
                      if e.group == "console_scripts" and e.name == "astrosearch")
     except importlib.metadata.PackageNotFoundError:
         pytest.skip("astrosearch is not installed in this environment (pip install -e '.[dev]')")
-    assert entry.value == "main:main"
+    assert entry.value == "cli:main"
     script = Path(sys.executable).parent / ("astrosearch.exe" if os.name == "nt" else "astrosearch")
     assert script.is_file(), f"the console script is missing next to {sys.executable}"
     env = {**os.environ, "OPENBLAS_NUM_THREADS": "1"}
