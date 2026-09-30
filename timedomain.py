@@ -63,7 +63,7 @@ import re
 import sys
 import threading
 import time
-from collections.abc import AsyncIterator, Callable, Sequence
+from collections.abc import AsyncIterator, Callable, Mapping, Sequence
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import asynccontextmanager
 from dataclasses import asdict, dataclass, field
@@ -5097,7 +5097,28 @@ async def get_lightcurves(
         target_dict["name"] = name
     if resolver is not None:
         target_dict["resolver"] = resolver
+        warning = resolver_fallback_warning(resolver)
+        if warning:
+            # As main.search_object does: an empty result must not look like 'no data for this object'.
+            notes.insert(0, warning)
+            provenance.setdefault("warnings", []).append(warning)
     return LightCurveResult(target_dict, series, variability, period_search, failures, notes, provenance)
+
+
+def resolver_fallback_warning(resolver: Mapping[str, Any]) -> str | None:
+    """The warning for a name Sesame answered from neither SIMBAD nor NED (its VizieR-local fallback: an undated
+    catalogue position without errors or motion), as the crossmatch search gives it; None otherwise."""
+    from providers import SesameResolver
+
+    meta = resolver.get("resolver_metadata") or {}
+    kind = SesameResolver.answer_kind(meta)
+    if kind is None or kind in ("simbad", "ned"):
+        return None
+    retry = meta.get("simbad_retry") or {}
+    return (f"{resolver.get('query') or resolver.get('canonical_name')!r} was resolved by {meta.get('resolver_name')}, "
+            "not SIMBAD" + (f" (SIMBAD retried: {retry.get('error')})" if retry.get("error") else "")
+            + ": its position is an undated catalogue position without errors or motion, so the light curves of a "
+              "moving object may be missed; search by coordinates (with their epoch) or retry later.")
 
 
 class SesameUnusableAnswer(httpx.HTTPError):

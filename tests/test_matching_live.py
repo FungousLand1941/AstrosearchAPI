@@ -12,6 +12,7 @@ import time
 
 import httpx
 import pytest
+from live_policy import NETWORK_ERRORS, skip_on_network_failures
 
 pytestmark = pytest.mark.live
 
@@ -21,20 +22,6 @@ SPEC_3C273 = ["gaia_dr3", "twomass_psc", "allwise", "panstarrs_dr2", "sdss", "fi
 # Barnard's star: SIMBAD J2000 position and the Gaia DR3 proper motion.
 BARNARD = {"ra": 269.45207696, "dec": 4.69336497, "epoch": 2000.0, "pm_ra_masyr": -801.551, "pm_dec_masyr": 10362.394}
 BULGE = (272.0, -27.0)
-NETWORK_ERRORS = {"CatalogUnavailableError", "QueryTimeoutError", "RateLimitedError", "TimeoutError", "ConnectError"}
-
-
-def skip_on_network_failures(record, needed: list[str]) -> None:
-    """Skip when a needed archive was unreachable (network error / timeout / HTTP 5xx, which
-    the providers raise as CatalogUnavailableError); fail on any other failure (a parse or
-    query regression must not pass as a skip). ``record``: a UnifiedRecord or its dict."""
-    failures = record["failures"] if isinstance(record, dict) else record.failures
-    failed = {f["catalog"]: f for f in failures}
-    down = [f"{name}: {failed[name]['error_type']}: {failed[name]['message']}" for name in needed
-            if name in failed and failed[name]["error_type"] in NETWORK_ERRORS]
-    if down:
-        pytest.skip("archive unreachable: " + "; ".join(down))
-    assert not [n for n in needed if n in failed], failures
 
 
 def skip_on_network_catalog_events(catalog_events: list[dict]) -> None:

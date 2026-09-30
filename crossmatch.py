@@ -260,6 +260,22 @@ TRANSIENT_PREFIXES: frozenset[str] = frozenset({"SN", "SNR", "AT", "NOVA", "GRB"
 # positions to 0.1-1" at their own epochs; the object's motion since is unknown and is
 # warned about (resolved_search_target).
 RESOLVER_UNDATED_SIGMA_ARCSEC = 1.0
+# Position error of a galaxy's resolved centre when the resolver gives none. SIMBAD takes the
+# centres of nearby galaxies from the 2MASS extended-source catalogue (Sesame refPos
+# 2006AJ....131.1163S) without an error; the centre of a galaxy arcminutes across differs
+# between catalogues by about an arcsecond (NED's 'NGC 4565' 1.2", 'Messier 101' 0.8",
+# 'NGC 7318a' 0.7" from SIMBAD's). Point-like extragalactic types (QSO, BL Lac) keep the
+# resolver's (default) precision.
+GALAXY_CENTRE_SIGMA_ARCSEC = 1.0
+POINTLIKE_EXTRAGALACTIC_OTYPES: frozenset[str] = frozenset({
+    "qso", "qso?", "q?", "bla", "bla?", "bll", "bll?", "bz?", "bl?", "lev?", "gle", "gls", "le?", "ls?", "li?",
+})
+# Star clusters of the same compilation closer than this to each other cannot be Galactic
+# clusters (arcminutes across): they are extragalactic clusters -- point-like at the distances
+# of other galaxies, such as M87's globular clusters ([JPB2009], 1.9" apart) or the young
+# star clusters of Stephan's Quintet (NED [FGD2015], 1-4" apart) -- and are matched as compact
+# sources, never as an extended object that contains the target.
+COMPACT_CLUSTER_NEIGHBOUR_ARCSEC = 10.0
 # Largest target position uncertainty accepted (per axis, arcsec).
 MAX_TARGET_SIGMA_ARCSEC = 3600.0
 # Largest plausible proper motion of a row (mas/yr; Barnard's star moves 10,400 mas/yr):
@@ -791,8 +807,11 @@ def identity_kind(object_type: Any, spectral_type: Any = None) -> str | None:
 
 def is_extended_identity(source: CatalogSource) -> bool:
     """True for a SIMBAD or NED row that is not a point-like identity (see EXTENDED_OTYPES):
-    an extended object type, or a SIMBAD coordinate of quality E (>= 10", open-ended)."""
+    an extended object type, or a SIMBAD coordinate of quality E (>= 10", open-ended). A star
+    cluster marked compact (:func:`mark_compact_clusters`: an extragalactic cluster) is not."""
     if source.catalog not in IDENTITY_CATALOGS:
+        return False
+    if (source.metadata or {}).get("compact_cluster"):
         return False
     quality = str((source.data or {}).get("coo_qual") or "").strip().upper() if source.catalog == "simbad" else ""
     return row_object_type(source) in EXTENDED_OTYPES or quality == "E"
@@ -800,6 +819,54 @@ def is_extended_identity(source: CatalogSource) -> bool:
 
 def _normalised_name(value: Any) -> str:
     return "".join(str(value or "").split()).casefold()
+
+
+# SIMBAD's prefixes of main identifiers ('V* RR Lyr', 'NAME Virgo Cluster', '* alf Lyr') and
+# zero padding of catalogue numbers (NED's 'MESSIER 013', 'NGC 0224').
+_ID_PREFIX = re.compile(r"^(?:v\*|\*\*|\*|name|em\*)\s+", re.IGNORECASE)
+_PADDED_NUMBER = re.compile(r"^(m|ngc|ic|ugc|pgc|mcg|arp|abell|aco)0+(?=\d)")
+
+
+def identifier_key(value: Any) -> str:
+    """An object name reduced for comparison across compilations: SIMBAD prefixes and blanks
+    removed, case folded, 'Messier' written 'M', leading zeros of catalogue numbers dropped
+    ('M 101' = 'Messier 101' = 'M101', 'V* RR Lyr' = 'RR Lyr', 'NGC 7318A' = 'NGC 7318a')."""
+    text = _ID_PREFIX.sub("", " ".join(str(value or "").split()))
+    key = "".join(text.split()).casefold()
+    key = re.sub(r"^messier", "m", key)
+    return _PADDED_NUMBER.sub(r"\1", key)
+
+
+def mark_compact_clusters(matches: list[Match]) -> set[int]:
+    """Mark (``metadata['compact_cluster']``) the star-cluster rows of SIMBAD / NED that are
+    extragalactic clusters, and return their indices: two precisely placed star clusters of one
+    compilation within COMPACT_CLUSTER_NEIGHBOUR_ARCSEC of each other, or one with a
+    redshift beyond EXTRAGALACTIC_MIN_REDSHIFT. Coarse positions (SIMBAD quality D/E, errors
+    above DETECTION_LISTING_MAX_SIGMA_ARCSEC) are left alone: the Trapezium and OCSN 244 in
+    M 42 are extended Galactic clusters listed at nominal centres."""
+    candidates: dict[str, list[int]] = {}
+    marked: set[int] = set()
+    for i, m in enumerate(matches):
+        if m.catalog not in IDENTITY_CATALOGS or extended_family(row_object_type(m.source)) != "star_cluster":
+            continue
+        data = m.source.data or {}
+        if str(data.get("coo_qual") or "").strip().upper() in {"D", "E"}:
+            continue
+        if _row_sigma(m.source) > DETECTION_LISTING_MAX_SIGMA_ARCSEC:
+            continue
+        redshift = _to_float(data.get("rvz_redshift") if m.catalog == "simbad" else data.get("z"))
+        if redshift is not None and abs(redshift) >= EXTRAGALACTIC_MIN_REDSHIFT:
+            marked.add(i)
+        candidates.setdefault(m.catalog, []).append(i)
+    for rows in candidates.values():
+        for a, i in enumerate(rows):
+            for j in rows[a + 1:]:
+                si, sj = matches[i].source, matches[j].source
+                if haversine_arcsec(si.ra, si.dec, sj.ra, sj.dec) <= COMPACT_CLUSTER_NEIGHBOUR_ARCSEC:
+                    marked.update((i, j))
+    for i in marked:
+        matches[i].source.metadata["compact_cluster"] = True
+    return marked
 
 
 def resolver_identity_catalog(resolved: dict[str, Any] | None) -> str | None:
@@ -817,13 +884,20 @@ def resolver_identity_catalog(resolved: dict[str, Any] | None) -> str | None:
 
 
 def _named_identity_rows(matches: list[Match], resolved: dict[str, Any] | None) -> set[int]:
-    """Indices of the rows of the resolver's catalogue whose identifier is the resolved name
-    (SIMBAD's 'M 13' row for a name Sesame answered from SIMBAD as 'M 13')."""
+    """Indices of the rows that are the resolved name: the resolver catalogue's row whose
+    identifier is the resolved name (SIMBAD's 'M 13' for a name Sesame answered from SIMBAD
+    as 'M 13'), and the other compilation's row listed under that name or the name searched
+    (:func:`identifier_key`: NED's 'NGC 4565', 'Messier 101', 'RR Lyr')."""
     catalog = resolver_identity_catalog(resolved)
     name = _normalised_name((resolved or {}).get("canonical_name"))
     if catalog is None or not name:
         return set()
-    return {i for i, m in enumerate(matches) if m.catalog == catalog and _normalised_name(m.source.source_id) == name}
+    keys = {identifier_key((resolved or {}).get("canonical_name")), identifier_key((resolved or {}).get("query"))}
+    keys.discard("")
+    rows = {i for i, m in enumerate(matches) if m.catalog == catalog and _normalised_name(m.source.source_id) == name}
+    rows |= {i for i, m in enumerate(matches)
+             if m.catalog in IDENTITY_CATALOGS and m.catalog != catalog and identifier_key(m.source.source_id) in keys}
+    return rows
 
 
 def _row_sigma(source: CatalogSource) -> float:
@@ -2019,6 +2093,8 @@ class CrossmatchService:
 
         all_sources = [source for _, sources in successes for source in sources]
         all_matches = match_target(target, all_sources, search_radius)
+        # Extragalactic star clusters are compact sources, never the extended object at the target.
+        mark_compact_clusters(all_matches)
 
         # Bayesian association over every in-radius row: confidence = posterior that the
         # row is the target's counterpart. The prior completeness depends on the target's
@@ -2635,6 +2711,14 @@ def resolved_search_target(
     if sigma is None:
         sigma = _resolver_position_error(obj)
         sigma_source = "resolver" if sigma is not None else None
+    if sigma is None and resolver_identity_catalog({"resolver": getattr(obj, "resolver", None),
+                                                    "resolver_metadata": getattr(obj, "resolver_metadata", None)}):
+        otype = _otype_key(getattr(obj, "object_type", None))
+        extragalactic = bool((getattr(obj, "resolver_metadata", None) or {}).get("extragalactic")) \
+            or is_extragalactic_type(otype)
+        if extragalactic and otype not in POINTLIKE_EXTRAGALACTIC_OTYPES and otype not in EXTENDED_OTYPES:
+            # A galaxy's centre without a published error (2MASS XSC centres): about 1".
+            sigma, sigma_source = GALAXY_CENTRE_SIGMA_ARCSEC, "galaxy_centre"
     warnings: list[str] = []
     meta = getattr(obj, "resolver_metadata", None) or {}
     label = getattr(obj, "canonical_name", None) or getattr(obj, "query", None) or "the object"
@@ -2972,7 +3056,10 @@ def _class_before_association(
 
 
 def _row_kind(src: CatalogSource) -> str | None:
-    """identity_kind of a row (a redshift >= EXTRAGALACTIC_MIN_REDSHIFT: extragalactic)."""
+    """identity_kind of a row (a redshift >= EXTRAGALACTIC_MIN_REDSHIFT, or an extragalactic
+    star cluster, :func:`mark_compact_clusters`: extragalactic)."""
+    if (src.metadata or {}).get("compact_cluster"):
+        return "extragalactic"
     if _is_extragalactic_row(src) and row_object_type(src) not in EXTENDED_OTYPES:
         return "extragalactic"
     return identity_kind(row_object_type(src), (src.data or {}).get("sp_type"))

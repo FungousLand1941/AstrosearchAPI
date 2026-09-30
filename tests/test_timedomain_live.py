@@ -53,6 +53,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 import timedomain as td
+from live_policy import skip_if_resolver_degraded
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "timedomain"
 
@@ -920,7 +921,13 @@ def test_live_toi519_giant_planet_period_not_doubled() -> None:
 def test_live_gj3622_ztf_keeps_every_object_on_its_track() -> None:
     result = _live(case_gj3622_ztf)
     _require_survey(result, "ztf")
-    r = next(s for s in result.series if s.key == "ztf:r")
+    if td.resolver_fallback_warning(result.target.get("resolver") or {}):
+        # Sesame's VizieR-local fallback (a SIMBAD outage) gives an undated position without motion: the
+        # result must say so; the shared classifier decides whether this is an outage.
+        assert any("not SIMBAD" in n for n in result.notes), result.notes
+        skip_if_resolver_degraded(GJ_3622_NAME)
+    r = next((s for s in result.series if s.key == "ztf:r"), None)
+    assert r is not None, [s.key for s in result.series]
     assert len(r.source_ids) >= 2 and max(p.mjd for p in r.points if p.flag == 0) > 60500
     assert result.target["parallax_mas"] is not None and result.target["parallax_mas"] > 200
 

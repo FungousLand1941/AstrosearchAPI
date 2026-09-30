@@ -185,6 +185,8 @@ SIMBAD_TAP = "https://simbad.cds.unistra.fr/simbad/sim-tap/sync"
 # VizieR TAP accepts multipart uploads over plain http only (the https endpoint rejects them).
 VIZIER_TAP_UPLOAD = "http://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync"
 XMATCH_ENDPOINT = "http://cdsxmatch.u-strasbg.fr/xmatch/api/v1/sync"
+# Column list of a table in the XMatch service (HTTP 400 {"error": ...} for a table it does not serve).
+XMATCH_TABLES_ENDPOINT = "http://cdsxmatch.u-strasbg.fr/xmatch/api/v1/sync/tables"
 XMATCH_MAX_DISTANCE_ARCSEC = 180.0  # API-calls doc: "Maximum allowed value is 180"
 XMATCH_MAX_UPLOAD_BYTES = 100 * 1024 * 1024  # "Total size of uploaded tables can not be larger than 100 MB"
 XMATCH_SERVICE_MAX_ROWS = 2_000_000  # MAXREC hard limit of the service (API-calls doc)
@@ -220,6 +222,14 @@ _UNIT_TYPOS = {"ma/yr": "mas/yr"}
 
 STRATEGIES = ("upload", "xmatch", "cone")
 MAX_RADIUS_ARCSEC = XMATCH_MAX_DISTANCE_ARCSEC
+
+
+def _env_int_or_zero(name: str, default: int) -> int:
+    """An integer setting that may be 0 (disabled)."""
+    try:
+        return int(os.getenv(name, str(default)))
+    except ValueError:
+        return default
 
 
 def _env_int(name: str, default: int) -> int:
@@ -1257,6 +1267,52 @@ def registry_vizier_view(catalog: CatalogDefinition) -> XMatchView | None:
     )
 
 
+def is_registry_view(name: str, registry: CatalogRegistry) -> bool:
+    """True when ``name``'s XMatch view is derived from its registry entry (:func:`registry_vizier_view`), not a
+    predefined, verified one: whether XMatch serves the table with the entry's columns is checked at run time."""
+    return not name.startswith("vizier:") and _xmatch_view(name) is None and catalog_xmatch_view(name, registry) is not None
+
+
+# {vizier table: (checked at (monotonic s), XMatch column names or None when the service does not serve it)}.
+_XMATCH_COLUMNS: dict[str, tuple[float, frozenset[str] | None]] = {}
+XMATCH_COLUMNS_TTL_SECONDS = 86400.0
+
+
+async def xmatch_table_columns(client: httpx.AsyncClient, vizier_table: str, *,
+                               timeout: float = 30.0) -> frozenset[str] | None:
+    """The columns CDS XMatch serves for ``vizier_table`` ('vizier:J/ApJ/914/42/table5'), or None when it does not
+    serve the table (HTTP 400: 'Table ... not in the service', seen live for LoTSS-DR3, J/A+A/707/A198). XMatch
+    indexes some tables with its own column set (2MASS: errHalfMaj/errHalfMin/errPosAng and MeasureJD, where
+    TAPVizieR has errMaj/errMin/errPA and JD). Cached per process; network errors propagate (httpx.HTTPError)."""
+    now = time.monotonic()
+    cached = _XMATCH_COLUMNS.get(vizier_table)
+    if cached is not None and now - cached[0] < XMATCH_COLUMNS_TTL_SECONDS:
+        return cached[1]
+    response = await client.get(XMATCH_TABLES_ENDPOINT, params={"action": "getColList", "tabName": vizier_table,
+                                                                "RESPONSEFORMAT": "json"}, timeout=timeout)
+    if response.status_code == 400:
+        columns: frozenset[str] | None = None
+    else:
+        response.raise_for_status()
+        try:
+            meta = response.json().get("metadata") or []
+        except (ValueError, AttributeError) as exc:
+            raise httpx.DecodingError(f"XMatch column list of {vizier_table} is not JSON: {exc}") from exc
+        columns = frozenset(str(c.get("name")) for c in meta if isinstance(c, Mapping) and c.get("name"))
+    _XMATCH_COLUMNS[vizier_table] = (now, columns)
+    return columns
+
+
+def known_unusable_view(view: XMatchView) -> bool:
+    """True when this process has seen CDS XMatch refuse the view's table or lack columns it reads (see
+    :func:`xmatch_table_columns`); unknown (not checked yet) is False."""
+    cached = _XMATCH_COLUMNS.get(view.vizier_table)
+    if cached is None or time.monotonic() - cached[0] >= XMATCH_COLUMNS_TTL_SECONDS:
+        return False
+    served = cached[1]
+    return served is None or any(c not in served for c in view.columns)
+
+
 def catalog_xmatch_view(name: str, registry: CatalogRegistry) -> XMatchView | None:
     """The CDS XMatch view of ``name``: a predefined view (:data:`XMATCH_VIEWS`, :data:`VIZIER_VIEWS`), else that
     of a TAPVizieR registry catalog (:func:`registry_vizier_view`), else None."""
@@ -1812,7 +1868,9 @@ class BatchCrossmatcher:
     instances. ``fallback_to_cone`` sends a chunk whose upload/XMatch request keeps failing for a transient
     reason through per-target cone searches instead. ``association_config`` is the Bayesian association
     configuration (default that of :class:`crossmatch.CrossmatchService`). ``max_catalogs`` limits the catalogs
-    of one run (``BATCH_MAX_CATALOGS``, default 20).
+    of one run (``BATCH_MAX_CATALOGS``, default 20). ``fast_fallback_targets`` / ``fast_fallback_seconds``
+    (``BATCH_FAST_FALLBACK_TARGETS`` / ``_SECONDS``, default 100 / 45 s; 0 targets disables it): a batch this small
+    whose upload/XMatch join does not answer in time goes to cone searches at once (see :meth:`_post`).
     """
 
     retry_backoff_seconds = 1.0  # first retry delay; doubles per attempt
@@ -1839,6 +1897,8 @@ class BatchCrossmatcher:
         upload_slots: Any = None,
         max_catalogs: int | None = None,
         keep_groups: bool = False,
+        fast_fallback_targets: int | None = None,
+        fast_fallback_seconds: float | None = None,
     ) -> None:
         self.settings = settings or Settings()
         self.registry = registry or CatalogRegistry(self.settings.catalog_registry_path)
@@ -1853,8 +1913,10 @@ class BatchCrossmatcher:
         # within BATCH_FAST_FALLBACK_SECONDS goes to per-target cone searches at once: a healthy service answers
         # such a join in seconds, while a stalled one (TAPVizieR uploads, seen live) would otherwise cost
         # 2 x BATCH_UPLOAD_TIMEOUT_SECONDS per split level before the cones run.
-        self.fast_fallback_targets = _env_int("BATCH_FAST_FALLBACK_TARGETS", 100)
-        self.fast_fallback_seconds = _env_float("BATCH_FAST_FALLBACK_SECONDS", 45.0)
+        self.fast_fallback_targets = (int(fast_fallback_targets) if fast_fallback_targets is not None
+                                      else max(0, _env_int_or_zero("BATCH_FAST_FALLBACK_TARGETS", 100)))
+        self.fast_fallback_seconds = (float(fast_fallback_seconds) if fast_fallback_seconds is not None
+                                      else _env_float("BATCH_FAST_FALLBACK_SECONDS", 45.0))
         self.chunk_sizes = dict(chunk_sizes or {})
         self.max_cone_targets = max_cone_targets or _env_int("BATCH_MAX_CONE_TARGETS", 5000)
         self.fallback_to_cone = fallback_to_cone
@@ -1883,7 +1945,8 @@ class BatchCrossmatcher:
         answers in seconds, TAPVizieR uploads may stall for minutes) and the predefined views; ``upload`` for the
         other TAP archives that accept uploads (TAPVizieR uploads stay available as an explicit strategy);
         ``cone`` otherwise."""
-        if name.startswith("vizier:") or self.xmatch_view(name) is not None:
+        view = self.xmatch_view(name)
+        if name.startswith("vizier:") or (view is not None and not known_unusable_view(view)):
             return "xmatch"
         catalog = self.registry.get(name)
         if catalog.provider == "tap" and catalog.endpoint in UPLOAD_SERVICES:
@@ -1986,7 +2049,9 @@ class BatchCrossmatcher:
         owned = self.client is None
         client = self.client or httpx.AsyncClient(timeout=self.upload_timeout, follow_redirects=True)
         try:
-            outcomes = await asyncio.gather(*(self._run_catalog(client, name, strategy, batch, radius)
+            chosen = set(strategies or {})
+            outcomes = await asyncio.gather(*(self._run_catalog(client, name, strategy, batch, radius,
+                                                                explicit=name in chosen)
                                               for name, strategy in plan))
         finally:
             if owned:
@@ -2016,11 +2081,43 @@ class BatchCrossmatcher:
         return BatchResult(batch, [name for name, _ in plan], radius, runs, matches, dict(failures),
                            time.perf_counter() - started, nearest_only, association, groups)
 
+    async def _registry_view_problem(self, client: httpx.AsyncClient, name: str) -> str | None:
+        """Why CDS XMatch cannot serve the registry catalog ``name`` through its view, or None when it can: the
+        table must be in the service and offer every column the registry entry reads."""
+        view = self.xmatch_view(name)
+        assert view is not None
+        try:
+            served = await xmatch_table_columns(client, view.vizier_table)
+        except httpx.HTTPError as exc:
+            return None if isinstance(exc, httpx.TransportError) else f"its table list could not be read ({exc})"
+        if served is None:
+            return f"CDS XMatch does not serve {view.vizier_table}"
+        missing = [c for c in view.columns if c not in served]
+        if missing:
+            return f"CDS XMatch serves {view.vizier_table} without the column(s) {', '.join(missing)} the registry reads"
+        return None
+
     async def _run_catalog(
         self, client: httpx.AsyncClient, name: str, strategy: str, batch: Sequence[BatchTarget], radius: float,
+        explicit: bool = False,
     ) -> tuple[CatalogRun, dict[int, QueryResult], dict[int, str]]:
         started = time.perf_counter()
         deadline = time.monotonic() + self.catalog_budget_seconds
+        switched: str | None = None
+        if strategy == "xmatch" and is_registry_view(name, self.registry):
+            problem = await self._registry_view_problem(client, name)
+            if problem is not None:
+                catalog = self.registry.get(name)
+                if explicit:
+                    run = CatalogRun(name, strategy, XMATCH_ENDPOINT, targets=len(batch), citation=catalog.citation,
+                                     acknowledgement=catalog.acknowledgement)
+                    message = f"{name}: the xmatch strategy was requested, but {problem}."
+                    run.errors.append(message)
+                    run.failed_targets = len(batch)
+                    run.elapsed_s = time.perf_counter() - started
+                    return run, {}, {i: message for i in range(len(batch))}
+                strategy = "upload" if catalog.provider == "tap" and catalog.endpoint in UPLOAD_SERVICES else "cone"
+                switched = f"{name}: {problem}; matched with the {strategy} strategy instead."
         if strategy == "xmatch":
             catalog, view = xmatch_catalog_definition(name, self.registry)
             endpoint: str | None = XMATCH_ENDPOINT
@@ -2029,6 +2126,8 @@ class BatchCrossmatcher:
             endpoint = UPLOAD_SERVICES[str(catalog.endpoint)].upload_endpoint if strategy == "upload" else catalog.endpoint
         run = CatalogRun(name, strategy, endpoint, targets=len(batch), citation=catalog.citation,
                          acknowledgement=catalog.acknowledgement)
+        if switched:
+            run.warnings.append(switched)
 
         def count() -> None:
             run.requests += 1

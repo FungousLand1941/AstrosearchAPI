@@ -2,8 +2,9 @@
 
 The same server as tests/test_integration_e2e.py, with every store in a temporary directory,
 queried the way a client would. Upstream outages are not failures of this code: a 502/503/504
-answer (the API's report of an archive network error or 5xx) or a catalog failure caused by
-one skips the test with the reason.
+answer whose detail names a network error, or a catalog failure of a network error type, skips
+the test with the reason (tests/live_policy.py). Anything else fails: a parse error, an HTTP 500
+(an unexpected exception in the API), a non-network catalog failure.
 """
 
 from __future__ import annotations
@@ -16,6 +17,7 @@ from typing import Any
 import httpx
 import pytest
 from fixture_io import TARGETS
+from live_policy import api_ok, network_failure, skip_on_network_error_event, skip_on_network_failures
 from test_integration_e2e import UNSET, ServerThread, free_port, server_environment, sse_events, target_group
 
 import alerts
@@ -26,7 +28,6 @@ from providers import CacheManager
 pytestmark = pytest.mark.live
 
 RA, DEC = TARGETS["3c273"]
-UPSTREAM_DOWN = {502, 503, 504}
 
 
 @pytest.fixture(scope="module")
@@ -51,18 +52,23 @@ def live(tmp_path_factory: pytest.TempPathFactory) -> Iterator[httpx.Client]:
 
 
 def ok(response: httpx.Response, expected: int = 200) -> Any:
-    """The JSON body of a successful answer; skip when an upstream archive was unreachable."""
-    if response.status_code in UPSTREAM_DOWN:
-        pytest.skip(f"upstream unavailable ({response.status_code}): {response.text[:300]}")
-    assert response.status_code == expected, response.text[:2000]
-    return response.json() if response.headers.get("content-type", "").startswith("application/json") else None
+    """The JSON body of a successful answer; skip only when the answer reports an unreachable upstream."""
+    return api_ok(response, expected)
 
 
 def skip_on_failures(record: dict[str, Any]) -> None:
-    failures = record.get("failures") or []
-    if failures:
-        pytest.skip("archive failures (network or 5xx): " + "; ".join(
-            f"{f['catalog']}: {f.get('error_type')}: {str(f.get('message'))[:120]}" for f in failures))
+    """Skip on network failures of the record's catalogs; fail on any other failure."""
+    skip_on_network_failures(record)
+
+
+def skip_on_messages(what: str, messages: list[Any]) -> None:
+    """Failures reported as texts (batch targets, dataset runs, mirror tiles, broker polls): skip when every
+    one of them is a network error, fail otherwise."""
+    if not messages:
+        return
+    if all(network_failure(m) for m in messages):
+        pytest.skip(f"{what} failed upstream: {[str(m)[:200] for m in messages[:2]]}")
+    pytest.fail(f"{what} failed: {messages[:3]}")
 
 
 def test_live_search_by_coordinates_name_and_stream(live: httpx.Client) -> None:
@@ -82,7 +88,7 @@ def test_live_search_by_coordinates_name_and_stream(live: httpx.Client) -> None:
         events = sse_events(response)
     assert events[0][0] == "start" and events[-1][0] in {"done", "error"}
     if events[-1][0] == "error":
-        pytest.skip(f"stream ended with an upstream error: {events[-1][1]}")
+        skip_on_network_error_event(events[-1][1])
     skip_on_failures(events[-1][1]["record"])
 
 
@@ -134,8 +140,8 @@ def test_live_batch_and_dataset(live: httpx.Client) -> None:
     result = ok(live.post("/api/v1/batch/crossmatch", json={"targets": targets, "catalogs": ["simbad"],
                                                             "radius_arcsec": 5.0}))
     by_id = {t["id"]: t for t in result["targets"]}
-    if by_id["3c273"]["failures"]:
-        pytest.skip(f"batch upload failed upstream: {by_id['3c273']['failures']}")
+    skip_on_messages("batch upload", list((by_id["3c273"]["failures"] or {}).values())
+                     if isinstance(by_id["3c273"]["failures"], dict) else list(by_id["3c273"]["failures"] or []))
     assert any(m["source_id"] == "3C 273" for m in by_id["3c273"]["matches"]["simbad"])
     created = ok(live.post("/api/v1/datasets/create", json={
         "name": "live", "profile": "full", "radius_arcsec": 5.0, "catalogs": ["simbad"], "count_threshold": 1,
@@ -145,8 +151,7 @@ def test_live_batch_and_dataset(live: httpx.Client) -> None:
         assert time.monotonic() < deadline
         time.sleep(1.0)
     assert dataset["status"] == "completed", dataset
-    if dataset["failures"]:
-        pytest.skip(f"dataset archive failures: {dataset['failures'][:2]}")
+    skip_on_messages("dataset", list(dataset["failures"] or []))
     assert dataset["method"] == "batch" and dataset["total_sources"] >= 2
     rows = live.get(f"/api/v1/datasets/{created['id']}/export").json()
     assert any(r["source_id"] == "3C 273" and r["contains_target"] for r in rows)
@@ -167,7 +172,7 @@ def test_live_skycache_mirror_and_local_search(live: httpx.Client) -> None:
     report = ok(live.post("/api/v1/skycache/mirror", json={"catalog": "gaia_dr3", "ra": RA, "dec": DEC,
                                                            "radius_deg": 0.02}))
     if report["tiles_failed"]:
-        pytest.skip(f"mirror tiles failed upstream: {report['warnings'][:2]}")
+        skip_on_messages("mirror tiles", list(report["warnings"]) or [f"{report['tiles_failed']} tile(s) failed"])
     cone = ok(live.get("/api/v1/skycache/cone", params={"catalog": "gaia_dr3", "ra": RA, "dec": DEC,
                                                         "radius_arcsec": 10}))
     assert cone["sources"]
@@ -183,7 +188,7 @@ def test_live_alerts_and_ai(live: httpx.Client) -> None:
     assert {"alerce", "fink"} <= {b["name"] for b in brokers}
     polled = ok(live.post("/api/v1/alerts/poll", json={"broker": "alerce", "limit": 2, "crossmatch": False}))
     if polled.get("error"):
-        pytest.skip(f"ALeRCE: {polled['error']}")
+        skip_on_messages("ALeRCE poll", [polled["error"]])
     listed = ok(live.get("/api/v1/alerts"))
     assert listed["count"] >= polled["inserted"]
     response = live.post("/api/v1/ai/query", json={"text": "quasars within 2 arcmin of M87"})

@@ -13,9 +13,11 @@ from typing import Any
 
 import httpx
 import pytest
+from live_policy import skip_if_resolver_degraded_async
 
 import sed
 from models import ObjectResolutionError
+from providers import SesameResolver
 
 pytestmark = pytest.mark.live
 
@@ -32,7 +34,12 @@ async def build(tmp_path: Path, **kwargs: Any) -> dict[str, Any]:
     filters = sed.FilterCatalog(cache_path=tmp_path / "svo.json")
     try:
         async with httpx.AsyncClient(timeout=120.0, follow_redirects=True) as client:
-            return await sed.build_sed(client=client, filters=filters, **kwargs)
+            result = await sed.build_sed(client=client, filters=filters, **kwargs)
+        resolved = result.get("resolved_object") or {}
+        if kwargs.get("name") and SesameResolver.answer_kind(resolved.get("resolver_metadata")) not in ("simbad", "ned"):
+            # Sesame's VizieR-local fallback (a degraded SIMBAD): the shared classifier decides.
+            await skip_if_resolver_degraded_async(kwargs["name"])
+        return result
     except httpx.TransportError as exc:
         pytest.skip(f"archive unreachable: {exc}")
     except sed.SEDUpstreamError as exc:
@@ -43,6 +50,9 @@ async def build(tmp_path: Path, **kwargs: Any) -> dict[str, Any]:
     except ObjectResolutionError as exc:
         if str(exc).startswith("Sesame request failed"):
             pytest.skip(f"Sesame unreachable: {exc}")
+        if kwargs.get("name"):
+            # 'Nothing found' for a name SIMBAD knows is a Sesame outage (seen live for 'Gl 229B'), not a bug.
+            await skip_if_resolver_degraded_async(kwargs["name"])
         raise
 
 

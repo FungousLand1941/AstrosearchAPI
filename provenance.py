@@ -3544,7 +3544,7 @@ def _without_vizier_ack(text: str) -> str:
     """A registry acknowledgement without its VizieR sentence (the curated 'vizier' archive entry,
     added for every VizieR catalog, carries CDS's own wording)."""
     kept = [sentence for sentence in _SENTENCE_SPLIT.split(text.strip())
-            if not re.search(r"VizieR catalogue access tool", sentence)]
+            if not re.search(r"VizieR catalogue access tool|description of the VizieR service", sentence)]
     return " ".join(s.strip() for s in kept if s.strip())
 
 

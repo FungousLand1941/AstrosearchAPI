@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import asyncio
 import itertools
+import re
 import threading
 import time
 from pathlib import Path
@@ -163,11 +164,15 @@ def test_lifespan_shares_one_client_registry_service_and_closes_module_state(iso
         assert isinstance(state.skycache, skycache.SkyCache) and state.skycache.root == isolated / "skycache"
         assert state.sed_filters.offline is True
         state.anthropic = FakeAnthropic()
-        state.alerts_client = httpx.AsyncClient()
+        alerts_client = state.alerts_client = httpx.AsyncClient()
+        shared_client = state.client
         monitoring = client.get("/api/v1/monitoring").json()
         assert monitoring["skycache"] == {"enabled": True, "catalogs": []}
         assert monitoring["catalogs"] == len(state.registry.catalogs)
+        assert not alerts_client.is_closed and not shared_client.is_closed
     assert closed == ["anthropic"]
+    # The shutdown closes the alerts router's own client and the shared one (not only the Anthropic client).
+    assert alerts_client.is_closed and shared_client.is_closed
     for name in api.STATE_OBJECTS + api.LAZY_STATE_OBJECTS:
         assert not hasattr(api.app.state, name), name
 
@@ -479,17 +484,39 @@ def test_api_name_search_passes_the_resolvers_answer(monkeypatch: pytest.MonkeyP
     assert (query.target.ra, query.target.dec) == (call["ra"], call["dec"])
 
 
-def test_api_name_search_rejects_an_epoch_it_cannot_move_the_position_to(monkeypatch: pytest.MonkeyPatch) -> None:
-    from fixture_io import FIXTURES as F
-
+def test_api_name_search_moves_a_quasar_to_any_epoch(monkeypatch: pytest.MonkeyPatch) -> None:
     service = _CapturingService()
     monkeypatch.setattr(api, "get_service", lambda: service)
     monkeypatch.setattr(api, "cache", CacheManager(None))
     # Sesame's 3C 273 answer has a SIMBAD J2000 position; the quasar does not move, so any epoch is fine.
     with _sesame_router():
         asyncio.run(api._search(api.SearchRequest(name="3C 273", radius_arcsec=5.0, epoch=2016.0)))
-    assert service.calls[-1]["query"].target.epoch == 2016.0
-    assert F.exists()
+    call = service.calls[-1]
+    assert call["query"].target.epoch == 2016.0
+    assert (call["ra"], call["dec"]) == pytest.approx((187.27791594, 2.05238823), abs=1e-9)  # not moved
+
+
+# Sesame's answer for a Galactic star with a SIMBAD J2000 position but no proper motion (the 3C 273
+# answer with its type, name, motion and redshift replaced).
+SESAME_STAR_WITHOUT_MOTION = re.sub(r"<pm>.*?</pm>|<z>.*?</z>|<plx>.*?</plx>", "", SESAME_3C273, flags=re.DOTALL)     .replace("<otype>BLL</otype>", "<otype>*</otype>").replace("3C 273", "HD 0")
+
+
+def test_api_name_search_rejects_an_epoch_it_cannot_move_the_position_to(monkeypatch: pytest.MonkeyPatch) -> None:
+    """A star whose resolver answer has no motion cannot be moved from J2000 to another epoch: 422, and no
+    catalog is queried (the search would otherwise look at the wrong position)."""
+    service = _CapturingService()
+    monkeypatch.setattr(api, "get_service", lambda: service)
+    monkeypatch.setattr(api, "cache", CacheManager(None))
+    router = respx.mock(assert_all_called=False, assert_all_mocked=True)
+    router.get(url__startswith="https://cds.unistra.fr/cgi-bin/nph-sesame").respond(
+        200, text=SESAME_STAR_WITHOUT_MOTION, headers={"content-type": "text/xml"})
+    with router, TestClient(api.app) as client:
+        rejected = client.post("/api/v1/search", json={"name": "HD 0", "radius_arcsec": 5.0, "epoch": 2016.0})
+        accepted = client.post("/api/v1/search", json={"name": "HD 0", "radius_arcsec": 5.0})
+    assert rejected.status_code == 422, rejected.text
+    assert "no known proper motion" in rejected.json()["detail"] and "2016" in rejected.json()["detail"]
+    assert accepted.status_code == 200, accepted.text
+    assert len(service.calls) == 1 and service.calls[0]["query"].target.epoch == 2000.0
 
 
 def test_cli_name_search_passes_the_resolvers_answer(monkeypatch: pytest.MonkeyPatch) -> None:

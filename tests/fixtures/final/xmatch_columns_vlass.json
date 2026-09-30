@@ -1,0 +1,19 @@
+{ "metadata": [
+
+{"name": "_RAJ2000", "datatype": "double", "unit": "deg", "ucd": "pos.eq.ra", "description":"Right ascension (FK5, Equinox=J2000.0) (computed by VizieR, not part of the original data. The format may include more digits than the original data because of internal accuracy requirements in VizieR and across other CDS services)"},
+{"name": "_DEJ2000", "datatype": "double", "unit": "deg", "ucd": "pos.eq.dec", "description":"Declination (FK5, Equinox=J2000.0) (computed by VizieR, not part of the original data. The format may include more digits than the original data because of internal accuracy requirements in VizieR and across other CDS services)"},
+{"name": "recno", "datatype": "integer", "ucd": "meta.record", "description":"Record number assigned by the VizieR team. Should Not be used for identification."},
+{"name": "Name", "arraysize": 20, "datatype": "string", "ucd": "meta.id;meta.main", "description":"VLASS Epoch 1 name of the source (JHHMMSS.ss+DDMMSS.s)"},
+{"name": "RAJ2000", "datatype": "double", "unit": "deg", "ucd": "pos.eq.ra;meta.main", "description":"Right ascension (J2000) (RA)"},
+{"name": "e_RAJ2000", "datatype": "double", "unit": "deg", "ucd": "stat.error;pos.eq.ra", "description":"[3e-7/0.06]? RAdeg uncertainty (RAErr)"},
+{"name": "DEJ2000", "datatype": "double", "unit": "deg", "ucd": "pos.eq.dec;meta.main", "description":"[-40.02/89.83] Declination (J2000) (Dec)"},
+{"name": "e_DEJ2000", "datatype": "double", "unit": "deg", "ucd": "stat.error;pos.eq.dec", "description":"[1.2e-6/0.9]? DEdeg uncertainty (DecErr)"},
+{"name": "Flux", "datatype": "double", "unit": "Jy", "ucd": "phot.flux.density;em.radio.3-6GHz", "description":"[3.34e-8/9.31] Integrated flux (IntFlux)"},
+{"name": "e_Flux", "datatype": "double", "unit": "Jy", "ucd": "stat.error;phot.flux", "description":"[5.83e-9/0.24] Flux uncertainty (IntFluxErr)"},
+{"name": "Fpk", "datatype": "double", "unit": "Jy/beam", "ucd": "phot.flux.density;em.radio.3-6GHz", "description":"[0/3.92] Peak flux of VLASS source (PeakFlux)"},
+{"name": "e_Fpk", "datatype": "double", "unit": "Jy/beam", "ucd": "stat.error", "description":"[2.8e-8/0.04] Fpk uncertainty (PeakFluxErr)"},
+{"name": "Type", "datatype": "character", "ucd": "meta.code", "description":"[SCM] Source morphology code from PyBDSF (Mohan & Rafferty 2015ascl.soft02007M) (TypeCode)"},
+{"name": "Pointing", "arraysize": 44, "datatype": "string", "ucd": "obs.image", "description":"Pointing/image information for source"},
+{"name": "Obs", "arraysize": 26, "datatype": "string", "unit": "'Y-M-D,h:m:s'", "ucd": "time.epoch", "description":"Date of observation"},
+{"name": "Flag", "datatype": "short", "ucd": "meta.code.error", "description":"[0/2] Flag (0=Alone,1=Useful,2=Redundant)"}
+]}

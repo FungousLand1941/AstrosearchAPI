@@ -312,8 +312,6 @@ class Settings:
         def val(name: str, default: Any) -> Any:
             return overrides.get(name, os.getenv(name, default))
 
-        self.app_name = str(val("APP_NAME", "astro-crossmatch"))
-        self.debug = str(val("DEBUG", "false")).lower() == "true"
         self.default_radius_arcsec = float(val("DEFAULT_RADIUS_ARCSEC", 3.0))
         self.request_timeout_seconds = float(val("REQUEST_TIMEOUT_SECONDS", 30.0))
         # Upper bound on every catalog's own timeout_seconds (registry values are 60-90 s).

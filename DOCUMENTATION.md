@@ -640,7 +640,7 @@ Settings are read from the environment (see `.env.example`).
 | Variable | Default | Meaning |
 |---|---|---|
 | `DEFAULT_RADIUS_ARCSEC` | 3.0 | Default search radius. |
-| `REQUEST_TIMEOUT_SECONDS` | 30 | HTTP timeout of archive requests (also caps catalog timeouts when set explicitly). |
+| `REQUEST_TIMEOUT_SECONDS` | 30 | HTTP timeout of archive requests. Setting it explicitly also caps every catalog's own timeout (Gaia, 2MASS and AllWISE use 90 s, NED/SDSS/VLASS 60 s): `.env.example` leaves it commented out for that reason. |
 | `CATALOG_TIMEOUT_CAP_SECONDS` | none | Upper bound of every catalog's own timeout. |
 | `MAX_RESPONSE_BYTES` | 10000000 | Largest archive response read. |
 | `SESAME_ENDPOINT` | `https://cds.unistra.fr/cgi-bin/nph-sesame/-oxp/SNV` | Name resolver. |
@@ -679,6 +679,7 @@ Settings are read from the environment (see `.env.example`).
 | `BATCH_MAX_UPLOAD_BYTES` / `BATCH_MAX_RESPONSE_BYTES` | 50 MB / 256 MB | Batch body and answer limits. |
 | `BATCH_CONE_CONCURRENCY` / `BATCH_CHUNK_CONCURRENCY` / `BATCH_ENDPOINT_CONCURRENCY` | 8 / 2 / 2 | Batch concurrency. |
 | `BATCH_UPLOAD_TIMEOUT_SECONDS` / `BATCH_CATALOG_BUDGET_SECONDS` / `BATCH_CPU_SLICE_SECONDS` | 300 / 1800 / 0.1 | Batch timing. |
+| `BATCH_FAST_FALLBACK_TARGETS` / `BATCH_FAST_FALLBACK_SECONDS` | 100 / 45 | A batch of at most this many targets whose upload/XMatch join has not answered within this time goes to per-target cone searches at once (and the timeout counts on the upload circuit, so later batches go straight to cones while the service is down). |
 | `BATCH_CHUNK_SIMBAD`, `_VIZIER`, `_IRSA`, `_HEASARC`, `_XMATCH` | 5000, 5000, 2000, 2000, 20000 | Targets per upload chunk (for cones up to 10"). |
 | `DATASET_BATCH_MIN_TARGETS` | 50 | Datasets with at least this many targets use the batch engine (0 disables). |
 | `DATASET_STORAGE_PATH`, `DATABASE_URL`, `S3_BUCKET`, `S3_ENDPOINT_URL` | `datasets`, SQLite, none | Dataset storage. |
@@ -688,16 +689,22 @@ Settings are read from the environment (see `.env.example`).
 | `SKYCACHE_MAX_RADIUS_DEG` / `SKYCACHE_MAX_QUERIES` / `SKYCACHE_MAX_AGE_DAYS` | 1.0 / 256 / none | Mirror limits and data age. |
 | `VIZIER_ASU_URL`, `VIZIER_TAP_URL`, `REGTAP_URL` | CDS / GAVO | VizieR and registry endpoints. |
 | `VIZIER_TIMEOUT_SECONDS`, `VIZIER_ROUTE_DEADLINE_SECONDS`, `VIZIER_DESCRIBE_CACHE_TTL_SECONDS` | 90, 150, 21600 | VizieR timing and cache. |
+| `VIZIER_REGTAP_TIMEOUT_SECONDS`, `VIZIER_REGTAP_NEGATIVE_TTL_SECONDS` | 10, 600 | Budget of the optional IVOA registry (RegTAP) enrichment, and how long a failed one is remembered. |
+| `VIZIER_REFERENCE_TIMEOUT_SECONDS` | 20 | Budget of the optional ADS/doi.org lookup of the papers a registered table's citation names (stored for BibTeX). |
+| `VIZIER_EPOCH_SCAN_MAX_ROWS` | 2000000 | Tables up to this size get an exact MIN/MAX scan of their epoch columns at registration; larger ones are sampled. |
 | `ASTROSEARCH_SED_OFFLINE_FILTERS` | false | Use only the embedded SVO filter values. |
 | `ASTROSEARCH_SVO_FPS_URL`, `ASTROSEARCH_CACHE_DIR` | SVO, `~/.cache/astrosearch` | SVO endpoint and filter cache. |
 | `ASTROSEARCH_SED_SUPPLEMENTARY_DEADLINE_SECONDS` | module default | Budget of SED supplementary lookups. |
 | `TIMEDOMAIN_CACHE_TTL_SECONDS` | `PROVIDER_CACHE_TTL_SECONDS` or 3600 | Light-curve cache. |
-| `TIMEDOMAIN_ZTF_DEADLINE_S`, `_NEOWISE_`, `_GAIA_`, `_TESS_`, `_SKYBOT_`, `_HORIZONS_`, `_RESOLVER_` | 480, 360, 240, 480, 300, 120, 60 | Per-service deadlines. |
+| `TIMEDOMAIN_ZTF_DEADLINE_S`, `TIMEDOMAIN_NEOWISE_DEADLINE_S`, `TIMEDOMAIN_GAIA_DEADLINE_S`, `TIMEDOMAIN_TESS_DEADLINE_S`, `TIMEDOMAIN_SKYBOT_DEADLINE_S`, `TIMEDOMAIN_HORIZONS_DEADLINE_S`, `TIMEDOMAIN_RESOLVER_DEADLINE_S` | 480, 360, 240, 480, 300, 120, 60 | Per-service deadlines (seconds). |
 | `TIMEDOMAIN_PERIOD_SEARCH_BUDGET_S`, `TIMEDOMAIN_ANALYSIS_WORKERS`, `TIMEDOMAIN_REDIS_RETRY_AFTER_S` | 60, 2, 30 | Analysis budget, workers, Redis circuit breaker. |
+| `TIMEDOMAIN_REDIS_TIMEOUT_S`, `TIMEDOMAIN_RETRY_PAUSE_SECONDS` | 2, 2.0 | Redis socket timeout of the light-curve cache; pause before a retried archive request. |
 | `CUTOUT_CACHE_DIR`, `CUTOUT_CACHE_TTL_SECONDS`, `CUTOUT_CACHE_MAX_BYTES` | `<tmp>/astrosearch-cutouts`, 7 days, 512 MB | Cutout cache. |
+| `HIPS2FITS_URLS` | the CDS hips2fits mirrors | Comma-separated hips2fits endpoints tried in order. |
 | `VO_MAX_RADIUS_DEG`, `VO_CATALOG_ROW_LIMIT`, `VO_MAX_CONE_ROWS` | 0.05, 2000, 3000 | VO cone bounds. |
 | `VO_TAP_DEFAULT_MAXREC`, `VO_TAP_HARD_MAXREC`, `VO_MAX_RESULT_BYTES`, `VO_ADQL_EVAL_SECONDS` | 10000, 100000, 16000000, 30 | TAP limits. |
 | `VO_UWS_EXECUTION_DURATION`, `VO_UWS_MAX_JOBS`, `VO_UWS_RETENTION_SECONDS`, `VO_UWS_MAX_WAIT_SECONDS`, `VO_UWS_MAX_STORED_BYTES` | 600, 1000, 86400, 60, 256000000 | UWS jobs. |
+| `VO_CPU_THREADS`, `VO_CROSSMATCH_THREADS` | 4, 8 | Worker threads of the VO services (table serialisation, crossmatch jobs). |
 | `ALERTS_DATABASE_URL` | the dataset metadata database | Alert store. |
 | `ANTHROPIC_API_KEY` / `ANTHROPIC_AUTH_TOKEN` | none | Claude credentials. |
 | `ASTROSEARCH_AI_MODEL`, `ASTROSEARCH_AI_EFFORT`, `ASTROSEARCH_AI_MAX_TOKENS`, `ASTROSEARCH_AI_TIMEOUT`, `ASTROSEARCH_AI_FALLBACKS` | claude-opus-5, high, 16000, 300, default | Claude usage. |

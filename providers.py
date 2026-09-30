@@ -894,8 +894,11 @@ class _HTTPProvider(CatalogProvider):
         sources: list[CatalogSource] = []
         dropped = 0
         filtered = 0
+        integer_ids = _integer_id_columns(catalog)
         for index, raw_row in enumerate(rows):
             row = self._apply_sentinels(dict(raw_row), sentinels)
+            if integer_ids:
+                _integer_ids(row, integer_ids)
             if exclude and _excluded(row, exclude):
                 filtered += 1
                 continue
@@ -1206,6 +1209,32 @@ class IRSAGatorProvider(_HTTPProvider):
         if not cached:
             self._remember(key, response)
         return result
+
+
+# Integer identifier columns of an archive that serialises them inconsistently: the MAST
+# catalogs API returns Pan-STARRS DR2 objID (a 64-bit integer beyond 2**53) as a JSON number
+# in one answer and as a string in another (seen live: a sky-cache mirror held
+# '110561872774570857' where the archive then answered 110561872774570857). Such values are
+# converted to int by every adapter reading the catalog (remote and sky cache), so one object
+# always has one data record and one content hash.
+_INTEGER_ID_COLUMNS = {"mast": ("objID",)}
+
+
+def _integer_id_columns(catalog: CatalogDefinition) -> tuple[str, ...]:
+    configured = catalog.parameters.get("integer_id_columns")
+    if configured:
+        return tuple(str(c) for c in configured)
+    return _INTEGER_ID_COLUMNS.get(catalog.provider, ())
+
+
+def _integer_ids(row: dict[str, Any], names: tuple[str, ...]) -> None:
+    """Integer identifiers written as decimal strings become ints (in place; any key case)."""
+    wanted = {n.lower() for n in names}
+    for key, value in row.items():
+        if key.lower() in wanted and isinstance(value, str):
+            text = value.strip()
+            if re.fullmatch(r"[+-]?\d+", text):
+                row[key] = int(text)
 
 
 class MASTProvider(_HTTPProvider):

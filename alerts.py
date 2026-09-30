@@ -125,7 +125,9 @@ host-galaxy search. Enrichment:
   its parallax / parallax_error >= 5 (Bailer-Jones 2015, PASP 127, 994) -- projected on a D25
   ellipse only if >= 10 sigma, or G < 19, or RUWE < 1.4 (Rybizki et al. 2022, MNRAS 510, 2597;
   Lindegren et al. 2021, A&A 649, A2); when its proper motion (>= 5 sigma) exceeds 750 km/s at the
-  associated host's distance (3.2 mas/yr at the LMC distance when unknown) and it is a well-behaved
+  associated host's distance (3.2 mas/yr at the LMC distance when unknown; any significant motion when
+  no galaxy is associated with or under the alert and it lies far from the Magellanic Clouds, M31, M33
+  and the Local Group dwarfs) and it is a well-behaved
   point source (RUWE < 1.4, excess-noise significance <= 2) or the motion is >= 20 sigma (a binary's);
   or when it *is* a catalogued star (stellar-type entry at its position, no galaxy/cluster entry
   within 1.5") inside a galaxy of known distance with M_G < -10 (Humphreys & Davidson 1979), whatever
@@ -147,7 +149,9 @@ host-galaxy search. Enrichment:
   None: SN 2002gn, SN 2018aks); a generic stellar entry (SIMBAD '*', NED '*') within 1.5" of a
   galaxy/AGN entry is another entry of the galaxy's nucleus, not a star, unless a well-behaved,
   non-extragalactic Gaia DR3 point source confirms it (SIMBAD 'LEDA 1798300' '*' on a z = 0.027
-  galaxy). ``stellar_counterpart`` reports the stellar-type match itself.
+  galaxy). A well-behaved Gaia DR3 point source at the alert that DSC calls a star (P >= 0.9), without
+  decisive astrometry, makes the answer unknown (None), never False. ``stellar_counterpart`` reports the
+  stellar-type match itself.
 * ``known_variable``: a catalogued variable source at the position (SIMBAD variable-star
   ``otypedef`` types, codes and labels including '_Candidate' labels as emitted by Fink,
   blazars, NED ``V*``/``Nova``/``Flare*``, the broker's Gaia DR3 variability flag); it may be
@@ -2001,6 +2005,28 @@ LMC_DISTANCE_KPC = 49.59  # Pietrzynski et al. 2019, Nature 567, 200
 # Without a host distance the limit is set at the LMC distance (the nearest galaxy with a D25 ellipse
 # that alerts fall on in numbers), i.e. 3.19 mas/yr.
 PM_MAX_UNKNOWN_DISTANCE = MAX_GALAXY_TRANSVERSE_KMS / (KMS_PER_KPC_MASYR * LMC_DISTANCE_KPC)
+# That limit only matters where stars of another galaxy can be: near the Magellanic Clouds (their
+# stellar peripheries reach ~20 and ~10 deg), M31 and M33, or a Local Group dwarf. Elsewhere, with no
+# galaxy associated or under the alert, a significant (>= PM_SNR_STAR) motion of a well-behaved point
+# source is a Galactic star's whatever its size: extragalactic sources do not move (a Galactic star
+# at l = 48, b = -10 with 2.70 mas/yr at 18 sigma was left 'not a star' by the LMC-distance limit).
+NEARBY_GALAXY_REACH: tuple[tuple[str, float, float, float], ...] = (
+    ("LMC", 80.894, -69.756, 20.0), ("SMC", 13.187, -72.829, 10.0),
+    ("M31", 10.685, 41.269, 3.0), ("M33", 23.462, 30.660, 1.0),
+)
+# A well-behaved Gaia point source (RUWE < GAIA_RUWE_MAX, excess-noise significance <= 2) at the alert
+# that Gaia's DSC calls a star with at least this probability is probably a star: without a decisive
+# parallax or proper motion the answer is 'unknown', never 'not a star'.
+DSC_STAR_PROBABLE = 0.9
+PROBABLE_STAR_MAX_ARCSEC = 1.0
+
+
+def near_star_forming_galaxy(ra: float, dec: float) -> str | None:
+    """The nearby galaxy (NEARBY_GALAXY_REACH: the Magellanic Clouds, M31, M33) whose stars may lie at (ra, dec)."""
+    for name, g_ra, g_dec, reach_deg in NEARBY_GALAXY_REACH:
+        if haversine_arcsec(g_ra, g_dec, ra, dec) <= reach_deg * 3600.0:
+            return name
+    return None
 # The most luminous stars reach M ~ -10 (Humphreys & Davidson 1979, ApJ 232, 409). A catalogued
 # star brighter than that at the host's distance is a Galactic foreground star. (Luminosity
 # alone is not used: nuclei and star clusters of nearby galaxies are brighter, e.g. G1 in M31.)
@@ -2232,6 +2258,22 @@ def _counterpart_summary(source: dict[str, Any]) -> dict[str, Any]:
             "dsc_p_extragalactic": (p_gal or 0.0) + (p_qso or 0.0) if p_gal is not None or p_qso is not None else None,
         })
     return summary
+
+
+def _probable_gaia_star(entry: Mapping[str, Any]) -> bool:
+    """A Gaia DR3 counterpart at the alert (within PROBABLE_STAR_MAX_ARCSEC) that is a well-behaved point
+    source (RUWE < GAIA_RUWE_MAX, excess-noise significance <= GAIA_EXCESS_NOISE_SIG_MAX) with DSC
+    P(star) >= DSC_STAR_PROBABLE or a proper motion of at least PM_SNR_STAR sigma."""
+    if entry.get("catalog") != "gaia_dr3":
+        return False
+    sep = entry.get("separation_arcsec")
+    if sep is None or sep > PROBABLE_STAR_MAX_ARCSEC:
+        return False
+    ruwe, aens = entry.get("ruwe"), entry.get("astrometric_excess_noise_sig")
+    if ruwe is None or ruwe >= GAIA_RUWE_MAX or (aens is not None and aens > GAIA_EXCESS_NOISE_SIG_MAX):
+        return False
+    p_star, pm_sig = entry.get("dsc_p_star"), entry.get("pm_over_error")
+    return (p_star is not None and p_star >= DSC_STAR_PROBABLE) or (pm_sig is not None and pm_sig >= PM_SNR_STAR)
 
 
 def _flag(value: Any) -> bool | None:
@@ -3285,7 +3327,8 @@ class AlertEnricher:
         * parallax >= 5 sigma: outside galaxies always; projected on a D25 ellipse when >= 10 sigma,
           or G < 19, or RUWE < 1.4;
         * proper motion >= 5 sigma and faster than 750 km/s at the distance of the associated host
-          (3.2 mas/yr at the LMC's when unknown), for a well-behaved point source -- or, whatever its
+          (3.2 mas/yr at the LMC's when unknown; any when no galaxy is associated or under the alert, far
+          from NEARBY_GALAXY_REACH and the Local Group dwarfs), for a well-behaved point source -- or, whatever its
           RUWE/excess noise, at >= 20 sigma when nothing marks the source as extragalactic (DSC, galaxy
           candidate): a binary's proper motion (the eclipsing binary Gaia DR3 6189441739218449664, RUWE
           5.1, 11 mas/yr at 31 sigma) is real, while the spurious ones of nuclei and clusters stay < 18 sigma;
@@ -3363,13 +3406,25 @@ class AlertEnricher:
                              f"RUWE {ruwe} (not < {GAIA_RUWE_MAX}): possibly spurious (Rybizki et al. 2022)")
         distance_mpc = _float(associated.get("distance_mpc")) if associated else None
         distance_kpc = distance_mpc * 1000.0 if distance_mpc else None
-        pm_max = (MAX_GALAXY_TRANSVERSE_KMS / (KMS_PER_KPC_MASYR * distance_kpc) if distance_kpc
-                  else PM_MAX_UNKNOWN_DISTANCE)
+        ra, dec = entry.get("ra"), entry.get("dec")
+        isolated = (associated is None and enclosing is None and ra is not None and dec is not None
+                    and near_star_forming_galaxy(ra, dec) is None and local_group_dwarf_at(ra, dec) is None)
+        if distance_kpc:
+            pm_max = MAX_GALAXY_TRANSVERSE_KMS / (KMS_PER_KPC_MASYR * distance_kpc)
+        elif isolated:
+            pm_max = 0.0  # no galaxy whose stars could be here: any significant motion is a Galactic star's
+        else:
+            pm_max = PM_MAX_UNKNOWN_DISTANCE
         if pm is not None and pm_sig is not None and pm_sig >= PM_SNR_STAR and pm > pm_max:
-            where = (f" at the distance of {associated['name']}" if distance_kpc and associated
-                     else f" even at the LMC's distance ({LMC_DISTANCE_KPC:g} kpc; host distance unknown)")
-            text = (f"Gaia DR3 {sid}: proper motion {pm:.2f} mas/yr ({pm_sig:.0f} sigma) > {pm_max:.3g} mas/yr, "
-                    f"i.e. faster than {MAX_GALAXY_TRANSVERSE_KMS:.0f} km/s{where}")
+            if isolated and not distance_kpc:
+                text = (f"Gaia DR3 {sid}: proper motion {pm:.2f} mas/yr ({pm_sig:.0f} sigma), with no galaxy associated "
+                        "with or under the alert and far from the Magellanic Clouds, M31, M33 and the Local Group dwarfs "
+                        "(extragalactic sources do not move)")
+            else:
+                where = (f" at the distance of {associated['name']}" if distance_kpc and associated
+                         else f" even at the LMC's distance ({LMC_DISTANCE_KPC:g} kpc; host distance unknown)")
+                text = (f"Gaia DR3 {sid}: proper motion {pm:.2f} mas/yr ({pm_sig:.0f} sigma) > {pm_max:.3g} mas/yr, "
+                        f"i.e. faster than {MAX_GALAXY_TRANSVERSE_KMS:.0f} km/s{where}")
             if not not_point:
                 reasons.append(f"{text} -> Galactic star")
             elif pm_sig >= PM_SNR_DECISIVE and not classified:
@@ -3614,7 +3669,19 @@ class AlertEnricher:
                 result.evidence.append("the D25 galaxy search failed: Galactic nature of the stellar counterpart unknown")
         else:
             needed = {"gaia_dr3", "simbad"} & set(self.catalogs)
-            star = False if needed and needed <= answered else None
+            probable = [e for e in counterparts if _probable_gaia_star(e)]
+            if probable:
+                # A well-fitted point source Gaia calls a star, without a decisive parallax or motion: probably
+                # a star, but 'not a star' would be wrong and 'Galactic' unproven.
+                e = probable[0]
+                result.evidence.append(
+                    f"Gaia DR3 {e['source_id']} at {e['separation_arcsec'] or 0.0:.2f}\" is a well-behaved point source "
+                    f"(RUWE {e.get('ruwe')}, excess-noise significance {e.get('astrometric_excess_noise_sig')}) that Gaia's "
+                    f"DSC classifies as a star (P = {e.get('dsc_p_star')}), but neither its parallax nor its proper "
+                    "motion decides whether it is Galactic: Galactic nature not established")
+                star = None
+            else:
+                star = False if needed and needed <= answered else None
         result.known_star = star
 
         if variable:
