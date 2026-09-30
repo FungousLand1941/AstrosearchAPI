@@ -17,7 +17,7 @@ from typing import Any
 import httpx
 import pytest
 from fixture_io import TARGETS
-from live_policy import api_ok, network_failure, skip_on_network_error_event, skip_on_network_failures
+from live_policy import api_ok, network_text, skip_on_network_error_event, skip_on_network_failures, skip_on_network_messages
 from test_integration_e2e import UNSET, ServerThread, free_port, server_environment, sse_events, target_group
 
 import alerts
@@ -62,13 +62,8 @@ def skip_on_failures(record: dict[str, Any]) -> None:
 
 
 def skip_on_messages(what: str, messages: list[Any]) -> None:
-    """Failures reported as texts (batch targets, dataset runs, mirror tiles, broker polls): skip when every
-    one of them is a network error, fail otherwise."""
-    if not messages:
-        return
-    if all(network_failure(m) for m in messages):
-        pytest.skip(f"{what} failed upstream: {[str(m)[:200] for m in messages[:2]]}")
-    pytest.fail(f"{what} failed: {messages[:3]}")
+    """Failures reported as texts (batch targets, dataset runs, mirror tiles, broker polls)."""
+    skip_on_network_messages(what, messages)
 
 
 def test_live_search_by_coordinates_name_and_stream(live: httpx.Client) -> None:
@@ -125,7 +120,12 @@ def test_live_solar_system(live: httpx.Client) -> None:
     epoch = 60310.0
     try:
         ceres = asyncio.run(td.horizons_ephemeris("1;", epoch))[0]
-    except (httpx.HTTPError, td.UpstreamServiceError) as exc:
+    except httpx.TransportError as exc:
+        pytest.skip(f"JPL Horizons unreachable: {exc}")
+    except td.UpstreamServiceError as exc:
+        # Only a timeout, a network error or HTTP 5xx/429 is an outage; a garbled answer is a failure.
+        if not network_text(exc.message):
+            raise
         pytest.skip(f"JPL Horizons unavailable: {exc}")
     # ... is where the API's SkyBoT cone search finds it.
     body = ok(live.get("/api/v1/solar-system", params={"ra": ceres.ra, "dec": ceres.dec, "epoch_mjd": epoch,

@@ -266,6 +266,11 @@ RECORDED_SEARCHES: dict[str, dict[str, Any]] = {
     # radio / X-ray sources of its starburst within 5" (the resolved row must stay the target).
     "named_m82": {"name": "M82", "sesame": "m82", "radius_arcsec": 5.0,
                   "catalogs": ["simbad", "ned", "gaia_dr3", "chandra", "vlass"]},
+    # The reviewed M82 searches: SIMBAD alone at 2" (its 'M 82' row among 20 starburst sources),
+    # and 3" with NED, 2MASS, Chandra and NVSS.
+    "named_m82_simbad_2arcsec": {"name": "M82", "sesame": "m82", "radius_arcsec": 2.0, "catalogs": ["simbad"]},
+    "named_m82_3arcsec": {"name": "M82", "sesame": "m82", "radius_arcsec": 3.0,
+                          "catalogs": ["simbad", "ned", "twomass_psc", "chandra", "nvss"]},
     # Named galaxies whose NED record is the target itself (NED's 'NGC 4565' 1.2", 'Messier 101'
     # 0.8", 'NGC 7318a' 0.7" from the SIMBAD-resolved centre), and RR Lyr (NED 'RR Lyr').
     "named_ngc4565": {"name": "NGC 4565", "sesame": "ngc4565", "radius_arcsec": 10.0,

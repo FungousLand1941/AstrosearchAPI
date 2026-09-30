@@ -570,13 +570,15 @@ def test_manifest_route_rejects_non_finite_radius_and_maps_resolver_errors() -> 
             assert res.status_code == 422, res.text
             sesame.mock(return_value=httpx.Response(200, text=not_found, headers={"content-type": "text/xml"}))
             res = client.post("/api/v1/provenance/manifest", json={"name": "NoSuchObjectXYZ123"})
-            assert res.status_code == 422 and "No coordinates found" in res.json()["detail"]
+            # An unknown name is a 404 on every route (api.py maps resolver failures the same way).
+            assert res.status_code == 404 and "No coordinates found" in res.json()["detail"], res.text
             sesame.mock(return_value=httpx.Response(200, text="<html>maintenance</html", headers={"content-type": "text/html"}))
             res = client.post("/api/v1/provenance/manifest", json={"name": "M87"})
             assert res.status_code == 502 and "could not be parsed" in res.json()["detail"]
             sesame.mock(side_effect=httpx.ConnectError("down"))
             res = client.post("/api/v1/provenance/manifest", json={"name": "M87"})
-            assert res.status_code == 502
+            # An unreachable resolver: 503 with Retry-After (models.resolution_failure_status), as on every route.
+            assert res.status_code == 503 and res.headers.get("retry-after") == "30", res.text
 
 
 # ---------------------------------------------------------------------------

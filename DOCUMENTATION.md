@@ -633,13 +633,16 @@ VO errors are DALI error VOTables; request bodies over `vo_server.MAX_REQUEST_BY
 
 ## 9. Configuration
 
-Settings are read from the environment (see `.env.example`).
+Settings are read from the environment (see `.env.example`). This section lists every variable the
+code reads; `tests/test_env_documentation.py` collects them from the source and fails when one is
+missing here.
 
 ### Core and API
 
 | Variable | Default | Meaning |
 |---|---|---|
 | `DEFAULT_RADIUS_ARCSEC` | 3.0 | Default search radius. |
+| `API_MAX_RADIUS_ARCSEC` | 1800 (30') | Largest cone radius a single search may request (API, CLI, AI queries); `DEFAULT_RADIUS_ARCSEC` must not exceed it. |
 | `REQUEST_TIMEOUT_SECONDS` | 30 | HTTP timeout of archive requests. Setting it explicitly also caps every catalog's own timeout (Gaia, 2MASS and AllWISE use 90 s, NED/SDSS/VLASS 60 s): `.env.example` leaves it commented out for that reason. |
 | `CATALOG_TIMEOUT_CAP_SECONDS` | none | Upper bound of every catalog's own timeout. |
 | `MAX_RESPONSE_BYTES` | 10000000 | Largest archive response read. |
@@ -680,7 +683,7 @@ Settings are read from the environment (see `.env.example`).
 | `BATCH_CONE_CONCURRENCY` / `BATCH_CHUNK_CONCURRENCY` / `BATCH_ENDPOINT_CONCURRENCY` | 8 / 2 / 2 | Batch concurrency. |
 | `BATCH_UPLOAD_TIMEOUT_SECONDS` / `BATCH_CATALOG_BUDGET_SECONDS` / `BATCH_CPU_SLICE_SECONDS` | 300 / 1800 / 0.1 | Batch timing. |
 | `BATCH_FAST_FALLBACK_TARGETS` / `BATCH_FAST_FALLBACK_SECONDS` | 100 / 45 | A batch of at most this many targets whose upload/XMatch join has not answered within this time goes to per-target cone searches at once (and the timeout counts on the upload circuit, so later batches go straight to cones while the service is down). |
-| `BATCH_CHUNK_SIMBAD`, `_VIZIER`, `_IRSA`, `_HEASARC`, `_XMATCH` | 5000, 5000, 2000, 2000, 20000 | Targets per upload chunk (for cones up to 10"). |
+| `BATCH_CHUNK_SIMBAD`, `BATCH_CHUNK_VIZIER`, `BATCH_CHUNK_IRSA`, `BATCH_CHUNK_HEASARC`, `BATCH_CHUNK_XMATCH` | 5000, 5000, 2000, 2000, 20000 | Targets per upload chunk (for cones up to 10"). |
 | `DATASET_BATCH_MIN_TARGETS` | 50 | Datasets with at least this many targets use the batch engine (0 disables). |
 | `DATASET_STORAGE_PATH`, `DATABASE_URL`, `S3_BUCKET`, `S3_ENDPOINT_URL` | `datasets`, SQLite, none | Dataset storage. |
 | `SKYCACHE_ENABLED` | true | Answer mirrored catalogs from the sky cache. |
@@ -747,7 +750,22 @@ Settings are read from the environment (see `.env.example`).
 - **VO.** The UWS store is in memory; the ADQL subset has no joins, GROUP BY or uploads.
 - **Alerts.** Fink paging stops after 20 requests per poll (the backlog continues on later
   polls); background enrichment is deduplicated within one process only.
-- **AI.** Needs Anthropic credentials; object-type filters need SIMBAD's `otypedef`.
+- **AI.** Needs Anthropic credentials; object-type filters need SIMBAD's `otypedef`. The Claude
+  path (`/api/v1/ai/query`, `/api/v1/ai/explain`, `astrosearch ask|explain`) is verified offline
+  only: the request parameters and strict tool schemas were checked against the installed
+  `anthropic` SDK and the offline AI tests run against a mocked SDK, but no run against the real
+  Claude API has been recorded, so the handling of real thinking, fallback and citation blocks is
+  untested. Run `python -m pytest -m live tests/test_ai_live.py tests/test_ai_round3_live.py` with
+  `ANTHROPIC_API_KEY` set before relying on it (the tests skip without credentials).
+- **Packaging.** The wheel installs its modules at the top level of `site-packages` under generic
+  names (`models`, `providers`, `crossmatch`, `astrometry`, `streaming`, `batch`, `skycache`,
+  `vizier`, `sed`, `timedomain`, `imaging`, `ai`, `provenance`, `vo_server`, `alerts`, `datasets`,
+  `api`, `cli`, `main`). They clash with other distributions of the same module name (installed
+  next to Hugging Face `datasets`, `astrosearch verify` fails with `ImportError: cannot import name
+  'MetadataStore' from 'datasets'`) and with user scripts of those names in the working directory.
+  Install AstroSearch in a dedicated virtual environment. Follow-up: move the modules into an
+  `astrosearch` package (relative imports, console script `astrosearch.main:main`, `web/` as
+  package data) and add a `verify` check that reports a shadowed module by name.
 
 ---
 
@@ -766,7 +784,23 @@ OPENBLAS_NUM_THREADS=1 python -m pytest -q -m live      # live, against the real
   `CATALOG_REGISTRY_PATH` and `DATASET_STORAGE_PATH`), so local mirrors or registered catalogs
   never change the results.
 - **Live** tests (`@pytest.mark.live`) run the same code against the archives with polite pacing
-  (5 requests/s). They skip only on network errors and HTTP 5xx; wrong answers fail.
+  (5 requests/s). Every live module applies one skip policy, `tests/live_policy.py`: a test skips
+  only when an archive or the name resolver is unreachable (a catalog failure of a network error
+  type such as `CatalogUnavailableError`, `QueryTimeoutError` or `RateLimitedError`; an API answer
+  of 502/503/504 whose detail names a network error, a timeout or HTTP 5xx/429). A parse error, a
+  non-network catalog failure (even next to an unreachable archive), an HTTP 500 (the API's answer
+  to an unexpected exception) or a wrong answer fails. CDS Sesame sometimes answers a name SIMBAD
+  knows with 'Nothing found' or with its VizieR-local fallback (an undated position without
+  motion); `live_policy.skip_if_resolver_degraded` recognises this resolver outage the same way in
+  every harness. `tests/test_live_policy.py` checks the policy offline.
+- **Claude** live tests (`tests/test_ai_live.py`, `tests/test_ai_round3_live.py`) need
+  `ANTHROPIC_API_KEY` or `ANTHROPIC_AUTH_TOKEN` and skip without them (see section 10, AI);
+  `tests/test_integration_live.py` then checks that the AI routes answer 503 with the reason.
+- **Dependency floors** are checked with a lowest-direct resolution in a fresh environment:
+  `uv pip install --resolution lowest-direct -e ".[dev]"` then the offline suite. The floors are the
+  lowest versions that install on Python 3.12 and keep the invariants the code relies on
+  (`tests/test_packaging.py`). `tests/test_env_documentation.py` checks that section 9 lists every
+  environment variable the code reads.
 - **Integration** tests cover the assembled system:
   - `tests/test_integration_api.py`: mounted routers and OpenAPI, shared state and shutdown,
     authentication/quota/body-limit/strict-JSON middleware, CORS, the vizier-merged registry,

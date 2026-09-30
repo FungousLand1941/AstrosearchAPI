@@ -180,6 +180,17 @@ def _fresh_describe_cache():
     vizier.clear_describe_cache()
 
 
+@pytest.fixture(autouse=True)
+def _no_reference_lookup(monkeypatch):
+    """The replays hold no ADS/doi.org traffic: registrations store no resolved references here (the lookup
+    itself is tested in test_vizier_final / test_provenance_final)."""
+
+    async def none(*_args, **_kwargs):
+        return [], []
+
+    monkeypatch.setattr(vizier, "citation_references", none)
+
+
 # ---------------------------------------------------------------------------
 # Replay helpers
 # ---------------------------------------------------------------------------

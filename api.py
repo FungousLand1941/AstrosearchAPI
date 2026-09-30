@@ -60,7 +60,7 @@ import vizier
 import vo_server
 from crossmatch import AdvancedQuery, CrossmatchService, QueryValidator
 from datasets import DatasetEngine, MetadataStore, enqueue_dataset, process_dataset_async, submit_to_redis
-from main import api_search, build_providers, build_registry, build_service, skycache_store
+from main import api_search, build_providers, build_registry, build_service, check_search_radius, skycache_store
 from models import (
     CatalogQueryError,
     CatalogUnavailableError,
@@ -556,7 +556,8 @@ class SearchRequest(provenance.SearchFields):
     """Body of POST /api/v1/search (also of /search/batch items, saved queries and search
     manifests): provenance.SearchFields, so every route validates the same bounds -- ra in
     [0, 360), dec in [-90, 90], radius_arcsec at most MAX_SEARCH_RADIUS_ARCSEC (3600),
-    proper-motion components together."""
+    proper-motion components together. The configured API_MAX_RADIUS_ARCSEC (default 1800)
+    is checked when the search runs or is saved (:func:`main.check_search_radius`, a 422)."""
 
 
 class DatasetRequest(BaseModel):
@@ -616,6 +617,7 @@ async def get_catalog(catalog_name: str):
 async def _search(req: SearchRequest) -> dict[str, Any]:
     if not req.name and (req.ra is None or req.dec is None):
         raise ValueError("Either name or both ra and dec are required")
+    check_search_radius(req.radius_arcsec, settings=getattr(app.state, "settings", None))
 
     cache_key = cache.make_key("search", req.model_dump())
     cached = await cache.aget(cache_key)
@@ -734,14 +736,9 @@ async def create_dataset_endpoint(req: DatasetRequest, background_tasks: Backgro
             "time_period": req.time_period,
         })
         QueryValidator.validate(query, engine.registry)
-        if req.output_path:
-            path = Path(req.output_path).resolve()
-            if (
-                not path.is_relative_to(engine.storage)
-                or path.exists()
-                or path.suffix.lower() != f".{req.export_format}"
-            ):
-                raise ValueError("output_path must be unused, inside DATASET_STORAGE_PATH, and match export_format")
+        check_search_radius(req.radius_arcsec, settings=getattr(app.state, "settings", None))
+        if req.output_path:  # unused, inside DATASET_STORAGE_PATH, with the export format's extension
+            engine.check_export_path(req.output_path, req.export_format)
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
 
@@ -854,6 +851,11 @@ async def save_query_endpoint(req: SavedQueryRequest):
     """Save a search query for reuse."""
     if not req.query.name and (req.query.ra is None or req.query.dec is None):
         raise HTTPException(status_code=422, detail="Query requires name or ra and dec")
+    try:
+        # A saved query must run later: the same radius limit as POST /api/v1/search.
+        check_search_radius(req.query.radius_arcsec, settings=getattr(app.state, "settings", None))
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
     return get_metadata().save_query(req.name, req.query.model_dump())
 
 

@@ -392,7 +392,9 @@ def test_timeouts_split_chunks_instead_of_resending():
             raise httpx.ReadTimeout("simulated 5-minute limit", request=request)
         return httpx.Response(200, json=simbad_json(rows))
 
-    result = asyncio.run(run_with(handler, CANARY_TARGETS, ["simbad"], 5.0))
+    # The split path of joins too large for the small-batch fast fallback (BATCH_FAST_FALLBACK_TARGETS=0 makes
+    # these 4 targets such a join; see test_batch_final for the fast fallback itself).
+    result = asyncio.run(run_with(handler, CANARY_TARGETS, ["simbad"], 5.0, fast_fallback_targets=0))
     run = result.runs["simbad"]
     assert sizes == [4, 4, 2, 2, 2, 2, 1, 1, 1, 1]  # one retry per size, then split
     assert run.split_chunks == 3 and run.matched_targets == 4 and run.fallback_targets == 0
@@ -423,7 +425,7 @@ def test_heavy_join_timeouts_split_all_the_way_without_opening_the_circuit():
             raise httpx.ReadTimeout("simulated execution limit", request=request)
         return httpx.Response(200, json=simbad_json(rows))
 
-    result = _run_with_guards(handler, targets, guards, chunk_sizes={"simbad": 32})
+    result = _run_with_guards(handler, targets, guards, chunk_sizes={"simbad": 32}, fast_fallback_targets=0)
     run = result.runs["simbad"]
     assert run.matched_targets == 32 and run.failed_targets == 0 and run.fallback_targets == 0
     assert run.split_chunks == 31 and run.requests == 2 * 31 + 32

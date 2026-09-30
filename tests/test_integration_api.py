@@ -687,3 +687,310 @@ def test_citation_check_accepts_an_article_number_encoded_in_the_doi() -> None:
     wrong = {**csl, "DOI": "10.1117/1.JATIS.1.1.014004"}
     ok, problems, _meta = P._compare_csl(tess, wrong)
     assert not ok and problems == ["first page 1 != 14003"]
+
+
+# ---------------------------------------------------------------------------
+# Final-review regressions: status codes, radius limit, CORS with auth, body limit, exports, CLI
+# ---------------------------------------------------------------------------
+
+SESAME_UNKNOWN = (FIXTURES / "imaging" / "sesame_unknown.xml").read_text(encoding="utf-8")
+
+
+def _sesame(**respond: Any) -> respx.MockRouter:
+    """Sesame answers as given; any other upstream request fails the test."""
+    router = respx.mock(assert_all_called=False, assert_all_mocked=True)
+    router.get(url__startswith="https://cds.unistra.fr/cgi-bin/nph-sesame").respond(**respond)
+    router.route().mock(side_effect=AssertionError("no archive request expected"))
+    return router
+
+
+@pytest.mark.parametrize("body", [{"ra": 10, "dec": 95}, {"ra": 10, "dec": -91}, {"ra": 400, "dec": 10},
+                                  {"ra": 10, "dec": 10, "pm_ra_masyr": 5.0},
+                                  {"ra": 10, "dec": 10, "pm_ra_masyr": 1e9, "pm_dec_masyr": 0.0}])
+def test_invalid_coordinates_or_motion_are_422_never_502(isolated: Path, body: dict[str, Any]) -> None:
+    """Finding: {"ra":10,"dec":95} answered 502 'Catalog search failed' (InvalidCoordinateError is
+    not a ValueError); RA 400 was silently wrapped. Every search form now answers 422."""
+    with no_upstream(), TestClient(api.app) as client:
+        for path, payload in (("/api/v1/search", body), ("/api/v1/search/batch", [body]),
+                              ("/api/v1/queries", {"name": "q", "query": body}),
+                              ("/api/v1/provenance/manifest", body)):
+            response = client.post(path, json=payload)
+            assert response.status_code == 422, (path, response.text)
+
+
+def test_search_error_maps_input_errors_to_422_for_search_and_each_batch_item(isolated: Path,
+                                                                             monkeypatch: pytest.MonkeyPatch) -> None:
+    from models import InvalidCoordinateError, ObjectResolutionError, ResolverUnavailableError
+
+    assert api.search_error(InvalidCoordinateError("DEC must be within [-90, 90] degrees."))[0] == 422
+    assert api.search_error(ValueError("bad profile"))[0] == 422
+    assert api.search_error(ResolverUnavailableError("Sesame request failed: HTTP 503"))[0] == 503
+    assert api.search_error(ResolverUnavailableError("x"))[2] == {"Retry-After": "30"}
+    assert api.search_error(ObjectResolutionError("No coordinates found for 'x'"))[0] == 404
+    assert api.search_error(RuntimeError("bug"))[0] == 500
+
+    # An input error raised while the search runs (after the model validated) is still a 422.
+    async def invalid(_req: Any) -> dict[str, Any]:
+        raise InvalidCoordinateError("DEC must be within [-90, 90] degrees.")
+
+    monkeypatch.setattr(api, "_search", invalid)
+    with no_upstream(), TestClient(api.app) as client:
+        single = client.post("/api/v1/search", json={"ra": 10, "dec": 10})
+        items = client.post("/api/v1/search/batch", json=[{"ra": 10, "dec": 10}]).json()
+    assert single.status_code == 422 and "DEC must be within" in single.json()["detail"]
+    assert items[0]["status_code"] == 422 and "DEC must be within" in items[0]["error"]
+
+
+def test_search_radius_is_limited_by_api_max_radius_arcsec(isolated: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Finding: radius_arcsec 100000 sent a 28-degree cone to every archive. The model caps it at
+    3600" and API_MAX_RADIUS_ARCSEC (default 1800") applies to every search form."""
+    service = _CapturingService()
+    monkeypatch.setattr(api, "get_service", lambda: service)
+    target = {"ra": 200.0, "dec": -30.0}
+    with no_upstream(), TestClient(api.app) as client:
+        for radius in (100000, 3000):
+            body = {**target, "radius_arcsec": radius}
+            for path, payload in (("/api/v1/search", body), ("/api/v1/queries", {"name": "wide", "query": body})):
+                response = client.post(path, json=payload)
+                assert response.status_code == 422, (path, radius, response.text)
+            items = client.post("/api/v1/search/batch", json=[body])
+            assert items.status_code == 422 or items.json()[0]["status_code"] == 422, items.text
+            stream = client.get("/api/v1/search/stream", params={**target, "radius_arcsec": radius})
+            assert stream.status_code == 422, stream.text
+            dataset = client.post("/api/v1/datasets/create", json={"name": "d", "profile": "optical",
+                                                                    "radius_arcsec": radius, "targets": [target]})
+            assert dataset.status_code == 422, dataset.text
+        assert "API_MAX_RADIUS_ARCSEC" in client.post("/api/v1/search", json={**target, "radius_arcsec": 3000}).text
+        assert client.post("/api/v1/search", json={**target, "radius_arcsec": 1800}).status_code == 200
+    assert [call["query"].radius_arcsec for call in service.calls] == [1800]
+    # The limit is configurable (below the absolute 3600" of the model).
+    monkeypatch.setenv("API_MAX_RADIUS_ARCSEC", "10")
+    with pytest.raises(ValueError, match="API_MAX_RADIUS_ARCSEC"):
+        main.check_search_radius(11.0)
+    main.check_search_radius(10.0)
+    with pytest.raises(ValueError, match="API_MAX_RADIUS_ARCSEC"):
+        asyncio.run(main.crossmatch(10.0, 10.0, radius_arcsec=11.0))
+
+
+def test_name_resolver_outage_is_503_and_unknown_name_404_on_search_batch_and_stream(isolated: Path) -> None:
+    """Finding: a Sesame outage was reported by /search as 404 'could not be resolved'."""
+    with _sesame(status_code=503), TestClient(api.app) as client:
+        search = client.post("/api/v1/search", json={"name": "3C 273"})
+        items = client.post("/api/v1/search/batch", json=[{"name": "3C 273"}]).json()
+        stream = client.get("/api/v1/search/stream", params={"name": "3C 273"})
+    assert search.status_code == 503 and search.headers["retry-after"] == "30", search.text
+    assert "resolver unavailable" in search.json()["detail"]
+    assert items[0]["status_code"] == 503
+    assert stream.status_code == 503 and stream.headers["retry-after"] == "30"
+    unknown = {"status_code": 200, "text": SESAME_UNKNOWN, "headers": {"content-type": "text/xml"}}
+    with _sesame(**unknown), TestClient(api.app) as client:
+        assert client.post("/api/v1/search", json={"name": "NoSuchObjectQzx42"}).status_code == 404
+        assert client.post("/api/v1/search/batch", json=[{"name": "NoSuchObjectQzx42"}]).json()[0]["status_code"] == 404
+        assert client.get("/api/v1/search/stream", params={"name": "NoSuchObjectQzx42"}).status_code == 404
+
+
+def test_cors_preflight_and_errors_carry_cors_headers_when_authentication_is_on(
+        isolated: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Finding: with API_KEYS set, the preflight (which never carries X-API-Key) got a 401 without
+    Access-Control-* headers. CORS is the outermost middleware."""
+    monkeypatch.setenv("API_KEYS", "cors-key")
+    monkeypatch.setenv("JWT_SECRET", "cors-secret")
+    origin = {"Origin": "https://sky.example"}
+    with no_upstream(), TestClient(api.app) as client:
+        preflight = client.options("/api/v1/search", headers={
+            **origin, "Access-Control-Request-Method": "POST", "Access-Control-Request-Headers": "x-api-key"})
+        assert preflight.status_code == 200, preflight.text
+        assert preflight.headers["access-control-allow-origin"] in {"*", "https://sky.example"}
+        assert "x-api-key" in preflight.headers["access-control-allow-headers"].lower()
+        denied = client.get("/api/v1/catalogs", headers=origin)
+        assert denied.status_code == 401 and denied.headers.get("access-control-allow-origin")
+        allowed = client.get("/api/v1/catalogs", headers={**origin, "X-API-Key": "cors-key"})
+        assert allowed.status_code == 200 and allowed.headers.get("access-control-allow-origin")
+    # CORSMiddleware wraps the authentication middleware (the last added is the outermost).
+    classes = [m.cls.__name__ for m in api.app.user_middleware]
+    assert classes.index("CORSMiddleware") < classes.index("BaseHTTPMiddleware")
+
+
+def test_chunked_body_over_the_limit_is_rejected_without_reading_the_rest(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Finding: a body without Content-Length was buffered completely before the 413."""
+    from starlette.requests import Request
+
+    monkeypatch.setenv("MAX_REQUEST_BYTES", "1000")
+    received: list[int] = []
+
+    async def receive() -> dict[str, Any]:
+        received.append(1)
+        return {"type": "http.request", "body": b"x" * 400, "more_body": len(received) < 1000}
+
+    scope = {"type": "http", "method": "POST", "path": "/api/v1/queries", "headers": [
+        (b"content-type", b"application/json"), (b"transfer-encoding", b"chunked")], "query_string": b""}
+
+    async def never(_request: Any) -> Any:
+        raise AssertionError("the route must not run")
+
+    response = asyncio.run(api._limited(Request(scope, receive), never))
+    assert response.status_code == 413
+    assert len(received) == 3  # 400 + 400 + 400 > 1000: stopped at the third chunk, not the 1000th
+
+    async def receive_small() -> dict[str, Any]:
+        return {"type": "http.request", "body": b'{"a": 1}', "more_body": False}
+
+    async def route(request: Any) -> Any:
+        assert await request.body() == b'{"a": 1}'  # the route is handed the bytes that were read
+        return api.JSONResponse({"ok": True})
+
+    assert asyncio.run(api._limited(Request(scope, receive_small), route)).status_code == 200
+
+
+def test_ui_files_answer_conditional_requests_with_304(isolated: Path) -> None:
+    """Finding: ETag/Last-Modified with Cache-Control: no-cache, but every revalidation was a 200."""
+    with no_upstream(), TestClient(api.app) as client:
+        for path in ("/", "/app.js", "/styles.css"):
+            first = client.get(path)
+            assert first.status_code == 200 and "no-cache" in first.headers["cache-control"]
+            etag, modified = first.headers["etag"], first.headers["last-modified"]
+            for headers in ({"If-None-Match": etag}, {"If-None-Match": f"W/{etag}"}, {"If-Modified-Since": modified}):
+                again = client.get(path, headers=headers)
+                assert again.status_code == 304 and again.content == b"", (path, headers)
+                assert again.headers["etag"] == etag
+            assert client.get(path, headers={"If-None-Match": '"stale"'}).status_code == 200
+            # If-None-Match wins over If-Modified-Since (RFC 9110 13.2.2).
+            stale = {"If-None-Match": '"stale"', "If-Modified-Since": modified}
+            assert client.get(path, headers=stale).status_code == 200
+
+
+@pytest.mark.parametrize(("fmt", "content", "media"), [
+    ("csv", b"a,b\r\n1,2\r\n", "text/csv; charset=utf-8"), ("json", b"[]", "application/json"),
+    ("parquet", b"PAR1", "application/vnd.apache.parquet"), ("fits", b"SIMPLE  =", "application/fits")])
+def test_dataset_export_media_type_follows_the_format(isolated: Path, fmt: str, content: bytes, media: str) -> None:
+    """Finding: a CSV export was served as application/vnd.ms-excel (guessed from the Windows registry)."""
+    with no_upstream(), TestClient(api.app) as client:
+        engine = api.app.state.engine
+        path = engine.storage / f"export-{fmt}.{fmt}"
+        path.write_bytes(content)
+        engine.metadata.put_dataset({"id": f"ds{fmt}", "name": "x", "status": "completed", "output_format": fmt,
+                                     "export_path": str(path), "created_at": "2026-09-29T00:00:00+00:00"})
+        response = client.get(f"/api/v1/datasets/ds{fmt}/export")
+    assert response.status_code == 200, response.text
+    assert response.headers["content-type"] == media
+    assert response.content == content
+
+
+def test_dataset_catalogs_outside_the_profile_are_rejected_not_dropped(isolated: Path) -> None:
+    """Finding: profile 'optical' with catalogs [gaia_dr3, simbad, twomass_psc] silently dropped twomass_psc."""
+    body = {"name": "d", "profile": "optical", "catalogs": ["gaia_dr3", "simbad", "twomass_psc"],
+            "targets": [{"ra": 10.0, "dec": 10.0}]}
+    with no_upstream(), TestClient(api.app) as client:
+        response = client.post("/api/v1/datasets/create", json=body)
+        assert response.status_code == 422, response.text
+        assert "twomass_psc" in response.json()["detail"] and "not in profile" in response.json()["detail"]
+        assert client.get("/api/v1/datasets").json() == []
+
+
+def test_cli_dataset_output_may_be_any_path_but_the_api_keeps_the_storage_restriction(isolated: Path) -> None:
+    from datasets import DatasetEngine
+
+    engine = DatasetEngine(registry=main.build_registry())
+    outside = isolated / "elsewhere" / "cli-ds.csv"
+    outside.parent.mkdir()
+    assert engine.check_export_path(outside, "csv", any_path=True) == outside.resolve()
+    with pytest.raises(ValueError, match="DATASET_STORAGE_PATH"):
+        engine.check_export_path(outside, "csv")
+    with pytest.raises(ValueError, match=r"\.parquet"):
+        engine.check_export_path(outside, "parquet", any_path=True)
+    # The REST API keeps the restriction (a client must not write anywhere on the server).
+    body = {"name": "d", "profile": "optical", "targets": [{"ra": 10.0, "dec": 10.0}], "export_format": "csv",
+            "output_path": str(outside)}
+    with no_upstream(), TestClient(api.app) as client:
+        response = client.post("/api/v1/datasets/create", json=body)
+    assert response.status_code == 422 and "DATASET_STORAGE_PATH" in response.json()["detail"]
+
+
+def test_cli_dataset_writes_outside_the_storage_and_checks_the_path_before_building(
+        isolated: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
+    """Finding: `dataset --output elsewhere.csv` printed 'Building dataset ...' and then failed with
+    'output_path must be within DATASET_STORAGE_PATH' (exit 2)."""
+    import argparse
+    import json
+
+    from datasets import DatasetEngine
+
+    calls: list[dict[str, Any]] = []
+
+    async def create(self: Any, **kwargs: Any) -> dict[str, Any]:
+        calls.append(kwargs)
+        return {"export_path": kwargs["export_path"], "total_sources": 0, "method": "per-target"}
+
+    monkeypatch.setattr(DatasetEngine, "create_dataset", create)
+    targets = isolated / "targets.json"
+    targets.write_text(json.dumps([{"ra": 10.0, "dec": 10.0}]), encoding="utf-8")
+    (isolated / "out").mkdir()
+    output = isolated / "out" / "cli-ds.csv"
+    args = argparse.Namespace(targets=str(targets), catalogs=None, name="cli", profile="optical", radius=5.0,
+                              count_threshold=1, min_confidence=0.0, format="csv", output=str(output))
+    assert main._cmd_dataset(args) == 0, capsys.readouterr().err
+    assert calls[0]["export_path"] == str(output) and calls[0]["any_export_path"] is True
+    capsys.readouterr()
+    output.write_text("taken", encoding="utf-8")  # an existing file is refused before anything is built
+    assert main._cmd_dataset(args) == 2
+    captured = capsys.readouterr()
+    assert "Building" not in captured.out and "must not exist yet" in captured.err
+    assert len(calls) == 1
+
+
+def test_cli_search_exits_1_when_every_catalog_failed(monkeypatch: pytest.MonkeyPatch,
+                                                      capsys: pytest.CaptureFixture[str]) -> None:
+    """Finding: `search` exited 0 with the outage only inside the JSON."""
+    import argparse
+
+    def record(failures: list[dict[str, Any]]) -> UnifiedRecord:
+        return UnifiedRecord({"ra": 187.2779154, "dec": 2.0523883}, 1, {}, {}, failures,
+                             {"warnings": [], "association": {"notes": []}})
+
+    args = argparse.Namespace(name=None, ra=187.2779154, dec=2.0523883, radius=3.0, profile=None, catalogs="simbad",
+                              epoch=None, pm_ra=None, pm_dec=None, parallax=None, format="json")
+    outage = record([{"catalog": "simbad", "error_type": "CatalogUnavailableError", "message": "HTTP 503"}])
+
+    async def failed(*_a: Any, **_k: Any) -> UnifiedRecord:
+        return outage
+
+    monkeypatch.setattr(main, "crossmatch", failed)
+    assert main._cmd_search(args) == 1
+    captured = capsys.readouterr()
+    assert "every queried catalog failed" in captured.err
+    assert '"failures"' in captured.out  # the JSON is still printed
+
+    async def empty(*_a: Any, **_k: Any) -> UnifiedRecord:
+        return record([])
+
+    monkeypatch.setattr(main, "crossmatch", empty)
+    assert main._cmd_search(args) == 0  # an empty sky is not an error
+
+
+def _run_python(*argv: str) -> Any:
+    import os
+    import subprocess
+    import sys
+
+    env = {**os.environ, "OPENBLAS_NUM_THREADS": "1"}
+    return subprocess.run([sys.executable, *argv], cwd=Path(api.__file__).parent, capture_output=True, env=env,
+                          timeout=300, check=False)
+
+
+def test_python_main_help_does_not_import_the_science_stack() -> None:
+    """Finding: every CLI invocation took ~11 s (main.py imported every feature module first)."""
+    done = _run_python("-X", "importtime", "main.py", "--help")
+    assert done.returncode == 0, done.stderr[-2000:]
+    assert b"usage: astrosearch" in done.stdout and b"cutout" in done.stdout
+    imported = {line.rsplit(b"|", 1)[-1].strip() for line in done.stderr.splitlines() if line.startswith(b"import time")}
+    for heavy in (b"pandas", b"astropy", b"anthropic", b"scipy", b"skycache", b"crossmatch", b"ai"):
+        assert heavy not in imported, heavy
+
+
+def test_cli_logs_go_to_stderr_not_stdout() -> None:
+    """Finding: `cutout` printed structlog lines to stdout (mixed into the command's output)."""
+    done = _run_python("-c", "import cli, structlog; cli.log_to_stderr(); "
+                             "structlog.get_logger().info('cutout_fetched', bytes=1); print('RESULT')")
+    assert done.returncode == 0, done.stderr
+    assert done.stdout.strip() == b"RESULT"
+    assert b"cutout_fetched" in done.stderr

@@ -16,6 +16,15 @@ fallbacks live here too:
 
 from __future__ import annotations
 
+if __name__ == "__main__":
+    # ``python main.py ...``: hand over to the light entry point before the science stack below
+    # is imported (``cli`` imports this module again, as ``main``, only for a core command), so
+    # ``python main.py --help`` starts in about a second instead of ten.
+    import cli as _cli
+
+    _cli.main()
+    raise SystemExit(0)
+
 import argparse
 import asyncio
 import functools
@@ -238,6 +247,19 @@ def search_query(fields: Mapping[str, Any], spec: Mapping[str, Any] | None = Non
     })
 
 
+def check_search_radius(radius_arcsec: float | None, *, settings: Settings | None = None,
+                        field: str = "radius_arcsec") -> None:
+    """ValueError (an HTTP 422 / CLI input error) when a cone radius exceeds
+    ``Settings.max_radius_arcsec`` (API_MAX_RADIUS_ARCSEC, default 1800" = 30'): every
+    search sends its cone to every archive, and a degree-sized cone is a full-table scan."""
+    if radius_arcsec is None:
+        return
+    limit = (settings or Settings()).max_radius_arcsec
+    if float(radius_arcsec) > limit:
+        raise ValueError(f"{field} {float(radius_arcsec):g} exceeds the largest search radius, {limit:g} arcsec "
+                         "(API_MAX_RADIUS_ARCSEC)")
+
+
 async def api_search(service: Any, fields: Mapping[str, Any], resolver: Any = None) -> UnifiedRecord:
     """A search exactly as ``POST /api/v1/search`` runs it (without its response cache), shared
     with provenance's ``run_api_search``: ``fields`` are the api.SearchRequest fields (all
@@ -248,6 +270,7 @@ async def api_search(service: Any, fields: Mapping[str, Any], resolver: Any = No
     itself (its catalogue row is the target's identity). A requested epoch moves the position
     there with the requested (else the resolver's) proper motion.
     """
+    check_search_radius(fields.get("radius_arcsec"))
     spec: dict[str, Any] | None = None
     resolved_info: dict[str, Any] | None = None
     extra: dict[str, Any] = {}
@@ -307,6 +330,7 @@ async def crossmatch(
     the target is followed to each catalog's epoch.
     """
     active_settings = settings or Settings()
+    check_search_radius(radius_arcsec, settings=active_settings)
     async with httpx.AsyncClient(timeout=active_settings.request_timeout_seconds, follow_redirects=True) as client:
         service = build_service(settings=active_settings, client=client)
         return await service.crossmatch(ra, dec, radius_arcsec=radius_arcsec, epoch=epoch, profile=profile,
@@ -336,6 +360,7 @@ async def search_object(
     moves the resolved position there with the requested (or the resolver's) proper motion.
     """
     active_settings = settings or Settings()
+    check_search_radius(radius_arcsec, settings=active_settings)
     async with httpx.AsyncClient(timeout=active_settings.request_timeout_seconds, follow_redirects=True) as client:
         active_resolver = resolver or SesameResolver(client, endpoint=active_settings.resolver_endpoint)
         resolved = await active_resolver.resolve(name)

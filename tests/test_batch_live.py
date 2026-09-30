@@ -26,6 +26,7 @@ import time
 
 import numpy as np
 import pytest
+from live_policy import network_text
 
 from batch import BatchCrossmatcher, BatchResult, format_report
 
@@ -381,3 +382,63 @@ def test_live_gaia_dr2_keeps_source_id():
         barnard = result.target_matches("Barnard")[catalog][0]
         assert barnard["source_id"] == "4472832130942575872" and barnard["epoch"] == 2000.0, (catalog, barnard)
         assert result.target_matches("61 Cyg A")[catalog][0]["source_id"] == cyg_a
+
+
+# ---------------------------------------------------------------------------
+# VizieR-hosted radio catalogs and a registered VizieR table in batch mode (final review): these went through
+# TAPVizieR table uploads, which stalled for 2 x 300 s per split level (20 minutes for 2 targets, live).
+# ---------------------------------------------------------------------------
+
+
+def _timed(targets, catalogs, radius, *, registry=None) -> tuple[BatchResult, float]:
+    started = time.monotonic()
+    result = asyncio.run(BatchCrossmatcher(registry=registry).run(targets, catalogs, radius_arcsec=radius))
+    return result, time.monotonic() - started
+
+
+def test_live_vlass_batch_uses_xmatch_and_answers_quickly():
+    targets = [{"id": "M87", "ra": 187.7059308, "dec": 12.3911233}, {"id": "3C 273", "ra": 187.2779154, "dec": 2.0523883}]
+    result, elapsed = _timed(targets, ["vlass"], 5.0)
+    down = unavailable(result)
+    if down:
+        pytest.skip("archive unavailable: " + "; ".join(down))
+    run = result.runs["vlass"]
+    assert run.strategy == "xmatch" and not run.errors and run.fallback_targets == 0, run
+    assert elapsed < 120.0, elapsed
+    [m87] = result.target_matches("M87")["vlass"]
+    assert m87["source_id"] == "J123049.43+122328.3" and m87["separation_arcsec"] < 0.5
+
+
+def test_live_lotss_batch_finishes_within_the_fast_fallback_bound():
+    """LoTSS-DR3 is not in the XMatch service: TAPVizieR upload, with the small-batch fast fallback to cones."""
+    targets = [{"id": "M87", "ra": 187.7059308, "dec": 12.3911233}]
+    result, elapsed = _timed(targets, ["lotss"], 5.0)
+    run = result.runs["lotss"]
+    assert elapsed < 240.0, elapsed  # 2 x BATCH_FAST_FALLBACK_SECONDS + the cone search, never 2 x 300 s
+    non_network = [e for e in run.errors if not network_text(e)]
+    assert not non_network, run.errors
+    if result.failures:
+        pytest.skip(f"archive unavailable: {result.failures}")
+
+
+def test_live_registered_vizier_table_batch_uses_xmatch():
+    import json
+    from pathlib import Path
+
+    import vizier
+    from models import CatalogRegistry
+
+    data = json.loads((Path(__file__).parent / "fixtures" / "final" / "registered_i_345_gaia2.json")
+                      .read_text(encoding="utf-8"))
+    registry = CatalogRegistry()
+    vizier.attach_definition(registry, data["name"], data["entry"])
+    targets = [{"id": "M87", "ra": 187.7059308, "dec": 12.3911233}, {"id": "3C 273", "ra": 187.2779154, "dec": 2.0523883}]
+    result, elapsed = _timed(targets, [data["name"]], 5.0, registry=registry)
+    down = unavailable(result)
+    if down:
+        pytest.skip("archive unavailable: " + "; ".join(down))
+    run = result.runs[data["name"]]
+    assert run.strategy == "xmatch" and not run.errors, run
+    assert elapsed < 120.0, elapsed
+    assert result.target_matches("3C 273")[data["name"]][0]["source_id"] == "3700386905605055360"
+    assert result.target_matches("M87")[data["name"]][0]["source_id"] == "3907709439453756032"

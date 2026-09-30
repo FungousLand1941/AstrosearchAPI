@@ -242,19 +242,6 @@ class MetadataStore:
                 (metadata["id"], json.dumps(metadata, default=str), metadata["created_at"]),
             )
 
-    def check_export_path(self, export_path: str | os.PathLike[str], output_format: str, *,
-                          any_path: bool = False) -> Path:
-        """The resolved export path, or ValueError: it must be unused, carry the format's
-        extension, and (unless ``any_path``) lie inside DATASET_STORAGE_PATH."""
-        path = Path(export_path).expanduser().resolve()
-        if not any_path and not path.is_relative_to(self.storage):
-            raise ValueError("output_path must be within DATASET_STORAGE_PATH")
-        if path.exists() or path.suffix.lower() != f".{output_format.lower()}":
-            raise ValueError(f"output path must not exist yet and must end in .{output_format.lower()}: {path}")
-        if not path.parent.is_dir():
-            raise ValueError(f"output directory does not exist: {path.parent}")
-        return path
-
     def get_dataset(self, dataset_id: str) -> dict[str, Any] | None:
         with self._connect() as conn:
             row = conn.execute(self._sql("SELECT metadata_json FROM datasets WHERE id = ?"), (dataset_id,)).fetchone()
@@ -452,6 +439,11 @@ class DatasetEngine:
             raise ValueError("Unsupported output format")
         if not targets:
             raise ValueError("At least one target with ra and dec is required")
+        limit = Settings().max_radius_arcsec
+        if not math.isfinite(float(radius_arcsec)) or not 0.0 < float(radius_arcsec) <= limit:
+            # Every target's cone goes to every archive of the profile (main.check_search_radius).
+            raise ValueError(f"radius_arcsec must be in (0, {limit:g}] arcsec (API_MAX_RADIUS_ARCSEC), "
+                             f"got {radius_arcsec!r}")
 
         unknown = set(catalogs or ()) - set(self.registry.enabled_catalogs())
         if unknown:
@@ -710,6 +702,20 @@ class DatasetEngine:
         except (TypeError, ValueError):
             return False
         return str(val) == str(limit)
+
+    def check_export_path(self, export_path: str | os.PathLike[str], output_format: str, *,
+                          any_path: bool = False) -> Path:
+        """The resolved export path, or ValueError: it must be unused, carry the format's
+        extension, and (unless ``any_path``, the local CLI) lie inside DATASET_STORAGE_PATH:
+        a REST client may not write anywhere on the server."""
+        path = Path(export_path).expanduser().resolve()
+        if not any_path and not path.is_relative_to(self.storage):
+            raise ValueError("output_path must be within DATASET_STORAGE_PATH")
+        if path.exists() or path.suffix.lower() != f".{output_format.lower()}":
+            raise ValueError(f"output path must not exist yet and must end in .{output_format.lower()}: {path}")
+        if not path.parent.is_dir():
+            raise ValueError(f"output directory does not exist: {path.parent}")
+        return path
 
     def list_datasets(self) -> list[dict[str, Any]]:
         return self.metadata.list_datasets()

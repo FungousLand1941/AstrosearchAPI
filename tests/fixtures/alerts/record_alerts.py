@@ -7,6 +7,7 @@ Live network, polite (a few dozen small requests)::
     .venv/Scripts/python.exe tests/fixtures/alerts/record_alerts.py famous     # famous-object enrichments only
     .venv/Scripts/python.exe tests/fixtures/alerts/record_alerts.py review     # review-round-2 + random positions
     .venv/Scripts/python.exe tests/fixtures/alerts/record_alerts.py round3     # review-round-3 positions
+    .venv/Scripts/python.exe tests/fixtures/alerts/record_alerts.py final      # final-review positions
     .venv/Scripts/python.exe tests/fixtures/alerts/record_alerts.py backlog    # truncated-window backlog scenarios
     .venv/Scripts/python.exe tests/fixtures/alerts/record_alerts.py enrich     # re-record xmatch_* for the stored alerts
     .venv/Scripts/python.exe tests/fixtures/alerts/record_alerts.py variables  # Fink CV / RR Lyrae rows + enrichment
@@ -190,6 +191,13 @@ ROUND3: dict[str, tuple[float, float]] = {
     # The Sculptor dSph RR Lyrae star EV* SclG V0214, 12' from Sculptor's centre (current D25: 34").
     "SclG_V0214": (14.83046939535, -33.6108759036),
 }
+# Final review (live Fink alert positions):
+FINAL: dict[str, tuple[float, float]] = {
+    # fink:ZTF26abuxdqd (l = 48.0, b = -10.3), 0.35" from Gaia DR3 4298320600309152000: G = 18.6, DSC P(star) =
+    # 0.999996, RUWE 0.97, proper motion 2.70 mas/yr at 18 sigma, no SIMBAD/NED stellar entry. It was answered
+    # known_star=False with no evidence (the 3.2 mas/yr LMC-distance limit applied far from the Clouds).
+    "ZTF26abuxdqd": (299.0526, 8.4242),
+}
 # Polite recording: at most this many enrichments at once (each makes ~8 archive requests).
 RECORD_CONCURRENCY = 3
 LSST_SINCE_MJD = 61200.0  # 2026-06-09: Fink/LSST last processed night so far is 2026-07-14.
@@ -287,6 +295,12 @@ async def record_round3(until: float) -> None:
     """Enrichments of the review-round-3 positions."""
     await record_enrichment("xmatch_round3", [Alert("manual", name, ra, dec, until, None, None, None, None, "",
                                                     survey="none") for name, (ra, dec) in ROUND3.items()])
+
+
+async def record_final(until: float) -> None:
+    """Enrichments of the final-review positions."""
+    await record_enrichment("xmatch_final", [Alert("manual", name, ra, dec, until, None, None, None, None, "",
+                                                   survey="none") for name, (ra, dec) in FINAL.items()])
 
 
 async def record_review(until: float) -> None:
@@ -473,6 +487,8 @@ async def main() -> None:
         await record_review(until)
     if mode in {"round3", "all"}:
         await record_round3(until)
+    if mode in {"final", "all"}:
+        await record_final(until)
     if mode == "enrich":
         await rerecord_enrichments()
     if mode == "versions":

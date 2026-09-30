@@ -6,6 +6,7 @@ error, an HTTP 4xx, a crash reported as HTTP 500, a record with a non-network ca
 fails the test: a regression must never pass as a skip.
 
 * :func:`skip_on_network_failures` -- a record's (or a batch/dataset's) catalog failures;
+* :func:`skip_on_network_messages` -- failures reported as texts (batch, dataset, mirror, alert poll);
 * :func:`api_ok` -- an API answer: 502/503/504 skip only when the detail names a network error;
 * :func:`skip_if_resolver_degraded` -- CDS Sesame answering a name SIMBAD knows with 'Nothing found'
   or with a VizieR-local fallback (seen live) is the resolver's outage, shared by every harness.
@@ -65,10 +66,24 @@ def skip_on_network_failures(record: Any, needed: Iterable[str] | None = None) -
     wanted = set(needed) if needed is not None else None
     relevant = [f for f in failures
                 if wanted is None or not isinstance(f, Mapping) or f.get("catalog") in wanted]
-    down = [f for f in relevant if network_failure(f)]
-    if down:
-        pytest.skip("archive unreachable: " + "; ".join(_describe(f) for f in down))
-    assert not relevant, relevant
+    # A non-network failure fails the test even when another catalog was unreachable at the same time:
+    # an outage elsewhere must not hide a parse or code regression.
+    broken = [f for f in relevant if not network_failure(f)]
+    assert not broken, "catalog failures that are not network errors: " + "; ".join(_describe(f) for f in broken)
+    if relevant:
+        pytest.skip("archive unreachable: " + "; ".join(_describe(f) for f in relevant))
+
+
+def skip_on_network_messages(what: str, messages: Iterable[Any]) -> None:
+    """Failures reported as texts or dicts (batch targets, dataset runs, mirror tiles, broker polls): skip when
+    every one of them is a network error, fail when any is not (a parse error must not pass as a skip)."""
+    messages = list(messages)
+    if not messages:
+        return
+    broken = [m for m in messages if not network_failure(m)]
+    if broken:
+        pytest.fail(f"{what} failed (not a network error): {[_describe(m) for m in broken[:3]]}")
+    pytest.skip(f"{what} failed upstream: {[_describe(m) for m in messages[:2]]}")
 
 
 def api_ok(response: Any, expected: int = 200) -> Any:

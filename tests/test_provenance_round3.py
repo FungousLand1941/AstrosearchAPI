@@ -33,6 +33,7 @@ import pytest
 import respx
 from fixture_io import TARGETS, Exchange, load_exchanges, replay_side_effect
 from helpers import make_service, offline_client
+from pydantic import ValidationError
 from test_provenance import _app, _crossmatch_3c273, _parser, _source, synthetic_record
 from test_provenance_regressions import _with_tap_schema
 
@@ -501,10 +502,17 @@ def test_search_fields_equal_api_search_request() -> None:
         assert repr(ours[name].metadata) == repr(theirs[name].metadata), name
     assert P.SearchFields.model_config.get("extra") == api.SearchRequest.model_config.get("extra") == "forbid"
     assert P.SEARCH_FIELDS == tuple(theirs)
-    # Accepted as /api/v1/search accepts them (the crossmatch normalizes ra and checks the radius).
-    for body in ({"ra": 360.0, "dec": 0.0}, {"ra": 1.0, "dec": 1.0, "radius_arcsec": 7200.0}):
+    # Accepted and refused exactly as /api/v1/search accepts and refuses them: ra in [0, 360), the radius at
+    # most API_MAX_RADIUS_ARCSEC (default 1800").
+    for body in ({"ra": 359.999, "dec": 0.0}, {"ra": 1.0, "dec": 1.0, "radius_arcsec": 1800.0}):
         api.SearchRequest.model_validate(body)
         assert P.ManifestRequest.model_validate(body).search_fields()["ra"] == body["ra"]
+    for body in ({"ra": 360.0, "dec": 0.0}, {"ra": 1.0, "dec": 1.0, "radius_arcsec": 7200.0},
+                 {"ra": 1.0, "dec": 1.0, "radius_arcsec": 1800.5}):
+        with pytest.raises(ValidationError):
+            api.SearchRequest.model_validate(body)
+        with pytest.raises(ValidationError):
+            P.ManifestRequest.model_validate(body)
 
 
 # ---------------------------------------------------------------------------

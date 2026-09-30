@@ -19,16 +19,18 @@ dependencies = [
     "prometheus-client>=0.19.0",
     "structlog>=24.1.0",
     "redis>=5.0.0",
-    "PyYAML>=6.0.0",
-    # Science stack
-    "numpy>=1.26",
-    "scipy>=1.11",
-    "astropy>=6.0.0",
-    "pyerfa>=2.0.1",
-    "astropy-healpix>=1.0",
-    "pandas>=2.2.0",
-    "pyarrow>=15.0.0",
-    "Pillow>=10.0",
+    "PyYAML>=6.0.1",  # 6.0.0 does not build on Python 3.12
+    # Science stack. astropy 8 is the first release whose fast Lomb-Scargle gives the same powers on
+    # sub-grids of a regular frequency grid (timedomain.ls_power evaluates it in chunks); it needs
+    # numpy 2, so the other compiled packages start at their first numpy-2 builds with Python 3.12 wheels.
+    "numpy>=2.0",
+    "scipy>=1.13.0",
+    "astropy>=8.0",
+    "pyerfa>=2.0.1.3",
+    "astropy-healpix>=1.0.3",
+    "pandas>=2.2.2",
+    "pyarrow>=16.0.0",
+    "Pillow>=10.1",
     # Claude (ai.py: natural-language queries and explanations)
     "anthropic>=1.8",
 ]
@@ -40,15 +42,17 @@ dev = [
     "pytest-cov>=4.1.0",
     "respx>=0.21.0",
     "httpx-sse>=0.4.0",
-    "pyvo>=1.5",
-    "cdshealpix>=0.6",
-    "matplotlib>=3.8",
+    "pyvo>=1.5.3",  # 1.5.0-1.5.2 cannot read a TAP service's VOSI capabilities (test_pyvo_tap_sync_async_and_metadata)
+    "cdshealpix>=0.7",
+    "matplotlib>=3.9",
+    # tests/test_vo_server.py validates the VO documents against the IVOA XML schemas
+    "lxml>=5.0",
     "ruff>=0.5.0",
     "mypy>=1.10.0",
 ]
 # SED plots (astrosearch sed --plot, sed.plot_sed)
 plot = [
-    "matplotlib>=3.8",
+    "matplotlib>=3.9",
 ]
 # Remote HATS catalogs (skycache.HatsRemoteProvider) and the HATS/lsdb compatibility tests
 skycache-hats = [
@@ -68,7 +72,7 @@ astrosearch = "main:main"
 [tool.setuptools]
 py-modules = [
     "models", "providers", "crossmatch", "astrometry", "streaming", "batch", "skycache", "vizier", "sed",
-    "timedomain", "imaging", "ai", "provenance", "vo_server", "alerts", "datasets", "api", "main",
+    "timedomain", "imaging", "ai", "provenance", "vo_server", "alerts", "datasets", "api", "cli", "main",
 ]
 
 # The web UI (served at '/'). An editable install or a checkout serves web/ next to imaging.py;

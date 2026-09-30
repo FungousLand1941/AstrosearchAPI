@@ -137,7 +137,19 @@ def log_to_stderr() -> None:
     except ImportError:  # pragma: no cover - a dependency
         return
     if not structlog.is_configured():
-        structlog.configure(logger_factory=structlog.PrintLoggerFactory(file=sys.stderr))
+        structlog.configure(logger_factory=structlog.PrintLoggerFactory(file=_CurrentStderr()))
+
+
+class _CurrentStderr:
+    """Writes to whatever ``sys.stderr`` is when a line is logged (not the stream at configure
+    time: a replaced and closed stderr -- pytest's capture, an embedding application -- would
+    otherwise make every later log line fail with 'I/O operation on closed file')."""
+
+    def write(self, text: str) -> int:
+        return sys.stderr.write(text)
+
+    def flush(self) -> None:
+        sys.stderr.flush()
 
 
 def _command_of(argv: Sequence[str]) -> str | None:

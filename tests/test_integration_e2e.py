@@ -393,8 +393,16 @@ def _vizier(*cases: str) -> Callable[[httpx.Request], httpx.Response]:
     return replay_side_effect([e for case in cases for e in load_exchanges(f"vizier/{case}")])
 
 
+def _ads_without_doi(request: httpx.Request) -> httpx.Response:
+    """The ADS link gateway without a DOI link for the bibcode (HTTP 404): registration then cites the
+    table from its citation text, marked unverified (vizier.citation_references is optional)."""
+    if request.url.host != "ui.adsabs.harvard.edu":
+        raise FixtureMismatch(f"not an ADS request: {request.url}")
+    return httpx.Response(404, text="Not Found", request=request)
+
+
 def test_vizier_search_describe_register(http: httpx.Client, server: ServerThread) -> None:
-    with upstream(_vizier("search_gaia_dr3", "describe_2sxps", "describe_catalog_vii250")):
+    with upstream(_vizier("search_gaia_dr3", "describe_2sxps", "describe_catalog_vii250"), _ads_without_doi):
         search = http.get("/api/v1/vizier/search", params={"q": "Gaia DR3"})
         table = http.get("/api/v1/vizier/catalog/IX/58/2sxps")
         catalog = http.get("/api/v1/vizier/catalog/VII/250")

@@ -37,8 +37,22 @@ pip install -e ".[dev]"           # runtime + test dependencies
 ```
 
 This installs the `astrosearch` command. The web UI lives in `web/`; an editable install or a
-checkout serves it directly, a wheel installs it under `<prefix>/share/astrosearch/web`, and
-`ASTROSEARCH_WEB_DIR` points the server at another copy.
+checkout serves it directly, a wheel installs it under `share/astrosearch/web` of its install
+scheme (a virtual environment, `--user` or `--prefix`), and `ASTROSEARCH_WEB_DIR` points the
+server at another copy.
+
+**Install AstroSearch in its own virtual environment.** Its modules are installed as top-level
+modules with generic names (`api`, `main`, `cli`, `models`, `datasets`, `batch`, `ai`, ...), so
+next to another distribution with the same module name (for example Hugging Face `datasets`) one
+of the two is shadowed and the CLI and API fail to start (`ImportError: cannot import name
+'MetadataStore' from 'datasets'`). A script named `main.py` or `api.py` in the working directory
+shadows them too. Moving the modules into an `astrosearch` package is planned (DOCUMENTATION.md,
+section 10).
+
+The dependency floors are the lowest versions that install on Python 3.12 and pass the suite:
+astropy 8 (the first release whose fast Lomb-Scargle gives the same powers on sub-grids of a
+frequency grid, which the chunked period search relies on) and therefore numpy 2. Check them with
+`uv pip install --resolution lowest-direct -e ".[dev]"` in a fresh environment.
 
 Check the installation (offline, no network):
 
@@ -106,8 +120,12 @@ python -m pytest -q -m live         # live suite: the same code against the real
 python -m pytest -q tests/test_integration_e2e.py   # the real server under uvicorn, every route
 ```
 
-Set `OPENBLAS_NUM_THREADS=1` on small machines. Live tests skip only on network errors and HTTP
-5xx answers from the archives. Recording new fixtures is described in
+Set `OPENBLAS_NUM_THREADS=1` on small machines. Live tests skip only when an archive or the
+name resolver is unreachable (network error, timeout, HTTP 5xx or 429; `tests/live_policy.py`);
+a parse error, a non-network catalog failure or an HTTP 500 from the API fails them. The Claude
+tests (`tests/test_ai_live.py`, `tests/test_ai_round3_live.py`) need `ANTHROPIC_API_KEY` (or
+`ANTHROPIC_AUTH_TOKEN`) and are skipped without it; so far the Claude features have been
+verified offline only, against a mocked SDK. Recording new fixtures is described in
 [DOCUMENTATION.md](DOCUMENTATION.md#11-testing).
 
 ## License

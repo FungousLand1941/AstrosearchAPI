@@ -196,3 +196,22 @@ def test_live_heasarc_release_descriptions() -> None:
     assert releases["chandra"]["release"].startswith("Chandra Source Catalog, v2")
     assert "FIRST" in releases["first"]["release"]
     assert all(r["source"].startswith("live: https://heasarc.gsfc.nasa.gov/") for r in releases.values())
+
+
+def test_live_registered_gaia_dr2_citation_resolves_to_its_paper() -> None:
+    """A table registered with `vizier add` (I/345/gaia2) is cited with its own paper, resolved through ADS and
+    doi.org (final review: its BibTeX held only the VizieR entries)."""
+    import vizier
+
+    citation = ("Gaia Collaboration 2018, A&A 616, A1 (2018A&A...616A...1G); VizieR I/345 (I/345/gaia2), "
+                "DOI 10.26093/cds/vizier.1345")
+    refs, notes = asyncio.run(vizier.citation_references(citation))
+    if notes and all(("not resolved" in n) for n in notes):
+        pytest.skip(f"ADS/doi.org unreachable: {notes}")
+    assert notes == [], notes
+    [ref] = refs
+    assert ref["bibcode"] == "2018A&A...616A...1G" and ref["doi"] == "10.1051/0004-6361/201833051"
+    assert ref["verified"] is True and ref["entry_type"] == "article" and "Gaia Data Release 2" in ref["title"]
+    stored = P.reference_from_registry(ref)
+    assert stored is not None
+    P.parse_bibtex(P.reference_to_bibtex(stored))

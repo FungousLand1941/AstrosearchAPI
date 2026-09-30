@@ -2029,6 +2029,8 @@ def near_star_forming_galaxy(ra: float, dec: float) -> str | None:
         if haversine_arcsec(g_ra, g_dec, ra, dec) <= reach_deg * 3600.0:
             return name
     return None
+
+
 # The most luminous stars reach M ~ -10 (Humphreys & Davidson 1979, ApJ 232, 409). A catalogued
 # star brighter than that at the host's distance is a Galactic foreground star. (Luminosity
 # alone is not used: nuclei and star clusters of nearby galaxies are brighter, e.g. G1 in M31.)

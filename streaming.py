@@ -204,9 +204,10 @@ async def event_stream(
 
 
 def error_status(exc: BaseException) -> int:
-    """HTTP-like status of an error: 422 bad input, 404 unknown object name, 502 resolver
+    """HTTP-like status of an error event: 422 bad input, 404 unknown object name, 502 resolver
     or archive failure (an upstream error, as the web UI assumes by default), 504 timeout,
-    500 anything else."""
+    500 anything else. (The route answers a resolver outage before the stream starts with the
+    statuses of POST /api/v1/search: 503 with Retry-After.)"""
     from models import (
         CatalogUnavailableError,
         InvalidCoordinateError,
@@ -315,12 +316,18 @@ async def search_stream(
     forwarded as the text typed, so their rounding (``187.278``: 1" per axis; ``150.500000``:
     exact to 1 microdegree) sets the target uncertainty (see ``CrossmatchService.prepare``)."""
     from crossmatch import parse_target_coordinates, resolved_search_target, validate_search_inputs
-    from models import InvalidCoordinateError, ObjectResolutionError, ResolverUnavailableError
+    from main import check_search_radius
+    from models import InvalidCoordinateError, ObjectResolutionError, resolution_failure_status
 
     if name is None and (ra is None or dec is None):
         raise HTTPException(status_code=422, detail="Provide ra and dec, or name.")
     if name is not None and (ra is not None or dec is not None):
         raise HTTPException(status_code=422, detail="Give either an object name or ra/dec, not both.")
+    try:
+        # API_MAX_RADIUS_ARCSEC, as POST /api/v1/search (the Query bound is the absolute 3600").
+        check_search_radius(radius_arcsec, settings=getattr(request.app.state, "settings", None))
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
     service, own_client = _service_for(request)
     try:
         catalog_list = parse_catalogs(catalogs)
@@ -342,10 +349,18 @@ async def search_stream(
             temporary = httpx.AsyncClient(timeout=30.0, follow_redirects=True) if client is None else None
             try:
                 obj = await SesameResolver(client or temporary).resolve(name)
-            except ResolverUnavailableError as exc:
-                raise HTTPException(status_code=503, detail=f"Name resolver unavailable: {exc}") from exc
             except ObjectResolutionError as exc:
-                raise HTTPException(status_code=404, detail=f"Object name could not be resolved: {exc}") from exc
+                # The statuses of POST /api/v1/search (api.search_error): 404 unknown name, 503 (with
+                # Retry-After) resolver unreachable, 502 unusable answer, 422 empty name.
+                code = resolution_failure_status(exc)
+                if code == 503:
+                    raise HTTPException(status_code=503, detail=f"Name resolver unavailable: {exc}",
+                                        headers={"Retry-After": "30"}) from exc
+                if code == 404:
+                    raise HTTPException(status_code=404, detail=f"Object name could not be resolved: {exc}") from exc
+                if code == 422:
+                    raise HTTPException(status_code=422, detail=str(exc)) from exc
+                raise HTTPException(status_code=502, detail=f"Name resolver failed: {exc}") from exc
             finally:
                 if temporary is not None:
                     await temporary.aclose()
@@ -404,6 +419,9 @@ async def search_stream(
 async def _run_stream(args: argparse.Namespace, service: Any = None) -> int:
     import httpx
 
+    from main import check_search_radius
+
+    check_search_radius(args.radius)  # ValueError: _cli_stream reports invalid input (status 2)
     client = None
     if service is None:
         from main import build_service

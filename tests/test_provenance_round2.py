@@ -461,14 +461,19 @@ def test_cli_manifest_with_catalogs_searches_as_the_api(tmp_path: Path, monkeypa
 
 
 async def test_advanced_manifest_with_catalogs_outside_its_profiles_replays() -> None:
-    """{profiles: [optical], catalogs: [gaia_dr3, nvss]} planned gaia_dr3 only (nvss is radio)."""
+    """{profiles: [optical], catalogs: [gaia_dr3, nvss]} silently planned gaia_dr3 only (nvss is radio); the
+    crossmatch now refuses such a query (a catalog asked for by name is never dropped silently), and the manifest
+    of the query it asks for instead ({profiles: [optical], catalogs: [gaia_dr3]}) replays identically."""
     exchanges = load_exchanges("3c273")
-    query = AdvancedQuery.from_dict({"ra": RA_3C273, "dec": DEC_3C273, "radius_arcsec": 10.0, "profiles": ["optical"],
-                                     "catalogs": ["gaia_dr3", "nvss"], "min_confidence": 0.5})
+    fields = {"ra": RA_3C273, "dec": DEC_3C273, "radius_arcsec": 10.0, "profiles": ["optical"], "min_confidence": 0.5}
     with respx.mock(assert_all_called=False) as router:
         router.route().mock(side_effect=replay_side_effect(exchanges))
         async with offline_client() as client:
             service = make_service(client)
+            with pytest.raises(ValueError, match="nvss are not in profile 'optical'"):
+                await service.crossmatch(RA_3C273, DEC_3C273,
+                                         query=AdvancedQuery.from_dict({**fields, "catalogs": ["gaia_dr3", "nvss"]}))
+            query = AdvancedQuery.from_dict({**fields, "catalogs": ["gaia_dr3"]})
             record = await service.crossmatch(RA_3C273, DEC_3C273, query=query)
     manifest = P.build_manifest(record, registry=service.registry)
     assert sorted(manifest.catalogs) == ["gaia_dr3"]

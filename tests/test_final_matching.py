@@ -40,11 +40,60 @@ async def test_m82_resolved_row_stays_the_target_and_represents_its_duplicate() 
     m82 = member(record, "simbad", "M 82")
     assert m82 in group["members"], [m["source_id"] for m in group["members"]]
     assert m82["target_probability"] > 0.99 and m82["coincident_with"] is None
-    # The radio source SIMBAD lists 1.6" away is collapsed onto the resolved row, never the reverse.
+    # The radio transient SIMBAD lists 1.6" away (5 mas error; 3.1 sigma from the galaxy's 0.5"
+    # centre) is a separate source; were it a duplicate listing it would follow 'M 82', never
+    # the reverse.
     radio = member(record, "simbad", "EQ J095552.5+694045.4")
-    assert radio["coincident_with"] == "M 82"
+    assert radio["coincident_with"] in (None, "M 82") and radio not in group["members"]
     reasons = {(r["catalog"], r["source_id"]): r["reason"] for r in association(record)["identity_rows"]}
     assert reasons[("simbad", "M 82")] == "resolved name"
+    # NED's own record of M82, 2.7" from SIMBAD's centre, is the same galaxy.
+    assert member(record, "ned", "Messier 082") in group["members"]
+    assert member(record, "ned", "Messier 082")["target_probability"] > 0.95
+
+
+async def test_m82_simbad_alone_at_two_arcsec_is_the_resolved_row() -> None:
+    # The reviewed search: SIMBAD alone, 2": 'M 82' among 20 radio / X-ray / cluster entries of
+    # the starburst within 2". The target is 'M 82' alone, never a starburst source.
+    record = (await replay_search("named_m82_simbad_2arcsec"))["record"]
+    group = target_group(record)
+    assert [(m["source_id"], m["coincident_with"]) for m in group["members"]] == [("M 82", None)]
+    assert group["members"][0]["target_probability"] > 0.99
+    others = [m for g in record["crossmatch_groups"] if not g.get("contains_target") for m in g["members"]]
+    assert len(others) >= 15 and all((m["target_probability"] or 0) < 0.01 for m in others),         [(m["source_id"], m["target_probability"]) for m in others if (m["target_probability"] or 0) >= 0.01]
+
+
+async def test_m82_at_three_arcsec_is_the_resolved_row() -> None:
+    # The reviewed 3" search with NED, 2MASS, Chandra and NVSS: 'M 82' is the target (live, before
+    # the fix, the target group held a starburst X-ray / radio source and never 'M 82').
+    record = (await replay_search("named_m82_3arcsec"))["record"]
+    group = target_group(record)
+    m82 = member(record, "simbad", "M 82")
+    assert m82 in group["members"] and m82["target_probability"] > 0.99 and m82["coincident_with"] is None
+    simbad_in_group = [m["source_id"] for m in group["members"] if m["catalog"] == "simbad"]
+    assert simbad_in_group == ["M 82"], simbad_in_group
+    # NED's X-ray / radio / infrared entries inside M82 are not collapsed onto its galaxy record.
+    assert not [m["source_id"] for g in record["crossmatch_groups"] for m in g["members"]
+                if m["coincident_with"] == "Messier 082"]
+
+
+def test_identity_row_represents_its_duplicate_listing() -> None:
+    # A resolved name's row (raised prior odds) collapsed with a more precise duplicate listing
+    # of its catalogue stays the representative and keeps its prior (M 82 once followed the
+    # radio source 'EQ J095552.5+694045.4' and got P = 0).
+    from astrometry import IDENTITY_PRIOR_LN_ODDS, Detection, associate
+
+    ra, dec = 148.9684583, 69.6797028
+    offset = 1.5 / 3600.0
+    detections = [
+        Detection("simbad", ra, dec + offset, (0.005**2, 0.0, 0.005**2), label="radio", listing="one"),
+        Detection("simbad", ra, dec, (0.25, 0.0, 0.25), label="M 82", listing="one",
+                  prior_ln_odds=IDENTITY_PRIOR_LN_ODDS),
+    ]
+    result = associate(detections, {"simbad": 1.0e5}, target=(ra, dec))
+    group = next(g for g in result.groups if 1 in g.members)
+    assert 0 in group.members and group.coincident_with == {0: 1}
+    assert result.target_probability[1] > 0.99
 
 
 @pytest.mark.parametrize(("key", "ned_name", "simbad_name"), [

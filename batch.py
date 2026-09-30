@@ -1267,6 +1267,15 @@ def registry_vizier_view(catalog: CatalogDefinition) -> XMatchView | None:
     )
 
 
+def _deployment_registry(settings: Settings) -> CatalogRegistry:
+    """The registry the deployment searches (as ``main.build_registry``): the embedded catalogs plus the VizieR
+    tables registered with ``vizier add`` / ``POST /api/v1/vizier/register`` (``vizier.load_registry``), so
+    ``astrosearch batch --catalogs vizier_i_345_gaia2`` finds a registered table as the API does."""
+    import vizier  # lazy: vizier imports the models only, but keep batch importable on its own
+
+    return vizier.load_registry(settings.catalog_registry_path or None)
+
+
 def is_registry_view(name: str, registry: CatalogRegistry) -> bool:
     """True when ``name``'s XMatch view is derived from its registry entry (:func:`registry_vizier_view`), not a
     predefined, verified one: whether XMatch serves the table with the entry's columns is checked at run time."""
@@ -1901,7 +1910,7 @@ class BatchCrossmatcher:
         fast_fallback_seconds: float | None = None,
     ) -> None:
         self.settings = settings or Settings()
-        self.registry = registry or CatalogRegistry(self.settings.catalog_registry_path)
+        self.registry = registry or _deployment_registry(self.settings)
         self.client = client
         self.guards = guards if guards is not None else {}
         self.cache = cache or CacheManager(None)
@@ -2888,9 +2897,9 @@ async def batch_crossmatch(
 # REST API
 # ---------------------------------------------------------------------------
 
-from fastapi import APIRouter, HTTPException, Query, Request  # noqa: E402
-from fastapi.responses import Response  # noqa: E402
-from pydantic import BaseModel, Field  # noqa: E402
+from fastapi import APIRouter, HTTPException, Query, Request
+from fastapi.responses import Response
+from pydantic import BaseModel, Field
 
 ROUTER_PREFIX = "/api/v1/batch"
 router = APIRouter(prefix=ROUTER_PREFIX, tags=["batch"])

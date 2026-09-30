@@ -9,6 +9,8 @@ Recorded fixtures (``tests/fixtures/alerts``, recorded live by ``record_alerts.p
   hosts outside their D25 ellipse (SN 2023bee, SN 2018aoz), Virgo members without their own CF4
   distance (M100: SN 2006X) and the blazar 3C 273;
 * ``alerce_duplicates``: ALeRCE ``lc_classifier`` AGN rows repeated once per classifier version.
+* ``xmatch_final``: the Gaia DR3 / SIMBAD / NED / HyperLEDA answers at fink:ZTF26abuxdqd, a transient on a
+  slowly moving, high-confidence Gaia star far from every galaxy.
 
 The remaining tests use small synthetic inputs and say so.
 """
@@ -1518,3 +1520,25 @@ def test_cli_crossmatch_reruns_one_alert_or_the_incomplete_ones(store: AlertStor
         args = _cli(argv)
         assert args.handler(args) == code
     assert "give an alert id or --incomplete" in capsys.readouterr().err
+
+
+def test_transient_on_a_slowly_moving_gaia_star_far_from_galaxies_is_a_known_star() -> None:
+    """Regression (recorded, live POST /alerts/poll): fink:ZTF26abuxdqd at l = 48.0, b = -10.3 lies 0.35" from Gaia DR3
+    4298320600309152000 (G = 18.6, DSC P(star) = 0.999996, RUWE 0.97, no excess noise) moving 2.70 mas/yr at 18 sigma.
+    No SIMBAD/NED entry has a stellar type. The LMC-distance limit (3.2 mas/yr) was applied far from the Magellanic
+    Clouds, so the alert came back known_star=False with no evidence at all. Far from every galaxy that could hold
+    stars, a significant motion of a well-behaved point source is a Galactic star's."""
+    res = asyncio.run(enrich_recorded("xmatch_final"))["ZTF26abuxdqd"]
+    assert res.status == "done" and res.catalog_status == {"gaia_dr3": "success", "simbad": "empty", "ned": "success"}
+    star = min(gaia_rows(res), key=lambda c: c["separation_arcsec"])
+    assert star["source_id"] == "4298320600309152000" and star["separation_arcsec"] < 0.5
+    assert star["dsc_p_star"] > 0.999 and star["ruwe"] < 1.0 and star["astrometric_excess_noise_sig"] == 0.0
+    assert star["pm_masyr"] == pytest.approx(2.70, abs=0.01) and star["pm_over_error"] == pytest.approx(18.2, abs=0.1)
+    assert star["pm_masyr"] < alerts.PM_MAX_UNKNOWN_DISTANCE  # below the LMC-distance limit: that limit must not apply
+    assert alerts.near_star_forming_galaxy(299.0526, 8.4242) is None and alerts.local_group_dwarf_at(299.0526, 8.4242) is None
+    assert res.known_star is True and res.host is None and res.host_status == "not_applicable_star"
+    assert res.evidence, "a known_star answer must carry its evidence"
+    assert any("Gaia DR3 4298320600309152000: proper motion 2.70 mas/yr (18 sigma)" in e and "-> Galactic star" in e
+               for e in res.evidence), res.evidence
+    # No catalogue gives it a stellar type (NED lists only the WISE source): stellar_counterpart reports exactly that.
+    assert res.stellar_counterpart is False

@@ -4156,7 +4156,8 @@ class SearchFields(BaseModel):
     ra: float | None = Field(None, description="Right ascension in degrees, [0, 360)", ge=0, lt=360)
     dec: float | None = Field(None, description="Declination in degrees, [-90, 90]", ge=-90, le=90)
     name: str | None = Field(None, description="Astronomical object name (will be resolved)")
-    radius_arcsec: float = Field(3.0, description="Search radius in arcseconds (at most 3600, one degree)", gt=0,
+    radius_arcsec: float = Field(3.0, description="Search radius in arcseconds (at most API_MAX_RADIUS_ARCSEC, "
+                                                  "default 1800; never above 3600, one degree)", gt=0,
                                  le=MAX_SEARCH_RADIUS_ARCSEC)
     profile: str | None = Field(None, description="Catalog profile: optical, infrared, radio, etc.")
     epoch: float | None = Field(None, ge=1800, le=2200, description="Julian epoch of ra/dec for proper motion correction")
@@ -4189,7 +4190,23 @@ class SearchFields(BaseModel):
             raise ValueError("proper motion exceeds 20 arcsec/yr; check units (mas/yr expected)")
         if self.min_radius_arcsec and self.min_radius_arcsec >= self.radius_arcsec:
             raise ValueError("min_radius_arcsec must be smaller than radius_arcsec")
+        check_radius_limit(self.radius_arcsec)
         return self
+
+
+def check_radius_limit(radius_arcsec: float | None) -> None:
+    """ValueError when a search cone exceeds ``Settings.max_radius_arcsec`` (API_MAX_RADIUS_ARCSEC, default
+    1800" = 30'). Every search sends its cone to every archive, and a degree-sized cone is a full-table scan
+    (seen live: a 28-degree cone ran Gaia and NED into their TAP time budgets); /api/v1/search, its batch
+    items, saved queries and search manifests all validate their radius here."""
+    if radius_arcsec is None:
+        return
+    from models import Settings
+
+    limit = min(Settings().max_radius_arcsec, MAX_SEARCH_RADIUS_ARCSEC)
+    if float(radius_arcsec) > limit:
+        raise ValueError(f"radius_arcsec {float(radius_arcsec):g} exceeds the largest search radius, {limit:g} arcsec "
+                         "(API_MAX_RADIUS_ARCSEC)")
 
 
 class ManifestRequest(SearchFields):
@@ -4452,6 +4469,7 @@ async def run_basic_search(
     """Run a search exactly as ``astrosearch search`` does (``main.search_object`` for a
     name: resolver position, epoch, proper motion and parallax; ``main.crossmatch`` for
     coordinates): the basic crossmatch path, every in-radius row kept."""
+    check_radius_limit(radius_arcsec)
     if name:
         from main import crossmatch_resolved  # lazy: main imports this module for its CLI
 
@@ -4562,10 +4580,14 @@ async def citation_sources_endpoint() -> dict[str, Any]:
 
 
 def _deployment_registry() -> CatalogRegistry:
-    """The registry the deployment runs with (``CATALOG_REGISTRY_PATH``, as main.build_service)."""
+    """The registry the deployment runs with (as ``main.build_registry``): the embedded catalogs plus the
+    VizieR tables registered with ``vizier add`` (``vizier.load_registry``, ``CATALOG_REGISTRY_PATH`` or
+    ~/.astrosearch/catalogs.yaml), so ``astrosearch cite --catalogs vizier_i_345_gaia2`` cites a registered
+    table's own paper instead of reporting it unknown."""
+    import vizier  # lazy: vizier imports this module in its citation helpers
     from models import Settings
 
-    return CatalogRegistry(Settings().catalog_registry_path)
+    return vizier.load_registry(Settings().catalog_registry_path or None)
 
 
 class CLIInputError(Exception):

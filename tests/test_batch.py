@@ -69,7 +69,14 @@ async def replay_batch(case: str, targets, catalogs, radius, *, strategies=None,
         async with offline_client() as client:
             eng = engine or BatchCrossmatcher(client=client, **kwargs)
             eng.client = client
-            return await eng.run(targets, catalogs, radius_arcsec=radius, strategies=strategies)
+            # The recordings hold VLASS/LoTSS answers of TAPVizieR table uploads (still an explicit strategy);
+            # their default CDS XMatch path is replayed by test_batch_final from its own recordings.
+            names = list(catalogs) if catalogs is not None else eng.default_catalogs()
+            recorded = {name: "upload" for name in RECORDED_TAPVIZIER_UPLOADS if name in names}
+            return await eng.run(targets, catalogs, radius_arcsec=radius, strategies={**recorded, **(strategies or {})})
+
+
+RECORDED_TAPVIZIER_UPLOADS = ("vlass", "lotss")
 
 
 @pytest.fixture(scope="module")
@@ -183,8 +190,11 @@ def test_strategy_table_and_defaults():
     engine = BatchCrossmatcher()
     table = engine.strategy_table()
     assert table["gaia_dr3"]["strategy"] == "xmatch" and table["gaia_dr3"]["vizier_table"] == "vizier:I/355/gaiadr3"
-    for name in ("simbad", "twomass_psc", "allwise", "first", "nvss", "vlass", "lotss", "rosat", "chandra", "xmm"):
+    for name in ("simbad", "twomass_psc", "allwise", "first", "nvss", "rosat", "chandra", "xmm"):
         assert table[name]["strategy"] == "upload", name
+    # VizieR-hosted registry catalogs: CDS XMatch (TAPVizieR uploads stalled for minutes, live).
+    for name, table_id in (("vlass", "vizier:J/ApJ/914/42/table5"), ("lotss", "vizier:J/A+A/707/A198/lotssdr3")):
+        assert table[name]["strategy"] == "xmatch" and table[name]["vizier_table"] == table_id, name
     for name in CONE_ONLY:
         assert table[name]["strategy"] == "cone", name
     defaults = engine.default_catalogs()
