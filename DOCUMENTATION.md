@@ -473,9 +473,10 @@ exceeded, 502 upstream failure, 503 unavailable dependency.
 Giving both is a 422 ("Give either an object name or ra/dec, not both.") before any request is
 made, rather than one of them being dropped silently: `POST /api/v1/search`, each
 `/api/v1/search/batch` item, saved queries, `/api/v1/search/stream`, provenance manifests,
-`/api/v1/sed` and `/api/v1/lightcurves` (one check, `main.check_search_target`, where the route
-uses the search code). The `search`, `stream`, `manifest`, `sed` and `lightcurve` commands exit 2
-for `--name` together with `--ra`/`--dec`.
+`/api/v1/sed`, `/api/v1/lightcurves`, `/api/v1/cutouts` and `/api/v1/cutouts/stack` (one check,
+`main.check_search_target`, where the route uses the search code). The `search`, `stream`,
+`manifest`, `sed`, `lightcurve` and `cutout` commands exit 2 for `--name` together with
+`--ra`/`--dec`.
 
 ### Core (`api.py`)
 
@@ -546,9 +547,9 @@ for `--name` together with `--ra`/`--dec`.
 
 | Method | Path | Description |
 |---|---|---|
-| GET | `/api/v1/cutouts` | Image bytes (png, jpg, fits) for `ra, dec` or `name`, `survey`, `fov_arcmin`, `width`, `height`, `projection`, `stretch`, `cmap`, `min_cut`, `max_cut`. Headers `X-Cutout-*` (survey, HiPS, cache, pixel scale, CDELT, projection, coverage, blank, units, calibration, degraded). |
+| GET | `/api/v1/cutouts` | Image bytes (png, jpg, fits) for `ra, dec` or `name` (never both), `survey`, `fov_arcmin`, `width`, `height`, `projection`, `stretch`, `cmap`, `min_cut`, `max_cut`. Headers `X-Cutout-*` (survey, HiPS, cache, pixel scale, CDELT, projection, coverage, blank, units, calibration, degraded). |
 | GET | `/api/v1/cutouts/surveys` | Survey list (radio to X-ray) with pixel units and epochs. |
-| GET | `/api/v1/cutouts/stack` | Panel plan with footprint check and proper-motion offsets. |
+| GET | `/api/v1/cutouts/stack` | Panel plan for `ra, dec` or `name` (never both) with footprint check and proper-motion offsets. |
 
 ### AI
 

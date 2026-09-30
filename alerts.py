@@ -208,7 +208,7 @@ from astropy.time import Time
 from fastapi import APIRouter, BackgroundTasks, Body, HTTPException, Query, Request
 from pydantic import BaseModel, ConfigDict, Field
 
-from crossmatch import AdvancedQuery, CrossmatchService
+from crossmatch import EXTRAGALACTIC_MIN_REDSHIFT, AdvancedQuery, CrossmatchService
 from datasets import MetadataStore
 from models import CatalogRegistry, QueryPlan, UnifiedRecord, catalog_from_dict, haversine_arcsec, validate_target
 
@@ -2391,6 +2391,37 @@ def _coincident_extended(entry: Mapping[str, Any], counterparts: Sequence[Mappin
     return other, d
 
 
+def _extragalactic_marks(entry: Mapping[str, Any], counterparts: Sequence[Mapping[str, Any]],
+                         coincident: tuple[dict[str, Any], float] | None) -> list[str]:
+    """What marks a Gaia source itself as possibly extragalactic, for the 'isolated source' proper-motion rule
+    (AlertEnricher._gaia_astrometry): a catalogued AGN/QSO/BL Lac or galaxy entry within GALAXY_COINCIDENCE_ARCSEC
+    (a well-fitted point source for Gaia: PKS 2155-304 has RUWE ~1 and DSC P(star) ~ 1), a SIMBAD/NED entry
+    there with a redshift >= EXTRAGALACTIC_MIN_REDSHIFT (the transient's own entries excepted), or an
+    astrometric excess noise significance > GAIA_EXCESS_NOISE_SIG_MAX (not fitted by the single-star model).
+    Empty when nothing does."""
+    marks: list[str] = []
+    named: tuple[Any, Any] | None = None  # the coincident entry already given as a mark
+    if coincident is not None and (_is_agn(coincident[0]) or _is_galaxy(coincident[0])):
+        other, d = coincident
+        named = (other.get("catalog"), other.get("source_id"))
+        marks.append(f"{str(other['catalog']).upper()} {other['source_id']} (type {other['object_type']}) at {d:.2f}\"")
+    if entry.get("ra") is not None and entry.get("dec") is not None:
+        for other in counterparts:
+            z = _float(other.get("redshift"))
+            if (other.get("catalog") not in {"simbad", "ned"} or z is None or abs(z) < EXTRAGALACTIC_MIN_REDSHIFT
+                    or _is_transient_type(other) or other.get("ra") is None or other.get("dec") is None
+                    or (other.get("catalog"), other.get("source_id")) == named):
+                continue
+            d = haversine_arcsec(entry["ra"], entry["dec"], other["ra"], other["dec"])
+            if d <= GALAXY_COINCIDENCE_ARCSEC:
+                marks.append(f"{str(other['catalog']).upper()} {other['source_id']} at {d:.2f}\" has redshift {z:g} "
+                             f"(>= {EXTRAGALACTIC_MIN_REDSHIFT:g})")
+    aens = entry.get("astrometric_excess_noise_sig")
+    if aens is not None and aens > GAIA_EXCESS_NOISE_SIG_MAX:
+        marks.append(f"excess-noise significance {aens:.1f} (> {GAIA_EXCESS_NOISE_SIG_MAX:g})")
+    return marks
+
+
 def _is_transient(entry: dict[str, Any]) -> bool:
     """True for the transient itself: a transient catalogue type, or a transient-style designation
     that the catalogue does not type as a star or variable.
@@ -3343,7 +3374,9 @@ class AlertEnricher:
           or G < 19, or RUWE < 1.4;
         * proper motion >= 5 sigma and faster than 750 km/s at the distance of the associated host
           (3.2 mas/yr at the LMC's when unknown; any when no galaxy is associated or under the alert, far
-          from NEARBY_GALAXY_REACH and the Local Group dwarfs), for a well-behaved point source -- or, whatever its
+          from NEARBY_GALAXY_REACH and the Local Group dwarfs, unless a catalogued AGN/QSO/galaxy or a redshift
+          >= EXTRAGALACTIC_MIN_REDSHIFT lies on the source or its excess noise is significant: then 3.2 mas/yr),
+          for a well-behaved point source -- or, whatever its
           RUWE/excess noise, at >= 20 sigma when nothing marks the source as extragalactic (DSC, galaxy
           candidate): a binary's proper motion (the eclipsing binary Gaia DR3 6189441739218449664, RUWE
           5.1, 11 mas/yr at 31 sigma) is real, while the spurious ones of nuclei and clusters stay < 18 sigma;
@@ -3391,7 +3424,8 @@ class AlertEnricher:
             notes.append(f"Gaia DR3 {sid} at {sep:.2f}\" looks like a galaxy nucleus, AGN or cluster, not a star ("
                          + "; ".join(spurious) + f"): its parallax and proper motion are not used{motion}")
         else:
-            self._gaia_astrometry(entry, enclosing, associated, in_galaxy, not_point, bool(classified), reasons, notes)
+            self._gaia_astrometry(entry, enclosing, associated, in_galaxy, not_point, bool(classified), reasons, notes,
+                                  counterparts=counterparts, coincident=coincident)
         luminous = self._gaia_luminosity(entry, associated, in_galaxy, counterparts, coincident)
         if luminous is not None:
             (reasons if luminous[0] else notes).append(luminous[1])
@@ -3399,8 +3433,14 @@ class AlertEnricher:
 
     def _gaia_astrometry(self, entry: dict[str, Any], enclosing: dict[str, Any] | None,
                          associated: dict[str, Any] | None, in_galaxy: str, not_point: list[str], classified: bool,
-                         reasons: list[str], notes: list[str]) -> None:
-        """The parallax and proper-motion tests of :meth:`_gaia_verdict` (astrometry already vetted)."""
+                         reasons: list[str], notes: list[str], *, counterparts: Sequence[Mapping[str, Any]] = (),
+                         coincident: tuple[dict[str, Any], float] | None = None) -> None:
+        """The parallax and proper-motion tests of :meth:`_gaia_verdict` (astrometry already vetted).
+
+        The 'isolated source' proper-motion rule (any significant motion is a Galactic star's when no galaxy
+        is associated or under the alert) is not applied when something marks the source itself as possibly
+        extragalactic (:func:`_extragalactic_marks`): the limit is then PM_MAX_UNKNOWN_DISTANCE, as without
+        a host distance."""
         sid, sep = entry["source_id"], entry["separation_arcsec"] or 0.0
         poe, ruwe, g = entry.get("parallax_over_error"), entry.get("ruwe"), entry.get("g_mag")
         pm, pm_sig = entry.get("pm_masyr"), entry.get("pm_over_error")
@@ -3424,6 +3464,15 @@ class AlertEnricher:
         ra, dec = entry.get("ra"), entry.get("dec")
         isolated = (associated is None and enclosing is None and ra is not None and dec is not None
                     and near_star_forming_galaxy(ra, dec) is None and local_group_dwarf_at(ra, dec) is None)
+        marks = _extragalactic_marks(entry, counterparts, coincident) if isolated and not distance_kpc else []
+        if marks:
+            isolated = False
+            if pm is not None and pm_sig is not None and pm_sig >= PM_SNR_STAR and pm <= PM_MAX_UNKNOWN_DISTANCE:
+                notes.append(f"Gaia DR3 {sid}: proper motion {pm:.2f} mas/yr ({pm_sig:.0f} sigma) not taken as a Galactic "
+                             f"star's although no galaxy is associated with or under the alert: {'; '.join(marks)} "
+                             f"(an AGN/QSO or a galaxy nucleus may show a spurious motion); it is not above "
+                             f"{PM_MAX_UNKNOWN_DISTANCE:.3g} mas/yr ({MAX_GALAXY_TRANSVERSE_KMS:.0f} km/s at the LMC's "
+                             "distance)")
         if distance_kpc:
             pm_max = MAX_GALAXY_TRANSVERSE_KMS / (KMS_PER_KPC_MASYR * distance_kpc)
         elif isolated:

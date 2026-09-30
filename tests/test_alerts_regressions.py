@@ -421,6 +421,58 @@ async def test_significant_motion_far_from_every_galaxy_is_galactic_and_probable
     assert nucleus.known_star is False and nucleus.known_agn is True and nucleus.known_variable is True
 
 
+# The Gaia DR3 solution of the BL Lac PKS 2155-304 as a well-fitted point source (RUWE 1.05, DSC P(star) ~ 1) with a
+# small, formally significant proper motion: 0.40 mas/yr at 6 sigma.
+PKS2155 = (329.71693843745, -30.225588457719997)
+BLAZAR_GAIA = {**POINT, "pmra": 0.24, "pmdec": 0.32, "pmra_error": 0.4 / 6, "pmdec_error": 0.4 / 6, "ruwe": 1.05,
+               "phot_g_mean_mag": 13.1, "classprob_dsc_combmod_star": 0.99999, "classprob_dsc_combmod_galaxy": 0.0,
+               "classprob_dsc_combmod_quasar": 0.00001}
+
+
+def _simbad_at(name: str, otype: str, ra: float, dec: float, offset_arcsec: float = 0.0,
+               z: float | None = None) -> dict[str, Any]:
+    data: dict[str, Any] = {"otype": otype}
+    if z is not None:
+        data["rvz_redshift"] = z
+    return {"source_id": name, "ra": ra, "dec": dec + offset_arcsec / 3600, "separation_arcsec": offset_arcsec,
+            "data": data}
+
+
+async def test_isolated_source_rule_spares_a_catalogued_blazar() -> None:
+    """Synthetic, at PKS 2155-304. With no galaxy associated or under the alert, any significant motion of a
+    well-behaved point source used to make it a Galactic star -- a catalogued BL Lac too (its Gaia solution is a
+    'star' with a 6-sigma 0.40 mas/yr motion). A catalogued AGN/galaxy or an extragalactic redshift on the source,
+    or a significant excess noise, sets the limit back to PM_MAX_UNKNOWN_DISTANCE (3.19 mas/yr)."""
+    ra, dec = PKS2155
+    bll = _simbad_at("PKS 2155-304", "BLL", ra, dec, 0.1, z=0.116)
+    blazar = await _alone(BLAZAR_GAIA, ra=ra, dec=dec, extra_sources=[bll])
+    assert blazar.status == "done"
+    assert blazar.known_star is not True, blazar.evidence
+    assert not any("-> Galactic star" in e or "Galactic foreground star" in e for e in blazar.evidence), blazar.evidence
+    assert blazar.known_agn is True
+    assert any("0.40 mas/yr (6 sigma) not taken as a Galactic star's" in e and "SIMBAD PKS 2155-304 (type BLL)" in e
+               for e in blazar.evidence), blazar.evidence
+    # The same BL Lac entry without its redshift, and an untyped radio source with the blazar's redshift, also count.
+    for extra in (_simbad_at("PKS 2155-304", "BLL", ra, dec, 0.1), _simbad_at("[X] R1", "Rad", ra, dec, 0.2, z=0.116)):
+        res = await _alone(BLAZAR_GAIA, ra=ra, dec=dec, extra_sources=[extra])
+        assert res.known_star is not True and not any("-> Galactic star" in e for e in res.evidence), res.evidence
+    # A significant excess noise: even a 25-sigma motion below 3.19 mas/yr is not a Galactic star's here.
+    noisy = await _alone({**BLAZAR_GAIA, "pmra_error": 0.016, "pmdec_error": 0.016, "astrometric_excess_noise_sig": 5.0},
+                         ra=ra, dec=dec)
+    assert noisy.known_star is not True and not any("-> Galactic star" in e for e in noisy.evidence), noisy.evidence
+    # Control: nothing extragalactic on the source (a redshifted galaxy 3" away is another source) -> Galactic star.
+    for extra in ([], [_simbad_at("[X] G1", "G", ra, dec, 3.0, z=0.116)]):
+        star = await _alone(BLAZAR_GAIA, ra=ra, dec=dec, extra_sources=extra)
+        assert star.known_star is True, star.evidence
+        assert any("0.40 mas/yr (6 sigma), with no galaxy associated" in e and "-> Galactic star" in e
+                   for e in star.evidence), star.evidence
+    # A fast motion (> 3.19 mas/yr) of a well-behaved point source under a catalogued AGN entry stays Galactic.
+    fast = await _alone({**BLAZAR_GAIA, "pmra": 3.0, "pmdec": 4.0, "pmra_error": 0.1, "pmdec_error": 0.1},
+                        ra=ra, dec=dec, extra_sources=[bll])
+    assert fast.known_star is True
+    assert any("5.00 mas/yr (50 sigma) > 3.19 mas/yr" in e and "-> Galactic star" in e for e in fast.evidence)
+
+
 async def test_coincident_galaxy_entry_vetoes_only_a_poorly_fitted_source() -> None:
     """Synthetic: a SIMBAD Sy1 entry at the Gaia position. With excess noise (a nucleus) the astrometry is
     not used; a well-fitted star blended with a catalogued galaxy (ZTF26abxsysn's case) keeps its evidence."""

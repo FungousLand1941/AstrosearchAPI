@@ -4,12 +4,14 @@ from __future__ import annotations
 
 import asyncio
 import base64
+import functools
 import hashlib
 import json
 import logging
 import math
 import os
 import re
+import ssl
 import time
 from abc import ABC, abstractmethod
 from collections import OrderedDict
@@ -81,12 +83,48 @@ __all__ = [
     "SesameResolver",
     "TapProvider",
     "haversine_arcsec",
+    "new_http_client",
+    "new_http_client_async",
     "parse_csv_records",
     "parse_ipac_records",
     "parse_json_records",
     "parse_votable_records",
     "provider_map",
+    "shared_ssl_context",
 ]
+
+
+# ---------------------------------------------------------------------------
+# HTTP clients owned by this package
+# ---------------------------------------------------------------------------
+
+
+@functools.lru_cache(maxsize=1)
+def shared_ssl_context() -> ssl.SSLContext:
+    """One SSL context per process for the clients this package builds itself.
+
+    httpx builds a fresh context from certifi's CA bundle for every new client, which takes
+    ~0.5-1 s on Windows; a client built on the event loop stalls every other request for that
+    long. The context trusts the same bundle httpx would (certifi, else the system store)."""
+    try:
+        import certifi
+    except ImportError:  # pragma: no cover - certifi ships with httpx
+        return ssl.create_default_context()
+    return ssl.create_default_context(cafile=certifi.where())
+
+
+def new_http_client(timeout: float, **kwargs: Any) -> httpx.AsyncClient:
+    """A client with the shared SSL context (the CA bundle is loaded at most once per process)."""
+    kwargs.setdefault("follow_redirects", True)
+    return httpx.AsyncClient(timeout=timeout, verify=shared_ssl_context(), **kwargs)
+
+
+async def new_http_client_async(timeout: float, **kwargs: Any) -> httpx.AsyncClient:
+    """:func:`new_http_client` from a coroutine: the first (uncached) SSL context is built off
+    the event loop, so neither other requests nor a caller's cancellation wait for it."""
+    if not shared_ssl_context.cache_info().currsize:
+        await asyncio.to_thread(shared_ssl_context)
+    return new_http_client(timeout, **kwargs)
 
 # ---------------------------------------------------------------------------
 # Resilience: Rate Limiter and Circuit Breaker
@@ -583,7 +621,7 @@ class _HTTPProvider(CatalogProvider):
         guards: dict[str, EndpointGuard] | None = None,
         cache: CacheManager | None = None,
     ) -> None:
-        self.client = client or httpx.AsyncClient(timeout=timeout, follow_redirects=True)
+        self.client = client or new_http_client(timeout)
         self.timeout = timeout
         self.max_response_bytes = max_response_bytes
         self.guards = guards if guards is not None else {}
@@ -1436,8 +1474,17 @@ class SesameResolver:
     default_endpoint = "https://cds.unistra.fr/cgi-bin/nph-sesame/-oxp/SNV"
 
     def __init__(self, client: httpx.AsyncClient | None = None, *, endpoint: str | None = None) -> None:
-        self.client = client or httpx.AsyncClient(timeout=30.0, follow_redirects=True)
+        # Without a client one is built on first use (:meth:`_http`), not here: constructing a
+        # client can load the CA bundle, which must not happen synchronously on the event loop.
+        self.client: httpx.AsyncClient | None = client or None
         self.endpoint = endpoint or self.default_endpoint
+
+    async def _http(self) -> httpx.AsyncClient:
+        """The caller's client, else a fallback one sharing the process's SSL context (built off
+        the event loop the first time; see :func:`new_http_client_async`)."""
+        if self.client is None:
+            self.client = await new_http_client_async(30.0)
+        return self.client
 
     async def resolve(self, query: str) -> ResolvedObject:
         clean_query = str(query).strip()
@@ -1445,7 +1492,7 @@ class SesameResolver:
             raise ObjectResolutionError("Object name must not be empty.")
         url = f"{self.endpoint}?{quote(clean_query, safe='')}"
         try:
-            response = await self.client.get(url, headers={"Accept": "application/xml, text/xml"})
+            response = await (await self._http()).get(url, headers={"Accept": "application/xml, text/xml"})
         except httpx.HTTPError as exc:
             # The resolver could not be reached: not evidence that the name is unknown.
             raise ResolverUnavailableError(f"Sesame request failed: {exc}") from exc
@@ -1474,8 +1521,8 @@ class SesameResolver:
             return answer
         endpoint = self.endpoint.rstrip("/")[: match.start(1)] + "S"
         try:
-            response = await self.client.get(f"{endpoint}?{quote(query, safe='')}",
-                                             headers={"Accept": "application/xml, text/xml"})
+            response = await (await self._http()).get(f"{endpoint}?{quote(query, safe='')}",
+                                                      headers={"Accept": "application/xml, text/xml"})
             retried = self.parse_response(query, response.text, endpoint=endpoint) if response.status_code < 400 else None
         except Exception as exc:  # noqa: BLE001 - the fallback answer stands; the attempt is recorded
             meta["simbad_retry"] = {"endpoint": endpoint, "error": f"{exc.__class__.__name__}: {exc}"}

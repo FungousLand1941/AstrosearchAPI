@@ -26,7 +26,7 @@ import asyncio
 import math
 import re
 import statistics
-from collections.abc import AsyncIterator
+from collections.abc import AsyncIterator, Sequence
 from dataclasses import dataclass, field, replace
 from datetime import date, datetime
 from time import monotonic
@@ -589,18 +589,34 @@ class QueryValidator:
                     raise ValueError(f"Unknown catalog: {name}")
             for profile in query.profiles or []:
                 validate_profile(profile, active_registry)
-            if query.catalogs and query.profiles:
-                # Catalogs are intersected with the profile: a named catalog outside it would be
-                # dropped silently, so it is an input error instead.
-                enabled = active_registry.enabled_catalogs()
-                outside = [name for name in query.catalogs
-                           if enabled[name].profiles and not any(p in enabled[name].profiles for p in query.profiles)]
-                if outside:
-                    raise ValueError(
-                        f"Catalog(s) {', '.join(outside)} are not in profile '{', '.join(query.profiles)}' and would "
-                        "not be queried: catalogs are intersected with the profile. Omit the profile (or use one "
-                        "that includes them) to query these catalogs.")
+            check_catalogs_in_profiles(active_registry, query.catalogs, query.profiles)
         return True
+
+
+def check_catalogs_in_profiles(registry: CatalogRegistry | None, catalogs: Sequence[str] | None,
+                               profiles: Sequence[str] | str | None) -> None:
+    """ValueError when ``catalogs`` names a catalogue outside every one of ``profiles``.
+
+    Catalogues are intersected with the profile, so such a catalogue would silently not be
+    queried and the search would 'succeed' with nothing from it; it is an input error instead
+    (HTTP 422 / CLI exit 2). The one implementation of this rule: :class:`QueryValidator`
+    (``POST /api/v1/search``, AI-compiled queries), :meth:`CrossmatchService.prepare` (the
+    library's ``crossmatch`` / ``crossmatch_stream``) and ``main.check_catalogs_in_profile``
+    (checked before a name is resolved) all call it. A catalogue with no profiles is planned for
+    every profile; an unknown name is not judged here (it has its own error)."""
+    if isinstance(profiles, str):
+        profiles = [profiles]
+    profiles = [p for p in profiles or [] if p]
+    if not catalogs or not profiles or registry is None:
+        return
+    enabled = registry.enabled_catalogs()
+    outside = [name for name in catalogs if name in enabled and enabled[name].profiles
+               and not any(p in enabled[name].profiles for p in profiles)]
+    if outside:
+        raise ValueError(
+            f"Catalog(s) {', '.join(outside)} are not in profile '{', '.join(profiles)}' and would not be queried: "
+            "catalogs are intersected with the profile. Omit the profile (or use one that includes them) to query "
+            "these catalogs.")
 
 
 def known_profiles(registry: CatalogRegistry) -> set[str]:
@@ -634,7 +650,9 @@ class QueryBuilder:
         for name, catalog in self.registry.enabled_catalogs().items():
             if query.catalogs and name not in query.catalogs:
                 continue
-            if query.profiles and not any(p in catalog.profiles for p in query.profiles):
+            # A catalogue without profiles is planned for every profile (as QueryPlanner.plan and
+            # validate_profile treat it), so the validator's intersection check and the plan agree.
+            if query.profiles and catalog.profiles and not any(p in catalog.profiles for p in query.profiles):
                 continue
             plans.append(
                 QueryPlan(
@@ -1901,6 +1919,7 @@ class CrossmatchService:
             unknown = [c for c in catalogs if c not in enabled]
             if unknown:
                 raise ValueError(f"Unknown catalog(s): {', '.join(unknown)}; known: {', '.join(sorted(enabled))}")
+            check_catalogs_in_profiles(self.registry, catalogs, (query.profiles if query else None) or profile)
             plans = [p for p in plans if p.catalog in set(catalogs)]
         return SearchContext(target, plans, search_radius, query, profile, pm_source, sigma, pm_sigma,
                              sigma_source, completeness, target_class, notes, _resolved_dict(resolved_object), axes)

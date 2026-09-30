@@ -294,7 +294,7 @@ def test_cli_unresolvable_name_and_unknown_profile_exit_cleanly(monkeypatch, cap
         monkeypatch.setattr("sys.argv", ["astrosearch", "search", "--name", "Xyzzy Nonexistent 123", "--radius", "5"])
         with pytest.raises(SystemExit) as exc:
             main.main()
-    assert exc.value.code == 1
+    assert exc.value.code == 2  # an unknown name is the user's input (HTTP 404), not an upstream failure (exit 1)
     err = capsys.readouterr().err
     assert err.startswith("Error: ") and "No coordinates found" in err and "Traceback" not in err
 
@@ -302,7 +302,7 @@ def test_cli_unresolvable_name_and_unknown_profile_exit_cleanly(monkeypatch, cap
                                      "--profile", "radoi"])
     with respx.mock(assert_all_mocked=True), pytest.raises(SystemExit) as exc:  # no archive may be contacted
         main.main()
-    assert exc.value.code == 1 and "Unknown profile 'radoi'" in capsys.readouterr().err
+    assert exc.value.code == 2 and "Unknown profile 'radoi'" in capsys.readouterr().err  # invalid input (422)
 
 
 # ---------------------------------------------------------------------------
@@ -444,3 +444,62 @@ def test_provider_cache_limits_from_environment(monkeypatch) -> None:
     assert bool(empty) is True  # 'cache or CacheManager()' must keep an empty cache
     provider = TapProvider(offline_client(), cache=empty)
     assert provider.cache is empty
+
+
+# ---------------------------------------------------------------------------
+# Catalogs outside the profile: one rule for the library, the API and the CLI
+# ---------------------------------------------------------------------------
+
+
+async def test_library_crossmatch_refuses_a_catalog_outside_the_profile() -> None:
+    """``catalogs`` is intersected with ``profile``: through the library (not only main/api) a
+    catalogue outside it is an input error with the one shared message, before any request."""
+    import main
+    from crossmatch import check_catalogs_in_profiles
+
+    registry = CatalogRegistry()
+    with pytest.raises(ValueError) as expected:
+        check_catalogs_in_profiles(registry, ["nvss"], "optical")
+    message = str(expected.value)
+    assert message.startswith("Catalog(s) nvss are not in profile 'optical' and would not be queried")
+    with pytest.raises(ValueError) as via_main:
+        main.check_catalogs_in_profile(registry, ["nvss"], "optical")
+    assert str(via_main.value) == message
+    with pytest.raises(ValueError) as via_validator:
+        QueryValidator.validate(AdvancedQuery.from_dict(
+            {"ra": TARGET[0], "dec": TARGET[1], "catalogs": ["nvss"], "profiles": ["optical"]}), registry)
+    assert str(via_validator.value) == message
+
+    with respx.mock(assert_all_called=False) as router:
+        route = router.route().respond(500)
+        async with offline_client() as client:
+            service = make_service(client, registry)
+            with pytest.raises(ValueError) as via_crossmatch:
+                await service.crossmatch(*TARGET, radius_arcsec=5.0, profile="optical", catalogs=["nvss"])
+            assert str(via_crossmatch.value) == message
+            with pytest.raises(ValueError) as via_stream:
+                async for _event in service.crossmatch_stream(*TARGET, radius_arcsec=5.0, profile="optical",
+                                                              catalogs=["nvss"]):
+                    pass
+            assert str(via_stream.value) == message
+            with pytest.raises(ValueError) as via_prepare:
+                service.prepare(*TARGET, profile="optical", catalogs=["nvss", "gaia_dr3"])
+            assert str(via_prepare.value) == message  # only the catalogue outside is named
+            # Inside the profile (or with no profile) the selection plans as asked.
+            assert [p.catalog for p in service.prepare(*TARGET, profile="radio", catalogs=["nvss"]).plans] == ["nvss"]
+            assert [p.catalog for p in service.prepare(*TARGET, catalogs=["nvss"]).plans] == ["nvss"]
+        assert not route.called
+
+
+def test_query_builder_plans_a_profileless_catalog_for_every_profile() -> None:
+    """The validator lets a catalogue without profiles through with any profile (it is planned
+    for every profile, as QueryPlanner.plan does); the builder must then plan it, not drop it."""
+    registry = registry_of(tap_def("plain", "https://example.test/tap", profiles=[]),
+                           tap_def("optical_only", "https://example.test/tap2", profiles=["optical"]))
+    query = AdvancedQuery.from_dict({"ra": 1.0, "dec": 2.0, "catalogs": ["plain"], "profiles": ["optical"]})
+    assert QueryValidator.validate(query, registry)
+    from crossmatch import QueryBuilder
+
+    assert [p.catalog for p in QueryBuilder(registry).build(query)] == ["plain"]
+    everything = AdvancedQuery.from_dict({"ra": 1.0, "dec": 2.0, "profiles": ["optical"]})
+    assert sorted(p.catalog for p in QueryBuilder(registry).build(everything)) == ["optical_only", "plain"]

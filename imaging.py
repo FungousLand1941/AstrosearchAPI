@@ -2145,10 +2145,19 @@ def name_unknown_to_sesame(exc: BaseException) -> bool:
 async def _resolve_position(
     request: Request, ra: float | None, dec: float | None, name: str | None
 ) -> tuple[float, float, dict[str, Any] | None]:
+    """The target of ``/cutouts`` and ``/cutouts/stack``: ra/dec as given, or the Sesame position of
+    ``name``. A name together with ra and/or dec is a 422 (:data:`main.NAME_AND_COORDINATES`)
+    before anything is resolved, as on every search route, so an image is never rendered at the
+    coordinates while being requested (and labelled) as the named object."""
+    from main import check_search_target  # lazy: main imports this module for its CLI
+
+    try:
+        check_search_target(name, ra, dec)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
     if ra is not None and dec is not None:
         return ra, dec, None
-    if not name:
-        raise HTTPException(status_code=422, detail="Either name or both ra and dec are required")
+    assert name  # check_search_target: a name when ra/dec are absent
     from models import ObjectResolutionError, resolution_failure_status
     from providers import SesameResolver
 
@@ -2559,8 +2568,12 @@ def cli_cutout(args: argparse.Namespace) -> int:
     if not args.out:
         print("Error: --out is required", file=sys.stderr)
         return 2
-    if not args.name and (args.ra is None or args.dec is None):
-        print("Error: specify --name or both --ra and --dec", file=sys.stderr)
+    from main import check_search_target  # lazy: main imports this module for its CLI
+
+    try:  # --name or --ra/--dec, never both (the rule of every search command)
+        check_search_target(args.name or None, args.ra, args.dec)
+    except ValueError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
         return 2
     from_path = _format_from_path(args.out)
     if args.format is None and from_path is None:

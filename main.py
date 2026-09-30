@@ -50,6 +50,7 @@ from crossmatch import (
     AdvancedQuery,
     CrossmatchService,
     angular_separation_arcsec,
+    check_catalogs_in_profiles,
     match_score,
     resolved_search_target,
 )
@@ -269,18 +270,11 @@ def check_catalogs_in_profile(registry: CatalogRegistry | None, catalogs: list[s
     """ValueError when ``catalogs`` names a catalog outside ``profile``.
 
     Catalogs are intersected with the profile, so such a catalog would silently not be queried
-    and the search would 'succeed' with nothing from it. ``POST /api/v1/search`` refuses this
-    through ``crossmatch.QueryValidator``; the basic crossmatch path (``/search/stream``, the
-    ``search`` and ``stream`` commands) checks it here, with the same message."""
-    if not catalogs or not profile or registry is None:
-        return
-    enabled = registry.enabled_catalogs()
-    outside = [name for name in catalogs if name in enabled and enabled[name].profiles
-               and profile not in enabled[name].profiles]
-    if outside:
-        raise ValueError(
-            f"Catalog(s) {', '.join(outside)} are not in profile '{profile}' and would not be queried: catalogs are "
-            "intersected with the profile. Omit the profile (or use one that includes them) to query these catalogs.")
+    and the search would 'succeed' with nothing from it. The rule and its message are
+    ``crossmatch.check_catalogs_in_profiles`` (also run by ``QueryValidator`` and
+    ``CrossmatchService.prepare``); the basic crossmatch path (``/search/stream``, the ``search``
+    and ``stream`` commands) calls it here too so the input error comes before a name is resolved."""
+    check_catalogs_in_profiles(registry, catalogs, profile)
 
 
 async def api_search(service: Any, fields: Mapping[str, Any], resolver: Any = None) -> UnifiedRecord:

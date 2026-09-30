@@ -127,7 +127,7 @@ from models import (
     validate_target,
     votable_query_status,
 )
-from providers import SesameResolver, service_error_detail
+from providers import SesameResolver, new_http_client, new_http_client_async, service_error_detail
 
 
 # The Anthropic SDK and astropy's cosmology cost seconds to import (about 3 s and 2 s): they are
@@ -1692,11 +1692,8 @@ async def _validate_submission(
             except (ValueError, TypeError, InvalidCoordinateError) as exc:
                 errors.append(f"AdvancedQuery validation failed: {exc}")
             else:
-                if query.catalogs and query.profiles:
-                    selected = [c for c in query.catalogs if any(p in enabled[c].profiles for p in query.profiles)]
-                    if not selected:
-                        errors.append("No listed catalog carries any listed profile, so nothing would be queried; "
-                                      "drop profiles or pick matching catalogs.")
+                # A listed catalog outside the listed profiles is refused by QueryValidator above
+                # (crossmatch.check_catalogs_in_profiles), so a validated query queries every listed catalog.
                 advanced = query.to_dict()
                 if adql_final is not None:
                     adql_final = substitute_adql_target(adql_final, target, sub.radius_arcsec)
@@ -3562,9 +3559,9 @@ async def _state_http_client(state: Any) -> AsyncIterator[httpx.AsyncClient]:
     if client is not None:
         yield client
         return
-    # Fallback only (integration provides app.state.client): build off the event loop,
-    # because creating the SSL context blocks for seconds on some systems.
-    own = await asyncio.to_thread(httpx.AsyncClient, timeout=60.0, follow_redirects=True)
+    # Fallback only (integration provides app.state.client): the process's shared SSL context,
+    # built off the event loop the first time (creating one blocks for ~1 s on some systems).
+    own = await new_http_client_async(60.0)
     async with own:
         yield own
 
@@ -3654,7 +3651,7 @@ anthropic_factory: Callable[[], Any] = build_anthropic_client
 
 
 def _http_client_factory() -> httpx.AsyncClient:
-    return httpx.AsyncClient(timeout=60.0, follow_redirects=True)
+    return new_http_client(60.0)  # the shared SSL context: the CA bundle is loaded once per process
 
 
 def _service_factory(client: httpx.AsyncClient) -> CrossmatchLike:

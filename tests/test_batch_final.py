@@ -385,3 +385,65 @@ def test_default_engine_includes_catalogs_registered_with_vizier_add(tmp_path: P
     assert engine.default_strategy(REGISTERED) == "xmatch"
     with pytest.raises(BatchError, match="unknown catalog"):
         engine._resolve(["vizier_no_such_table"], None)
+
+
+# ---------------------------------------------------------------------------
+# Finding: owned HTTP clients reload the CA bundle on the event loop
+# ---------------------------------------------------------------------------
+
+
+def test_owned_clients_share_one_ssl_context(monkeypatch: pytest.MonkeyPatch) -> None:
+    """BatchCrossmatcher.run without a client, SesameResolver without one and the AI fallback
+    client all use providers.shared_ssl_context: the CA bundle is loaded once per process (off
+    the event loop the first time), not on the loop for every client."""
+    import ssl
+
+    import ai
+    import providers
+    from providers import SesameResolver
+
+    loads: list[int] = []
+    real = ssl.create_default_context
+
+    def counting(*args: Any, **kwargs: Any) -> ssl.SSLContext:
+        loads.append(1)
+        return real(*args, **kwargs)
+
+    monkeypatch.setattr(ssl, "create_default_context", counting)
+    providers.shared_ssl_context.cache_clear()
+    created: list[httpx.AsyncClient] = []
+    real_client = httpx.AsyncClient
+
+    def recording(*args: Any, **kwargs: Any) -> httpx.AsyncClient:
+        assert kwargs.get("verify") is providers.shared_ssl_context(), "an owned client builds its own SSL context"
+        client = real_client(*args, **kwargs)
+        created.append(client)
+        return client
+
+    monkeypatch.setattr(providers.httpx, "AsyncClient", recording)
+
+    async def scenario() -> None:
+        for _ in range(3):
+            engine = BatchCrossmatcher(registry=CatalogRegistry())
+            engine.retry_backoff_seconds = 0.0
+            with respx.mock(assert_all_called=False) as router:
+                router.route().mock(side_effect=Archive())
+                await engine.run([{"ra": 10.0, "dec": 20.0}], ["vlass"], radius_arcsec=5.0,
+                                 strategies={"vlass": "cone"})
+            resolver = SesameResolver()
+            assert resolver.client is None  # nothing is built (nor any CA bundle loaded) at construction
+            async with respx.mock(assert_all_called=False) as router:
+                router.route().respond(503)
+                with pytest.raises(Exception):  # noqa: B017 - only the client it builds matters here
+                    await resolver.resolve("M31")
+            assert resolver.client is not None
+            await resolver.client.aclose()
+            async with ai._state_http_client(object()):
+                pass
+            async with ai._http_client_factory():
+                pass
+
+    asyncio.run(scenario())
+    assert len(created) == 12  # batch, resolver, AI state fallback, AI CLI factory, three times over
+    assert sum(loads) == 1, f"the CA bundle was loaded {sum(loads)} times"
+    providers.shared_ssl_context.cache_clear()

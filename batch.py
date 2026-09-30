@@ -154,7 +154,16 @@ from models import (
     row_get,
     ucd_field_map,
 )
-from providers import _PLANET_TYPES, _TIE_ARCSEC, CacheManager, EndpointGuard, QueryResult, TapProvider, provider_map
+from providers import (
+    _PLANET_TYPES,
+    _TIE_ARCSEC,
+    CacheManager,
+    EndpointGuard,
+    QueryResult,
+    TapProvider,
+    new_http_client_async,
+    provider_map,
+)
 
 logger = logging.getLogger("astrosearch.batch")
 
@@ -2095,7 +2104,8 @@ class BatchCrossmatcher:
         self._check_limits(plan, batch)
         started = time.perf_counter()
         owned = self.client is None
-        client = self.client or httpx.AsyncClient(timeout=self.upload_timeout, follow_redirects=True)
+        # An owned client reuses the process's SSL context, built off the event loop the first time.
+        client = self.client or await new_http_client_async(self.upload_timeout)
         try:
             chosen = set(strategies or {})
             outcomes = await asyncio.gather(*(self._run_catalog(client, name, strategy, batch, radius,
