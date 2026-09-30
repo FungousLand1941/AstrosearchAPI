@@ -369,6 +369,56 @@ async def test_proper_motion_needs_a_point_source_or_decisive_significance(data:
     assert (res.host is None) is expected
 
 
+async def _alone(data: dict[str, Any], ra: float = ALERT.ra, dec: float = ALERT.dec,
+                 extra_sources: list[dict[str, Any]] | None = None) -> AlertEnrichment:
+    """Synthetic: a Gaia source at the alert with no galaxy in the host cone nor any D25 ellipse."""
+    alert = Alert.from_dict({**ALERT.as_dict(), "ra": ra, "dec": dec})
+    gaia = {"source_id": "9", "ra": ra, "dec": dec, "separation_arcsec": 0.1, "data": data}
+
+    def answer(qra, qdec, cats):
+        if "gaia_dr3" in cats:
+            return record_of(qra, qdec, cats, sources={"gaia_dr3": [gaia], "simbad": list(extra_sources or [])})
+        return record_of(qra, qdec, cats)
+
+    return await enricher_with(answer).enrich(alert)
+
+
+# A well-behaved point source moving 2.70 mas/yr at 18 sigma (the Galactic star at l = 48, b = -10 that the LMC-distance
+# limit of 3.19 mas/yr left 'not a star'), without a significant parallax.
+SLOW = {**POINT, "pmra": 1.62, "pmdec": 2.16, "pmra_error": 0.15, "pmdec_error": 0.15, "classprob_dsc_combmod_star": 0.5,
+        "classprob_dsc_combmod_galaxy": 0.25, "classprob_dsc_combmod_quasar": 0.25}
+QUIET = {**POINT, "pmra": 0.05, "pmdec": 0.0, "pmra_error": 0.1, "pmdec_error": 0.1}  # no significant motion
+
+
+async def test_significant_motion_far_from_every_galaxy_is_galactic_and_probable_stars_are_unknown() -> None:
+    """Synthetic. Far from every galaxy that could hold stars (no host, no D25 ellipse, far from the Magellanic
+    Clouds, M31, M33 and the Local Group dwarfs) any significant motion of a well-behaved point source is a
+    Galactic star's. Near the LMC the same slow motion is below the 750 km/s limit: the source then stays a
+    probable star of unknown nature (None) -- as does a well-behaved point source that Gaia's DSC calls a star
+    without decisive astrometry -- unless Gaia classifies it as extragalactic, its parallax is negative or a
+    catalogued AGN lies on it (a BL Lac nucleus is a well-fitted 'star' for DSC: PKS 2155-304)."""
+    isolated = await _alone(SLOW)
+    assert isolated.status == "done" and isolated.known_star is True and isolated.host_status == "not_applicable_star"
+    assert any("2.70 mas/yr (18 sigma), with no galaxy associated" in e and "-> Galactic star" in e
+               for e in isolated.evidence), isolated.evidence
+    near_lmc = await _alone(SLOW, ra=80.0, dec=-68.0)
+    assert near_lmc.known_star is None
+    assert any("well-behaved point source" in e and "2.70 mas/yr proper motion (18 sigma)" in e
+               and "Galactic nature not established" in e for e in near_lmc.evidence), near_lmc.evidence
+    probable = await _alone(QUIET)
+    assert probable.known_star is None
+    assert any("DSC classifies as a star (P = 0.990)" in e and "Galactic nature not established" in e
+               for e in probable.evidence), probable.evidence
+    for data in ({**QUIET, **DSC_GALAXY}, {**QUIET, "in_galaxy_candidates": True}, {**QUIET, "parallax": -0.4}):
+        res = await _alone(data)
+        assert res.status == "done" and res.known_star is False, data
+        assert not any("Galactic nature not established" in e for e in res.evidence)
+    bllac = {"source_id": "PKS X", "ra": ALERT.ra, "dec": ALERT.dec, "separation_arcsec": 0.0,
+             "data": {"otype": "BLL", "rvz_redshift": 0.116}}
+    nucleus = await _alone(QUIET, extra_sources=[bllac])
+    assert nucleus.known_star is False and nucleus.known_agn is True and nucleus.known_variable is True
+
+
 async def test_coincident_galaxy_entry_vetoes_only_a_poorly_fitted_source() -> None:
     """Synthetic: a SIMBAD Sy1 entry at the Gaia position. With excess noise (a nucleus) the astrometry is
     not used; a well-fitted star blended with a catalogued galaxy (ZTF26abxsysn's case) keeps its evidence."""

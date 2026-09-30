@@ -149,9 +149,11 @@ host-galaxy search. Enrichment:
   None: SN 2002gn, SN 2018aks); a generic stellar entry (SIMBAD '*', NED '*') within 1.5" of a
   galaxy/AGN entry is another entry of the galaxy's nucleus, not a star, unless a well-behaved,
   non-extragalactic Gaia DR3 point source confirms it (SIMBAD 'LEDA 1798300' '*' on a z = 0.027
-  galaxy). A well-behaved Gaia DR3 point source at the alert that DSC calls a star (P >= 0.9), without
-  decisive astrometry, makes the answer unknown (None), never False. ``stellar_counterpart`` reports the
-  stellar-type match itself.
+  galaxy). A well-behaved Gaia DR3 point source at the alert that DSC calls a star (P >= 0.9) or that
+  moves (>= 5 sigma), without decisive astrometry, makes the answer unknown (None), never False -- unless
+  Gaia classifies it as extragalactic, its parallax is < -3 sigma or a catalogued galaxy/AGN/cluster lies
+  on it (a BL Lac such as PKS 2155-304 is a well-fitted point source with DSC P(star) ~ 1).
+  ``stellar_counterpart`` reports the stellar-type match itself.
 * ``known_variable``: a catalogued variable source at the position (SIMBAD variable-star
   ``otypedef`` types, codes and labels including '_Candidate' labels as emitted by Fink,
   blazars, NED ``V*``/``Nova``/``Flare*``, the broker's Gaia DR3 variability flag); it may be
@@ -2260,10 +2262,14 @@ def _counterpart_summary(source: dict[str, Any]) -> dict[str, Any]:
     return summary
 
 
-def _probable_gaia_star(entry: Mapping[str, Any]) -> bool:
+def _probable_gaia_star(entry: Mapping[str, Any], counterparts: Sequence[Mapping[str, Any]] = ()) -> bool:
     """A Gaia DR3 counterpart at the alert (within PROBABLE_STAR_MAX_ARCSEC) that is a well-behaved point
     source (RUWE < GAIA_RUWE_MAX, excess-noise significance <= GAIA_EXCESS_NOISE_SIG_MAX) with DSC
-    P(star) >= DSC_STAR_PROBABLE or a proper motion of at least PM_SNR_STAR sigma."""
+    P(star) >= DSC_STAR_PROBABLE or a proper motion of at least PM_SNR_STAR sigma -- and that nothing marks
+    as extragalactic: not classified so by Gaia (DSC P(galaxy) + P(quasar) > 0.5, galaxy candidate), no
+    parallax below -3 sigma (a spurious solution) and no SIMBAD/NED galaxy, AGN or cluster entry within
+    GALAXY_COINCIDENCE_ARCSEC of it (its identification: a BL Lac nucleus such as PKS 2155-304 is a
+    well-fitted point source with DSC P(star) = 0.99999)."""
     if entry.get("catalog") != "gaia_dr3":
         return False
     sep = entry.get("separation_arcsec")
@@ -2271,6 +2277,13 @@ def _probable_gaia_star(entry: Mapping[str, Any]) -> bool:
         return False
     ruwe, aens = entry.get("ruwe"), entry.get("astrometric_excess_noise_sig")
     if ruwe is None or ruwe >= GAIA_RUWE_MAX or (aens is not None and aens > GAIA_EXCESS_NOISE_SIG_MAX):
+        return False
+    if (entry.get("dsc_p_extragalactic") or 0.0) > GAIA_DSC_EXTRAGALACTIC_MIN or entry.get("in_galaxy_candidates"):
+        return False
+    poe = entry.get("parallax_over_error")
+    if poe is not None and poe <= GAIA_NEGATIVE_PARALLAX_SNR:
+        return False
+    if _coincident_extended(entry, counterparts) is not None:
         return False
     p_star, pm_sig = entry.get("dsc_p_star"), entry.get("pm_over_error")
     return (p_star is not None and p_star >= DSC_STAR_PROBABLE) or (pm_sig is not None and pm_sig >= PM_SNR_STAR)
@@ -3669,15 +3682,21 @@ class AlertEnricher:
                 result.evidence.append("the D25 galaxy search failed: Galactic nature of the stellar counterpart unknown")
         else:
             needed = {"gaia_dr3", "simbad"} & set(self.catalogs)
-            probable = [e for e in counterparts if _probable_gaia_star(e)]
+            probable = [e for e in counterparts if _probable_gaia_star(e, counterparts)]
             if probable:
                 # A well-fitted point source Gaia calls a star, without a decisive parallax or motion: probably
                 # a star, but 'not a star' would be wrong and 'Galactic' unproven.
                 e = probable[0]
+                p_star, pm_sig = e.get("dsc_p_star"), e.get("pm_over_error")
+                why = []
+                if p_star is not None and p_star >= DSC_STAR_PROBABLE:
+                    why.append(f"that Gaia's DSC classifies as a star (P = {p_star:.3f})")
+                if pm_sig is not None and pm_sig >= PM_SNR_STAR:
+                    why.append(f"with a {e.get('pm_masyr'):.2f} mas/yr proper motion ({pm_sig:.0f} sigma)")
                 result.evidence.append(
                     f"Gaia DR3 {e['source_id']} at {e['separation_arcsec'] or 0.0:.2f}\" is a well-behaved point source "
-                    f"(RUWE {e.get('ruwe')}, excess-noise significance {e.get('astrometric_excess_noise_sig')}) that Gaia's "
-                    f"DSC classifies as a star (P = {e.get('dsc_p_star')}), but neither its parallax nor its proper "
+                    f"(RUWE {e.get('ruwe')}, excess-noise significance {e.get('astrometric_excess_noise_sig')}) "
+                    f"{' and '.join(why)}, not classified as extragalactic, but neither its parallax nor its proper "
                     "motion decides whether it is Galactic: Galactic nature not established")
                 star = None
             else:

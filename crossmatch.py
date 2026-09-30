@@ -821,20 +821,51 @@ def _normalised_name(value: Any) -> str:
     return "".join(str(value or "").split()).casefold()
 
 
-# SIMBAD's prefixes of main identifiers ('V* RR Lyr', 'NAME Virgo Cluster', '* alf Lyr') and
-# zero padding of catalogue numbers (NED's 'MESSIER 013', 'NGC 0224').
+# SIMBAD's prefixes of main identifiers ('V* RR Lyr', 'NAME Virgo Cluster', '* alf Lyr').
 _ID_PREFIX = re.compile(r"^(?:v\*|\*\*|\*|name|em\*)\s+", re.IGNORECASE)
-_PADDED_NUMBER = re.compile(r"^(m|ngc|ic|ugc|pgc|mcg|arp|abell|aco)0+(?=\d)")
+# Zero padding of numbers (NED's 'MESSIER 013', 'NGC 0224', '3C 048', 'HR 0936', 'MRK 0421'):
+# leading zeros of every digit run, except after a decimal point ('1.05' keeps its zero).
+_PADDED_NUMBER = re.compile(r"(?<![\d.])0+(?=\d)")
+# Bayer letters: SIMBAD's three-letter abbreviations ('* alf Ori', '* mu. Cep', '* ksi UMa')
+# and the Greek names NED spells out ('alpha Ori', 'mu Cep', 'xi UMa'), with an optional
+# superscript number ('alf01 Lib', 'alpha1 Lib').
+GREEK_LETTERS: dict[str, str] = {
+    "alf": "alpha", "alp": "alpha", "alpha": "alpha", "bet": "beta", "beta": "beta", "gam": "gamma",
+    "gamma": "gamma", "del": "delta", "delta": "delta", "eps": "epsilon", "epsilon": "epsilon", "zet": "zeta",
+    "zeta": "zeta", "eta": "eta", "tet": "theta", "the": "theta", "theta": "theta", "iot": "iota", "iota": "iota",
+    "kap": "kappa", "kappa": "kappa", "lam": "lambda", "lambda": "lambda", "mu": "mu", "nu": "nu", "ksi": "xi",
+    "xi": "xi", "omi": "omicron", "omicron": "omicron", "pi": "pi", "rho": "rho", "sig": "sigma", "sigma": "sigma",
+    "tau": "tau", "ups": "upsilon", "upsilon": "upsilon", "phi": "phi", "chi": "chi", "psi": "psi", "ome": "omega",
+    "omega": "omega",
+}
+_BAYER_TOKEN = re.compile(r"^([a-z]+)\.?(\d*)$")
+_CONSTELLATION_KEYS = frozenset(c.casefold() for c in CONSTELLATION_ABBREVIATIONS)
+
+
+def _bayer_tokens(tokens: list[str]) -> list[str]:
+    """Tokens with a Bayer letter before a constellation abbreviation spelt as its Greek name
+    ('alf Ori' -> 'alpha Ori', 'mu. Cep' -> 'mu Cep', 'alf01 Lib' -> 'alpha1 Lib')."""
+    out = list(tokens)
+    for k in range(len(tokens) - 1):
+        if tokens[k + 1].casefold() not in _CONSTELLATION_KEYS:
+            continue
+        match = _BAYER_TOKEN.match(tokens[k].casefold())
+        if match and match.group(1) in GREEK_LETTERS:
+            digits = match.group(2).lstrip("0")
+            out[k] = GREEK_LETTERS[match.group(1)] + digits
+    return out
 
 
 def identifier_key(value: Any) -> str:
     """An object name reduced for comparison across compilations: SIMBAD prefixes and blanks
-    removed, case folded, 'Messier' written 'M', leading zeros of catalogue numbers dropped
-    ('M 101' = 'Messier 101' = 'M101', 'V* RR Lyr' = 'RR Lyr', 'NGC 7318A' = 'NGC 7318a')."""
+    removed, case folded, 'Messier' written 'M', Bayer letters written as Greek names, and
+    leading zeros of every number dropped ('M 101' = 'Messier 101' = 'M101', 'V* RR Lyr' =
+    'RR Lyr', 'NGC 7318A' = 'NGC 7318a', '* alf Ori' = 'alpha Ori', '3C 48' = '3C 048',
+    'HR 936' = 'HR 0936', 'Mrk 421' = 'MRK 0421')."""
     text = _ID_PREFIX.sub("", " ".join(str(value or "").split()))
-    key = "".join(text.split()).casefold()
+    key = "".join(_bayer_tokens(text.split())).casefold()
     key = re.sub(r"^messier", "m", key)
-    return _PADDED_NUMBER.sub(r"\1", key)
+    return _PADDED_NUMBER.sub("", key)
 
 
 def mark_compact_clusters(matches: list[Match]) -> set[int]:
