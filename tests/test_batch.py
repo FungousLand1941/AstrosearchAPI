@@ -95,7 +95,7 @@ def ids(result: BatchResult, target: str, catalog: str) -> list[str]:
 
 def test_parse_targets_aliases_and_normalisation():
     targets = parse_targets([
-        {"Name": " 3C  273 ", "RAJ2000": "-172.7220846", "DEJ2000": 2.0523883},
+        {"Name": " 3C  273 ", "RAJ2000": "187.2779154", "DEJ2000": 2.0523883},
         {"ra": 10, "dec": -5, "epoch": 2000, "pmra": 5.0, "pmdec": -3.0, "plx": 12.0, "radius": 4},
         {"ra": 359.9999999, "dec": 90},
     ])

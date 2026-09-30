@@ -651,7 +651,8 @@ async def get_catalog(catalog_name: str):
 
 
 async def _search(req: SearchRequest) -> dict[str, Any]:
-    check_search_target(req.name, req.ra, req.dec)  # a name or ra/dec, never both (422)
+    # A name or ra/dec, never both (422); a blank name is no name (one cache entry, no resolver).
+    req = req.model_copy(update={"name": check_search_target(req.name, req.ra, req.dec)})
     check_search_radius(req.radius_arcsec, settings=getattr(app.state, "settings", None))
 
     cache_key = cache.make_key("search", req.model_dump())
@@ -886,7 +887,8 @@ async def list_queries_endpoint():
 async def save_query_endpoint(req: SavedQueryRequest):
     """Save a search query for reuse."""
     try:
-        check_search_target(req.query.name, req.query.ra, req.query.dec)
+        # A blank name is no name: the saved query runs (and is listed) as its coordinates.
+        req.query.name = check_search_target(req.query.name, req.query.ra, req.query.dec)
         # A saved query must run later: the same radius limit as POST /api/v1/search.
         check_search_radius(req.query.radius_arcsec, settings=getattr(app.state, "settings", None))
     except ValueError as exc:

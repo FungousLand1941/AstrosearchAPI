@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import asyncio
 import base64
-import functools
 import hashlib
 import json
 import logging
@@ -12,6 +11,7 @@ import math
 import os
 import re
 import ssl
+import threading
 import time
 from abc import ABC, abstractmethod
 from collections import OrderedDict
@@ -99,31 +99,101 @@ __all__ = [
 # ---------------------------------------------------------------------------
 
 
-@functools.lru_cache(maxsize=1)
-def shared_ssl_context() -> ssl.SSLContext:
-    """One SSL context per process for the clients this package builds itself.
+def _ssl_ca_locations(trust_env: bool = True) -> tuple[str | None, str | None]:
+    """The ``(cafile, capath)`` httpx would verify against for ``verify=True``.
 
-    httpx builds a fresh context from certifi's CA bundle for every new client, which takes
-    ~0.5-1 s on Windows; a client built on the event loop stalls every other request for that
-    long. The context trusts the same bundle httpx would (certifi, else the system store)."""
-    try:
-        import certifi
-    except ImportError:  # pragma: no cover - certifi ships with httpx
-        return ssl.create_default_context()
-    return ssl.create_default_context(cafile=certifi.where())
+    Mirrors httpx 0.28's ``create_ssl_context``: with ``trust_env`` a non-empty ``SSL_CERT_FILE``
+    wins, else a non-empty ``SSL_CERT_DIR``; otherwise certifi's bundle (``(None, None)`` here).
+    The environment is read on every call, so a changed variable takes effect for new clients."""
+    if trust_env:
+        cafile = os.environ.get("SSL_CERT_FILE")
+        if cafile:
+            return cafile, None
+        capath = os.environ.get("SSL_CERT_DIR")
+        if capath:
+            return None, capath
+    return None, None
+
+
+_SSL_CONTEXTS: dict[tuple[str | None, str | None], ssl.SSLContext] = {}
+_SSL_CONTEXTS_LOCK = threading.Lock()
+
+
+def _ssl_context_for(cafile: str | None, capath: str | None) -> ssl.SSLContext:
+    """One context per CA location: the bundle is loaded once, not for every client."""
+    key = (cafile, capath)
+    with _SSL_CONTEXTS_LOCK:  # held while building, so concurrent first calls load it once
+        context = _SSL_CONTEXTS.get(key)
+        if context is None:
+            if cafile:
+                context = ssl.create_default_context(cafile=cafile)
+            elif capath:
+                context = ssl.create_default_context(capath=capath)
+            else:
+                try:
+                    import certifi
+                except ImportError:  # pragma: no cover - certifi ships with httpx
+                    context = ssl.create_default_context()
+                else:
+                    context = ssl.create_default_context(cafile=certifi.where())
+            _SSL_CONTEXTS[key] = context
+        return context
+
+
+@dataclass(frozen=True)
+class _SSLCacheInfo:
+    currsize: int
+
+
+class _SharedSSLContext:
+    """Callable returning the shared SSL context for the current environment.
+
+    httpx builds a fresh context from its CA bundle for every new client, which takes ~0.5-1 s
+    on Windows; a client built on the event loop stalls every other request for that long. This
+    trusts exactly what httpx would for ``verify=True`` (``SSL_CERT_FILE`` / ``SSL_CERT_DIR``
+    when ``trust_env``, else certifi), cached per ``(cafile, capath)``."""
+
+    def __call__(self, *, trust_env: bool = True) -> ssl.SSLContext:
+        return _ssl_context_for(*_ssl_ca_locations(trust_env))
+
+    def is_cached(self, *, trust_env: bool = True) -> bool:
+        """Whether the context for the current environment is already built (no bundle load)."""
+        return _ssl_ca_locations(trust_env) in _SSL_CONTEXTS
+
+    def cache_info(self) -> _SSLCacheInfo:
+        return _SSLCacheInfo(currsize=len(_SSL_CONTEXTS))
+
+    def cache_clear(self) -> None:
+        with _SSL_CONTEXTS_LOCK:
+            _SSL_CONTEXTS.clear()
+
+
+shared_ssl_context = _SharedSSLContext()
+
+
+def _owned_verify(kwargs: dict[str, Any]) -> bool:
+    """True when the client would verify with httpx's default trust (so the shared context can
+    stand in); a caller's ``verify=False``/own context/path, or a ``cert`` (httpx would load it
+    into the context, mutating the shared one), is passed through to httpx untouched."""
+    return kwargs.get("verify", True) is True and not kwargs.get("cert")
 
 
 def new_http_client(timeout: float, **kwargs: Any) -> httpx.AsyncClient:
-    """A client with the shared SSL context (the CA bundle is loaded at most once per process)."""
+    """A client with the shared SSL context (the CA bundle is loaded once per CA location)."""
     kwargs.setdefault("follow_redirects", True)
-    return httpx.AsyncClient(timeout=timeout, verify=shared_ssl_context(), **kwargs)
+    if _owned_verify(kwargs):
+        trust_env = bool(kwargs.get("trust_env", True))
+        kwargs["verify"] = shared_ssl_context(trust_env=trust_env)
+    return httpx.AsyncClient(timeout=timeout, **kwargs)
 
 
 async def new_http_client_async(timeout: float, **kwargs: Any) -> httpx.AsyncClient:
-    """:func:`new_http_client` from a coroutine: the first (uncached) SSL context is built off
-    the event loop, so neither other requests nor a caller's cancellation wait for it."""
-    if not shared_ssl_context.cache_info().currsize:
-        await asyncio.to_thread(shared_ssl_context)
+    """:func:`new_http_client` from a coroutine: an uncached SSL context is built off the
+    event loop, so neither other requests nor a caller's cancellation wait for it."""
+    if _owned_verify(kwargs):
+        trust_env = bool(kwargs.get("trust_env", True))
+        if not shared_ssl_context.is_cached(trust_env=trust_env):
+            await asyncio.to_thread(shared_ssl_context, trust_env=trust_env)
     return new_http_client(timeout, **kwargs)
 
 # ---------------------------------------------------------------------------

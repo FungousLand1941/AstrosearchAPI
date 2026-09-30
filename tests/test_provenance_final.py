@@ -243,6 +243,29 @@ def test_search_fields_refuse_a_radius_above_the_configured_limit(monkeypatch) -
         asyncio.run(P.run_basic_search(object(), ra=1.0, dec=1.0, radius_arcsec=61.0))  # before any request
 
 
+@pytest.mark.parametrize("blank", ["", "   ", "\t"])
+def test_run_basic_search_treats_a_blank_name_as_no_name(blank: str) -> None:
+    """Regression: run_basic_search passed the raw name on after the shared check, so a
+    whitespace name beside ra/dec went to the resolver and the coordinates were ignored
+    ('manifest --name "   " --ra 10 --dec 11' exited 2 with 'Object name must not be empty')."""
+
+    class Service:
+        calls: list[tuple[float, float]] = []
+
+        async def crossmatch(self, ra, dec, **_kwargs):
+            self.calls.append((ra, dec))
+            return "record"
+
+    class NoResolver:
+        async def resolve(self, name):  # pragma: no cover - reaching it is the bug
+            raise AssertionError(f"resolver called for blank name {name!r}")
+
+    service = Service()
+    result = asyncio.run(P.run_basic_search(service, name=blank, ra=10.0, dec=11.0, radius_arcsec=5.0,
+                                            resolver=NoResolver()))
+    assert result == "record" and service.calls == [(10.0, 11.0)]
+
+
 def test_search_radius_checks_share_one_implementation(monkeypatch) -> None:
     """main.check_search_radius (search, stream, saved queries) and provenance.check_radius_limit
     (manifests, replays) are one check against models.Settings().max_radius_arcsec: same limit, same message."""

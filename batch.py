@@ -636,6 +636,11 @@ class _TargetParser:
                          "correction.")
             parallax = None
         try:
+            # RA outside [0, 360) is refused, never wrapped (as POST /api/v1/search and the search command): a
+            # typo such as 387.2 for 187.2 must not quietly search another part of the sky.
+            ra_deg = _finite(ra, "ra")
+            if not 0.0 <= ra_deg < 360.0:
+                raise InvalidCoordinateError(f"RA must be within [0, 360) degrees (got {ra_deg:g}); it is not wrapped.")
             target = icrs_target(
                 ra, dec,
                 epoch=_optional_float(_pick(lowered, "epoch"), "epoch", label),
@@ -652,7 +657,7 @@ class _TargetParser:
 
 
 def parse_targets(items: Iterable[Mapping[str, Any]], *, max_targets: int | None = None) -> list[BatchTarget]:
-    """Validate target mappings; RA is normalised to [0, 360) and ids must be unique.
+    """Validate target mappings; RA must be in [0, 360) (never wrapped), Dec in [-90, 90], and ids must be unique.
 
     Keys are case-insensitive with common aliases (``ra``/``RAJ2000``, ``pmra``, ``name``/``source_id``,
     ``radius``, ...). A missing id becomes the 1-based row number. Proper motion (mas/yr, RA component including

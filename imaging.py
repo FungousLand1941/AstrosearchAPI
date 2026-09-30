@@ -2152,7 +2152,7 @@ async def _resolve_position(
     from main import check_search_target  # lazy: main imports this module for its CLI
 
     try:
-        check_search_target(name, ra, dec)
+        name = check_search_target(name, ra, dec)  # a blank name (an empty form field) is no name
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     if ra is not None and dec is not None:
@@ -2571,7 +2571,7 @@ def cli_cutout(args: argparse.Namespace) -> int:
     from main import check_search_target  # lazy: main imports this module for its CLI
 
     try:  # --name or --ra/--dec, never both (the rule of every search command)
-        check_search_target(args.name or None, args.ra, args.dec)
+        args.name = check_search_target(args.name, args.ra, args.dec)  # a blank --name is no name
     except ValueError as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 2

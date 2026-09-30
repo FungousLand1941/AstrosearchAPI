@@ -157,7 +157,7 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, Response
 from fastapi.routing import APIRoute
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from models import (
     AstroSearchError,
@@ -4602,7 +4602,7 @@ async def build_sed(
     """Crossmatch a position or a resolved name (not both) and return its SED passport (see :func:`sed_from_record`)."""
     radius = validate_radius(radius_arcsec)
     try:
-        _check_position_arguments(name, ra, dec)
+        name = _check_position_arguments(name, ra, dec)  # a blank name is no name
     except ValueError as exc:
         raise SEDInputError(str(exc)) from exc
     owned = client is None
@@ -4749,7 +4749,8 @@ class SEDRequest(BaseModel):
     ra: float | None = Field(default=None, ge=0.0, lt=360.0)
     dec: float | None = Field(default=None, ge=-90.0, le=90.0)
     radius_arcsec: float = Field(default=DEFAULT_RADIUS_ARCSEC, gt=0.0, le=MAX_RADIUS_ARCSEC)
-    name: str | None = Field(default=None, min_length=1, max_length=200)
+    # A blank name is no name (main.check_search_target, run by post_sed so the 422 is a plain detail).
+    name: str | None = Field(default=None, max_length=200)
 
     @field_validator("ra", "dec", "radius_arcsec", mode="before")
     @classmethod
@@ -4759,21 +4760,14 @@ class SEDRequest(BaseModel):
             raise ValueError("must be a number, not a boolean")  # noqa: TRY004 (pydantic needs ValueError -> 422)
         return value
 
-    @model_validator(mode="after")
-    def _need_position(self) -> SEDRequest:
-        if self.name is not None and not self.name.strip():
-            raise ValueError("name must not be blank")
-        _check_position_arguments(self.name, self.ra, self.dec)
-        return self
 
+def _check_position_arguments(name: str | None, ra: float | None, dec: float | None) -> str | None:
+    """Exactly one way to give the target: a name, or both ra and dec (never both: which one wins would be a guess).
+    The shared rule and messages of every search route (:func:`main.check_search_target`); returns the name to
+    resolve, None for a coordinate target (a blank name is no name)."""
+    from main import check_search_target  # lazy: main imports this module for its CLI
 
-def _check_position_arguments(name: str | None, ra: float | None, dec: float | None) -> None:
-    """Exactly one way to give the target: a name, or both ra and dec (never both: which one wins would be a guess)."""
-    has_coords = ra is not None or dec is not None
-    if name and has_coords:
-        raise ValueError("give either name or ra/dec, not both")
-    if not name and (ra is None or dec is None):
-        raise ValueError("Either name or both ra and dec are required")
+    return check_search_target(name, ra, dec)
 
 
 class SEDPointModel(BaseModel):
@@ -4888,13 +4882,11 @@ async def get_sed(
     ra: float | None = Query(default=None, ge=0.0, lt=360.0, description="Right ascension (ICRS deg)"),
     dec: float | None = Query(default=None, ge=-90.0, le=90.0, description="Declination (ICRS deg)"),
     radius_arcsec: float = Query(default=DEFAULT_RADIUS_ARCSEC, gt=0.0, le=MAX_RADIUS_ARCSEC),
-    name: str | None = Query(default=None, min_length=1, max_length=200, description="Object name (CDS Sesame)"),
+    name: str | None = Query(default=None, max_length=200, description="Object name (CDS Sesame); blank = no name"),
 ) -> dict[str, Any]:
     """SED passport (photometry in Jy, classification, redshift) for a position or name (not both)."""
-    if name is not None and not name.strip():
-        raise HTTPException(status_code=422, detail="name must not be blank")
     try:
-        _check_position_arguments(name, ra, dec)
+        name = _check_position_arguments(name, ra, dec)
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     return await _sed_for_request(request, ra=ra, dec=dec, radius=radius_arcsec, name=name)
@@ -4903,7 +4895,11 @@ async def get_sed(
 @router.post("/sed", response_model=SEDResponse)
 async def post_sed(request: Request, body: SEDRequest) -> dict[str, Any]:
     """SED passport for ``{ra, dec, radius_arcsec}`` or ``{name, radius_arcsec}`` (a name together with ra/dec is 422)."""
-    return await _sed_for_request(request, ra=body.ra, dec=body.dec, radius=body.radius_arcsec, name=body.name)
+    try:
+        name = _check_position_arguments(body.name, body.ra, body.dec)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    return await _sed_for_request(request, ra=body.ra, dec=body.dec, radius=body.radius_arcsec, name=name)
 
 
 # ---------------------------------------------------------------------------
@@ -4948,11 +4944,10 @@ def format_sed_table(sed: Mapping[str, Any]) -> str:
 
 def run_cli(args: argparse.Namespace) -> int:
     """Handler for ``astrosearch sed``; returns a process exit code."""
-    if args.name and (args.ra is not None or args.dec is not None):
-        print("Error: specify --name or both --ra and --dec, not both.")
-        return 2
-    if not args.name and (args.ra is None or args.dec is None):
-        print("Error: specify --name or both --ra and --dec.")
+    try:  # --name or --ra/--dec, never both; a blank --name is no name (the rule of every search command)
+        args.name = _check_position_arguments(args.name, args.ra, args.dec)
+    except ValueError as exc:
+        print(f"Error: {exc}")
         return 2
     try:
         sed = asyncio.run(build_sed(args.ra, args.dec, radius_arcsec=args.radius, name=args.name))

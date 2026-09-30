@@ -394,8 +394,9 @@ def test_default_engine_includes_catalogs_registered_with_vizier_add(tmp_path: P
 
 def test_owned_clients_share_one_ssl_context(monkeypatch: pytest.MonkeyPatch) -> None:
     """BatchCrossmatcher.run without a client, SesameResolver without one and the AI fallback
-    client all use providers.shared_ssl_context: the CA bundle is loaded once per process (off
-    the event loop the first time), not on the loop for every client."""
+    client all use providers.shared_ssl_context: the CA bundle is loaded once per process and CA
+    location (off the event loop the first time), not on the loop for every client. That it
+    honours SSL_CERT_FILE / SSL_CERT_DIR like httpx is covered in tests/test_ssl_context.py."""
     import ssl
 
     import ai
@@ -447,3 +448,38 @@ def test_owned_clients_share_one_ssl_context(monkeypatch: pytest.MonkeyPatch) ->
     assert len(created) == 12  # batch, resolver, AI state fallback, AI CLI factory, three times over
     assert sum(loads) == 1, f"the CA bundle was loaded {sum(loads)} times"
     providers.shared_ssl_context.cache_clear()
+
+
+# ---------------------------------------------------------------------------
+# Finding: /api/v1/batch/crossmatch wrapped an out-of-range RA (387.2 -> 27.2) instead of refusing it
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize("ra, dec, message", [
+    (387.2, 2.0, "RA must be within [0, 360)"), (360.0, 2.0, "RA must be within [0, 360)"),
+    (-10.0, 2.0, "RA must be within [0, 360)"), ("-1e-14", 0, "RA must be within [0, 360)"),
+    (187.2, 90.5, "DEC must be within [-90, 90]"), (187.2, -91, "DEC must be within [-90, 90]"),
+])
+def test_batch_route_refuses_out_of_range_coordinates_per_target(ra: Any, dec: Any, message: str) -> None:
+    """A mistyped RA such as 387.2 for 187.2 searched another part of the sky and answered 200. The target is
+    refused (422 naming it, as a bad Dec or epoch is, and as POST /api/v1/search refuses ra 400), never wrapped."""
+    app = FastAPI()
+    app.include_router(batch.router)
+    body = {"targets": [{"id": "ok", "ra": 10.0, "dec": 1.0}, {"id": "typo", "ra": ra, "dec": dec}],
+            "catalogs": ["simbad"]}
+    with respx.mock(assert_all_called=False, assert_all_mocked=False) as router:
+        router.route(host="testserver").pass_through()
+        router.route().mock(side_effect=AssertionError("no upstream request expected"))
+        with TestClient(app, raise_server_exceptions=False) as client:
+            response = client.post("/api/v1/batch/crossmatch", json=body)
+    assert response.status_code == 422, response.text
+    detail = json.dumps(response.json()["detail"])
+    assert "'typo'" in detail and message in detail, detail
+    with pytest.raises(BatchError, match=r"target 'typo': " + message.replace("[", r"\[").replace(")", r"\)")):
+        batch.parse_targets([{"id": "typo", "ra": ra, "dec": dec}])
+
+
+def test_batch_csv_upload_refuses_out_of_range_ra() -> None:
+    with pytest.raises(BatchError, match=r"target '2': RA must be within \[0, 360\) degrees \(got 387\.2\)"):
+        batch.read_targets_csv(b"ra,dec\n187.2,2\n387.2,2\n")
+    assert batch.parse_targets([{"ra": 0, "dec": -90}, {"ra": 359.9999999, "dec": 90}])[1].target.ra == 359.9999999

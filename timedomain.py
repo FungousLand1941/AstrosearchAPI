@@ -261,9 +261,17 @@ OUTLIER_COINCIDENCE_DAYS = 0.2
 # whatever its chi^2; see _apply_periodic_evidence).
 PERIODIC_EVIDENCE_FAP = 1e-10
 
-# NEOWISE single-exposure saturation begins at W1~8.0 and W2~7.5 mag
-# (NEOWISE Explanatory Supplement, sec. II.2).
-NEOWISE_SATURATION_MAG: dict[str, float] = {"W1": 8.0, "W2": 7.5}
+# NEOWISE-R single-exposure profile-fit photometry "systematically overestimate[s] fluxes
+# of sources that are brighter than the saturation limits of W1<8 and W2<7 mag" (NEOWISE
+# Explanatory Supplement sec. II.1.c; profile-fit and aperture photometry agree to < 1 %
+# only for 8.0 < W1 < 14.0 and 7.0 < W2 < 13.7). A visit whose median magnitude is brighter
+# than this, or an exposure with saturated pixels in the fit (w1sat / w2sat > 0, the
+# saturated-pixel fraction), is flagged NEOWISE_SATURATED_FLAG and kept out of the
+# variability decision and the period search: the bias depends on the brightness and the
+# scan geometry, so its scatter mimics variability (Barnard's star, W1 ~ 4.5, showed a
+# spurious 1.9 mag W1 "amplitude" with chi^2/dof 13.5).
+NEOWISE_SATURATION_MAG: dict[str, float] = {"W1": 8.0, "W2": 7.0}
+NEOWISE_SATURATED_FLAG = 3
 
 # Visit grouping for NEOWISE: a new visit starts after a gap longer than this or once
 # a visit spans longer than this. WISE revisits a sky position every ~6 months with a
@@ -1005,7 +1013,7 @@ _cache_executor = ThreadPoolExecutor(max_workers=CACHE_IO_WORKERS, thread_name_p
 # track checks, PSF flags, zero-point offsets applied), so the key carries this version and it
 # must be bumped whenever parsing, identity, flagging or the payload schema changes -- otherwise
 # a deploy keeps serving the previous code's results for the whole TTL (TIMEDOMAIN_CACHE_TTL_SECONDS).
-TIMEDOMAIN_CACHE_VERSION = "2026-09-r5"
+TIMEDOMAIN_CACHE_VERSION = "2026-09-r6"
 CACHE_FORMAT = "timedomain.SurveyResult/json"
 
 
@@ -1775,7 +1783,8 @@ async def fetch_ztf(
 # ---------------------------------------------------------------------------
 
 NEOWISE_COLUMNS = ("ra", "dec", "mjd", "w1mpro", "w1sigmpro", "w2mpro", "w2sigmpro",
-                   "qual_frame", "qi_fact", "saa_sep", "moon_masked", "cc_flags", "nb", "na", "w1rchi2", "w2rchi2")
+                   "qual_frame", "qi_fact", "saa_sep", "moon_masked", "cc_flags", "nb", "na", "w1rchi2", "w2rchi2",
+                   "w1sat", "w2sat")
 NEOWISE_QUALITY_CUTS = ("qual_frame>0, qi_fact>0, saa_sep>0, moon_masked[band]=='0', cc_flags[band]=='0', "
                         "nb==1, na==0; a visit is kept only if >= 50% (and >= 3) of its detections pass")
 # NEOWISE-R single exposures span 2013-12-13 .. 2024-08-01 (final data release).
@@ -1859,6 +1868,14 @@ def parse_neowise_csv(text: str, ra: float, dec: float, *, binned: bool = True, 
     detections in it (and >= 3) pass: persistence and other artefacts affect whole
     visits, and the few exposures escaping the flags are biased too.
 
+    Saturation (Explanatory Supplement sec. II.1.c): in a kept visit whose median
+    magnitude is brighter than :data:`NEOWISE_SATURATION_MAG`, every exposure is
+    saturated; elsewhere an exposure with saturated pixels (``w1sat`` / ``w2sat`` > 0) is.
+    A visit left with fewer than 3 unsaturated exposures counts as saturated. Saturated
+    exposures are always returned (binned per visit like the good ones) with flag
+    :data:`NEOWISE_SATURATED_FLAG` = 3 so they can be plotted, and are never used for
+    statistics (variability, period search).
+
     ``include_flagged`` also returns the rejected single exposures of the target (flag 1:
     failed the exposure cuts; flag 2: passed but in a rejected visit), never binned and
     never used for statistics. ``service`` validates an upstream answer (:func:`_csv_rows`).
@@ -1887,7 +1904,8 @@ def parse_neowise_csv(text: str, ra: float, dec: float, *, binned: bool = True, 
                      "from the target (neighbours) were ignored.")
     series: list[LightCurveSeries] = []
     for idx, band in enumerate(("W1", "W2")):
-        col, ecol = f"w{idx + 1}mpro", f"w{idx + 1}sigmpro"
+        col, ecol, satcol = f"w{idx + 1}mpro", f"w{idx + 1}sigmpro", f"w{idx + 1}sat"
+        sat_limit = NEOWISE_SATURATION_MAG[band]
         det_t: list[float] = []
         det_rows: list[dict[str, str]] = []
         for mjd, (_sep, row) in nearest_per_frame.items():
@@ -1899,7 +1917,12 @@ def parse_neowise_csv(text: str, ra: float, dec: float, *, binned: bool = True, 
         ys: list[float] = []
         es: list[float] = []
         flagged: list[LightCurvePoint] = []  # rejected exposures, returned only with include_flagged
+        sat_t: list[float] = []  # saturated exposures of kept visits: always returned, flag 3
+        sat_y: list[float] = []
+        sat_e: list[float] = []
         visits_rejected = 0
+        visits_saturated = 0
+        pixel_sat_exposures = 0  # saturated-pixel exposures in otherwise unsaturated visits
         for group in visit_groups(det_t):
             passing = [int(i) for i in group
                        if _neowise_exposure_ok(det_rows[int(i)], idx, _num(det_rows[int(i)].get(ecol)))]
@@ -1907,8 +1930,23 @@ def parse_neowise_csv(text: str, ra: float, dec: float, *, binned: bool = True, 
                             or len(passing) < NEOWISE_MIN_VISIT_PASS_FRACTION * len(group))
             if not visit_ok and passing:
                 visits_rejected += 1
+            saturated: set[int] = set()
+            if visit_ok:
+                mags = [float(_num(det_rows[i].get(col)) or 0.0) for i in passing]
+                pixel_sat = {i for i in passing if (_num(det_rows[i].get(satcol)) or 0.0) > 0}
+                if (float(np.median(mags)) < sat_limit
+                        or len(passing) - len(pixel_sat) < NEOWISE_MIN_VISIT_EXPOSURES):
+                    saturated = set(passing)
+                    visits_saturated += 1
+                else:
+                    saturated = pixel_sat
+                    pixel_sat_exposures += len(pixel_sat)
             for i in (int(j) for j in group):
-                if visit_ok and i in passing:
+                if visit_ok and i in saturated:
+                    sat_t.append(det_t[i])
+                    sat_y.append(float(_num(det_rows[i].get(col)) or 0.0))
+                    sat_e.append(float(_num(det_rows[i].get(ecol)) or 0.0))
+                elif visit_ok and i in passing:
                     ts.append(det_t[i])
                     ys.append(float(_num(det_rows[i].get(col)) or 0.0))
                     es.append(float(_num(det_rows[i].get(ecol)) or 0.0))
@@ -1918,31 +1956,46 @@ def parse_neowise_csv(text: str, ra: float, dec: float, *, binned: bool = True, 
                                                    _num(det_rows[i].get(ecol)), 2 if i in passing else 1, 1))
         rejected = total - len(ts)
         if not ts:
-            if total:
+            if total and not sat_t:
                 notes.append(f"NEOWISE-R {band}: none of the {total} exposures passed the quality cuts.")
-            if not flagged:
+            if not flagged and not sat_t:
                 continue
         if visits_rejected:
             notes.append(f"NEOWISE-R {band}: {visits_rejected} visit(s) dropped because most of their exposures "
                          "failed the quality cuts (e.g. persistence).")
-        if not ts:
-            points = []
-        elif binned:
-            points = bin_visits(ts, ys, es)
-        else:
-            order = np.argsort(ts)
-            points = [LightCurvePoint(ts[i], ys[i], es[i], 0, 1) for i in order]
-        points = points + flagged
+        if sat_t:
+            parts = []
+            if visits_saturated:
+                parts.append(f"{visits_saturated} visit(s) brighter than the single-exposure saturation limit "
+                             f"({band} < {sat_limit:g} mag) or with saturated pixels in most exposures")
+            if pixel_sat_exposures:
+                parts.append(f"{pixel_sat_exposures} further exposure(s) with saturated pixels ({satcol} > 0)")
+            outcome = ("no unsaturated visit remains, so the band's variability is not assessed" if not ts
+                       else "the variability decision and period search use the unsaturated data only")
+            notes.append(f"NEOWISE-R {band}: {'; '.join(parts)}. Saturated profile-fit photometry is biased "
+                         "(NEOWISE Explanatory Supplement sec. II.1.c): these points are returned with flag "
+                         f"{NEOWISE_SATURATED_FLAG} and excluded from the statistics; {outcome}.")
+
+        def as_points(tt: list[float], yy: list[float], ee: list[float], flag: int) -> list[LightCurvePoint]:
+            if not tt:
+                return []
+            if binned:
+                out = bin_visits(tt, yy, ee)
+                for p in out:
+                    p.flag = flag
+                return out
+            order = np.argsort(tt)
+            return [LightCurvePoint(tt[i], yy[i], ee[i], flag, 1) for i in order]
+
+        good_points = as_points(ts, ys, es, 0)
+        sat_points = as_points(sat_t, sat_y, sat_e, NEOWISE_SATURATED_FLAG)
+        points = good_points + sat_points + flagged
         bmjd = utc_mjd_to_bmjd_tdb([p.mjd for p in points], ra, dec)
         for p, t in zip(points, bmjd):
             p.mjd = float(t)
         points.sort(key=lambda p: p.mjd)
-        median_mag = float(np.median(ys)) if ys else None
-        if median_mag is not None and median_mag < NEOWISE_SATURATION_MAG[band]:
-            notes.append(f"NEOWISE-R {band}: median {median_mag:.2f} mag is brighter than the single-exposure saturation "
-                         f"limit ({NEOWISE_SATURATION_MAG[band]} mag); profile-fit photometry is biased.")
         scale, floor = ERROR_MODELS[("neowise", band)]
-        n_visits = (len(bin_visits(ts, ys, es)) if not binned else len(points) - len(flagged)) if ts else 0
+        n_visits = (len(bin_visits(ts, ys, es)) if not binned else len(good_points)) if ts else 0
         series.append(LightCurveSeries(
             survey="neowise", band=band, unit="mag", points=points, photometric_system="Vega (WISE profile-fit)",
             source_ids=[], n_total=total, n_rejected=rejected,
@@ -1951,6 +2004,11 @@ def parse_neowise_csv(text: str, ra: float, dec: float, *, binned: bool = True, 
                       "n_exposures_used": len(ts), "n_visits": n_visits,
                       "n_visits_rejected": visits_rejected, "match_radius_arcsec": match_arcsec,
                       "quality_cuts": NEOWISE_QUALITY_CUTS, "error_scale": scale, "error_floor_mag": floor,
+                      "saturation_limit_mag": sat_limit, "n_exposures_saturated": len(sat_t),
+                      "n_visits_saturated": visits_saturated,
+                      "saturated_points": (f"flag {NEOWISE_SATURATED_FLAG}: saturated ({band} visit median < "
+                                           f"{sat_limit:g} mag, or {satcol} > 0); returned for plotting, excluded "
+                                           "from the variability decision and period search"),
                       "flagged_points": ("single rejected exposures, flag 1 = failed the exposure cuts, 2 = in a "
                                          "rejected visit" if include_flagged else "not returned")},
         ))
@@ -2825,9 +2883,17 @@ def series_variability(series: LightCurveSeries, *, pair_window_days: float = DE
     scale, floor = series_error_model(series)
     reason = NON_DECISIVE_SERIES.get((series.survey, series.band))
     comp = [_signed_deviations(c) for c in companions if c.survey == series.survey and c is not series]
-    return variability_metrics(t, y, dy, unit=series.unit, error_floor=floor, error_scale=scale,
-                               pair_window_days=pair_window_days, decisive=reason is None, not_decisive_reason=reason,
-                               companions=[c for c in comp if len(c[0])])
+    metrics = variability_metrics(t, y, dy, unit=series.unit, error_floor=floor, error_scale=scale,
+                                  pair_window_days=pair_window_days, decisive=reason is None,
+                                  not_decisive_reason=reason, companions=[c for c in comp if len(c[0])])
+    n_saturated = sum(1 for p in series.points if series.survey == "neowise" and p.flag == NEOWISE_SATURATED_FLAG)
+    if n_saturated:
+        limit = series.metadata.get("saturation_limit_mag", NEOWISE_SATURATION_MAG.get(series.band))
+        metrics.evidence.append(
+            f"{n_saturated} saturated point(s) ({series.band} < {limit:g} mag or saturated pixels; flag "
+            f"{NEOWISE_SATURATED_FLAG}) excluded: saturated NEOWISE photometry is biased (Explanatory Supplement "
+            "sec. II.1.c)" + ("; no unsaturated epochs, variability not assessed" if len(t) == 0 else ""))
+    return metrics
 
 
 # ---------------------------------------------------------------------------
@@ -5353,7 +5419,16 @@ async def solar_system_objects(
     ``max_position_error_arcsec`` are filtered by SkyBoT (0 disables the filter). The
     whole exchange (requests, retries, parsing) is bounded by ``deadline_s`` (default
     :data:`SKYBOT_DEADLINE_S`; exceeding it raises a retryable UpstreamServiceError).
+    ``ra`` must lie in [0, 360) and ``dec`` in [-90, 90]: an out-of-range RA is refused
+    (HTTP 422 / CLI exit 2, as the search routes and commands do), never wrapped, so a
+    mistyped 387.2 for 187.2 cannot silently search another part of the sky.
     """
+    try:
+        ra_num = float(ra)
+    except (TypeError, ValueError):
+        ra_num = None  # validate_target reports the malformed value
+    if ra_num is not None and not 0.0 <= ra_num < 360.0:
+        raise InvalidCoordinateError(f"RA must be within [0, 360) degrees (never wrapped), got {ra_num:g}.")
     target = validate_target(ra, dec)
     epoch = now_mjd() if epoch_mjd is None else float(epoch_mjd)
     jd = epoch + MJD_JD_OFFSET
@@ -5497,7 +5572,8 @@ class LightCurvePointModel(BaseModel):
     mjd: float = Field(description="BMJD_TDB (BJD_TDB - 2400000.5)")
     value: float
     error: float | None
-    flag: int = Field(description="0 = good; survey quality flag otherwise (ZTF catflags, TESS QUALITY, Gaia reject = 1)")
+    flag: int = Field(description="0 = good; survey quality flag otherwise (ZTF catflags, TESS QUALITY, Gaia reject = 1, "
+                                  "NEOWISE: 1/2 = failed cuts / rejected visit, 3 = saturated)")
     n: int | None = Field(None, description="Exposures averaged into this point (binned series)")
 
 
@@ -5617,9 +5693,10 @@ async def _json_response(model: type[BaseModel], build: Callable[[], dict[str, A
 @router.get("/lightcurves", response_model=LightCurveResponse, summary="Multi-survey light curves, variability and period")
 async def lightcurves_endpoint(
     request: Request,
-    ra: float | None = Query(None, description="ICRS right ascension (deg)"),
-    dec: float | None = Query(None, description="ICRS declination (deg)"),
-    name: str | None = Query(None, min_length=1, max_length=200, description="Object name (CDS Sesame) instead of ra/dec"),
+    ra: float | None = Query(None, ge=0, lt=360, description="ICRS right ascension (deg), never wrapped"),
+    dec: float | None = Query(None, ge=-90, le=90, description="ICRS declination (deg)"),
+    name: str | None = Query(None, max_length=200, description="Object name (CDS Sesame) instead of ra/dec; "
+                             "a blank name is no name"),
     epoch: float | None = Query(None, ge=1800, le=2200, description="Julian year of ra/dec (enables proper-motion "
                                 "propagation); not with name alone: resolved coordinates carry the resolver's epoch"),
     pm_ra_masyr: float | None = Query(None, description="Proper motion in RA * cos(dec), mas/yr (with epoch; with "
@@ -5645,12 +5722,15 @@ async def lightcurves_endpoint(
         _validate_period_range(min_period_days, max_period_days)
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
-    if name is not None and not name.strip():
-        raise HTTPException(status_code=422, detail="name must not be blank")
-    if name is not None and (ra is not None or dec is not None):
-        # One rule on every search route (main.check_search_target): the result is computed at
-        # one target, so it is never labelled with a name it was not computed for.
-        raise HTTPException(status_code=422, detail="Give either an object name or ra/dec, not both.")
+    try:
+        # One rule on every search route: a name or ra/dec, never both (the result is computed
+        # at one target, so it is never labelled with a name it was not computed for), and a
+        # blank name is no name.
+        from main import check_search_target  # lazy: main imports this module for its CLI
+
+        name = check_search_target(name, ra, dec)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
     client = _state_client(request)
     resolver: dict[str, Any] | None = None
     if name:
@@ -5741,6 +5821,9 @@ def format_lightcurve_summary(result: LightCurveResult) -> str:
         verdict = "undetermined" if m is None or m.is_variable is None else ("VARIABLE" if m.is_variable else "not variable")
         if m is not None and m.is_variable is None and (s.survey, s.band) in NON_DECISIVE_SERIES:
             verdict = "not assessed"
+        elif m is not None and m.is_variable is None and good == 0 and any(
+                p.flag == NEOWISE_SATURATED_FLAG for p in s.points) and s.survey == "neowise":
+            verdict = "not assessed (saturated)"
         extra = ""
         if m and m.chi2_dof is not None:
             extra = (f" chi2/dof={m.chi2_dof:.2f} amp5-95={m.amplitude_5_95:.3f} eta={m.von_neumann_eta or float('nan'):.2f}"
@@ -5793,11 +5876,18 @@ def format_solar_system_summary(result: SolarSystemResult) -> str:
 
 def cli_lightcurve(args: argparse.Namespace) -> int:
     """Handler for ``astrosearch lightcurve``."""
-    if not args.name and (args.ra is None or args.dec is None):
-        print("Error: specify --name or both --ra and --dec.", file=sys.stderr)
-        return 2
-    if args.name and (args.ra is not None or args.dec is not None):
-        print("Error: give either --name or --ra/--dec, not both.", file=sys.stderr)
+    from main import check_search_target  # lazy: main imports this module for its CLI
+
+    try:
+        # The shared rule of every search command: a name or --ra/--dec, never both; a blank
+        # name is no name; coordinates are range-checked, never wrapped.
+        args.name = check_search_target(args.name, args.ra, args.dec)
+        if args.ra is not None and not 0.0 <= args.ra < 360.0:
+            raise ValueError(f"RA must be within [0, 360) degrees (never wrapped), got {args.ra:g}.")
+        if args.dec is not None and not -90.0 <= args.dec <= 90.0:
+            raise ValueError("DEC must be within [-90, 90] degrees.")
+    except ValueError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
         return 2
 
     by_name = bool(args.name)

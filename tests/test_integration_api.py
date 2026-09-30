@@ -797,17 +797,65 @@ def test_name_with_coordinates_is_422_on_every_search_route(isolated: Path, monk
         assert items.status_code == 200, items.text
         assert items.json()[0]["status_code"] == 422 and "not both" in items.json()[0]["error"]
         assert "status_code" not in items.json()[1]
-        for path in ("/api/v1/search/stream", "/api/v1/lightcurves"):
+        for path in GET_TARGET_ROUTES:
             for params in (both, {"name": "RR Lyr", "ra": 1.0}):
                 response = client.get(path, params=params)
-                assert response.status_code == 422 and "not both" in response.text, (path, params, response.text)
+                assert response.status_code == 422, (path, params, response.text)
+                assert response.json() == {"detail": main.NAME_AND_COORDINATES}, (path, params, response.text)
+        response = client.post("/api/v1/sed", json=both)
+        assert response.status_code == 422 and response.json() == {"detail": main.NAME_AND_COORDINATES}, response.text
     assert [(c["ra"], c["dec"]) for c in service.calls] == [(10.0, 10.0)]
     with pytest.raises(ValueError, match="not both"):
         main.check_search_target("M87", 1.0, None)
     with pytest.raises(ValueError, match="required"):
         main.check_search_target(None, 1.0, None)
-    main.check_search_target("M87", None, None)
-    main.check_search_target(None, 1.0, 2.0)
+    assert main.check_search_target("M87", None, None) == "M87"
+    assert main.check_search_target(None, 1.0, 2.0) is None
+
+
+# The GET routes that take a name or ra/dec through main.check_search_target.
+GET_TARGET_ROUTES = ("/api/v1/search/stream", "/api/v1/sed", "/api/v1/cutouts", "/api/v1/cutouts/stack",
+                     "/api/v1/lightcurves")
+
+
+@pytest.mark.parametrize("blank", ["", "   ", "	"])
+def test_a_blank_name_is_no_name_on_every_search_route(isolated: Path, monkeypatch: pytest.MonkeyPatch,
+                                                       blank: str) -> None:
+    """Finding: an empty ``name=`` next to ra/dec was 'no name' on /search and /cutouts but a 422 on
+    /search/stream ('not both') and /sed (min_length): one rule now (main.check_search_target), a
+    blank name is no name everywhere. Beside ra alone it is therefore 'no target' (NAME_OR_COORDINATES,
+    never NAME_AND_COORDINATES), and beside ra and dec the coordinates are searched, nothing resolved."""
+    service = _CapturingService()
+    monkeypatch.setattr(api, "get_service", lambda: service)
+    monkeypatch.setattr(api, "cache", CacheManager(None))
+    ra_only = {"name": blank, "ra": 10.0}
+    with no_upstream(), TestClient(api.app) as client:
+        for path in GET_TARGET_ROUTES:
+            for params in (ra_only, {"name": blank}):
+                response = client.get(path, params=params)
+                assert response.status_code == 422, (path, params, response.text)
+                assert response.json() == {"detail": main.NAME_OR_COORDINATES}, (path, params, response.text)
+        for path, payload in (("/api/v1/search", ra_only), ("/api/v1/sed", ra_only),
+                              ("/api/v1/queries", {"name": "q", "query": ra_only})):
+            response = client.post(path, json=payload)
+            assert response.status_code == 422, (path, response.text)
+            assert response.json() == {"detail": main.NAME_OR_COORDINATES}, (path, response.text)
+        items = client.post("/api/v1/search/batch", json=[ra_only])
+        assert items.status_code == 200 and items.json()[0]["status_code"] == 422, items.text
+        assert items.json()[0]["error"] == main.NAME_OR_COORDINATES
+
+        coordinates = {"name": blank, "ra": 10.0, "dec": 11.0}
+        response = client.post("/api/v1/search", json=coordinates)
+        assert response.status_code == 200, response.text
+        items = client.post("/api/v1/search/batch", json=[coordinates])
+        assert items.status_code == 200 and "status_code" not in items.json()[0], items.text
+        saved = client.post("/api/v1/queries", json={"name": "blank", "query": coordinates})
+        assert saved.status_code == 201, saved.text
+        assert [q["query"]["name"] for q in client.get("/api/v1/queries").json() if q["name"] == "blank"] == [None]
+    assert [(c["ra"], c["dec"]) for c in service.calls] == [(10.0, 11.0), (10.0, 11.0)]
+    assert main.check_search_target(blank, 1.0, 2.0) is None
+    with pytest.raises(ValueError, match="required"):
+        main.check_search_target(blank, 1.0, None)
 
 
 def test_stream_rejects_catalogs_outside_the_profile_like_post_search(isolated: Path) -> None:

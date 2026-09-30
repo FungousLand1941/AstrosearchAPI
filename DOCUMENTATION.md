@@ -160,7 +160,9 @@ the CLI load it at startup (`main.build_registry`).
 
 ### Targets, epochs and proper motion
 
-- RA is normalised to [0, 360) degrees and Dec checked against [-90, 90]; coordinates may be
+- RA is normalised to [0, 360) degrees and Dec checked against [-90, 90] (library calls; the
+  search routes, the batch crossmatch and the `search` command refuse RA outside [0, 360)
+  instead of wrapping it); coordinates may be
   given as numbers or as the text typed (decimal or sexagesimal). The rounding of text
   coordinates (`187.278` is known to 0.001 deg) widens the target's positional uncertainty.
 - `epoch` is the Julian year of the target position. With it, each catalog cone follows the
@@ -360,7 +362,11 @@ Neumann eta, Stetson J, excess variance) with per-survey error models calibrated
 stars; periods use the generalised Lomb-Scargle periodogram (Zechmeister & Kuerster 2009;
 VanderPlas 2018) with Baluev (2008) false-alarm probabilities, a multi-band periodogram
 (VanderPlas & Ivezic 2015), a period-doubling test and multi-harmonic refinement with
-Montgomery & O'Donoghue (1999) errors. `GET /api/v1/solar-system` lists known bodies in a cone
+Montgomery & O'Donoghue (1999) errors. NEOWISE single exposures of bright sources are
+saturated (NEOWISE-R Explanatory Supplement II.1.c: W1 brighter than 8 mag, W2 brighter than
+7 mag, or a nonzero `w1sat`/`w2sat` saturated-pixel fraction): those visits are returned and
+plotted with a saturation flag but left out of the variability statistics and period search, so
+a bright constant star such as Barnard's Star is not called variable. `GET /api/v1/solar-system` lists known bodies in a cone
 from IMCCE SkyBoT (Berthier et al. 2006). Results are cached (`TIMEDOMAIN_CACHE_TTL_SECONDS`,
 key includes `TIMEDOMAIN_CACHE_VERSION`).
 
@@ -476,7 +482,12 @@ made, rather than one of them being dropped silently: `POST /api/v1/search`, eac
 `/api/v1/sed`, `/api/v1/lightcurves`, `/api/v1/cutouts` and `/api/v1/cutouts/stack` (one check,
 `main.check_search_target`, where the route uses the search code). The `search`, `stream`,
 `manifest`, `sed`, `lightcurve` and `cutout` commands exit 2 for `--name` together with
-`--ra`/`--dec`.
+`--ra`/`--dec`. An empty or whitespace-only name (for example the empty `name=` of a form) is
+no name: next to `ra` and `dec` it is a coordinate search, and alone it is a 422 ("Either name
+or both ra and dec are required"). `POST /api/v1/search`, its batch items, saved queries,
+`/api/v1/search/stream`, `/api/v1/sed` (GET and POST), `/api/v1/cutouts`,
+`/api/v1/cutouts/stack` and the `search`, `stream`, `sed` and `cutout` commands apply this
+through `main.check_search_target` and return its messages as a plain `{"detail": "..."}`.
 
 ### Core (`api.py`)
 
@@ -510,7 +521,7 @@ made, rather than one of them being dropped silently: `POST /api/v1/search`, eac
 | Method | Path | Description |
 |---|---|---|
 | GET | `/api/v1/batch/strategies` | Strategy, endpoint and chunk size per catalog; defaults and limits. |
-| POST | `/api/v1/batch/crossmatch` | Body: JSON `{targets, catalogs, radius_arcsec, strategies, nearest_only, include_data, format}`, a CSV table, or multipart `file`. Options also as query parameters. `format`: json, rows, csv, parquet. Headers `X-Batch-Request-Count`, `X-Batch-Wall-Time-S`, `X-Batch-Failed-Targets`. 413 over `BATCH_MAX_UPLOAD_BYTES`; 422 invalid targets/catalogs; 502 every catalog failed. |
+| POST | `/api/v1/batch/crossmatch` | Body: JSON `{targets, catalogs, radius_arcsec, strategies, nearest_only, include_data, format}`, a CSV table, or multipart `file`. Options also as query parameters. `format`: json, rows, csv, parquet. Headers `X-Batch-Request-Count`, `X-Batch-Wall-Time-S`, `X-Batch-Failed-Targets`. 413 over `BATCH_MAX_UPLOAD_BYTES`; 422 invalid targets/catalogs (a target's error names its id; RA must be in [0, 360) and Dec in [-90, 90], never wrapped); 502 every catalog failed. |
 
 ### Sky cache
 
@@ -534,13 +545,13 @@ made, rather than one of them being dropped silently: `POST /api/v1/search`, eac
 
 | Method | Path | Description |
 |---|---|---|
-| GET / POST | `/api/v1/sed` | `ra, dec, radius_arcsec` or `name` (not both): points, classification, redshift, members, filters, notes. 404 unknown name, 422 invalid input (a blank name, a name together with ra/dec), 502 upstream failure or an unusable resolver answer, 503 with `Retry-After: 30` when the name resolver is unreachable. |
+| GET / POST | `/api/v1/sed` | `ra, dec, radius_arcsec` or `name` (not both): points, classification, redshift, members, filters, notes. 404 unknown name, 422 invalid input (no target: neither a name nor ra and dec, a blank name counting as no name; a name together with ra/dec: "Give either an object name or ra/dec, not both."), 502 upstream failure or an unusable resolver answer, 503 with `Retry-After: 30` when the name resolver is unreachable. |
 
 ### Time domain
 
 | Method | Path | Description |
 |---|---|---|
-| GET | `/api/v1/lightcurves` | `ra, dec` or `name` (not both: 422, so a result is never labelled with a name it was not computed for); `epoch`, `pm_ra_masyr`, `pm_dec_masyr`, `parallax_mas`, `radius_arcsec` (<= 60), `surveys` (ztf, neowise, gaia, tess), `include_flagged`, `period`, `min_period_days`, `max_period_days`, `oversampling`, `ztf_collection`, `tess_max_sectors`, `tess_bin_minutes`, `neowise_binned`. 404 unknown name, 502 all surveys failed. |
+| GET | `/api/v1/lightcurves` | `ra, dec` or `name` (not both: 422, so a result is never labelled with a name it was not computed for; a blank name is no name; `ra` outside [0, 360) or `dec` outside [-90, 90] is a 422, never wrapped); `epoch`, `pm_ra_masyr`, `pm_dec_masyr`, `parallax_mas`, `radius_arcsec` (<= 60), `surveys` (ztf, neowise, gaia, tess), `include_flagged`, `period`, `min_period_days`, `max_period_days`, `oversampling`, `ztf_collection`, `tess_max_sectors`, `tess_bin_minutes`, `neowise_binned`. 404 unknown name, 502 all surveys failed. |
 | GET | `/api/v1/solar-system` | `ra, dec, radius_arcsec, epoch_mjd, observer, max_position_error_arcsec`: SkyBoT objects. |
 
 ### Imaging
@@ -680,6 +691,7 @@ missing here.
 | `CATALOG_TIMEOUT_CAP_SECONDS` | none | Upper bound of every catalog's own timeout. |
 | `MAX_RESPONSE_BYTES` | 10000000 | Largest archive response read. |
 | `SESAME_ENDPOINT` | `https://cds.unistra.fr/cgi-bin/nph-sesame/-oxp/SNV` | Name resolver. |
+| `SSL_CERT_FILE`, `SSL_CERT_DIR` | unset (certifi bundle) | Custom CA bundle file or hashed CA directory trusted for HTTPS, honoured exactly as httpx does (file first, then directory); needed behind a TLS-inspecting corporate proxy. |
 | `CATALOG_REGISTRY_PATH` | `~/.astrosearch/catalogs.yaml` | User catalog registry. |
 | `CATALOG_REGISTRY_STRICT` | false | Refuse to start with registry problems. |
 | `LOG_LEVEL` | INFO | Logging level. |

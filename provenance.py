@@ -4499,7 +4499,7 @@ async def run_basic_search(
     together are refused (``main.check_search_target``)."""
     from main import check_search_target  # lazy: main imports this module for its CLI
 
-    check_search_target(name or None, ra, dec)
+    name = check_search_target(name, ra, dec)  # a blank name is no name, as on every route
     check_radius_limit(radius_arcsec)
     if name:
         from main import crossmatch_resolved  # lazy: main imports this module for its CLI

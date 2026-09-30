@@ -297,6 +297,14 @@ async def case_barnard_ztf(client: httpx.AsyncClient) -> td.LightCurveResult:
                                             use_cache=False)
 
 
+async def case_barnard_neowise(client: httpx.AsyncClient) -> td.LightCurveResult:
+    # Barnard's star (W1 ~ 4.5, W2 ~ 4.0 in AllWISE) is far brighter than the NEOWISE
+    # single-exposure saturation limits (W1 < 8, W2 < 7): its biased photometry must
+    # not produce a variability verdict.
+    return await td.get_lightcurves_by_name(BARNARD_NAME, client=client, radius_arcsec=3.0, surveys="neowise",
+                                            use_cache=False)
+
+
 async def case_groombridge1830_ztf(client: httpx.AsyncClient) -> td.LightCurveResult:
     return await td.get_lightcurves_by_name(GROOMBRIDGE_1830_NAME, client=client, radius_arcsec=3.0, surveys="ztf",
                                             use_cache=False)
@@ -406,6 +414,7 @@ CASES: dict[str, Callable[[httpx.AsyncClient], Awaitable[Any]]] = {
     "qso_j0747_ztf": case_qso_j0747,
     "oj287_name": case_oj287_name,
     "barnard_ztf": case_barnard_ztf,
+    "barnard_neowise": case_barnard_neowise,
     "groombridge1830_ztf": case_groombridge1830_ztf,
     "pg1323_086b_ztf": case_pg1323_086b_ztf,
     "v354_lyr_ztf": case_v354_lyr_ztf,
@@ -537,6 +546,27 @@ def test_live_3c273_neowise(qso_result: td.LightCurveResult) -> None:
     assert len(w1.points) >= 15
     # AllWISE W1 of 3C 273 is ~8.2 mag (Vega); NEOWISE per-visit means cluster near it.
     assert 7.5 < qso_result.variability["neowise:W1"].weighted_mean < 9.0
+
+
+def test_live_barnard_neowise_saturated_not_variable() -> None:
+    """Barnard's star (W1 ~ 4.5) is far brighter than the NEOWISE saturation limits: its
+    saturated visits are returned flagged 3 and give no variability verdict (the review
+    saw 'variable in neowise:W1', chi^2/dof 13.5, from saturated photometry)."""
+    result = _live(case_barnard_neowise)
+    _require_survey(result, "neowise")
+    assert result.as_dict()["variability"]["summary"]["variable_series"] == []
+    for key in ("neowise:W1", "neowise:W2"):
+        series = next(s for s in result.series if s.key == key)
+        assert len(series.points) >= 15 and all(p.flag == td.NEOWISE_SATURATED_FLAG for p in series.points)
+        assert result.variability[key].is_variable is None
+        assert any("saturated" in e for e in result.variability[key].evidence)
+
+
+def test_live_3c273_neowise_w1_not_saturated(qso_result: td.LightCurveResult) -> None:
+    _require_survey(qso_result, "neowise")
+    w1 = next(s for s in qso_result.series if s.key == "neowise:W1")
+    assert w1.metadata["n_visits_saturated"] == 0  # W1 ~ 8.5, w1sat = 0
+    assert qso_result.variability["neowise:W1"].is_variable is not None
 
 
 def test_live_name_resolution_gaia_source() -> None:

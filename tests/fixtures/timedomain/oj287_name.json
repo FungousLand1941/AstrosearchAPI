@@ -52,7 +52,7 @@
     {
       "method": "POST",
       "url": "https://irsa.ipac.caltech.edu/TAP/sync",
-      "request_body": "REQUEST=doQuery&LANG=ADQL&FORMAT=csv&QUERY=SELECT+ra%2C+dec%2C+mjd%2C+w1mpro%2C+w1sigmpro%2C+w2mpro%2C+w2sigmpro%2C+qual_frame%2C+qi_fact%2C+saa_sep%2C+moon_masked%2C+cc_flags%2C+nb%2C+na%2C+w1rchi2%2C+w2rchi2+FROM+neowiser_p1bs_psd+WHERE+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+133.7036458%2C+20.1085110%2C+0.00083333%29%29+%3D+1",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&FORMAT=csv&QUERY=SELECT+ra%2C+dec%2C+mjd%2C+w1mpro%2C+w1sigmpro%2C+w2mpro%2C+w2sigmpro%2C+qual_frame%2C+qi_fact%2C+saa_sep%2C+moon_masked%2C+cc_flags%2C+nb%2C+na%2C+w1rchi2%2C+w2rchi2%2C+w1sat%2C+w2sat+FROM+neowiser_p1bs_psd+WHERE+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+133.7036458%2C+20.1085110%2C+0.00083333%29%29+%3D+1",
       "status_code": 200,
       "content_type": "text/csv",
       "location": ""

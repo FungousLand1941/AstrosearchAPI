@@ -316,13 +316,14 @@ async def search_stream(
     forwarded as the text typed, so their rounding (``187.278``: 1" per axis; ``150.500000``:
     exact to 1 microdegree) sets the target uncertainty (see ``CrossmatchService.prepare``)."""
     from crossmatch import parse_target_coordinates, resolved_search_target, validate_search_inputs
-    from main import NAME_AND_COORDINATES, check_catalogs_in_profile, check_search_radius
+    from main import check_catalogs_in_profile, check_search_radius, check_search_target
     from models import InvalidCoordinateError, ObjectResolutionError, resolution_failure_status
 
-    if name is None and (ra is None or dec is None):
-        raise HTTPException(status_code=422, detail="Provide ra and dec, or name.")
-    if name is not None and (ra is not None or dec is not None):
-        raise HTTPException(status_code=422, detail=NAME_AND_COORDINATES)
+    try:
+        # A name or ra/dec, never both; a blank name (an empty form field) is no name.
+        name = check_search_target(name, ra, dec)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
     try:
         # API_MAX_RADIUS_ARCSEC, as POST /api/v1/search (the Query bound is the absolute 3600").
         check_search_radius(radius_arcsec, settings=getattr(request.app.state, "settings", None))
@@ -491,13 +492,13 @@ async def _run_stream(args: argparse.Namespace, service: Any = None) -> int:
 def _cli_stream(args: argparse.Namespace) -> int:
     """Exit status: 0 when the stream completed, 1 when it ended with an error event (both
     formats print it), 2 for invalid input or an unknown name (before the stream starts)."""
+    from main import check_search_target  # lazy: main imports this module for its CLI
     from models import AstroSearchError
 
-    if args.name is None and (args.ra is None or args.dec is None):
-        print("error: provide --ra and --dec, or --name")
-        return 2
-    if args.name is not None and (args.ra is not None or args.dec is not None):
-        print("error: give either --name or --ra/--dec, not both")
+    try:  # --name or --ra/--dec, never both; a blank --name is no name (the rule of every search command)
+        args.name = check_search_target(args.name, args.ra, args.dec)
+    except ValueError as exc:
+        print(f"error: {exc}")
         return 2
     try:
         return asyncio.run(_run_stream(args, getattr(args, "service", None)))

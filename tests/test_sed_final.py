@@ -13,12 +13,14 @@ from __future__ import annotations
 import asyncio
 import ssl
 import time
+from pathlib import Path
 from typing import Any
 
 import httpx
 import pytest
 import respx
-from test_sed import replay_record
+from fixture_io import load_exchanges, replay_side_effect
+from test_sed import FakeService, make_app, replay_record
 from test_sed_round3 import offline_filters
 from test_sed_round5 import SESAME, _replay_3c273_except_sdss
 
@@ -120,3 +122,76 @@ async def test_owned_clients_reuse_one_ssl_context(monkeypatch: pytest.MonkeyPat
     assert builds == []
     assert len(created) == 2 and all(c.is_closed for c in created)
     assert all(c._transport._pool._ssl_context is context for c in created)  # type: ignore[attr-defined]
+
+
+# --- one target rule and one set of messages on GET/POST /api/v1/sed and the CLI (main.check_search_target) ---
+
+
+@pytest.mark.parametrize("params, detail", [
+    ({"name": "M87", "ra": 187.7, "dec": 12.4}, "NAME_AND_COORDINATES"),
+    ({"name": "M87", "ra": 187.7}, "NAME_AND_COORDINATES"),
+    ({"name": "M87", "dec": 12.4}, "NAME_AND_COORDINATES"),
+    ({}, "NAME_OR_COORDINATES"),
+    ({"name": ""}, "NAME_OR_COORDINATES"),
+    ({"name": "   "}, "NAME_OR_COORDINATES"),
+    ({"name": "  ", "ra": 187.7}, "NAME_OR_COORDINATES"),  # a blank name is no name: ra alone is not a target
+])
+def test_sed_routes_answer_the_shared_target_messages(tmp_path: Path, params: dict[str, Any], detail: str) -> None:
+    """Finding: /api/v1/sed answered 'give either name or ra/dec, not both' (GET) and a pydantic error list
+    (POST) where every other search route answers main.NAME_AND_COORDINATES as a plain detail."""
+    from fastapi.testclient import TestClient
+
+    import main
+
+    service = FakeService({})
+    with TestClient(make_app(service, tmp_path)) as client:
+        for res in (client.get("/api/v1/sed", params=params), client.post("/api/v1/sed", json=params)):
+            assert res.status_code == 422, (params, res.text)
+            assert res.json() == {"detail": getattr(main, detail)}, (params, res.text)
+    assert service.calls == []
+
+
+@pytest.mark.parametrize("method, blank", [("GET", ""), ("GET", "   "), ("POST", ""), ("POST", " \t")])
+def test_sed_routes_treat_a_blank_name_next_to_coordinates_as_no_name(tmp_path: Path, method: str, blank: str) -> None:
+    """Finding: an empty ``name=`` beside ra/dec was a 422 on /api/v1/sed but 'no name' on /search and
+    /cutouts. One rule now: a blank name is no name, so ra/dec are searched and nothing is resolved."""
+    from fastapi.testclient import TestClient
+
+    rec = asyncio.run(replay_record("3c273"))
+    target = {"name": blank, "ra": 187.2779154, "dec": 2.0523883}
+    with respx.mock(assert_all_called=False, assert_all_mocked=True) as router:
+        router.route().mock(side_effect=replay_side_effect(load_exchanges("sed/3c273") + load_exchanges("sed/svo")))
+        service = FakeService(rec)
+        with TestClient(make_app(service, tmp_path)) as client:
+            res = (client.get("/api/v1/sed", params=target) if method == "GET"
+                   else client.post("/api/v1/sed", json=target))
+        sesame = [c for c in router.calls if "sesame" in c.request.url.path]
+    assert res.status_code == 200, res.text
+    assert sesame == []
+    assert [(ra, dec, kw.get("epoch")) for ra, dec, kw in service.calls] == [(187.2779154, 2.0523883, None)]
+    assert not (res.json()["target"].get("name") or "").strip()
+
+
+def test_sed_cli_uses_the_shared_target_rule(capsys: pytest.CaptureFixture[str], monkeypatch: pytest.MonkeyPatch) -> None:
+    import argparse
+
+    import main
+
+    parser = argparse.ArgumentParser()
+    sed.register_cli(parser.add_subparsers(dest="command"))
+    seen: list[Any] = []
+
+    async def fake_build(ra: Any, dec: Any, **kwargs: Any) -> dict[str, Any]:
+        seen.append((ra, dec, kwargs["name"]))
+        return {"target": {"ra": ra, "dec": dec}, "points": [], "classification": {}, "redshift": {}}
+
+    monkeypatch.setattr(sed, "build_sed", fake_build)
+    args = parser.parse_args(["sed", "--name", "M87", "--ra", "187.7", "--dec", "12.4"])
+    assert args.handler(args) == 2
+    assert main.NAME_AND_COORDINATES in capsys.readouterr().out
+    args = parser.parse_args(["sed", "--name", "  ", "--ra", "187.7"])
+    assert args.handler(args) == 2
+    assert main.NAME_OR_COORDINATES in capsys.readouterr().out
+    args = parser.parse_args(["sed", "--name", " ", "--ra", "187.7", "--dec", "12.4", "--json"])
+    assert args.handler(args) == 0
+    assert seen == [(187.7, 12.4, None)]

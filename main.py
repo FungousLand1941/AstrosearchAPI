@@ -251,19 +251,24 @@ def search_query(fields: Mapping[str, Any], spec: Mapping[str, Any] | None = Non
 
 
 NAME_AND_COORDINATES = "Give either an object name or ra/dec, not both."
+NAME_OR_COORDINATES = "Either name or both ra and dec are required"
 
 
-def check_search_target(name: Any, ra: Any, dec: Any) -> None:
-    """ValueError (HTTP 422 / CLI exit 2) unless a search names exactly one target: an object
-    name, or ra and dec. The one rule of every search entry point (``POST /api/v1/search`` and
-    its batch items, saved queries, ``/search/stream``, manifests, the ``search``, ``stream`` and
-    ``manifest`` commands): a name together with coordinates is refused rather than one of them
-    being dropped silently, so no result is ever labelled with a name it was not computed for."""
-    has_name = name is not None and str(name) != ""
-    if has_name and (ra is not None or dec is not None):
+def check_search_target(name: Any, ra: Any, dec: Any) -> str | None:
+    """The object name to search for (None for an ra/dec target); ValueError (HTTP 422 / CLI
+    exit 2) unless a search names exactly one target: an object name, or ra and dec. The one
+    rule of every search entry point (``POST /api/v1/search`` and its batch items, saved
+    queries, ``/search/stream``, ``/sed``, ``/cutouts``, manifests, the ``search``, ``stream``,
+    ``sed``, ``cutout`` and ``manifest`` commands): a name together with coordinates is refused
+    rather than one of them being dropped silently, so no result is ever labelled with a name it
+    was not computed for. An empty or whitespace-only name (an empty form field) is no name on
+    every route: callers search for the returned name, never the raw one."""
+    target_name = None if name is None or not str(name).strip() else name
+    if target_name is not None and (ra is not None or dec is not None):
         raise ValueError(NAME_AND_COORDINATES)
-    if not has_name and (ra is None or dec is None):
-        raise ValueError("Either name or both ra and dec are required")
+    if target_name is None and (ra is None or dec is None):
+        raise ValueError(NAME_OR_COORDINATES)
+    return target_name
 
 
 def check_catalogs_in_profile(registry: CatalogRegistry | None, catalogs: list[str] | None, profile: str | None) -> None:
@@ -287,7 +292,8 @@ async def api_search(service: Any, fields: Mapping[str, Any], resolver: Any = No
     itself (its catalogue row is the target's identity). A requested epoch moves the position
     there with the requested (else the resolver's) proper motion.
     """
-    check_search_target(fields.get("name"), fields.get("ra"), fields.get("dec"))
+    # A blank name is no name: the search (and its query record) use the normalised one.
+    fields = {**fields, "name": check_search_target(fields.get("name"), fields.get("ra"), fields.get("dec"))}
     check_search_radius(fields.get("radius_arcsec"))
     spec: dict[str, Any] | None = None
     resolved_info: dict[str, Any] | None = None
@@ -749,7 +755,7 @@ def _cmd_search(args: argparse.Namespace) -> int:
     """Exit status: 0 success (an empty sky included), 1 upstream failure (a resolver outage, or
     every queried catalog failed), 2 invalid input or an unknown name -- as ``stream``."""
     try:
-        check_search_target(args.name or None, args.ra, args.dec)
+        args.name = check_search_target(args.name, args.ra, args.dec)  # a blank --name is no name
         # POST /api/v1/search's bounds: a typo must not search another part of the sky
         # (validate_target would wrap --ra 400 to 40 degrees).
         if args.ra is not None and not 0.0 <= args.ra < 360.0:

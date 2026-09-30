@@ -309,6 +309,10 @@ def make_app() -> FastAPI:
     {"ra": 10.0, "dec": 10.0, "min_period_days": "inf"},
     {"ra": 10.0, "dec": 10.0, "max_period_days": "inf"},
     {"name": "   "},
+    {"name": "", "ra": 10.0},  # a blank name is no name: ra alone is no target
+    {"ra": 400.0, "dec": 0.0},  # out of range: refused, never wrapped to 40
+    {"ra": -0.5, "dec": 0.0},
+    {"ra": 10.0, "dec": 95.0},
 ])
 def test_router_rejects_before_any_upstream_call(params: dict[str, Any]) -> None:
     with respx.mock(assert_all_mocked=True, assert_all_called=False) as router:
@@ -317,6 +321,43 @@ def test_router_rejects_before_any_upstream_call(params: dict[str, Any]) -> None
             response = http.get("/api/v1/lightcurves", params=params)
         assert not route.called
     assert response.status_code == 422, response.text
+
+
+@pytest.mark.parametrize(("argv", "message"), [
+    (["lightcurve", "--name", "   "], "Either name or both ra and dec are required"),
+    (["lightcurve", "--name", "RR Lyr", "--ra", "1", "--dec", "2"], "not both"),
+    (["lightcurve", "--ra", "400", "--dec", "0"], "never wrapped"),
+    (["lightcurve", "--ra", "10", "--dec", "95"], "DEC must be within"),
+])
+def test_cli_lightcurve_uses_the_shared_target_rule(argv: list[str], message: str,
+                                                    capsys: pytest.CaptureFixture[str]) -> None:
+    """The lightcurve command follows the rule of every search command (main.check_search_target):
+    exit 2 before any request; a blank --name is no name and RA is never wrapped."""
+    import main
+
+    args = main.build_parser().parse_args(argv)
+    with respx.mock(assert_all_mocked=True, assert_all_called=False) as router:
+        route = router.route().mock(side_effect=AssertionError("no upstream call expected"))
+        assert args.handler(args) == 2
+        assert not route.called
+    assert message in capsys.readouterr().err
+
+
+def test_router_blank_name_beside_coordinates_searches_the_coordinates(monkeypatch: pytest.MonkeyPatch) -> None:
+    """A blank name= next to ra/dec is a coordinate search on /lightcurves, as on every search route."""
+    seen: dict[str, Any] = {}
+
+    async def fake_get_lightcurves(ra, dec, **kwargs):
+        seen.update(ra=ra, dec=dec, name=kwargs.get("name"))
+        raise td.InvalidCoordinateError("stop here")  # the router maps it to 422 before any network use
+
+    monkeypatch.setattr(td, "get_lightcurves", fake_get_lightcurves)
+    with respx.mock(assert_all_mocked=True, assert_all_called=False) as router:
+        route = router.route().mock(side_effect=AssertionError("no upstream call expected"))
+        with TestClient(make_app()) as http:
+            http.get("/api/v1/lightcurves", params={"name": "  ", "ra": 10.0, "dec": 11.0})
+        assert not route.called
+    assert seen["ra"] == 10.0 and seen["dec"] == 11.0 and not seen["name"]
 
 
 async def test_core_rejects_non_finite_period_bounds() -> None:
