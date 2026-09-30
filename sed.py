@@ -139,6 +139,7 @@ import logging
 import math
 import os
 import re
+import ssl
 import tempfile
 import time
 from collections.abc import Callable, Coroutine, Iterable, Mapping, Sequence
@@ -173,6 +174,31 @@ from models import (
 )
 
 logger = logging.getLogger("astrosearch.sed")
+
+
+@functools.lru_cache(maxsize=1)
+def _ssl_context() -> ssl.SSLContext:
+    """One default SSL context per process (as vizier/imaging): building one, which httpx otherwise does for every new
+    client from certifi's bundle, takes ~0.5-1 s on Windows."""
+    return ssl.create_default_context()
+
+
+async def _owned_client(timeout: float) -> httpx.AsyncClient:
+    """A private client for a call without a caller-supplied one.
+
+    The SSL context is built off the event loop (once per process): building it synchronously blocked the loop for
+    ~1 s, so a caller's cancellation (``asyncio.wait_for``) or deadline could not take effect until it was done."""
+    if _ssl_context.cache_info().currsize:
+        context = _ssl_context()
+    else:
+        context = await asyncio.to_thread(_ssl_context)
+    return httpx.AsyncClient(timeout=timeout, follow_redirects=True, verify=context)
+
+
+async def _close_owned(client: httpx.AsyncClient) -> None:
+    """Close a private client even when the caller is cancelled again while it closes (no leaked connections)."""
+    await asyncio.shield(client.aclose())
+
 
 # ---------------------------------------------------------------------------
 # Errors & Constants
@@ -686,7 +712,7 @@ class FilterCatalog:
         failures: dict[str, str] = {}
         waiting: dict[str, asyncio.Task[dict[str, Any]]] = {}
         owned = client is None
-        active = client or httpx.AsyncClient(timeout=self.timeout, follow_redirects=True)
+        active = client or await _owned_client(self.timeout)
         keep = background and not owned  # our private client closes below: nothing may keep using it
         stop = "deadline"
         try:
@@ -736,7 +762,7 @@ class FilterCatalog:
                     await asyncio.shield(asyncio.gather(*abandoned, return_exceptions=True))
             finally:
                 if owned:
-                    await active.aclose()
+                    await _close_owned(active)
                 if self._dirty:
                     self._save_disk()
         for fid, task in waiting.items():
@@ -4354,7 +4380,7 @@ async def sed_from_record(
         background_filter_fetches = client is not None
     notes: list[str] = []
     owned = client is None and supplementary
-    active = client or (httpx.AsyncClient(timeout=request_timeout, follow_redirects=True) if supplementary else None)
+    active = client or (await _owned_client(request_timeout) if supplementary else None)
     gaia_extra: dict[str, Any] | None = None
     sdss_extra: dict[str, Any] | None = None
     simbad_extra: dict[str, Any] | None = None
@@ -4418,7 +4444,7 @@ async def sed_from_record(
         # Without supplementary lookups, filters come from the memory/disk cache or the embedded table.
     finally:
         if owned and active is not None:
-            await active.aclose()
+            await _close_owned(active)
     if filters_failed and not filters.offline:
         # The whole SVO job failed or was cancelled at the deadline: name the filters that fall back.
         for fid in filters.unresolved(needed):
@@ -4548,12 +4574,12 @@ async def resolve_name(name: str, client: httpx.AsyncClient | None = None, *, en
     from providers import SesameResolver
 
     owned = client is None
-    active = client or httpx.AsyncClient(timeout=30.0, follow_redirects=True)
+    active = client or await _owned_client(30.0)
     try:
         resolved = await SesameResolver(active, endpoint=sesame_aliases_endpoint(endpoint)).resolve(name)
     finally:
         if owned:
-            await active.aclose()
+            await _close_owned(active)
     target = resolved_target(resolved)
     return {
         "ra": target.ra, "dec": target.dec, "epoch": target.epoch,
@@ -4580,7 +4606,7 @@ async def build_sed(
     except ValueError as exc:
         raise SEDInputError(str(exc)) from exc
     owned = client is None
-    active = client or httpx.AsyncClient(timeout=60.0, follow_redirects=True)
+    active = client or await _owned_client(60.0)
     try:
         epoch = pm_ra = pm_dec = None
         resolved = None
@@ -4611,7 +4637,7 @@ async def build_sed(
                                      radius_arcsec=radius, background_filter_fetches=not owned)
     finally:
         if owned:
-            await active.aclose()
+            await _close_owned(active)
 
 
 def validate_radius(radius_arcsec: Any) -> float:

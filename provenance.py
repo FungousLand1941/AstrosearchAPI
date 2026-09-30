@@ -107,6 +107,7 @@ from models import (
     CatalogDefinition,
     CatalogRegistry,
     InvalidCoordinateError,
+    Settings,
     Target,
     UnifiedRecord,
     check_search_radius,
@@ -2412,6 +2413,28 @@ def _compare(old: ProvenanceManifest, record: UnifiedRecord, pinned: CatalogRegi
     )
 
 
+def _check_replay_radius(old: ProvenanceManifest, settings: Settings | None) -> None:
+    """ManifestError unless every search radius of a manifest's query is a positive number no
+    larger than MAX_SEARCH_RADIUS_ARCSEC (3600") and API_MAX_RADIUS_ARCSEC."""
+    adv = old.query.get("advanced_query") if old.query.get("mode") == "advanced" else None
+    radii: list[tuple[str, Any]] = [("radius_arcsec", old.radius_arcsec)]
+    if isinstance(adv, Mapping) and adv.get("radius_arcsec") is not None:
+        radii.append(("advanced_query.radius_arcsec", adv.get("radius_arcsec")))
+    for label, value in radii:
+        if value is None:
+            continue
+        try:
+            radius = float(value)
+        except (TypeError, ValueError) as exc:
+            raise ManifestError(f"manifest {label} must be a number") from exc
+        if not math.isfinite(radius) or radius <= 0 or radius > MAX_SEARCH_RADIUS_ARCSEC:
+            raise ManifestError(f"manifest {label} {value!r} must be in (0, {MAX_SEARCH_RADIUS_ARCSEC:g}] arcsec")
+        try:
+            check_search_radius(radius, settings=settings, field=f"manifest {label}")
+        except ValueError as exc:
+            raise ManifestError(str(exc)) from exc
+
+
 async def replay_manifest(
     manifest: ProvenanceManifest | Mapping[str, Any],
     service: CrossmatchService | None = None,
@@ -2423,8 +2446,14 @@ async def replay_manifest(
     confidence_tolerance: float = DEFAULT_CONFIDENCE_TOLERANCE,
     use_cache: bool = False,
     live_release_lookup: bool = True,
+    settings: Settings | None = None,
 ) -> ReplayResult:
     """Re-run a manifest's query and compare the new science with the recorded one.
+
+    The manifest's search radius (and its advanced query's) must lie within the static
+    3600" ceiling and ``settings.max_radius_arcsec`` (API_MAX_RADIUS_ARCSEC; default: the
+    environment's), as for a new search: a crafted manifest cannot send a wider cone to the
+    archives (:class:`ManifestError`, checked before any request).
 
     The replay uses the manifest's *input* target at full precision (the resolved
     position when the original query was by name -- the resolver is not re-run), its
@@ -2470,6 +2499,7 @@ async def replay_manifest(
         names = sorted(old.catalogs) or list(old.query.get("catalogs_planned") or [])
         if not names:
             raise ManifestError("manifest lists no catalogs to replay")
+        _check_replay_radius(old, settings)  # before any archive is queried
         missing = sorted(n for n in names if n not in service.registry.catalogs)
         if len(missing) == len(names):
             raise ManifestError(f"none of the manifest's catalogs is in the registry: {missing}")
@@ -4154,6 +4184,9 @@ class SearchFields(BaseModel):
     """
 
     model_config = ConfigDict(extra="forbid")
+    # False for /api/v1/search/batch items (api.BatchSearchItem): their configured-limit check
+    # runs per item when the search runs, so one item above it fails on its own.
+    enforce_configured_radius_limit: ClassVar[bool] = True
     ra: float | None = Field(None, description="Right ascension in degrees, [0, 360)", ge=0, lt=360)
     dec: float | None = Field(None, description="Declination in degrees, [-90, 90]", ge=-90, le=90)
     name: str | None = Field(None, description="Astronomical object name (will be resolved)")
@@ -4191,7 +4224,8 @@ class SearchFields(BaseModel):
             raise ValueError("proper motion exceeds 20 arcsec/yr; check units (mas/yr expected)")
         if self.min_radius_arcsec and self.min_radius_arcsec >= self.radius_arcsec:
             raise ValueError("min_radius_arcsec must be smaller than radius_arcsec")
-        check_radius_limit(self.radius_arcsec)
+        if self.enforce_configured_radius_limit:
+            check_radius_limit(self.radius_arcsec)
         return self
 
 
@@ -4461,7 +4495,11 @@ async def run_basic_search(
 ) -> UnifiedRecord:
     """Run a search exactly as ``astrosearch search`` does (``main.search_object`` for a
     name: resolver position, epoch, proper motion and parallax; ``main.crossmatch`` for
-    coordinates): the basic crossmatch path, every in-radius row kept."""
+    coordinates): the basic crossmatch path, every in-radius row kept. A name and ra/dec
+    together are refused (``main.check_search_target``)."""
+    from main import check_search_target  # lazy: main imports this module for its CLI
+
+    check_search_target(name or None, ra, dec)
     check_radius_limit(radius_arcsec)
     if name:
         from main import crossmatch_resolved  # lazy: main imports this module for its CLI
@@ -4477,8 +4515,9 @@ async def run_basic_search(
 async def replay_endpoint(req: ReplayRequest, request: Request) -> dict[str, Any]:
     """Re-run a manifest's query; returns identical flag, structured diff and new manifest.
 
-    422: malformed manifest (checked before any archive is queried) or one whose
-    catalogs are all unknown to the registry. 502: every archive unreachable.
+    422: malformed manifest (checked before any archive is queried), a search radius above
+    API_MAX_RADIUS_ARCSEC or the 3600" ceiling, or catalogs all unknown to the registry.
+    502: every archive unreachable.
     """
     try:
         manifest = await asyncio.to_thread(ProvenanceManifest.from_dict, req.manifest)
@@ -4489,7 +4528,8 @@ async def replay_endpoint(req: ReplayRequest, request: Request) -> dict[str, Any
             result = await replay_manifest(manifest, service, client=client,
                                            position_tolerance_arcsec=req.position_tolerance_arcsec,
                                            numeric_rtol=req.numeric_rtol, sigma_fraction=req.sigma_fraction,
-                                           confidence_tolerance=req.confidence_tolerance, use_cache=req.use_cache)
+                                           confidence_tolerance=req.confidence_tolerance, use_cache=req.use_cache,
+                                           settings=_state(request, "settings"))
         except ManifestError as exc:
             raise HTTPException(status_code=422, detail=str(exc)) from exc
         except (ValueError, InvalidCoordinateError) as exc:

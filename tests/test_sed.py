@@ -509,7 +509,9 @@ def test_router_validation_errors(tmp_path: Path) -> None:
         assert client.post("/api/v1/sed", json={"ra": 1, "dec": 2, "bogus": 1}).status_code == 422
 
 
-def test_router_upstream_failures_are_502(tmp_path: Path) -> None:
+def test_router_upstream_failures_502_resolver_outage_503_unknown_name_404(tmp_path: Path) -> None:
+    """Every catalog failing is a 502; name resolution follows models.resolution_failure_status (Sesame down:
+    503 + Retry-After, unknown name: 404)."""
     from fastapi.testclient import TestClient
 
     failed = {
@@ -524,13 +526,15 @@ def test_router_upstream_failures_are_502(tmp_path: Path) -> None:
         router.get(url__startswith="https://cds.unistra.fr/").mock(return_value=httpx.Response(503))
         with TestClient(make_app(FakeService(failed), tmp_path)) as client:
             res = client.post("/api/v1/sed", json={"name": "3C 273"})
-            assert res.status_code == 502 and "Sesame" in res.json()["detail"]
+            assert res.status_code == 503 and "Sesame" in res.json()["detail"]
+            assert res.headers["retry-after"] == "30"
     empty = b'<?xml version="1.0"?><Sesame><Target><name>nosuch</name><INFO>*** Nothing found ***</INFO></Target></Sesame>'
     with respx.mock(assert_all_mocked=True) as router:
         router.get(url__startswith="https://cds.unistra.fr/").mock(return_value=httpx.Response(200, content=empty))
         with TestClient(make_app(FakeService(failed), tmp_path)) as client:
             res = client.get("/api/v1/sed", params={"name": "nosuchobject"})
-            assert res.status_code == 422 and "Name resolution failed" in res.json()["detail"]
+            assert res.status_code == 404 and "Name resolution failed" in res.json()["detail"]
+            assert "No coordinates found" in res.json()["detail"] and "retry-after" not in res.headers
 
 
 def test_router_name_resolution_path(tmp_path: Path) -> None:

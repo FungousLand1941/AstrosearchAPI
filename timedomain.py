@@ -5647,11 +5647,13 @@ async def lightcurves_endpoint(
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     if name is not None and not name.strip():
         raise HTTPException(status_code=422, detail="name must not be blank")
+    if name is not None and (ra is not None or dec is not None):
+        # One rule on every search route (main.check_search_target): the result is computed at
+        # one target, so it is never labelled with a name it was not computed for.
+        raise HTTPException(status_code=422, detail="Give either an object name or ra/dec, not both.")
     client = _state_client(request)
     resolver: dict[str, Any] | None = None
-    if name and (ra is None or dec is None):
-        if (ra is None) != (dec is None):
-            raise HTTPException(status_code=422, detail="give both ra and dec, or neither (with name)")
+    if name:
         try:
             # Coordinates from the resolver carry the resolver's epoch (and, unless both
             # components are given, its proper motion): checked before resolving.
@@ -5794,8 +5796,11 @@ def cli_lightcurve(args: argparse.Namespace) -> int:
     if not args.name and (args.ra is None or args.dec is None):
         print("Error: specify --name or both --ra and --dec.", file=sys.stderr)
         return 2
+    if args.name and (args.ra is not None or args.dec is not None):
+        print("Error: give either --name or --ra/--dec, not both.", file=sys.stderr)
+        return 2
 
-    by_name = bool(args.name) and (args.ra is None or args.dec is None)
+    by_name = bool(args.name)
     try:
         if by_name:
             # Resolved coordinates carry the resolver's epoch (checked before any request).

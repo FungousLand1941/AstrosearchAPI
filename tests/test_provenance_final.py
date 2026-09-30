@@ -262,6 +262,49 @@ def test_search_radius_checks_share_one_implementation(monkeypatch) -> None:
                                           "(API_MAX_RADIUS_ARCSEC)")
 
 
+class _UnusedService:
+    """A replay refused before any archive is queried never reaches the service."""
+
+    @property
+    def registry(self) -> Any:  # pragma: no cover - must not be called
+        raise AssertionError("the replay must be refused before the registry or any archive is used")
+
+
+@pytest.mark.parametrize(("where", "radius", "limit"), [
+    ("radius_arcsec", 7200.0, None),  # above the static 3600" ceiling
+    ("radius_arcsec", 1801.0, None),  # above the default API_MAX_RADIUS_ARCSEC (1800")
+    ("radius_arcsec", 61.0, 60.0),  # above the deployment's configured limit
+    ("advanced_query", 7200.0, None),
+    ("advanced_query", 1801.0, None),
+])
+def test_replay_refuses_a_manifest_radius_above_the_limit(where: str, radius: float, limit: float | None) -> None:
+    """Finding: a manifest edited to radius_arcsec 7200 was replayed (200) with a 2-degree cone
+    to every archive. The replay now checks the 3600" ceiling and API_MAX_RADIUS_ARCSEC (422)."""
+    from test_provenance import synthetic_record
+
+    from models import Settings
+
+    data = P.build_manifest(synthetic_record()).as_dict()
+    if where == "radius_arcsec":
+        data["radius_arcsec"] = radius
+    else:
+        data["query"]["mode"] = "advanced"
+        data["query"]["advanced_query"] = {"target": {"ra": 150.0, "dec": 2.0}, "radius_arcsec": radius}
+    app = _app(None)
+    app.state.service = _UnusedService()
+    app.state.client = httpx.AsyncClient(transport=httpx.MockTransport(_no_network))
+    if limit is not None:
+        app.state.settings = Settings(API_MAX_RADIUS_ARCSEC=limit)
+    with TestClient(app) as client:
+        response = client.post("/api/v1/provenance/replay", json={"manifest": data})
+    assert response.status_code == 422, response.text
+    detail = response.json()["detail"]
+    assert "radius_arcsec" in detail and ("API_MAX_RADIUS_ARCSEC" in detail or "3600" in detail), detail
+    with pytest.raises(P.ManifestError, match="radius_arcsec"):
+        asyncio.run(P.replay_manifest(data, _UnusedService(), client=object(),
+                                      settings=Settings(API_MAX_RADIUS_ARCSEC=limit or 1800.0)))
+
+
 def test_manifest_route_refuses_a_wide_cone_before_searching() -> None:
     with TestClient(_app(None)) as client:
         response = client.post("/api/v1/provenance/manifest",

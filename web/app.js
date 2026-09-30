@@ -18,6 +18,7 @@ const ENDPOINTS = Object.freeze({
   aiQuery: { method: 'POST', path: '/api/v1/ai/query' },
   aiExplain: { method: 'POST', path: '/api/v1/ai/explain' },
   citations: { method: 'GET', path: '/api/v1/citations' },
+  limits: { method: 'GET', path: '/api/v1/limits' },
 });
 
 const ALADIN_SRC = 'https://aladin.cds.unistra.fr/AladinLite/api/v3/latest/aladin.js';
@@ -41,6 +42,10 @@ const STORAGE = { theme: 'astrosearch.theme', key: 'astrosearch.apiKey', stream:
 // timedomain.MAX_LIGHTCURVE_RADIUS_ARCSEC); wider searches are clamped for those panels.
 const SED_MAX_RADIUS_ARCSEC = 60;
 const LIGHTCURVE_MAX_RADIUS_ARCSEC = 60;
+// The search radius bound until GET /api/v1/limits answers: the server's default
+// API_MAX_RADIUS_ARCSEC. The server's own value replaces it (loadLimits), so the check and its
+// message follow the deployment; the server still checks every request.
+const DEFAULT_MAX_RADIUS_ARCSEC = 1800;
 
 const state = {
   controller: null,
@@ -62,6 +67,7 @@ const state = {
   lcView: { unit: null, folded: false },
   bibtex: '',
   surveys: [],
+  maxRadiusArcsec: DEFAULT_MAX_RADIUS_ARCSEC,
 };
 
 // ---------------------------------------------------------------------------
@@ -218,7 +224,8 @@ function parseSearchInput(text, radius) {
   const clean = String(text ?? '').trim();
   if (!clean) throw new Error('Enter an object name or coordinates.');
   const r = Number(radius);
-  if (!(r > 0 && r <= 3600)) throw new Error('Radius must be between 0 and 3600 arcsec.');
+  const max = state.maxRadiusArcsec;
+  if (!(r > 0 && r <= max)) throw new Error(`Radius must be greater than 0 and at most ${max} arcsec.`);
   const read = readCoordinates(clean);
   if (read?.error) throw new Error(read.error);
   return read ? { text: clean, radius: r, ra: read.ra, dec: read.dec } : { text: clean, radius: r, name: clean };
@@ -1560,10 +1567,26 @@ async function runAsk(text) {
 // Wiring
 // ---------------------------------------------------------------------------
 
+// The server's search limits (GET /api/v1/limits, public): the radius field and
+// parseSearchInput follow API_MAX_RADIUS_ARCSEC. Without the endpoint the default stays.
+async function loadLimits() {
+  try {
+    const limits = await api('limits');
+    const max = Number(limits?.max_radius_arcsec);
+    if (Number.isFinite(max) && max > 0) state.maxRadiusArcsec = max;
+  } catch {
+    // keep DEFAULT_MAX_RADIUS_ARCSEC; the server still rejects a wider cone with a 422
+  }
+  const field = typeof document !== 'undefined' ? $('#radius') : null;
+  if (field) field.max = String(state.maxRadiusArcsec);
+  return state.maxRadiusArcsec;
+}
+
 function init() {
   initSettings();
   initAladin();
   loadSurveyList();
+  loadLimits();
 
   $('#search-form').addEventListener('submit', (ev) => {
     ev.preventDefault();
@@ -1628,7 +1651,7 @@ export {
   ApiError, errorKind, errorMessage, panelError, searchRecord, streamSearch, parseSearchInput,
   foldPhase, lightcurveEpoch, lightcurveDatasets, serviceRadius, loadCutouts, cutoutStatus, endpointUrl,
   cutoutStackParams, lightcurveParams, targetInfo, fitsButton, knownTarget, onTargetKnown, state,
-  SED_MAX_RADIUS_ARCSEC, LIGHTCURVE_MAX_RADIUS_ARCSEC,
+  SED_MAX_RADIUS_ARCSEC, LIGHTCURVE_MAX_RADIUS_ARCSEC, DEFAULT_MAX_RADIUS_ARCSEC, loadLimits,
 };
 
 if (typeof document !== 'undefined') {

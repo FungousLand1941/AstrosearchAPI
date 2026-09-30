@@ -719,11 +719,13 @@ async def test_registration_cancelled_before_the_commit_writes_nothing(tmp_path,
     assert not path.exists() and "early" not in live.catalogs
 
 
+# Holds the file open until released through stdin (or until the test process goes away): no fixed hold
+# time that a loaded machine could outlast before the route deadline fires.
 _HOLD_OPEN = textwrap.dedent("""
-    import sys, time
+    import sys
     handle = open(sys.argv[1], encoding="utf-8")
     print("open", flush=True)
-    time.sleep(float(sys.argv[2]))
+    sys.stdin.readline()
 """)
 
 
@@ -732,6 +734,9 @@ def test_route_deadline_during_a_blocked_replace_persists_nothing(tmp_path, monk
     path = tmp_path / "catalogs.yaml"
     vizier.save_definition("first_one", _entry(), path=path)
     monkeypatch.setattr(vizier, "ROUTE_DEADLINE_SECONDS", 1.0)
+    # The refused replace is retried far beyond the route deadline, so however late the deadline is
+    # delivered under load, it fires while the replace is still being refused (never a 409 instead).
+    monkeypatch.setattr(vizier, "REGISTRY_REPLACE_RETRY_SECONDS", 120.0)
     script = tmp_path / "hold_open.py"
     script.write_text(_HOLD_OPEN, encoding="utf-8")
     app = _app(tmp_path)
@@ -739,15 +744,16 @@ def test_route_deadline_during_a_blocked_replace_persists_nothing(tmp_path, monk
     client = TestClient(app)
     with replaying("describe_2sxps"):
         client.get("/api/v1/vizier/catalog/IX/58/2sxps")  # describe cached: only the save is slow below
-        holder = subprocess.Popen([PYTHON, str(script), str(path), "2.5"], stdout=subprocess.PIPE,
-                                  stderr=subprocess.PIPE, env=ENV)
+        holder = subprocess.Popen([PYTHON, str(script), str(path)], stdin=subprocess.PIPE,
+                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=ENV)
         try:
             assert holder.stdout is not None and holder.stdout.readline().strip() == b"open"
             response = client.post("/api/v1/vizier/register", json={"table_id": "IX/58/2sxps", "name": "raced"})
         finally:
-            holder.communicate(timeout=30)
+            holder.communicate(input=b"\n", timeout=30)  # release the file only after the route answered
         assert response.status_code == 504, response.text
-        time.sleep(0.2)
+        # The file is free now: a save that ignored the abandonment would replace it within one poll.
+        time.sleep(max(0.5, 10 * vizier._POLL_SECONDS))
         assert "raced" not in vizier.list_registered(path)  # abandoned, not persisted behind the 504
         response = client.post("/api/v1/vizier/register", json={"table_id": "IX/58/2sxps", "name": "raced"})
     assert response.status_code == 200, response.text  # the retry succeeds (no 409)

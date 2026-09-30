@@ -264,12 +264,26 @@ RESOLVER_UNDATED_SIGMA_ARCSEC = 1.0
 # centres of nearby galaxies from the 2MASS extended-source catalogue (Sesame refPos
 # 2006AJ....131.1163S) without an error; the centre of a galaxy arcminutes across differs
 # between catalogues by about an arcsecond (NED's 'NGC 4565' 1.2", 'Messier 101' 0.8",
-# 'NGC 7318a' 0.7" from SIMBAD's). Point-like extragalactic types (QSO, BL Lac) keep the
-# resolver's (default) precision.
+# 'NGC 7318a' 0.7" from SIMBAD's). Point-like extragalactic types (QSO, BL Lac), and objects
+# that merely have a redshift (supernovae, novae, X-ray sources), keep the resolver's
+# (default) precision (is_galaxy_centre_type).
 GALAXY_CENTRE_SIGMA_ARCSEC = 1.0
 POINTLIKE_EXTRAGALACTIC_OTYPES: frozenset[str] = frozenset({
     "qso", "qso?", "q?", "bla", "bla?", "bll", "bll?", "bz?", "bl?", "lev?", "gle", "gls", "le?", "ls?", "li?",
+    # lensed images / quasars, broad-absorption-line QSOs, and absorbers listed at a QSO's position
+    "lei", "leq", "bal", "lya", "dla", "mal", "lls", "als", "q_lens", "qsolens",
 })
+
+
+def is_galaxy_centre_type(object_type: Any) -> bool:
+    """True for the object types whose resolved position is a galaxy's centre (and so gets
+    GALAXY_CENTRE_SIGMA_ARCSEC when the resolver gives no error): extragalactic types that are
+    neither point-like (QSO, BL Lac, lenses) nor groups / clusters of galaxies. Objects that
+    merely have a redshift (supernovae, novae, X-ray sources of other galaxies) are not."""
+    key = _otype_key(object_type)
+    return is_extragalactic_type(key) and key not in POINTLIKE_EXTRAGALACTIC_OTYPES and key not in EXTENDED_OTYPES
+
+
 # Star clusters of the same compilation closer than this to each other cannot be Galactic
 # clusters (arcminutes across): they are extragalactic clusters -- point-like at the distances
 # of other galaxies, such as M87's globular clusters ([JPB2009], 1.9" apart) or the young
@@ -868,10 +882,34 @@ def identifier_key(value: Any) -> str:
     return _PADDED_NUMBER.sub("", key)
 
 
+def _designation_family(source_id: Any) -> str:
+    """The catalogue-of-origin part of a designation: its first word ('[LHL2013] 611' ->
+    '[lhl2013]', '2CXO J161702.4-225834' -> '2cxo', 'MESSIER 080' -> 'messier')."""
+    words = _ID_PREFIX.sub("", " ".join(str(source_id or "").split())).split()
+    return words[0].casefold() if len(words) > 1 else ""
+
+
+def _distinct_clusters(a: CatalogSource, b: CatalogSource, separation_arcsec: float) -> bool:
+    """True when two star-cluster rows of one compilation are two clusters, not one cluster
+    listed twice. Rows at distinct positions (chi2 above IDENTITY_COINCIDENCE_CHI2 with both
+    errors) are two; so are rows of one catalogue of origin under different numbers
+    ('[LHL2013] 611' and '[LHL2013] 613', 1.1" apart with 0.5" errors). Rows coincident within
+    their errors under designations of different origins are one cluster listed twice (NED's
+    'MESSIER 080' and '2CXO J161702.4-225834', both '*Cl', 0.01" apart: the Galactic globular
+    cluster M 80)."""
+    sigma2 = _row_sigma(a) ** 2 + _row_sigma(b) ** 2 + 2.0 * ASTROMETRIC_FLOOR_ARCSEC**2
+    if separation_arcsec * separation_arcsec / sigma2 > IDENTITY_COINCIDENCE_CHI2:
+        return True
+    family = _designation_family(a.source_id)
+    return bool(family) and family == _designation_family(b.source_id) \
+        and identifier_key(a.source_id) != identifier_key(b.source_id)
+
+
 def mark_compact_clusters(matches: list[Match]) -> set[int]:
     """Mark (``metadata['compact_cluster']``) the star-cluster rows of SIMBAD / NED that are
     extragalactic clusters, and return their indices: two precisely placed star clusters of one
-    compilation within COMPACT_CLUSTER_NEIGHBOUR_ARCSEC of each other, or one with a
+    compilation within COMPACT_CLUSTER_NEIGHBOUR_ARCSEC of each other (at distinct positions:
+    rows coincident within their errors are one cluster listed twice), or one with a
     redshift beyond EXTRAGALACTIC_MIN_REDSHIFT. Coarse positions (SIMBAD quality D/E, errors
     above DETECTION_LISTING_MAX_SIGMA_ARCSEC) are left alone: the Trapezium and OCSN 244 in
     M 42 are extended Galactic clusters listed at nominal centres."""
@@ -893,8 +931,12 @@ def mark_compact_clusters(matches: list[Match]) -> set[int]:
         for a, i in enumerate(rows):
             for j in rows[a + 1:]:
                 si, sj = matches[i].source, matches[j].source
-                if haversine_arcsec(si.ra, si.dec, sj.ra, sj.dec) <= COMPACT_CLUSTER_NEIGHBOUR_ARCSEC:
-                    marked.update((i, j))
+                sep = haversine_arcsec(si.ra, si.dec, sj.ra, sj.dec)
+                if sep > COMPACT_CLUSTER_NEIGHBOUR_ARCSEC:
+                    continue
+                if not _distinct_clusters(si, sj, sep):
+                    continue
+                marked.update((i, j))
     for i in marked:
         matches[i].source.metadata["compact_cluster"] = True
     return marked
@@ -2745,9 +2787,9 @@ def resolved_search_target(
     if sigma is None and resolver_identity_catalog({"resolver": getattr(obj, "resolver", None),
                                                     "resolver_metadata": getattr(obj, "resolver_metadata", None)}):
         otype = _otype_key(getattr(obj, "object_type", None))
-        extragalactic = bool((getattr(obj, "resolver_metadata", None) or {}).get("extragalactic")) \
-            or is_extragalactic_type(otype)
-        if extragalactic and otype not in POINTLIKE_EXTRAGALACTIC_OTYPES and otype not in EXTENDED_OTYPES:
+        # Galaxy types only: an object that merely has a redshift (a supernova 'SN*', a nova,
+        # an X-ray source in another galaxy) is a point-like source, not a galaxy's centre.
+        if is_galaxy_centre_type(otype):
             # A galaxy's centre without a published error (2MASS XSC centres): about 1".
             sigma, sigma_source = GALAXY_CENTRE_SIGMA_ARCSEC, "galaxy_centre"
     warnings: list[str] = []

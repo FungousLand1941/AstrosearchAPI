@@ -35,7 +35,7 @@ SESAME_3C273 = (FIXTURES / "sesame" / "3c273.xml").read_text(encoding="utf-8")
 
 # (method, path) of every route each feature module contributes.
 MODULE_ROUTES: dict[str, set[tuple[str, str]]] = {
-    "core": {("GET", "/api/v1/health"), ("GET", "/api/v1/catalogs"), ("GET", "/api/v1/catalogs/{catalog_name}"),
+    "core": {("GET", "/api/v1/health"), ("GET", "/api/v1/limits"), ("GET", "/api/v1/catalogs"), ("GET", "/api/v1/catalogs/{catalog_name}"),
              ("POST", "/api/v1/search"), ("POST", "/api/v1/search/batch"), ("POST", "/api/v1/datasets/create"),
              ("GET", "/api/v1/datasets"), ("GET", "/api/v1/datasets/{dataset_name}"),
              ("DELETE", "/api/v1/datasets/{dataset_name}"), ("GET", "/api/v1/datasets/{dataset_name}/export"),
@@ -755,8 +755,14 @@ def test_search_radius_is_limited_by_api_max_radius_arcsec(isolated: Path, monke
             for path, payload in (("/api/v1/search", body), ("/api/v1/queries", {"name": "wide", "query": body})):
                 response = client.post(path, json=payload)
                 assert response.status_code == 422, (path, radius, response.text)
-            items = client.post("/api/v1/search/batch", json=[body])
-            assert items.status_code == 422 or items.json()[0]["status_code"] == 422, items.text
+            items = client.post("/api/v1/search/batch", json=[body, {**target, "radius_arcsec": 10}])
+            if radius > 3600:  # the static schema ceiling: the whole request
+                assert items.status_code == 422, items.text
+            else:  # API_MAX_RADIUS_ARCSEC: only the offending item fails (as documented)
+                assert items.status_code == 200, items.text
+                first, second = items.json()
+                assert first["status_code"] == 422 and "API_MAX_RADIUS_ARCSEC" in first["error"], first
+                assert "status_code" not in second and second["target"]["ra"] == 200.0, second
             stream = client.get("/api/v1/search/stream", params={**target, "radius_arcsec": radius})
             assert stream.status_code == 422, stream.text
             dataset = client.post("/api/v1/datasets/create", json={"name": "d", "profile": "optical",
@@ -764,7 +770,7 @@ def test_search_radius_is_limited_by_api_max_radius_arcsec(isolated: Path, monke
             assert dataset.status_code == 422, dataset.text
         assert "API_MAX_RADIUS_ARCSEC" in client.post("/api/v1/search", json={**target, "radius_arcsec": 3000}).text
         assert client.post("/api/v1/search", json={**target, "radius_arcsec": 1800}).status_code == 200
-    assert [call["query"].radius_arcsec for call in service.calls] == [1800]
+    assert [call["query"].radius_arcsec for call in service.calls] == [10, 1800]
     # The limit is configurable (below the absolute 3600" of the model).
     monkeypatch.setenv("API_MAX_RADIUS_ARCSEC", "10")
     with pytest.raises(ValueError, match="API_MAX_RADIUS_ARCSEC"):
@@ -772,6 +778,59 @@ def test_search_radius_is_limited_by_api_max_radius_arcsec(isolated: Path, monke
     main.check_search_radius(10.0)
     with pytest.raises(ValueError, match="API_MAX_RADIUS_ARCSEC"):
         asyncio.run(main.crossmatch(10.0, 10.0, radius_arcsec=11.0))
+
+
+def test_name_with_coordinates_is_422_on_every_search_route(isolated: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Finding: POST /search with {name, ra, dec} silently searched the name, /cutouts the
+    coordinates, and /lightcurves labelled a result at ra/dec with the name. One rule now:
+    a name or ra/dec, never both (422 before any request; a batch item fails on its own)."""
+    service = _CapturingService()
+    monkeypatch.setattr(api, "get_service", lambda: service)
+    both = {"name": "3C 273", "ra": 187.27, "dec": 2.05}
+    with no_upstream(), TestClient(api.app) as client:
+        for path, payload in (("/api/v1/search", both), ("/api/v1/queries", {"name": "q", "query": both}),
+                              ("/api/v1/provenance/manifest", both)):
+            response = client.post(path, json=payload)
+            assert response.status_code == 422, (path, response.text)
+            assert "not both" in response.text, (path, response.text)
+        items = client.post("/api/v1/search/batch", json=[both, {"ra": 10.0, "dec": 10.0}])
+        assert items.status_code == 200, items.text
+        assert items.json()[0]["status_code"] == 422 and "not both" in items.json()[0]["error"]
+        assert "status_code" not in items.json()[1]
+        for path in ("/api/v1/search/stream", "/api/v1/lightcurves"):
+            for params in (both, {"name": "RR Lyr", "ra": 1.0}):
+                response = client.get(path, params=params)
+                assert response.status_code == 422 and "not both" in response.text, (path, params, response.text)
+    assert [(c["ra"], c["dec"]) for c in service.calls] == [(10.0, 10.0)]
+    with pytest.raises(ValueError, match="not both"):
+        main.check_search_target("M87", 1.0, None)
+    with pytest.raises(ValueError, match="required"):
+        main.check_search_target(None, 1.0, None)
+    main.check_search_target("M87", None, None)
+    main.check_search_target(None, 1.0, 2.0)
+
+
+def test_stream_rejects_catalogs_outside_the_profile_like_post_search(isolated: Path) -> None:
+    """Finding: /search/stream?profile=radio&catalogs=gaia_dr3 streamed an empty 'successful'
+    result (POST /api/v1/search answers 422): the same 422 now, before the stream opens."""
+    params = {"ra": 150.1, "dec": 2.2, "profile": "radio", "catalogs": "gaia_dr3"}
+    with no_upstream(), TestClient(api.app) as client:
+        stream = client.get("/api/v1/search/stream", params=params)
+        post = client.post("/api/v1/search", json={**params, "catalogs": ["gaia_dr3"]})
+    assert stream.status_code == post.status_code == 422, (stream.text, post.text)
+    assert "not in profile 'radio'" in stream.json()["detail"] and "not in profile 'radio'" in post.json()["detail"]
+    registry = CatalogRegistry()
+    main.check_catalogs_in_profile(registry, ["nvss"], "radio")
+    main.check_catalogs_in_profile(registry, ["gaia_dr3"], None)
+    with pytest.raises(ValueError, match="gaia_dr3"):
+        main.check_catalogs_in_profile(registry, ["nvss", "gaia_dr3"], "radio")
+
+
+def test_limits_endpoint_reports_the_configured_radius(isolated: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("API_MAX_RADIUS_ARCSEC", "1200")
+    with TestClient(api.app) as client:
+        monkeypatch.setattr(client.app.state, "settings", None, raising=False)
+        assert client.get("/api/v1/limits").json()["max_radius_arcsec"] == 1200.0
 
 
 def test_name_resolver_outage_is_503_and_unknown_name_404_on_search_batch_and_stream(isolated: Path) -> None:

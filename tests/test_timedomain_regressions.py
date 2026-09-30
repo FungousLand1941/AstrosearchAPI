@@ -326,13 +326,15 @@ async def test_core_rejects_non_finite_period_bounds() -> None:
         await td.get_lightcurves(10.0, 10.0, min_period_days=0.001)
 
 
-def test_router_resolver_outage_is_502_and_unknown_name_404() -> None:
+def test_router_resolver_outage_is_503_and_unknown_name_404() -> None:
+    """models.resolution_failure_status: Sesame answering 5xx is an outage (503 + Retry-After), an unknown name 404."""
     with respx.mock(assert_all_mocked=True) as router:
         router.get(url__startswith="https://cds.unistra.fr/cgi-bin/nph-sesame").mock(
             return_value=httpx.Response(500, text="Internal Server Error"))
         with TestClient(make_app()) as http:
             response = http.get("/api/v1/lightcurves", params={"name": "M 31"})
-    assert response.status_code == 502 and "resolver unavailable" in response.json()["detail"]
+    assert response.status_code == 503 and "resolver unavailable" in response.json()["detail"]
+    assert response.headers["retry-after"] == "30"
     empty = ('<?xml version="1.0"?><Sesame><Target option="SNV"><name>nosuchthing123</name>'
              "<INFO>*** Nothing found ***</INFO></Target></Sesame>")
     with respx.mock(assert_all_mocked=True) as router:

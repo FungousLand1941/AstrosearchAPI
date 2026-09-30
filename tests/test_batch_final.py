@@ -4,6 +4,8 @@
   CDS XMatch by default (TAPVizieR table uploads stalled for 2 x 300 s per split level, live), an explicit
   ``xmatch`` strategy is accepted for them, and a table XMatch does not serve (LoTSS-DR3: HTTP 400 from its
   column list) goes to the upload strategy with a warning -- or fails with the reason when xmatch was asked for.
+  A transient failure of that column list (5xx/429, an HTML maintenance page, a reset) is retried with backoff;
+  when it persists the xmatch join is tried anyway with one warning, and nothing is cached.
 * A small batch whose upload join stalls goes to per-target cone searches after one short attempt
   (``BATCH_FAST_FALLBACK_SECONDS``), and the stalls open the upload circuit so later batches skip the upload.
 * The batch route answers non-finite JSON numbers (NaN, Infinity, 1e400) with 422, not 500.
@@ -165,6 +167,141 @@ def test_table_not_served_by_xmatch_falls_back_to_upload_or_fails_with_the_reaso
     run = result.runs["lotss"]
     assert run.failed_targets == 1 and archive.uploads() == [] and archive.xmatch_joins() == []
     assert "the xmatch strategy was requested, but CDS XMatch does not serve" in run.errors[0]
+
+
+# ---------------------------------------------------------------------------
+# Finding: a transient failure of the XMatch column list is not a verdict on the table
+# ---------------------------------------------------------------------------
+
+
+class FlakyColumns(Archive):
+    """The XMatch column-list endpoint fails the first ``failures`` probes with ``failure()``."""
+
+    def __init__(self, failures: int, failure, **kwargs: Any) -> None:
+        super().__init__(**kwargs)
+        self.failures = failures
+        self.failure = failure
+
+    def column_probes(self) -> list[httpx.Request]:
+        return [r for r in self.requests if "xmatch/api/v1/sync/tables" in str(r.url)]
+
+    def __call__(self, request: httpx.Request) -> httpx.Response:
+        if "xmatch/api/v1/sync/tables" in str(request.url) and self.failures > 0:
+            self.failures -= 1
+            self.requests.append(request)
+            return self.failure(request)
+        return super().__call__(request)
+
+
+def _http_503(request: httpx.Request) -> httpx.Response:
+    return httpx.Response(503, text="Service Unavailable", headers={"retry-after": "0"})
+
+
+def _maintenance_page(request: httpx.Request) -> httpx.Response:
+    return httpx.Response(200, text="<html><body>XMatch is under maintenance</body></html>",
+                          headers={"content-type": "text/html"})
+
+
+def _connection_reset(request: httpx.Request) -> httpx.Response:
+    raise httpx.ReadError("connection reset by peer", request=request)
+
+
+@pytest.mark.parametrize("failure", [_http_503, _maintenance_page, _connection_reset])
+def test_transient_column_list_failure_is_retried_then_cached(failure) -> None:
+    """Two failed probes, then the column list: the explicit xmatch run succeeds (it failed every target with
+    'its table list could not be read (503 ...)' before) and the answer is cached for the next batch."""
+    registry = _registry_with_registered()
+    archive = FlakyColumns(batch.XMATCH_COLUMNS_ATTEMPTS - 1, failure)
+    result = asyncio.run(_run(archive, [M87, C3C273], [REGISTERED], registry=registry,
+                              strategies={REGISTERED: "xmatch"}))
+    run = result.runs[REGISTERED]
+    assert run.strategy == "xmatch" and not run.errors and run.failed_targets == 0 and result.failures == {}
+    assert not any("column list" in w for w in run.warnings), run.warnings
+    assert len(archive.column_probes()) == batch.XMATCH_COLUMNS_ATTEMPTS
+    assert len(archive.xmatch_joins()) == 1
+    assert result.target_matches("M87")[REGISTERED][0]["source_id"] == "3907709439453756032"
+    assert "vizier:I/345/gaia2" in batch._XMATCH_COLUMNS
+
+    again = FlakyColumns(0, failure)
+    result = asyncio.run(_run(again, [M87], [REGISTERED], registry=registry, strategies={REGISTERED: "xmatch"}))
+    assert again.column_probes() == [] and result.runs[REGISTERED].failed_targets == 0
+
+
+@pytest.mark.parametrize("failure", [_http_503, _maintenance_page, _connection_reset])
+@pytest.mark.parametrize("explicit", [True, False])
+def test_persistent_column_list_failure_still_tries_the_xmatch_join(failure, explicit: bool) -> None:
+    """The column list is only a metadata probe: while it keeps failing, the (explicit or default) xmatch run is
+    tried anyway with one catalog-level warning -- no per-target failures, no switch to a TAPVizieR upload --
+    and the failure is not cached as 'not served'."""
+    registry = _registry_with_registered()
+    archive = FlakyColumns(10**6, failure)
+    result = asyncio.run(_run(archive, [M87, C3C273], [REGISTERED], registry=registry,
+                              strategies={REGISTERED: "xmatch"} if explicit else None))
+    run = result.runs[REGISTERED]
+    assert run.strategy == "xmatch" and not run.errors and run.failed_targets == 0 and result.failures == {}
+    assert archive.uploads() == [] and len(archive.xmatch_joins()) == 1
+    assert len(archive.column_probes()) == batch.XMATCH_COLUMNS_ATTEMPTS
+    [warning] = [w for w in run.warnings if "column list" in w]
+    assert warning.startswith(f"{REGISTERED}: the CDS XMatch column list of vizier:I/345/gaia2 could not be read")
+    assert "tried without checking" in warning
+    assert result.target_matches("M87")[REGISTERED][0]["source_id"] == "3907709439453756032"
+    assert batch._XMATCH_COLUMNS == {}
+    assert not batch.known_unusable_view(BatchCrossmatcher(registry=registry).xmatch_view(REGISTERED))
+
+
+def test_column_list_retries_honour_retry_after_with_a_cap(monkeypatch: pytest.MonkeyPatch) -> None:
+    delays: list[float] = []
+
+    async def fake_sleep(seconds: float) -> None:
+        delays.append(seconds)
+
+    monkeypatch.setattr(batch.asyncio, "sleep", fake_sleep)
+    answers = iter([httpx.Response(429, headers={"retry-after": "2"}),
+                    httpx.Response(502, headers={"retry-after": "3600"}),
+                    httpx.Response(200, json={"metadata": [{"name": "RA_ICRS"}, {"name": "DE_ICRS"}]})])
+
+    async def probe() -> frozenset[str] | None:
+        with respx.mock() as router:
+            router.get(batch.XMATCH_TABLES_ENDPOINT).mock(side_effect=lambda request: next(answers))
+            async with httpx.AsyncClient() as client:
+                return await batch.xmatch_table_columns(client, "vizier:I/345/gaia2", backoff_seconds=0.5)
+
+    assert asyncio.run(probe()) == frozenset({"RA_ICRS", "DE_ICRS"})
+    assert delays == [2.0, batch.XMATCH_COLUMNS_MAX_RETRY_AFTER_SECONDS]
+
+
+@pytest.mark.parametrize("status", [403, 404])
+def test_non_transient_column_list_error_is_not_retried_or_cached(status: int) -> None:
+    calls: list[httpx.Request] = []
+
+    async def probe() -> None:
+        with respx.mock() as router:
+            router.get(batch.XMATCH_TABLES_ENDPOINT).mock(
+                side_effect=lambda request: calls.append(request) or httpx.Response(status))
+            async with httpx.AsyncClient() as client:
+                await batch.xmatch_table_columns(client, "vizier:I/345/gaia2", backoff_seconds=0.0)
+
+    with pytest.raises(httpx.HTTPStatusError):
+        asyncio.run(probe())
+    assert len(calls) == 1 and batch._XMATCH_COLUMNS == {}
+
+
+def test_column_list_timeout_is_not_retried() -> None:
+    calls: list[httpx.Request] = []
+
+    def stall(request: httpx.Request) -> httpx.Response:
+        calls.append(request)
+        raise httpx.ConnectTimeout("no answer", request=request)
+
+    async def probe() -> None:
+        with respx.mock() as router:
+            router.get(batch.XMATCH_TABLES_ENDPOINT).mock(side_effect=stall)
+            async with httpx.AsyncClient() as client:
+                await batch.xmatch_table_columns(client, "vizier:I/345/gaia2", backoff_seconds=0.0)
+
+    with pytest.raises(httpx.ConnectTimeout):
+        asyncio.run(probe())
+    assert len(calls) == 1 and batch._XMATCH_COLUMNS == {}
 
 
 # ---------------------------------------------------------------------------

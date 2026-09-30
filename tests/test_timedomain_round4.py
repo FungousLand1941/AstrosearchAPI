@@ -798,14 +798,17 @@ async def test_horizons_deadline_bounds_a_slow_service() -> None:
     assert time.perf_counter() - started < 5.0 and info.value.retryable and "deadline" in info.value.message
 
 
-def test_router_name_resolution_deadline_is_502(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_router_name_resolution_deadline_is_503(monkeypatch: pytest.MonkeyPatch) -> None:
+    """A resolver that gives no complete answer within the deadline is an outage (retry later): 503 + Retry-After,
+    as models.resolution_failure_status gives on every route; 502 is reserved for an unusable answer."""
     monkeypatch.setattr(td, "RESOLVER_DEADLINE_S", 0.3)
     # (a request cancelled by the deadline is not recorded as a completed call)
     with respx.mock(assert_all_mocked=True, assert_all_called=False) as router:
         router.route().mock(side_effect=_slow)
         with TestClient(make_app()) as http:
             response = http.get("/api/v1/lightcurves", params={"name": "RR Lyr", "surveys": "gaia"})
-    assert response.status_code == 502 and "deadline" in response.json()["detail"]
+    assert response.status_code == 503 and "deadline" in response.json()["detail"]
+    assert response.headers["retry-after"] == "30"
 
 
 # ---------------------------------------------------------------------------

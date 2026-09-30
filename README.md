@@ -86,7 +86,9 @@ astrosearch alerts poll --broker alerce --limit 20
 ```
 
 `astrosearch --help` lists every command; `astrosearch <command> --help` documents each one.
-Searches are limited to a cone of `API_MAX_RADIUS_ARCSEC` (default 1800" = 30'); `dataset
+Searches are limited to a cone of `API_MAX_RADIUS_ARCSEC` (default 1800" = 30'; `GET
+/api/v1/limits` reports it) and take an object name or coordinates, never both (HTTP 422, CLI
+exit 2; `search` exits 2 for any invalid input and 1 for an upstream failure); `dataset
 --catalogs` must belong to `--profile`, and its `--output` may be any unused path (over REST,
 `output_path` must stay inside `DATASET_STORAGE_PATH`). VizieR-hosted catalogs (`vlass`, `lotss`,
 tables added with `vizier add`) are batch-matched through CDS XMatch by default, and a registered

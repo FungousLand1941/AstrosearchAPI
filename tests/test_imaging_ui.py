@@ -32,6 +32,7 @@ API_CONTRACT: set[tuple[str, str]] = {
     ("POST", "/api/v1/provenance/replay"), ("GET", "/api/v1/citations"),
     ("GET", "/api/v1/alerts"), ("POST", "/api/v1/alerts/poll"), ("GET", "/api/v1/alerts/{id}"),
     ("POST", "/api/v1/search"), ("GET", "/api/v1/search/stream"),
+    ("GET", "/api/v1/limits"),
 }
 # Hosts the page may load code from (task: CDN libs only from jsdelivr/cdnjs, plus Aladin Lite from CDS).
 ALLOWED_SCRIPT_HOSTS = {"cdn.jsdelivr.net", "cdnjs.cloudflare.com"}
@@ -309,6 +310,49 @@ def test_ui_service_limits_match_the_services() -> None:
     assert re.search(r"const SED_MAX_RADIUS_ARCSEC = (\d+);", APP_JS).group(1) == f"{sed.MAX_RADIUS_ARCSEC:g}"
     assert re.search(r"const LIGHTCURVE_MAX_RADIUS_ARCSEC = (\d+);", APP_JS).group(1) == \
         f"{timedomain.MAX_LIGHTCURVE_RADIUS_ARCSEC:g}"
+
+
+def test_ui_search_radius_bound_is_the_servers(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Finding: the radius field allowed 3600" (and said so) while the server's limit is
+    API_MAX_RADIUS_ARCSEC (default 1800"): the UI's fallback bound and the field's max are the
+    default limit, and the public GET /api/v1/limits reports the configured one."""
+    import api
+    from models import Settings
+
+    default = Settings().max_radius_arcsec
+    assert re.search(r"const DEFAULT_MAX_RADIUS_ARCSEC = (\d+);", APP_JS).group(1) == f"{default:g}"
+    field = next(attrs for tag, attrs in parsed() if tag == "input" and attrs.get("id") == "radius")
+    assert field["max"] == f"{default:g}"
+    assert "3600" not in re.search(r"function parseSearchInput.*?\n}", APP_JS, re.DOTALL).group(0)
+    monkeypatch.setenv("API_KEYS", "secret-key")  # public: the UI reads it before a key is entered
+    with TestClient(api.app) as client:
+        monkeypatch.setattr(client.app.state, "settings", Settings(API_MAX_RADIUS_ARCSEC=900.0), raising=False)
+        limits = client.get("/api/v1/limits")
+        assert limits.status_code == 200, limits.text
+        assert limits.json() == {"max_radius_arcsec": 900.0, "max_search_radius_arcsec": 3600.0,
+                                 "default_radius_arcsec": 3.0}
+        assert client.get("/api/v1/catalogs").status_code == 401  # the rest stays behind the key
+
+
+@pytest.mark.skipif(NODE is None, reason="node is not installed")
+def test_ui_radius_check_follows_the_server_limit(tmp_path: Path) -> None:
+    out = run_node(tmp_path, r"""
+dom.installDom('http://ui.test/');
+const attempt = (radius) => { try { return m.parseSearchInput('M 87', radius).radius; } catch (err) { return err.message; } };
+out.before = [attempt(1800), attempt(1801)];
+globalThis.fetch = async (url) => (new URL(String(url)).pathname === '/api/v1/limits'
+  ? dom.json({ max_radius_arcsec: 600, max_search_radius_arcsec: 3600, default_radius_arcsec: 3 })
+  : dom.json({ detail: 'Not Found' }, 404));
+out.loaded = await m.loadLimits();
+out.after = [attempt(600), attempt(601)];
+globalThis.fetch = async () => dom.json({ detail: 'Not Found' }, 404);
+m.state.maxRadiusArcsec = m.DEFAULT_MAX_RADIUS_ARCSEC;
+out.missing = await m.loadLimits();
+""")
+    assert out["before"] == [1800, "Radius must be greater than 0 and at most 1800 arcsec."]
+    assert out["loaded"] == 600
+    assert out["after"] == [600, "Radius must be greater than 0 and at most 600 arcsec."]
+    assert out["missing"] == 1800  # no endpoint: the default limit stays
 
 
 # ---------------------------------------------------------------------------

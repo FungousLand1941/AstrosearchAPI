@@ -390,7 +390,7 @@ def test_live_gaia_dr2_keeps_source_id():
 # ---------------------------------------------------------------------------
 
 
-def _timed(targets, catalogs, radius, *, registry=None) -> tuple[BatchResult, float]:
+def _timed_run(targets, catalogs, radius, *, registry=None) -> tuple[BatchResult, float]:
     started = time.monotonic()
     result = asyncio.run(BatchCrossmatcher(registry=registry).run(targets, catalogs, radius_arcsec=radius))
     return result, time.monotonic() - started
@@ -398,7 +398,7 @@ def _timed(targets, catalogs, radius, *, registry=None) -> tuple[BatchResult, fl
 
 def test_live_vlass_batch_uses_xmatch_and_answers_quickly():
     targets = [{"id": "M87", "ra": 187.7059308, "dec": 12.3911233}, {"id": "3C 273", "ra": 187.2779154, "dec": 2.0523883}]
-    result, elapsed = _timed(targets, ["vlass"], 5.0)
+    result, elapsed = _timed_run(targets, ["vlass"], 5.0)
     down = unavailable(result)
     if down:
         pytest.skip("archive unavailable: " + "; ".join(down))
@@ -412,7 +412,7 @@ def test_live_vlass_batch_uses_xmatch_and_answers_quickly():
 def test_live_lotss_batch_finishes_within_the_fast_fallback_bound():
     """LoTSS-DR3 is not in the XMatch service: TAPVizieR upload, with the small-batch fast fallback to cones."""
     targets = [{"id": "M87", "ra": 187.7059308, "dec": 12.3911233}]
-    result, elapsed = _timed(targets, ["lotss"], 5.0)
+    result, elapsed = _timed_run(targets, ["lotss"], 5.0)
     run = result.runs["lotss"]
     assert elapsed < 240.0, elapsed  # 2 x BATCH_FAST_FALLBACK_SECONDS + the cone search, never 2 x 300 s
     non_network = [e for e in run.errors if not network_text(e)]
@@ -433,7 +433,7 @@ def test_live_registered_vizier_table_batch_uses_xmatch():
     registry = CatalogRegistry()
     vizier.attach_definition(registry, data["name"], data["entry"])
     targets = [{"id": "M87", "ra": 187.7059308, "dec": 12.3911233}, {"id": "3C 273", "ra": 187.2779154, "dec": 2.0523883}]
-    result, elapsed = _timed(targets, [data["name"]], 5.0, registry=registry)
+    result, elapsed = _timed_run(targets, [data["name"]], 5.0, registry=registry)
     down = unavailable(result)
     if down:
         pytest.skip("archive unavailable: " + "; ".join(down))

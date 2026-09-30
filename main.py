@@ -27,6 +27,7 @@ if __name__ == "__main__":
 
 import argparse
 import asyncio
+import contextlib
 import functools
 import json
 import os
@@ -248,6 +249,40 @@ def search_query(fields: Mapping[str, Any], spec: Mapping[str, Any] | None = Non
     })
 
 
+NAME_AND_COORDINATES = "Give either an object name or ra/dec, not both."
+
+
+def check_search_target(name: Any, ra: Any, dec: Any) -> None:
+    """ValueError (HTTP 422 / CLI exit 2) unless a search names exactly one target: an object
+    name, or ra and dec. The one rule of every search entry point (``POST /api/v1/search`` and
+    its batch items, saved queries, ``/search/stream``, manifests, the ``search``, ``stream`` and
+    ``manifest`` commands): a name together with coordinates is refused rather than one of them
+    being dropped silently, so no result is ever labelled with a name it was not computed for."""
+    has_name = name is not None and str(name) != ""
+    if has_name and (ra is not None or dec is not None):
+        raise ValueError(NAME_AND_COORDINATES)
+    if not has_name and (ra is None or dec is None):
+        raise ValueError("Either name or both ra and dec are required")
+
+
+def check_catalogs_in_profile(registry: CatalogRegistry | None, catalogs: list[str] | None, profile: str | None) -> None:
+    """ValueError when ``catalogs`` names a catalog outside ``profile``.
+
+    Catalogs are intersected with the profile, so such a catalog would silently not be queried
+    and the search would 'succeed' with nothing from it. ``POST /api/v1/search`` refuses this
+    through ``crossmatch.QueryValidator``; the basic crossmatch path (``/search/stream``, the
+    ``search`` and ``stream`` commands) checks it here, with the same message."""
+    if not catalogs or not profile or registry is None:
+        return
+    enabled = registry.enabled_catalogs()
+    outside = [name for name in catalogs if name in enabled and enabled[name].profiles
+               and profile not in enabled[name].profiles]
+    if outside:
+        raise ValueError(
+            f"Catalog(s) {', '.join(outside)} are not in profile '{profile}' and would not be queried: catalogs are "
+            "intersected with the profile. Omit the profile (or use one that includes them) to query these catalogs.")
+
+
 async def api_search(service: Any, fields: Mapping[str, Any], resolver: Any = None) -> UnifiedRecord:
     """A search exactly as ``POST /api/v1/search`` runs it (without its response cache), shared
     with provenance's ``run_api_search``: ``fields`` are the api.SearchRequest fields (all
@@ -258,6 +293,7 @@ async def api_search(service: Any, fields: Mapping[str, Any], resolver: Any = No
     itself (its catalogue row is the target's identity). A requested epoch moves the position
     there with the requested (else the resolver's) proper motion.
     """
+    check_search_target(fields.get("name"), fields.get("ra"), fields.get("dec"))
     check_search_radius(fields.get("radius_arcsec"))
     spec: dict[str, Any] | None = None
     resolved_info: dict[str, Any] | None = None
@@ -321,6 +357,7 @@ async def crossmatch(
     check_search_radius(radius_arcsec, settings=active_settings)
     async with httpx.AsyncClient(timeout=active_settings.request_timeout_seconds, follow_redirects=True) as client:
         service = build_service(settings=active_settings, client=client)
+        check_catalogs_in_profile(service.registry, catalogs, profile)
         return await service.crossmatch(ra, dec, radius_arcsec=radius_arcsec, epoch=epoch, profile=profile,
                                         pm_ra_masyr=pm_ra_masyr, pm_dec_masyr=pm_dec_masyr, parallax_mas=parallax_mas,
                                         catalogs=catalogs)
@@ -350,9 +387,10 @@ async def search_object(
     active_settings = settings or Settings()
     check_search_radius(radius_arcsec, settings=active_settings)
     async with httpx.AsyncClient(timeout=active_settings.request_timeout_seconds, follow_redirects=True) as client:
+        service = build_service(settings=active_settings, client=client)
+        check_catalogs_in_profile(service.registry, catalogs, profile)  # before the resolver is asked
         active_resolver = resolver or SesameResolver(client, endpoint=active_settings.resolver_endpoint)
         resolved = await active_resolver.resolve(name)
-        service = build_service(settings=active_settings, client=client)
         return await crossmatch_resolved(service, resolved, radius_arcsec=radius_arcsec, profile=profile,
                                          catalogs=catalogs, epoch=epoch, pm_ra_masyr=pm_ra_masyr,
                                          pm_dec_masyr=pm_dec_masyr, parallax_mas=parallax_mas)
@@ -402,6 +440,23 @@ def catalog_definitions(*, settings: Settings | None = None) -> dict[str, Any]:
 # ---------------------------------------------------------------------------
 # Built-In Offline Verification Engine
 # ---------------------------------------------------------------------------
+
+
+@contextlib.contextmanager
+def _quiet_request_logs() -> Any:
+    """Keep the API's request logs (structlog JSON lines, httpx 'HTTP Request' lines) out of the
+    ``verify`` report while its TestClient checks run: the report stays one line per check."""
+    import logging
+
+    import structlog.testing
+
+    previous = logging.root.manager.disable
+    logging.disable(logging.INFO)
+    try:
+        with structlog.testing.capture_logs():
+            yield
+    finally:
+        logging.disable(previous)
 
 
 def run_verification() -> bool:
@@ -591,7 +646,7 @@ def run_verification() -> bool:
 
         from api import app
 
-        with TestClient(app) as client:
+        with _quiet_request_logs(), TestClient(app) as client:
             # Health
             res = client.get("/api/v1/health")
             assert res.status_code == 200
@@ -685,10 +740,32 @@ def _catalog_list(value: str | None) -> list[str] | None:
     return names
 
 
+def _search_input_error(exc: BaseException) -> bool:
+    """True when a failed ``search`` is the user's input (exit 2): invalid arguments, a radius
+    above API_MAX_RADIUS_ARCSEC, a catalog outside the profile, an empty or unknown name. A
+    resolver outage or an unusable resolver answer is not (exit 1), as over HTTP (503/502)."""
+    from models import ObjectResolutionError, resolution_failure_status
+
+    if isinstance(exc, ObjectResolutionError):
+        return resolution_failure_status(exc) in (404, 422)
+    return isinstance(exc, ValueError | InvalidCoordinateError)
+
+
 def _cmd_search(args: argparse.Namespace) -> int:
-    if not args.name and (args.ra is None or args.dec is None):
-        print("Error: Specify either --name or both --ra and --dec.", file=sys.stderr)
-        return 1
+    """Exit status: 0 success (an empty sky included), 1 upstream failure (a resolver outage, or
+    every queried catalog failed), 2 invalid input or an unknown name -- as ``stream``."""
+    try:
+        check_search_target(args.name or None, args.ra, args.dec)
+        # POST /api/v1/search's bounds: a typo must not search another part of the sky
+        # (validate_target would wrap --ra 400 to 40 degrees).
+        if args.ra is not None and not 0.0 <= args.ra < 360.0:
+            raise ValueError(f"--ra must be in [0, 360) degrees, got {args.ra:g}")
+        if args.dec is not None and not -90.0 <= args.dec <= 90.0:
+            raise ValueError(f"--dec must be in [-90, 90] degrees, got {args.dec:g}")
+        check_search_radius(args.radius)
+    except ValueError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 2
 
     async def run_search() -> UnifiedRecord:
         catalogs = _catalog_list(args.catalogs)
@@ -708,7 +785,7 @@ def _cmd_search(args: argparse.Namespace) -> int:
         # An unresolvable name or an invalid profile/coordinate: a one-line
         # error, not a traceback (and not a 'catalogs failed' message).
         print(f"Error: {exc}", file=sys.stderr)
-        return 1
+        return 2 if _search_input_error(exc) else 1
 
     outage = every_catalog_failed(res)
     if args.format == "json":

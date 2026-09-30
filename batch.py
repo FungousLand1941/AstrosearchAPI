@@ -1287,27 +1287,66 @@ _XMATCH_COLUMNS: dict[str, tuple[float, frozenset[str] | None]] = {}
 XMATCH_COLUMNS_TTL_SECONDS = 86400.0
 
 
-async def xmatch_table_columns(client: httpx.AsyncClient, vizier_table: str, *,
-                               timeout: float = 30.0) -> frozenset[str] | None:
+XMATCH_COLUMNS_ATTEMPTS = 3
+XMATCH_COLUMNS_MAX_RETRY_AFTER_SECONDS = 10.0
+
+
+async def xmatch_table_columns(client: httpx.AsyncClient, vizier_table: str, *, timeout: float = 30.0,
+                               attempts: int = XMATCH_COLUMNS_ATTEMPTS,
+                               backoff_seconds: float = 1.0) -> frozenset[str] | None:
     """The columns CDS XMatch serves for ``vizier_table`` ('vizier:J/ApJ/914/42/table5'), or None when it does not
     serve the table (HTTP 400: 'Table ... not in the service', seen live for LoTSS-DR3, J/A+A/707/A198). XMatch
     indexes some tables with its own column set (2MASS: errHalfMaj/errHalfMin/errPosAng and MeasureJD, where
-    TAPVizieR has errMaj/errMin/errPA and JD). Cached per process; network errors propagate (httpx.HTTPError)."""
+    TAPVizieR has errMaj/errMin/errPA and JD).
+
+    Only a verdict (the HTTP 400 answer or a parsed column list) is cached per process. Transient failures --
+    HTTP 408/429/5xx, a body that is not JSON (an HTML maintenance page), connection resets and refusals -- are retried up
+    to ``attempts`` times with exponential backoff from ``backoff_seconds`` (Retry-After honoured up to
+    :data:`XMATCH_COLUMNS_MAX_RETRY_AFTER_SECONDS`); a timeout is not retried (the probe must not cost
+    several ``timeout`` s). When they persist, or on any other HTTP error, the last error propagates
+    (httpx.HTTPError) and nothing is cached."""
     now = time.monotonic()
     cached = _XMATCH_COLUMNS.get(vizier_table)
     if cached is not None and now - cached[0] < XMATCH_COLUMNS_TTL_SECONDS:
         return cached[1]
-    response = await client.get(XMATCH_TABLES_ENDPOINT, params={"action": "getColList", "tabName": vizier_table,
-                                                                "RESPONSEFORMAT": "json"}, timeout=timeout)
-    if response.status_code == 400:
-        columns: frozenset[str] | None = None
-    else:
-        response.raise_for_status()
+    params = {"action": "getColList", "tabName": vizier_table, "RESPONSEFORMAT": "json"}
+    attempts = max(1, int(attempts))
+    for attempt in range(attempts):
+        last = attempt + 1 >= attempts
+        delay = backoff_seconds * 2**attempt
         try:
-            meta = response.json().get("metadata") or []
-        except (ValueError, AttributeError) as exc:
-            raise httpx.DecodingError(f"XMatch column list of {vizier_table} is not JSON: {exc}") from exc
-        columns = frozenset(str(c.get("name")) for c in meta if isinstance(c, Mapping) and c.get("name"))
+            response = await client.get(XMATCH_TABLES_ENDPOINT, params=params, timeout=timeout)
+        except _RETRY_EXCEPTIONS as exc:
+            if last or isinstance(exc, httpx.TimeoutException):
+                raise
+        else:
+            status = response.status_code
+            if status == 400:
+                columns: frozenset[str] | None = None
+                break
+            if status in _RETRY_STATUS or status >= 500:
+                if last:
+                    response.raise_for_status()
+                retry_after = response.headers.get("retry-after")
+                try:
+                    if retry_after:
+                        delay = min(max(float(retry_after), 0.0), XMATCH_COLUMNS_MAX_RETRY_AFTER_SECONDS)
+                except ValueError:
+                    pass
+            else:
+                response.raise_for_status()
+                try:
+                    meta = response.json().get("metadata") or []
+                    if not isinstance(meta, list):
+                        raise TypeError(f"'metadata' is a {type(meta).__name__}, not a list")
+                except (ValueError, TypeError, AttributeError) as exc:
+                    if last:
+                        raise httpx.DecodingError(f"XMatch column list of {vizier_table} is not JSON: {exc}",
+                                                  request=response.request) from exc
+                else:
+                    columns = frozenset(str(c.get("name")) for c in meta if isinstance(c, Mapping) and c.get("name"))
+                    break
+        await asyncio.sleep(max(0.0, delay))
     _XMATCH_COLUMNS[vizier_table] = (now, columns)
     return columns
 
@@ -2090,21 +2129,27 @@ class BatchCrossmatcher:
         return BatchResult(batch, [name for name, _ in plan], radius, runs, matches, dict(failures),
                            time.perf_counter() - started, nearest_only, association, groups)
 
-    async def _registry_view_problem(self, client: httpx.AsyncClient, name: str) -> str | None:
-        """Why CDS XMatch cannot serve the registry catalog ``name`` through its view, or None when it can: the
-        table must be in the service and offer every column the registry entry reads."""
+    async def _registry_view_problem(self, client: httpx.AsyncClient, name: str) -> tuple[str | None, str | None]:
+        """``(problem, warning)`` for the registry catalog ``name``'s CDS XMatch view. ``problem`` says why XMatch
+        cannot serve it (the table must be in the service and offer every column the registry entry reads), None
+        when it can or when that is unknown. The column list is only a metadata probe: when it cannot be read
+        (a persistent 5xx/429, a non-JSON answer, a network error -- see :func:`xmatch_table_columns`) the join is
+        tried anyway and ``warning`` says so once for the catalog, instead of failing every target."""
         view = self.xmatch_view(name)
         assert view is not None
         try:
-            served = await xmatch_table_columns(client, view.vizier_table)
+            served = await xmatch_table_columns(client, view.vizier_table, backoff_seconds=self.retry_backoff_seconds)
         except httpx.HTTPError as exc:
-            return None if isinstance(exc, httpx.TransportError) else f"its table list could not be read ({exc})"
+            reason = f"{exc.__class__.__name__}: {exc}".rstrip(": ")
+            return None, (f"{name}: the CDS XMatch column list of {view.vizier_table} could not be read ({reason}); "
+                          "the xmatch join was tried without checking the table's columns.")
         if served is None:
-            return f"CDS XMatch does not serve {view.vizier_table}"
+            return f"CDS XMatch does not serve {view.vizier_table}", None
         missing = [c for c in view.columns if c not in served]
         if missing:
-            return f"CDS XMatch serves {view.vizier_table} without the column(s) {', '.join(missing)} the registry reads"
-        return None
+            return (f"CDS XMatch serves {view.vizier_table} without the column(s) {', '.join(missing)} the registry "
+                    "reads"), None
+        return None, None
 
     async def _run_catalog(
         self, client: httpx.AsyncClient, name: str, strategy: str, batch: Sequence[BatchTarget], radius: float,
@@ -2112,9 +2157,9 @@ class BatchCrossmatcher:
     ) -> tuple[CatalogRun, dict[int, QueryResult], dict[int, str]]:
         started = time.perf_counter()
         deadline = time.monotonic() + self.catalog_budget_seconds
-        switched: str | None = None
+        note: str | None = None  # a warning about the strategy check
         if strategy == "xmatch" and is_registry_view(name, self.registry):
-            problem = await self._registry_view_problem(client, name)
+            problem, note = await self._registry_view_problem(client, name)
             if problem is not None:
                 catalog = self.registry.get(name)
                 if explicit:
@@ -2126,7 +2171,7 @@ class BatchCrossmatcher:
                     run.elapsed_s = time.perf_counter() - started
                     return run, {}, {i: message for i in range(len(batch))}
                 strategy = "upload" if catalog.provider == "tap" and catalog.endpoint in UPLOAD_SERVICES else "cone"
-                switched = f"{name}: {problem}; matched with the {strategy} strategy instead."
+                note = f"{name}: {problem}; matched with the {strategy} strategy instead."
         if strategy == "xmatch":
             catalog, view = xmatch_catalog_definition(name, self.registry)
             endpoint: str | None = XMATCH_ENDPOINT
@@ -2135,8 +2180,8 @@ class BatchCrossmatcher:
             endpoint = UPLOAD_SERVICES[str(catalog.endpoint)].upload_endpoint if strategy == "upload" else catalog.endpoint
         run = CatalogRun(name, strategy, endpoint, targets=len(batch), citation=catalog.citation,
                          acknowledgement=catalog.acknowledgement)
-        if switched:
-            run.warnings.append(switched)
+        if note:
+            run.warnings.append(note)
 
         def count() -> None:
             run.requests += 1

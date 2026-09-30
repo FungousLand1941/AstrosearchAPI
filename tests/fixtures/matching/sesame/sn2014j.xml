@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>SN 2014J</name>
+  <!-- Q8567254 #1 -->
+  <Resolver name="Sca=Simbad (CfA, via client/server)"><!--delay: 1303ms [3] -->
+    <oid>8538443</oid>
+    <otype>SN*</otype>
+    <jpos>09:55:42.12 +69:40:25.8</jpos>
+    <jradeg>148.9255</jradeg>
+    <jdedeg>69.67386</jdedeg>
+    <refPos>2015ApJS..220....9F</refPos>
+    <z><v>0.00068</v><q>D</q><r>2020MNRAS.492.3553V</r></z>
+    <spType>SNIa-norm</spType><spNum>0.00501200.0000.0110001000000000</spNum>
+    <oname>SN 2014J</oname>
+    <nrefs>452</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ****Total of 1 crashes -->
+<!-- Configuration tested: /run/sesame.conf -->

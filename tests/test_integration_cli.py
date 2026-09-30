@@ -193,8 +193,54 @@ def test_search_json_output_is_pure_json(isolated: Path, capsys: pytest.CaptureF
         assert run(["search", "--ra", str(RA), "--dec", str(DEC), "--radius", "10", "--catalogs", "simbad"]) == 0
     out = capsys.readouterr().out
     assert "--- Crossmatch Summary ---" in out and "simbad:3C 273" in out
-    assert run(["search", "--ra", "10"]) == 1
-    assert run(["search", "--ra", "10", "--dec", "10", "--catalogs", ","]) == 1
+    # Invalid input exits 2 (as stream, dataset, batch); 1 is kept for upstream failures.
+    assert run(["search", "--ra", "10"]) == 2
+    assert run(["search", "--ra", "10", "--dec", "10", "--catalogs", ","]) == 2
+
+
+def _no_upstream() -> respx.MockRouter:
+    router = respx.mock(assert_all_called=False, assert_all_mocked=True)
+    router.route().mock(side_effect=AssertionError("no upstream request expected"))
+    return router
+
+
+@pytest.mark.parametrize("argv", [
+    ["--ra", "400", "--dec", "2"],  # was searched at RA 40 without a warning
+    ["--ra", "-5", "--dec", "2"],  # was searched at RA 355
+    ["--ra", "10", "--dec", "95"],
+    ["--ra", "1", "--dec", "2", "--radius", "1801"],  # API_MAX_RADIUS_ARCSEC: exited 1
+    ["--ra", "150.1", "--dec", "2.2", "--profile", "radio", "--catalogs", "gaia_dr3"],  # exited 0, 0 catalogs
+    ["--name", "3C 273", "--ra", "1", "--dec", "2"],  # the coordinates were dropped silently
+])
+def test_search_invalid_input_exits_2_before_any_request(isolated: Path, capsys: pytest.CaptureFixture[str],
+                                                         argv: list[str]) -> None:
+    with _no_upstream():
+        assert run(["search", *argv]) == 2
+    err = capsys.readouterr().err
+    assert err.startswith("Error: ") and "Traceback" not in err
+
+
+def test_stream_rejects_catalogs_outside_the_profile(isolated: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    """Finding: `stream --profile radio --catalogs gaia_dr3` streamed an empty, successful result."""
+    with _no_upstream():
+        assert run(["stream", "--ra", "150.1", "--dec", "2.2", "--profile", "radio", "--catalogs", "gaia_dr3"]) == 2
+        assert run(["stream", "--ra", "1", "--dec", "2", "--radius", "1801"]) == 2
+    assert "not in profile 'radio'" in capsys.readouterr().out
+
+
+def test_lightcurve_refuses_a_name_with_coordinates(isolated: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    with _no_upstream():
+        assert run(["lightcurve", "--name", "RR Lyr", "--ra", "1", "--dec", "2"]) == 2
+    assert "not both" in capsys.readouterr().err
+
+
+def test_verify_report_is_not_interleaved_with_request_logs(capsys: pytest.CaptureFixture[str]) -> None:
+    """Finding: request logs (structlog JSON, httpx 'HTTP Request') split check [11] from its PASSED."""
+    assert main.run_verification()
+    lines = [line for line in capsys.readouterr().out.splitlines() if line.strip()]
+    assert all(line.startswith(("=", "[", "AstroSearch", "Verification Results")) for line in lines), lines
+    check = next(line for line in lines if "FastAPI REST endpoints" in line)
+    assert check.endswith("PASSED"), check
 
 
 def test_dataset_command(isolated: Path, capsys: pytest.CaptureFixture[str]) -> None:

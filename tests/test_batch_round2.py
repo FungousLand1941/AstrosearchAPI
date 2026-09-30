@@ -716,13 +716,27 @@ def test_cli_write_failure_after_the_run_is_exit_2(tmp_path, capsys, monkeypatch
 
 
 def test_client_disconnect_cancels_the_batch():
-    calls = {"before": 0, "after": 0}
+    """The client disconnects once the first cone is in flight: no further cone may start, the in-flight
+    cones are cancelled (not left running in the background) and the route answers 499 promptly.
+
+    Synchronised on events, not on wall-clock sleeps: the time is measured from the disconnect, so a
+    loaded machine that is slow to set the batch up (building an HTTP client, parsing the body) cannot
+    make it fail, while an uncancelled batch still would (each cone takes CONE_SECONDS)."""
+    CONE_SECONDS = 5.0  # uncancelled: the in-flight wave alone takes 5 s, the whole batch 40 / 8 x 5 s = 25 s
+    calls = {"before": 0, "after": 0, "active": 0, "finished": 0}
     gone = asyncio.Event()
+    cone_started = asyncio.Event()
 
     async def slow_cone(request: httpx.Request) -> httpx.Response:
         calls["after" if gone.is_set() else "before"] += 1
-        await asyncio.sleep(1.0)
-        return httpx.Response(200, json=simbad_json([]))
+        calls["active"] += 1
+        cone_started.set()
+        try:
+            await asyncio.sleep(CONE_SECONDS)
+            calls["finished"] += 1
+            return httpx.Response(200, json=simbad_json([]))
+        finally:
+            calls["active"] -= 1
 
     body = json.dumps({"targets": [{"id": f"t{i}", "ra": 10.0 + i, "dec": 5.0} for i in range(40)],
                        "catalogs": ["simbad"], "strategies": {"simbad": "cone"}}).encode()
@@ -731,13 +745,16 @@ def test_client_disconnect_cancels_the_batch():
         app = make_app()
         sent: list[dict[str, Any]] = []
         body_sent = False
+        timeline: dict[str, float] = {}
 
         async def receive() -> dict[str, Any]:
             nonlocal body_sent
             if not body_sent:
                 body_sent = True
                 return {"type": "http.request", "body": body, "more_body": False}
-            await asyncio.sleep(0.5)
+            await cone_started.wait()  # the batch is querying the archive
+            await asyncio.sleep(0.05)  # let the first wave of cones start
+            timeline["disconnect"] = time.perf_counter()
             gone.set()
             return {"type": "http.disconnect"}
 
@@ -748,17 +765,23 @@ def test_client_disconnect_cancels_the_batch():
                  "scheme": "http", "path": "/api/v1/batch/crossmatch", "raw_path": b"/api/v1/batch/crossmatch",
                  "query_string": b"", "root_path": "", "server": ("testserver", 80), "client": ("127.0.0.1", 1),
                  "headers": [(b"content-type", b"application/json"), (b"content-length", str(len(body)).encode())]}
-        started = time.perf_counter()
         with respx.mock(assert_all_called=False) as router:
             router.route().mock(side_effect=slow_cone)
-            await app(scope, receive, send)
-            elapsed = time.perf_counter() - started
-            await asyncio.sleep(0.5)  # nothing may still be running in the background
+            # (a generous cap only so that a broken watcher fails the test instead of hanging it)
+            await asyncio.wait_for(app(scope, receive, send), timeout=120.0)
+            elapsed = time.perf_counter() - timeline["disconnect"]
+            # Nothing may still be running in the background: cancelled cones have left slow_cone.
+            for _ in range(20):
+                if calls["active"] == 0:
+                    break
+                await asyncio.sleep(0.05)
         return sent, elapsed
 
     sent, elapsed = asyncio.run(scenario())
+    assert gone.is_set(), "the route never read the disconnect"
     assert calls["before"] > 0 and calls["after"] == 0, calls
-    assert elapsed < 3.5, elapsed  # uncancelled: 40 cones x 1 s / 8 concurrent = 5 s
+    assert calls["active"] == 0 and calls["finished"] == 0, calls  # in-flight cones cancelled, none completed
+    assert elapsed < CONE_SECONDS / 2, elapsed  # cancelled at once; uncancelled >= CONE_SECONDS after it
     assert sent and sent[0]["status"] == batch.CLIENT_CLOSED_REQUEST
 
 

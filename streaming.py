@@ -316,13 +316,13 @@ async def search_stream(
     forwarded as the text typed, so their rounding (``187.278``: 1" per axis; ``150.500000``:
     exact to 1 microdegree) sets the target uncertainty (see ``CrossmatchService.prepare``)."""
     from crossmatch import parse_target_coordinates, resolved_search_target, validate_search_inputs
-    from main import check_search_radius
+    from main import NAME_AND_COORDINATES, check_catalogs_in_profile, check_search_radius
     from models import InvalidCoordinateError, ObjectResolutionError, resolution_failure_status
 
     if name is None and (ra is None or dec is None):
         raise HTTPException(status_code=422, detail="Provide ra and dec, or name.")
     if name is not None and (ra is not None or dec is not None):
-        raise HTTPException(status_code=422, detail="Give either an object name or ra/dec, not both.")
+        raise HTTPException(status_code=422, detail=NAME_AND_COORDINATES)
     try:
         # API_MAX_RADIUS_ARCSEC, as POST /api/v1/search (the Query bound is the absolute 3600").
         check_search_radius(radius_arcsec, settings=getattr(request.app.state, "settings", None))
@@ -331,6 +331,8 @@ async def search_stream(
     service, own_client = _service_for(request)
     try:
         catalog_list = parse_catalogs(catalogs)
+        # A catalogue outside the profile would silently not be queried: 422, as POST /api/v1/search.
+        check_catalogs_in_profile(getattr(service, "registry", None), catalog_list, profile)
         params: dict[str, Any] = {
             "radius_arcsec": radius_arcsec, "profile": profile, "catalogs": catalog_list, "epoch": epoch,
             "pm_ra_masyr": pm_ra_masyr, "pm_dec_masyr": pm_dec_masyr, "parallax_mas": parallax_mas,
@@ -429,6 +431,10 @@ async def _run_stream(args: argparse.Namespace, service: Any = None) -> int:
         client = httpx.AsyncClient(timeout=60.0, follow_redirects=True)
         service = build_service(client=client)
     try:
+        from main import check_catalogs_in_profile
+
+        # Before the first event: a catalogue outside the profile is invalid input (status 2).
+        check_catalogs_in_profile(getattr(service, "registry", None), parse_catalogs(args.catalogs), args.profile)
         events = service.crossmatch_stream(
             args.ra, args.dec, name=args.name, radius_arcsec=args.radius, profile=args.profile,
             catalogs=parse_catalogs(args.catalogs), target_uncertainty_arcsec=args.target_sigma,

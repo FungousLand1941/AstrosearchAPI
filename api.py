@@ -13,7 +13,7 @@ The lifespan builds one HTTP client, one catalog registry (embedded + ``vizier a
 catalogs), one provider map (answering from the local sky cache for mirrored catalogs) and
 one CrossmatchService, and publishes them on ``app.state`` for every router.
 Authentication, quotas and the request-body limit apply to every route except
-``/api/v1/health``, the VO availability endpoint and the UI files.
+``/api/v1/health``, ``/api/v1/limits``, the VO availability endpoint and the UI files.
 """
 
 from __future__ import annotations
@@ -35,7 +35,7 @@ from contextlib import asynccontextmanager
 from dataclasses import asdict
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, ClassVar, Literal
 
 import httpx
 import structlog
@@ -60,8 +60,17 @@ import vizier
 import vo_server
 from crossmatch import AdvancedQuery, CrossmatchService, QueryValidator
 from datasets import DatasetEngine, MetadataStore, enqueue_dataset, process_dataset_async, submit_to_redis
-from main import api_search, build_providers, build_registry, build_service, check_search_radius, skycache_store
+from main import (
+    api_search,
+    build_providers,
+    build_registry,
+    build_service,
+    check_search_radius,
+    check_search_target,
+    skycache_store,
+)
 from models import (
+    MAX_SEARCH_RADIUS_ARCSEC,
     CatalogQueryError,
     CatalogUnavailableError,
     InvalidCoordinateError,
@@ -375,9 +384,10 @@ def get_metadata() -> MetadataStore:
 # Middleware: Request Metrics, Quotas, Body Limits and Strict JSON
 # ---------------------------------------------------------------------------
 
-# Routes that need neither authentication nor quota: liveness probes. (The UI files are
+# Routes that need neither authentication nor quota: liveness probes and the search limits
+# the UI reads before a key is entered. (The UI files are
 # served ahead of this middleware by imaging.UIStaticMiddleware.)
-PUBLIC_PATHS = frozenset({"/api/v1/health", "/vo/tap/availability"})
+PUBLIC_PATHS = frozenset({"/api/v1/health", "/api/v1/limits", "/vo/tap/availability"})
 
 
 def owns_body_limit(path: str) -> bool:
@@ -557,7 +567,24 @@ class SearchRequest(provenance.SearchFields):
     manifests): provenance.SearchFields, so every route validates the same bounds -- ra in
     [0, 360), dec in [-90, 90], radius_arcsec at most MAX_SEARCH_RADIUS_ARCSEC (3600),
     proper-motion components together. The configured API_MAX_RADIUS_ARCSEC (default 1800)
-    is checked when the search runs or is saved (:func:`main.check_search_radius`, a 422)."""
+    is checked when the body is validated and again when the search runs or is saved
+    (:func:`main.check_search_radius`, a 422). A target is a ``name`` or ``ra`` and ``dec``,
+    never both (:func:`main.check_search_target`, a 422)."""
+
+
+class BatchSearchItem(SearchRequest):
+    """One item of POST /api/v1/search/batch: a :class:`SearchRequest` whose configured
+    API_MAX_RADIUS_ARCSEC is checked when the item runs, so an item above it fails on its own
+    (``status_code`` 422) instead of rejecting the whole batch. Schema bounds (the static
+    3600" ceiling, ra/dec ranges) still make the whole request a 422."""
+
+    enforce_configured_radius_limit: ClassVar[bool] = False
+
+
+class LimitsResponse(BaseModel):
+    max_radius_arcsec: float = Field(..., description="API_MAX_RADIUS_ARCSEC: largest search cone")
+    max_search_radius_arcsec: float = Field(..., description="Static schema ceiling (3600\", one degree)")
+    default_radius_arcsec: float = Field(..., description="DEFAULT_RADIUS_ARCSEC")
 
 
 class DatasetRequest(BaseModel):
@@ -594,6 +621,15 @@ async def health_check():
     return HealthResponse(status="healthy", timestamp=datetime.now(UTC).isoformat())
 
 
+@app.get("/api/v1/limits", response_model=LimitsResponse)
+async def limits_endpoint():
+    """The server's search limits (no authentication, no quota): the web UI takes its radius
+    bound from here, so it follows API_MAX_RADIUS_ARCSEC instead of a hard-coded value."""
+    settings = getattr(app.state, "settings", None) or Settings()
+    return LimitsResponse(max_radius_arcsec=settings.max_radius_arcsec, max_search_radius_arcsec=MAX_SEARCH_RADIUS_ARCSEC,
+                          default_radius_arcsec=settings.default_radius_arcsec)
+
+
 @app.get("/api/v1/catalogs", response_model=dict[str, Any])
 async def list_catalogs():
     """All configured catalogs (embedded + registered VizieR tables)."""
@@ -615,8 +651,7 @@ async def get_catalog(catalog_name: str):
 
 
 async def _search(req: SearchRequest) -> dict[str, Any]:
-    if not req.name and (req.ra is None or req.dec is None):
-        raise ValueError("Either name or both ra and dec are required")
+    check_search_target(req.name, req.ra, req.dec)  # a name or ra/dec, never both (422)
     check_search_radius(req.radius_arcsec, settings=getattr(app.state, "settings", None))
 
     cache_key = cache.make_key("search", req.model_dump())
@@ -692,9 +727,10 @@ async def search_endpoint(req: SearchRequest):
 
 
 @app.post("/api/v1/search/batch", response_model=list[dict[str, Any]])
-async def batch_search(requests: list[SearchRequest], max_concurrent: int = Query(10, ge=1, le=100)):
+async def batch_search(requests: list[BatchSearchItem], max_concurrent: int = Query(10, ge=1, le=100)):
     """Execute multiple search queries concurrently with error isolation (each failed item
-    carries the status /api/v1/search would answer)."""
+    carries the status /api/v1/search would answer, including 422 for a radius above
+    API_MAX_RADIUS_ARCSEC or a name given with ra/dec)."""
     if len(requests) > int(os.getenv("API_MAX_BATCH_SIZE", "100")):
         raise HTTPException(status_code=413, detail="Batch contains too many searches")
     logger.info("batch_search_request", count=len(requests), endpoint="/api/v1/search/batch")
@@ -849,9 +885,8 @@ async def list_queries_endpoint():
 @app.post("/api/v1/queries", response_model=dict[str, Any], status_code=201)
 async def save_query_endpoint(req: SavedQueryRequest):
     """Save a search query for reuse."""
-    if not req.query.name and (req.query.ra is None or req.query.dec is None):
-        raise HTTPException(status_code=422, detail="Query requires name or ra and dec")
     try:
+        check_search_target(req.query.name, req.query.ra, req.query.dec)
         # A saved query must run later: the same radius limit as POST /api/v1/search.
         check_search_radius(req.query.radius_arcsec, settings=getattr(app.state, "settings", None))
     except ValueError as exc:

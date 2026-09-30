@@ -469,15 +469,24 @@ Interactive documentation: `/api/docs` (Swagger) and `/api/redoc`; the OpenAPI d
 body too large, 422 invalid input (including NaN/Infinity numbers in JSON bodies), 429 quota
 exceeded, 502 upstream failure, 503 unavailable dependency.
 
+**Name or coordinates, never both.** A search target is an object `name` or `ra` and `dec`.
+Giving both is a 422 ("Give either an object name or ra/dec, not both.") before any request is
+made, rather than one of them being dropped silently: `POST /api/v1/search`, each
+`/api/v1/search/batch` item, saved queries, `/api/v1/search/stream`, provenance manifests,
+`/api/v1/sed` and `/api/v1/lightcurves` (one check, `main.check_search_target`, where the route
+uses the search code). The `search`, `stream`, `manifest`, `sed` and `lightcurve` commands exit 2
+for `--name` together with `--ra`/`--dec`.
+
 ### Core (`api.py`)
 
 | Method | Path | Description |
 |---|---|---|
 | GET | `/api/v1/health` | Liveness (no authentication, no quota). |
+| GET | `/api/v1/limits` | Search limits `{max_radius_arcsec (API_MAX_RADIUS_ARCSEC), max_search_radius_arcsec (3600), default_radius_arcsec}` (no authentication, no quota); the web UI takes its radius bound from here. |
 | GET | `/api/v1/catalogs` | Every catalog definition (embedded + registered). |
 | GET | `/api/v1/catalogs/{catalog_name}` | One definition; 404 if unknown. |
-| POST | `/api/v1/search` | Crossmatch by `ra`/`dec` or `name` (`SearchRequest`: radius_arcsec, profile, catalogs, epoch, pm_ra_masyr, pm_dec_masyr, parallax_mas, min_confidence, filters). 404 unresolvable name, 422 invalid input (including a radius above `API_MAX_RADIUS_ARCSEC`), 502 search failure or an unusable resolver answer, 503 with `Retry-After: 30` when the name resolver (CDS Sesame) is unreachable or answers 5xx/429 (the name may be valid: retry later). |
-| POST | `/api/v1/search/batch` | Up to `API_MAX_BATCH_SIZE` searches concurrently (`max_concurrent`); errors per item (an item above `API_MAX_RADIUS_ARCSEC` fails with `status_code` 422; a radius above the static 3600" schema ceiling makes the whole request a 422). |
+| POST | `/api/v1/search` | Crossmatch by `ra`/`dec` or `name`, not both (`SearchRequest`: radius_arcsec, profile, catalogs, epoch, pm_ra_masyr, pm_dec_masyr, parallax_mas, min_confidence, filters). 404 unresolvable name, 422 invalid input (including a radius above `API_MAX_RADIUS_ARCSEC`, a catalog outside `profile`, a name together with ra/dec), 502 search failure or an unusable resolver answer, 503 with `Retry-After: 30` when the name resolver (CDS Sesame) is unreachable or answers 5xx/429 (the name may be valid: retry later). |
+| POST | `/api/v1/search/batch` | Up to `API_MAX_BATCH_SIZE` searches concurrently (`max_concurrent`); errors per item, each with the status `POST /api/v1/search` would answer (an item above `API_MAX_RADIUS_ARCSEC` or naming both a name and ra/dec fails with `status_code` 422 while the other items run; a schema error, e.g. a radius above the static 3600" ceiling or ra outside [0, 360), makes the whole request a 422). |
 | POST | `/api/v1/datasets/create` | Submit a dataset job: 202 with `Location`; 413 over `API_MAX_TARGETS`; 422 invalid (a catalog outside `profile`, a radius above `API_MAX_RADIUS_ARCSEC`, an `output_path` outside `DATASET_STORAGE_PATH`, already used or with the wrong extension). |
 | GET | `/api/v1/datasets` | Datasets with their status. |
 | GET | `/api/v1/datasets/{dataset_name}` | Metadata and status (`queued`, `running`, `completed`, `failed`). |
@@ -493,7 +502,7 @@ exceeded, 502 upstream failure, 503 unavailable dependency.
 
 | Method | Path | Description |
 |---|---|---|
-| GET | `/api/v1/search/stream` | SSE crossmatch. Query: ra, dec (as typed) or name, radius_arcsec (<= `API_MAX_RADIUS_ARCSEC`, else 422), profile, catalogs (comma-separated), epoch, pm_ra_masyr, pm_dec_masyr, parallax_mas, target_uncertainty_arcsec, target_pm_error_masyr, completeness, target_class. A name is resolved before the stream opens: an unreachable resolver is a 503 with `Retry-After: 30`, an unusable answer a 502, an unknown name a 404 (as `POST /api/v1/search`). |
+| GET | `/api/v1/search/stream` | SSE crossmatch. Query: ra, dec (as typed) or name (not both: 422), radius_arcsec (<= `API_MAX_RADIUS_ARCSEC`, else 422), profile, catalogs (comma-separated; a catalog outside `profile` is a 422, as for `POST /api/v1/search`), epoch, pm_ra_masyr, pm_dec_masyr, parallax_mas, target_uncertainty_arcsec, target_pm_error_masyr, completeness, target_class. A name is resolved before the stream opens: an unreachable resolver is a 503 with `Retry-After: 30`, an unusable answer a 502, an unknown name a 404 (as `POST /api/v1/search`). |
 
 ### Batch
 
@@ -524,13 +533,13 @@ exceeded, 502 upstream failure, 503 unavailable dependency.
 
 | Method | Path | Description |
 |---|---|---|
-| GET / POST | `/api/v1/sed` | `ra, dec, radius_arcsec` or `name`: points, classification, redshift, members, filters, notes. 422 invalid/unknown name, 502 upstream. |
+| GET / POST | `/api/v1/sed` | `ra, dec, radius_arcsec` or `name` (not both): points, classification, redshift, members, filters, notes. 404 unknown name, 422 invalid input (a blank name, a name together with ra/dec), 502 upstream failure or an unusable resolver answer, 503 with `Retry-After: 30` when the name resolver is unreachable. |
 
 ### Time domain
 
 | Method | Path | Description |
 |---|---|---|
-| GET | `/api/v1/lightcurves` | `ra, dec` or `name`; `epoch`, `pm_ra_masyr`, `pm_dec_masyr`, `parallax_mas`, `radius_arcsec` (<= 60), `surveys` (ztf, neowise, gaia, tess), `include_flagged`, `period`, `min_period_days`, `max_period_days`, `oversampling`, `ztf_collection`, `tess_max_sectors`, `tess_bin_minutes`, `neowise_binned`. 404 unknown name, 502 all surveys failed. |
+| GET | `/api/v1/lightcurves` | `ra, dec` or `name` (not both: 422, so a result is never labelled with a name it was not computed for); `epoch`, `pm_ra_masyr`, `pm_dec_masyr`, `parallax_mas`, `radius_arcsec` (<= 60), `surveys` (ztf, neowise, gaia, tess), `include_flagged`, `period`, `min_period_days`, `max_period_days`, `oversampling`, `ztf_collection`, `tess_max_sectors`, `tess_bin_minutes`, `neowise_binned`. 404 unknown name, 502 all surveys failed. |
 | GET | `/api/v1/solar-system` | `ra, dec, radius_arcsec, epoch_mjd, observer, max_position_error_arcsec`: SkyBoT objects. |
 
 ### Imaging
@@ -553,7 +562,7 @@ exceeded, 502 upstream failure, 503 unavailable dependency.
 | Method | Path | Description |
 |---|---|---|
 | POST | `/api/v1/provenance/manifest` | `{record}` or the `SearchRequest` fields, plus `include_rows`, `include_record`, `live_release_lookup`: `{manifest, record}`. |
-| POST | `/api/v1/provenance/replay` | `{manifest, position_tolerance_arcsec, sigma_fraction, numeric_rtol, confidence_tolerance, use_cache}`: identical, content_hash_equal, diff, explanation, new_manifest. |
+| POST | `/api/v1/provenance/replay` | `{manifest, position_tolerance_arcsec, sigma_fraction, numeric_rtol, confidence_tolerance, use_cache}`: identical, content_hash_equal, diff, explanation, new_manifest. 422 for an invalid manifest or one whose search radius (or advanced query radius) is above `API_MAX_RADIUS_ARCSEC` or the 3600" ceiling, checked before any archive is queried; 502 every archive unreachable. |
 | GET | `/api/v1/citations` | `catalogs=a,b`, `format=json|bibtex` (`X-Unknown-Citations`). |
 | GET | `/api/v1/citations/sources` | Every citable catalog/service. |
 
@@ -586,6 +595,8 @@ VO errors are DALI error VOTables; request bodies over `vo_server.MAX_REQUEST_BY
 ### Web UI
 
 `GET /`, `/index.html`, `/app.js`, `/styles.css` serve the UI (not part of the OpenAPI document).
+The UI reads `GET /api/v1/limits` at start-up, so its radius check and field bound follow
+`API_MAX_RADIUS_ARCSEC` (1800" until the answer arrives; the server checks every request anyway).
 
 ---
 
@@ -596,24 +607,24 @@ VO errors are DALI error VOTables; request bodies over `vo_server.MAX_REQUEST_BY
 | Command | Purpose | Exit statuses |
 |---|---|---|
 | `serve [--host --port --reload]` | Run the API and UI with uvicorn. | |
-| `search (--name N | --ra --dec) [--radius --profile --catalogs --epoch --pm-ra --pm-dec --parallax --format json|summary]` | One crossmatch; `--format json` prints only JSON. | 1 error |
+| `search (--name N | --ra --dec) [--radius --profile --catalogs --epoch --pm-ra --pm-dec --parallax --format json|summary]` | One crossmatch; `--format json` prints only JSON. `--ra` must be in [0, 360) and `--dec` in [-90, 90] (never wrapped). | 1 upstream failure (name resolver unreachable, every queried catalog failed), 2 invalid input (missing or out-of-range coordinates, a name together with `--ra`/`--dec`, a radius above `API_MAX_RADIUS_ARCSEC`, a catalog outside `--profile`) or an unknown name |
 | `dataset --name --profile --targets FILE [--radius --catalogs --min-confidence --count-threshold --format --output]` | Build a dataset from a JSON target list. `--catalogs` must belong to `--profile`; `--output` may be any unused path (the REST `output_path` must stay inside `DATASET_STORAGE_PATH`). | 1 missing file, 2 invalid input (a catalog outside the profile, a radius above `API_MAX_RADIUS_ARCSEC`, a used output path) |
 | `catalogs [--name]` | List or show catalog definitions (embedded + registered). | 1 unknown |
 | `benchmark [--rows --format]` | Export throughput benchmark. | |
 | `verify` | Offline self-test (14 checks, including every router and CLI, and that no AstroSearch module is shadowed by another package or script: each shadowed one is named with the file it resolves to). | 1 failed check |
-| `stream (--ra --dec | --name) [--radius --catalogs --epoch --pm-ra --pm-dec --parallax --target-sigma --format jsonl|sse --sources --record]` | Stream a crossmatch. | 1 error event, 2 invalid input |
+| `stream (--ra --dec | --name) [--radius --catalogs --epoch --pm-ra --pm-dec --parallax --target-sigma --format jsonl|sse --sources --record]` | Stream a crossmatch. | 1 error event, 2 invalid input (including a radius above `API_MAX_RADIUS_ARCSEC` and a catalog outside `--profile`) |
 | `xmatch-calibrate [--fields --seed --radius --threshold --completeness ...]` | Monte-Carlo calibration of the association. | |
 | `batch --targets FILE [--catalogs --radius --out --format --strategy --nearest --no-data]` | Batch crossmatch. | 1 upstream, 2 invalid input |
 | `mirror --catalog (--ra --dec --radius-deg | --order --pixels) [--store --tile-rows --timeout --json]` | Mirror a region into the sky cache. | 1 tiles failed, 2 no region |
 | `skycache status|cone|delete [--store ...]` | Inspect, query or delete the sky cache. | cone: 1 not covered, 2 unknown catalog |
 | `vizier search|describe|add|list` | VizieR discovery and registration. | 1 error, 2 usage |
-| `sed (--name | --ra --dec) [--radius --plot FILE --json]` | SED, classification, redshift. | 1 error, 2 missing arguments |
+| `sed (--name | --ra --dec) [--radius --plot FILE --json]` | SED, classification, redshift. | 1 error, 2 missing arguments or `--name` with `--ra`/`--dec` |
 | `lightcurve (--ra --dec | --name) [--radius --surveys --epoch --pm-ra --pm-dec --parallax --include-flagged --no-period --format]` | Light curves and periods. | 1 upstream, 2 invalid input |
 | `solar-system --ra --dec [--epoch-mjd --radius --observer --format]` | Known bodies in a cone. | 1 upstream, 2 invalid input |
 | `cutout (--ra --dec | --name) --out FILE [--fov --survey --format --width --height --projection --stretch --cmap --no-cache --allow-degraded --list-surveys]` | Save a cutout. | 1 upstream, 2 bad arguments, 3 degraded |
 | `ask "question" [--run --limit --verify-adql --max-retries --json]` | Compile a natural-language query with Claude. | 1 upstream, 2 bad input, 3 no credentials |
 | `explain (--name | --ra --dec) [--facts-only --no-crossmatch --json ...]` | Cited object explanation. | as `ask` |
-| `manifest (--record FILE | --ra --dec | --name) [--radius --catalogs --no-live-release -o FILE]` | Provenance manifest. | 3 archives unreachable |
+| `manifest (--record FILE | --ra --dec | --name) [--radius --catalogs --no-live-release -o FILE]` | Provenance manifest. | 2 invalid input (including a radius above `API_MAX_RADIUS_ARCSEC`), 3 archives unreachable |
 | `replay MANIFEST [--out --tolerance --json]` | Re-run and diff a manifest. | 1 differs, 2 bad input, 3 unreachable, 4 same hash with catalogs failed in both runs |
 | `cite [--catalogs --from FILE --bibtex FILE --verify --json]` | Acknowledgements and BibTeX. | 2 nothing known |
 | `vo cone|adql|tables` | Run VO queries locally. | |
@@ -630,7 +641,7 @@ VO errors are DALI error VOTables; request bodies over `vo_server.MAX_REQUEST_BY
   client address.
 - **Scope.** Authentication, the per-identity quota (`API_RATE_LIMIT_PER_MINUTE`, Redis-backed
   when `REDIS_URL` is set) and the body limit apply to every route of every router except
-  `/api/v1/health`, `/vo/tap/availability` and the UI files (`UI_PUBLIC=false` puts the UI behind
+  `/api/v1/health`, `/api/v1/limits`, `/vo/tap/availability` and the UI files (`UI_PUBLIC=false` puts the UI behind
   authentication too).
 - **Body limits.** `MAX_REQUEST_BYTES` (1 MB) for every body, except the batch routes (streamed
   up to `BATCH_MAX_UPLOAD_BYTES`, 50 MB) and the VO services (their own limit and DALI error
@@ -663,7 +674,7 @@ missing here.
 | Variable | Default | Meaning |
 |---|---|---|
 | `DEFAULT_RADIUS_ARCSEC` | 3.0 | Default search radius. |
-| `API_MAX_RADIUS_ARCSEC` | 1800 (30') | Largest cone radius a search may send to every archive: `POST /api/v1/search`, every `/api/v1/search/batch` item, `/api/v1/search/stream`, saved queries (`/api/v1/queries`), `/api/v1/datasets/create`, provenance manifests and replays, AI queries, and the `search`, `stream`, `dataset` and `manifest` CLI commands (one shared check, `models.check_search_radius`; 422 / CLI exit 2). The request models keep a static hard ceiling of 3600" (`MAX_SEARCH_RADIUS_ARCSEC`), so a larger radius is a schema error, e.g. for the whole `/api/v1/search/batch` request. The batch crossmatch engine (`/api/v1/batch/crossmatch`) has its own limit of 180" per pair. `DEFAULT_RADIUS_ARCSEC` must not exceed it. |
+| `API_MAX_RADIUS_ARCSEC` | 1800 (30') | Largest cone radius a search may send to every archive: `POST /api/v1/search`, every `/api/v1/search/batch` item, `/api/v1/search/stream`, saved queries (`/api/v1/queries`), `/api/v1/datasets/create`, provenance manifests and replays (a replayed manifest's radius is also held to the 3600" ceiling), AI queries, and the `search`, `stream`, `dataset`, `manifest` and `replay` CLI commands (one shared check, `models.check_search_radius`; 422 / CLI exit 2). `GET /api/v1/limits` reports it (the web UI's radius bound). The request models keep a static hard ceiling of 3600" (`MAX_SEARCH_RADIUS_ARCSEC`), so a larger radius is a schema error, e.g. for the whole `/api/v1/search/batch` request. The batch crossmatch engine (`/api/v1/batch/crossmatch`) has its own limit of 180" per pair. `DEFAULT_RADIUS_ARCSEC` must not exceed it. |
 | `REQUEST_TIMEOUT_SECONDS` | 30 | HTTP timeout of archive requests. Setting it explicitly also caps every catalog's own timeout (Gaia, 2MASS and AllWISE use 90 s, NED/SDSS/VLASS 60 s): `.env.example` leaves it commented out for that reason. |
 | `CATALOG_TIMEOUT_CAP_SECONDS` | none | Upper bound of every catalog's own timeout. |
 | `MAX_RESPONSE_BYTES` | 10000000 | Largest archive response read. |

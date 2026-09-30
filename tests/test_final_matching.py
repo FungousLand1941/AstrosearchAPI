@@ -16,9 +16,25 @@ from __future__ import annotations
 from typing import Any
 
 import pytest
-from test_matching_fixtures import recorded_resolver, replay_search
+from test_matching_fixtures import RECORDED_SEARCHES, recorded_resolver, replay_search
 
 import crossmatch
+
+# Searches recorded for this module (record them with
+# ``python -c "import test_final_matching, test_matching_fixtures, asyncio;
+# asyncio.run(test_matching_fixtures.record_search('<key>'))"`` from tests/).
+FINAL_SEARCHES: dict[str, dict[str, Any]] = {
+    # M 80's catalogued centre: NED lists the Galactic globular cluster twice ('MESSIER 080' and
+    # '2CXO J161702.4-225834', both '*Cl', 0.01" apart) -- one cluster, never a pair of
+    # extragalactic compact clusters.
+    "m80_centre": {"ra": 244.26004167, "dec": -22.97608333, "radius_arcsec": 20.0,
+                   "catalogs": ["simbad", "ned", "gaia_dr3"]},
+    "m80_centre_ned": {"ra": 244.26004167, "dec": -22.97608333, "radius_arcsec": 20.0, "catalogs": ["ned"]},
+    # A supernova with a redshift and no position error: a point source, not a galaxy's centre.
+    "named_sn2014j": {"name": "SN 2014J", "sesame": "sn2014j", "radius_arcsec": 5.0, "catalogs": ["simbad", "ned"]},
+}
+for _key, _spec in FINAL_SEARCHES.items():
+    RECORDED_SEARCHES.setdefault(_key, _spec)
 
 
 def target_group(record: dict[str, Any]) -> dict[str, Any]:
@@ -109,9 +125,11 @@ async def test_ned_record_of_a_named_galaxy_is_in_the_target_group(key: str, ned
     assert member(record, "ned", ned_name)["target_probability"] > 0.99
     identity = {(r["catalog"], r["source_id"]) for r in association(record)["identity_rows"]}
     assert ("ned", ned_name) in identity
-    # The galaxy's centre carries the 1" scatter of catalogued galaxy centres, not a mas-level error.
-    assert record["target"].get("target_sigma_arcsec", crossmatch.GALAXY_CENTRE_SIGMA_ARCSEC) >= 1.0 or \
-        record["provenance"].get("target_uncertainty_source") == "galaxy_centre"
+    # The galaxy's centre carries the 1" scatter of catalogued galaxy centres, not a mas-level error
+    # (the resolver gives no error for these centres).
+    info = association(record)
+    assert info["target_sigma_source"] == "galaxy_centre", info["target_sigma_source"]
+    assert info["target_sigma_arcsec"] >= crossmatch.GALAXY_CENTRE_SIGMA_ARCSEC, info["target_sigma_arcsec"]
 
 
 async def test_ned_rr_lyr_is_the_target_not_its_wise_entry() -> None:
@@ -169,3 +187,66 @@ def test_galaxy_centre_without_an_error_gets_the_galaxy_centre_sigma() -> None:
     assert crossmatch.resolved_search_target(star)["target_uncertainty_source"] == "resolver"
     quasar = recorded_resolver("named_3c273").obj
     assert crossmatch.resolved_search_target(quasar)["target_uncertainty_source"] == "resolver"
+
+
+@pytest.mark.parametrize("key", ["m80_centre", "m80_centre_ned"])
+async def test_galactic_globular_cluster_listed_twice_is_not_an_extragalactic_compact_cluster(key: str) -> None:
+    # NED lists M 80 as 'MESSIER 080' and '2CXO J161702.4-225834' (both '*Cl', 0.01" apart): one
+    # cluster listed twice, not two neighbouring extragalactic clusters. Before the fix both rows
+    # were marked compact: with NED alone M 80 was 'extragalactic' with no identity row, and with
+    # SIMBAD and Gaia NED's 'MESSIER 080' fell out of the target group.
+    record = (await replay_search(key))["record"]
+    info = association(record)
+    assert info["target_class"]["class"] == "extended", info["target_class"]
+    identity = {(r["catalog"], r["source_id"]) for r in info["identity_rows"]}
+    assert ("ned", "MESSIER 080") in identity, identity
+    group = target_group(record)
+    assert member(record, "ned", "MESSIER 080") in group["members"]
+    assert member(record, "ned", "MESSIER 080")["target_probability"] > 0.5
+    if key == "m80_centre":
+        assert ("simbad", "M 80") in identity
+
+
+def test_compact_cluster_marking_ignores_one_cluster_listed_twice() -> None:
+    from models import CatalogSource
+
+    def cluster(source_id: str, ra: float, dec: float) -> crossmatch.Match:
+        source = CatalogSource(catalog="ned", source_id=source_id, ra=ra, dec=dec, positional_error_arcsec=0.2,
+                               data={"prefphytype": "*Cl"}, metadata={}, provenance={})
+        return crossmatch.Match(catalog="ned", source=source, separation_arcsec=0.0, confidence=1.0)
+
+    ra, dec = 244.26004167, -22.97608333
+    duplicate = [cluster("MESSIER 080", ra, dec), cluster("2CXO J161702.4-225834", ra, dec + 0.01 / 3600)]
+    assert crossmatch.mark_compact_clusters(duplicate) == set()
+    # Two distinct clusters 1.9" apart (M87's globular clusters) are still extragalactic.
+    pair = [cluster("[JPB2009] a", ra, dec), cluster("2MASX b", ra, dec + 1.9 / 3600)]
+    assert crossmatch.mark_compact_clusters(pair) == {0, 1}
+    # Two numbers of one catalogue within their errors are two clusters (M82's '[LHL2013] 611'
+    # and '[LHL2013] 613', 1.1" apart with 0.5" quality-C errors).
+    lhl = [cluster("[LHL2013] 611", ra, dec), cluster("[LHL2013] 613", ra, dec + 1.1 / 3600)]
+    for m in lhl:
+        m.source.positional_error_arcsec = 0.5
+    assert crossmatch.mark_compact_clusters(lhl) == {0, 1}
+
+
+def test_supernova_with_a_redshift_keeps_the_resolver_precision() -> None:
+    # SN 2014J (SIMBAD 'SN*', z = 0.00068, no position error) is a point source in M82, not a
+    # galaxy's centre: it keeps the default precision instead of the 1" galaxy-centre sigma.
+    sn = recorded_resolver("named_sn2014j").obj
+    assert (sn.resolver_metadata or {}).get("extragalactic")
+    spec = crossmatch.resolved_search_target(sn)
+    assert spec["target_uncertainty_source"] != "galaxy_centre", spec["target_uncertainty_source"]
+    assert spec["target_uncertainty_arcsec"] is None or spec["target_uncertainty_arcsec"] < 1.0
+    for otype in ("SN*", "No*", "HXB", "ULX", "X", "grb", "QSO", "BLL", "ClG"):
+        assert not crossmatch.is_galaxy_centre_type(otype), otype
+    for otype in ("G", "GiP", "Sy2", "AGN", "SBG", "!G"):
+        assert crossmatch.is_galaxy_centre_type(otype), otype
+
+
+async def test_supernova_search_by_name_uses_the_default_target_sigma() -> None:
+    record = (await replay_search("named_sn2014j"))["record"]
+    info = association(record)
+    assert info["target_sigma_source"] != "galaxy_centre" and info["target_sigma_arcsec"] < 1.0, \
+        (info["target_sigma_source"], info["target_sigma_arcsec"])
+    group = target_group(record)
+    assert member(record, "simbad", "SN 2014J") in group["members"]

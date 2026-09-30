@@ -334,14 +334,16 @@ async def test_query_validator_errors_are_fed_back(sesame_replay) -> None:
         # cylinder without distance bound (on parallax catalogs, so only QueryValidator objects)
         reply(tool_use("submit_query", submission(search_mode="cylinder", catalogs=["gaia_dr3", "simbad"]))),
         reply(tool_use("submit_query", submission(radius_arcsec=7200.0))),  # beyond the 30' cap
-        reply(tool_use("submit_query", submission(catalogs=["first"], profiles=["xray"]))),  # empty selection
+        # empty selection: a named catalog outside the profile is an input error, not a silent drop
+        reply(tool_use("submit_query", submission(catalogs=["first"], profiles=["xray"]))),
     )
     with pytest.raises(ai.AIQueryCompilationError) as info:
         await compile_with(fake)
     history = info.value.history
     assert any("cylinder searches require a distance bound" in e for e in history[0])
     assert any("radius_arcsec must be in (0, 1800]" in e for e in history[1])
-    assert any("No listed catalog carries any listed profile" in e for e in history[2])
+    assert any("AdvancedQuery validation failed" in e and "first are not in profile 'xray'" in e
+               and "intersected with the profile" in e for e in history[2])
 
 
 def coords(text: str, frame: str = "icrs", equinox: str | None = None) -> dict[str, Any]:
@@ -1252,13 +1254,16 @@ def test_router_explain_with_claude(app_factory, crossmatch_record_3c273: Unifie
     assert data["unverified_numbers"] == ["2.4"]
 
 
-def test_router_unresolvable_name_is_422(app_factory, sesame_replay) -> None:
+def test_router_unresolvable_name_is_404(app_factory, sesame_replay) -> None:
+    """models.resolution_failure_status: a well-formed Sesame answer that knows no such object is a 404."""
     with TestClient(app_factory()) as client:
         response = client.post("/api/v1/ai/explain", json={"name": BOGUS_NAME, "facts_only": True})
-    assert response.status_code == 422 and "No coordinates found" in response.json()["detail"]
+    assert response.status_code == 404 and "No coordinates found" in response.json()["detail"]
+    assert "retry-after" not in response.headers
 
 
-def test_router_sesame_outage_is_502(app_factory) -> None:
+def test_router_sesame_outage_is_503_with_retry_after(app_factory) -> None:
+    """models.resolution_failure_status: Sesame answering HTTP 5xx is an outage -- 503 + Retry-After."""
     with respx.mock(assert_all_mocked=True) as router:
         router.get(url__startswith="https://cds.unistra.fr/cgi-bin/nph-sesame").mock(return_value=httpx.Response(503))
         with TestClient(app_factory()) as client:
@@ -1266,8 +1271,10 @@ def test_router_sesame_outage_is_502(app_factory) -> None:
                                                               "include_crossmatch": False})
         with TestClient(app_factory(FakeAnthropic(reply(tool_use("submit_query", submission()))))) as client:
             query = client.post("/api/v1/ai/query", json={"text": "quasars near M87 with radio emission"})
-    assert explain.status_code == 502 and "Sesame request failed" in explain.json()["detail"]
-    assert query.status_code == 502 and "Sesame" in query.json()["detail"]
+    assert explain.status_code == 503 and "Sesame request failed" in explain.json()["detail"]
+    assert explain.headers["retry-after"] == "30"
+    assert query.status_code == 503 and "Sesame" in query.json()["detail"]
+    assert query.headers["retry-after"] == "30"
 
 
 def test_router_blank_sky_is_404_without_calling_claude(app_factory) -> None:

@@ -20,6 +20,7 @@ import respx
 from fastapi.testclient import TestClient
 from fixture_io import FIXTURES
 from helpers import offline_client
+from live_policy import api_ok
 from test_imaging import (
     C3C273,
     _png,
@@ -472,35 +473,43 @@ async def test_cache_entry_with_other_image_bytes_is_a_miss(cache: CutoutCache) 
 
 
 # ---------------------------------------------------------------------------
-# Sesame failures: unknown name 422, upstream trouble 502
+# Sesame failures (models.resolution_failure_status): unknown name 404, resolver outage 503 + Retry-After,
+# unusable answer 502
 # ---------------------------------------------------------------------------
 
 
-@pytest.mark.parametrize("route, status, answer, fragment", [
-    ("/api/v1/cutouts", 503, "Service Unavailable", "request failed"),
-    ("/api/v1/cutouts/stack", 503, "Service Unavailable", "request failed"),
-    ("/api/v1/cutouts", 200, "<html><body>Maintenance <b>tonight</body></html>", "could not be parsed"),
-    ("/api/v1/cutouts/stack", 200, '<?xml version="1.0"?><Sesame><Target><Resolver', "could not be parsed"),
+@pytest.mark.parametrize("route, status, answer, expected, fragment", [
+    # Sesame down (HTTP 5xx): the name may be valid, so 503 + Retry-After.
+    ("/api/v1/cutouts", 503, "Service Unavailable", 503, "request failed"),
+    ("/api/v1/cutouts/stack", 503, "Service Unavailable", 503, "request failed"),
+    # Sesame answered, but not with a usable document: 502.
+    ("/api/v1/cutouts", 200, "<html><body>Maintenance <b>tonight</body></html>", 502, "could not be parsed"),
+    ("/api/v1/cutouts/stack", 200, '<?xml version="1.0"?><Sesame><Target><Resolver', 502, "could not be parsed"),
 ])
-def test_router_sesame_outages_are_502(tmp_path: Path, route: str, status: int, answer: str, fragment: str) -> None:
+def test_router_sesame_outage_is_503_and_unusable_answer_502(tmp_path: Path, route: str, status: int, answer: str,
+                                                             expected: int, fragment: str) -> None:
     client = TestClient(make_app(tmp_path))
     with respx.mock(assert_all_called=False, assert_all_mocked=True) as router:
         router.route(host="testserver").pass_through()
         router.route(host="cds.unistra.fr").respond(status, text=answer, headers={"content-type": "text/html"})
         resp = client.get(route, params={"name": "3C 273"})
-    assert resp.status_code == 502, resp.text
+    assert resp.status_code == expected, resp.text
     assert fragment in resp.json()["detail"]
+    if expected == 503:
+        assert resp.headers["retry-after"] == "30"
+    else:
+        assert "retry-after" not in resp.headers
 
 
 @pytest.mark.parametrize("route", ["/api/v1/cutouts", "/api/v1/cutouts/stack"])
-def test_router_unknown_name_is_422(tmp_path: Path, route: str) -> None:
+def test_router_unknown_name_is_404(tmp_path: Path, route: str) -> None:
     """The recorded Sesame answer for an unknown name is well-formed XML without coordinates."""
     client = TestClient(make_app(tmp_path))
     with respx.mock(assert_all_called=False, assert_all_mocked=True) as router:
         router.route(host="testserver").pass_through()
         router.route(host="cds.unistra.fr").respond(200, text=SESAME_UNKNOWN, headers={"content-type": "text/plain"})
         resp = client.get(route, params={"name": "NoSuchObjectQzx42"})
-    assert resp.status_code == 422 and "No coordinates found" in resp.json()["detail"]
+    assert resp.status_code == 404 and "No coordinates found" in resp.json()["detail"]
 
 
 def test_name_classification_helper() -> None:
@@ -656,12 +665,12 @@ async def test_live_colour_fits_names_the_legacy_band_with_data(tmp_path: Path) 
 
 
 @pytest.mark.live
-def test_live_unknown_name_is_422(tmp_path: Path) -> None:
+def test_live_unknown_name_is_404(tmp_path: Path) -> None:
     client = TestClient(make_app(tmp_path))
     resp = client.get("/api/v1/cutouts/stack", params={"name": "NoSuchObjectQzx42"})
-    if resp.status_code == 502:
-        pytest.skip(resp.text)
-    assert resp.status_code == 422 and "No coordinates found" in resp.json()["detail"]
+    # A resolver outage (503 naming a network error) skips; a 502 (unusable answer) or any other status fails.
+    body = api_ok(resp, 404)
+    assert "No coordinates found" in body["detail"]
 
 
 @pytest.mark.live

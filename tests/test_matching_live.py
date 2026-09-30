@@ -9,9 +9,11 @@ skip only when an archive is unreachable (network error / HTTP 5xx / timeout).
 from __future__ import annotations
 
 import time
+from collections.abc import Iterable, Iterator
 
 import httpx
 import pytest
+from httpx_sse import ServerSentEvent
 from live_policy import NETWORK_ERRORS, skip_on_network_failures
 
 pytestmark = pytest.mark.live
@@ -22,6 +24,48 @@ SPEC_3C273 = ["gaia_dr3", "twomass_psc", "allwise", "panstarrs_dr2", "sdss", "fi
 # Barnard's star: SIMBAD J2000 position and the Gaia DR3 proper motion.
 BARNARD = {"ra": 269.45207696, "dec": 4.69336497, "epoch": 2000.0, "pm_ra_masyr": -801.551, "pm_dec_masyr": 10362.394}
 BULGE = (272.0, -27.0)
+
+
+def parse_sse(lines: Iterable[str]) -> Iterator[ServerSentEvent]:
+    """The events of an SSE stream, interpreted as the WHATWG spec says.
+
+    Comment lines (``: keepalive``, sent by the server after SSE_KEEPALIVE_SECONDS without an event)
+    are ignored, and a blank line dispatches nothing while the data buffer is empty. httpx_sse's
+    decoder instead dispatches an empty 'message' event carrying the last id for the blank line after a
+    comment, so under load a keepalive shows up as a spurious event with a repeated id.
+    """
+    event_type, data, last_id, retry = "", None, "", None
+    for line in lines:
+        if not line:
+            if data is not None:  # the spec's "data buffer is not empty": at least one data field
+                yield ServerSentEvent(event=event_type or "message", data="\n".join(data), id=last_id, retry=retry)
+            event_type, data, retry = "", None, None  # the last event id persists across events
+            continue
+        if line.startswith(":"):
+            continue
+        field, _, value = line.partition(":")
+        value = value.removeprefix(" ")
+        if field == "event":
+            event_type = value
+        elif field == "data":
+            data = [*(data or []), value]
+        elif field == "id" and "\0" not in value:
+            last_id = value
+        elif field == "retry" and value.isdigit():
+            retry = int(value)
+
+
+def sse_events(source) -> Iterator[ServerSentEvent]:
+    """The spec-interpreted events of an ``httpx_sse`` EventSource (see :func:`parse_sse`)."""
+    return parse_sse(source.response.iter_lines())
+
+
+def test_parse_sse_ignores_keepalive_comments() -> None:
+    raw = ["id: 1", "event: start", 'data: {"a": 1}', "", ": keepalive", "", "id: 2", "event: catalog",
+           "data: x", "data: y", "", ": keepalive", "", "id: 3", "event: done", "data: {}", ""]
+    events = list(parse_sse(raw))
+    assert [(e.event, e.id, e.data) for e in events] == [
+        ("start", "1", '{"a": 1}'), ("catalog", "2", "x\ny"), ("done", "3", "{}")]
 
 
 def skip_on_network_catalog_events(catalog_events: list[dict]) -> None:
@@ -122,7 +166,7 @@ def test_live_sse_stream_for_3c273() -> None:
                 "catalogs": ",".join(catalogs)}, timeout=180.0) as source:
             assert source.response.status_code == 200
             events = []
-            for event in source.iter_sse():
+            for event in sse_events(source):
                 arrivals.append((time.perf_counter() - started, event.event))
                 events.append(event)
     kinds = [e.event for e in events]
@@ -150,7 +194,7 @@ def test_live_sse_stream_by_name() -> None:
         if source.response.status_code >= 500:
             pytest.skip(f"upstream error {source.response.status_code}")
         assert source.response.status_code == 200
-        events = list(source.iter_sse())
+        events = list(sse_events(source))
     start = events[0].json()
     assert start["resolved_object"]["canonical_name"].replace(" ", "") == "3C273"
     assert start["target"]["ra"] == pytest.approx(THREE_C_273[0], abs=1e-4)
@@ -256,7 +300,7 @@ def test_live_sse_stream_kruger60a_by_name_finds_its_two_parameter_gaia_row() ->
         if source.response.status_code >= 500:
             pytest.skip(f"upstream error {source.response.status_code}")
         assert source.response.status_code == 200
-        events = list(source.iter_sse())
+        events = list(sse_events(source))
     start, record = events[0].json(), events[-1].json()["record"]
     skip_on_network_failures(record, ["simbad", "gaia_dr3"])
     from providers import SesameResolver
