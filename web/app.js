@@ -1181,17 +1181,37 @@ function renderLightcurves() {
   children.push(window.Chart
     ? h('div', { class: 'chart-box' }, h('canvas', { id: 'lc-canvas', role: 'img', 'aria-label': 'Light curve' }))
     : note('Charting library unavailable; metrics are listed below.', 'unavailable'));
-  const perSeries = data.variability?.per_series || {};
-  const metricRows = Object.entries(perSeries).map(([name, metrics]) => h('tr', {}, h('th', { scope: 'row' }, name),
-    h('td', {}, Object.entries(metrics || {}).filter(([, v]) => typeof v === 'number' || typeof v === 'boolean' || typeof v === 'string')
-      .slice(0, 10).map(([k, v]) => `${k}=${typeof v === 'number' ? fmt(v) : v}`).join(' · '))));
+  const perSeries = Object.entries(data.variability?.per_series || {});
+  const metricRows = perSeries.map(([name, metrics]) => h('tr', {}, h('th', { scope: 'row' }, name),
+    h('td', {}, variabilityBadge(metrics)),
+    h('td', {}, lcMetricSummary(metrics || {}))));
   if (metricRows.length) {
-    children.push(h('details', {}, h('summary', {}, 'Variability metrics'),
+    const variable = perSeries.filter(([, m]) => m?.is_variable === true).map(([name]) => name);
+    const summary = variable.length ? `Variability: variable in ${variable.join(', ')}` : 'Variability: no series flagged variable';
+    children.push(h('details', {}, h('summary', {}, summary),
       h('div', { class: 'table-wrap' }, h('table', { class: 'metrics' }, h('tbody', {}, metricRows)))));
   }
   if (clamp) children.push(clamp);
   setPanel(panel, 'ready', ...children);
   if (window.Chart) renderLightcurveChart();
+}
+
+function variabilityBadge(metrics) {
+  if (metrics?.is_variable === true) return h('span', { class: 'badge warn' }, 'variable');
+  if (metrics?.is_variable === false) return h('span', { class: 'badge ok' }, 'not variable');
+  return h('span', { class: 'badge' }, 'undetermined');
+}
+
+// The metrics that decide variability come first; bookkeeping (means, medians) is left out.
+const LC_KEY_METRICS = [
+  ['n', 'n'], ['time_span_days', 'span (d)'], ['amplitude_5_95', 'amplitude 5-95%'], ['chi2_dof', 'chi2/dof'],
+  ['significance_sigma', 'significance (sigma)'], ['stetson_j', 'Stetson J'], ['von_neumann_eta', 'von Neumann eta'],
+  ['fractional_variability', 'F_var'], ['decision_basis', 'decided by'],
+];
+
+function lcMetricSummary(metrics) {
+  return LC_KEY_METRICS.filter(([key]) => metrics[key] !== undefined && metrics[key] !== null)
+    .map(([key, label]) => `${label}=${typeof metrics[key] === 'number' ? fmt(metrics[key]) : metrics[key]}`).join(' · ');
 }
 
 // Phase in [0, 1) of an epoch for period P and reference epoch t0 (all in days).
@@ -1649,7 +1669,7 @@ function init() {
 export {
   ENDPOINTS, sseEvents, powerOfTen, sexagesimal, searchBodyFromAdvanced, nuFnu,
   ApiError, errorKind, errorMessage, panelError, searchRecord, streamSearch, parseSearchInput,
-  foldPhase, lightcurveEpoch, lightcurveDatasets, serviceRadius, loadCutouts, cutoutStatus, endpointUrl,
+  foldPhase, lightcurveEpoch, lightcurveDatasets, lcMetricSummary, variabilityBadge, serviceRadius, loadCutouts, cutoutStatus, endpointUrl,
   cutoutStackParams, lightcurveParams, targetInfo, fitsButton, knownTarget, onTargetKnown, state,
   SED_MAX_RADIUS_ARCSEC, LIGHTCURVE_MAX_RADIUS_ARCSEC, DEFAULT_MAX_RADIUS_ARCSEC, loadLimits,
 };

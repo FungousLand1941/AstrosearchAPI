@@ -567,6 +567,35 @@ for (const [name, err] of Object.entries(cases)) {
 
 
 @pytest.mark.skipif(NODE is None, reason="node is not installed")
+def test_variability_table_leads_with_the_verdict(tmp_path: Path) -> None:
+    # 3C 273's ZTF g metrics as /api/v1/lightcurves returns them (key order included): the
+    # bookkeeping fields come first, so a table that shows the first N keys hides the verdict.
+    out = run_node(tmp_path, r"""
+dom.installDom('http://ui.test/');
+const ztfG = { n: 581, unit: 'mag', time_span_days: 2648.9, error_floor: 0.004, weighted_mean: 13.21,
+  weighted_mean_error: 7.0e-4, mean: 13.209, median: 13.173, std: 0.1535, mad_std: 0.1914, median_error: 0.0144,
+  chi2: 47813.1, dof: 580, chi2_dof: 82.436, chi2_pvalue: 0.0, significance_sigma: 171.28, amplitude_5_95: 0.5187,
+  von_neumann_eta: 0.0305, stetson_j: 7.83, stetson_n_pairs: 103, fractional_variability: 0.1366,
+  is_variable: true, decision_basis: 'chi2', evidence: ['chi2/dof = 82.4'] };
+const badge = (m) => { const b = m.variabilityBadge(m_); return { text: b.textContent, cls: b.className }; };
+let m_ = ztfG; out.variable = badge(m);
+m_ = { ...ztfG, is_variable: false }; out.quiet = badge(m);
+m_ = { n: 3 }; out.unknown = badge(m);
+out.summary = m.lcMetricSummary(ztfG);
+out.sparse = m.lcMetricSummary({ n: 3, chi2_dof: null });
+""")
+    assert out["variable"] == {"text": "variable", "cls": "badge warn"}
+    assert out["quiet"] == {"text": "not variable", "cls": "badge ok"}
+    assert out["unknown"] == {"text": "undetermined", "cls": "badge"}
+    summary = out["summary"]
+    for shown in ("n=581", "chi2/dof=82.4", "significance (sigma)=171", "amplitude 5-95%=0.519", "Stetson J=7.83", "decided by=chi2"):
+        assert shown in summary, shown
+    for hidden in ("weighted_mean", "median", "mad_std", "error_floor"):
+        assert hidden not in summary, hidden
+    assert out["sparse"] == "n=3"
+
+
+@pytest.mark.skipif(NODE is None, reason="node is not installed")
 def test_cutout_strip_renders_images_states_and_fits_links(tmp_path: Path) -> None:
     out = run_node(tmp_path, r"""
 const body = dom.installDom('http://ui.test/astro/');
