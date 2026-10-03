@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-29T05:45:10 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-29T05:45:10">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-source=I%2F122&amp;-meta=">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+
+<RESOURCE ID="yCat_1122" name="I/122" type="meta">
+  <DESCRIPTION>Bonner Durchmusterung (Argelander 1859-1903)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/i/122">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/i/122">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Argelander F. W. A.">    First author or institution  </INFO>
+  <INFO name="cites" value="1903BD....C......0A">    Article or Data origin sources  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/I/122">    Dataset landing page  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.740937">popularity index</INFO>
+  <INFO name="cpopu" value="197859">number of calls</INFO>
+  <INFO name="-kw.Wavelength" value="optical"/>
+  <INFO name="-kw.Astronomy" value="Positional_Data"/>
+  <INFO name="-kw.Astronomy" value="Stars"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=I/122"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+<INFO name="matches" value="2">matching records</INFO>
+</VOTABLE>

@@ -1,0 +1,43 @@
+{
+  "case": "vega",
+  "catalog": "gaia_dr3",
+  "radius_arcsec": 5.0,
+  "targets": [
+    {
+      "id": "Vega",
+      "ra": 279.23473479,
+      "dec": 38.78368896,
+      "epoch": 2000.0,
+      "pm_ra_masyr": 200.94,
+      "pm_dec_masyr": 286.23
+    },
+    {
+      "id": "Vega+60N",
+      "ra": 279.23473479,
+      "dec": 38.800355626666665
+    }
+  ],
+  "strategy": "xmatch",
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "http://cdsxmatch.u-strasbg.fr/xmatch/api/v1/sync",
+      "request_content_type": "multipart/form-data",
+      "fields": {
+        "request": "xmatch",
+        "distMaxArcsec": "8.598",
+        "RESPONSEFORMAT": "votable",
+        "cat2": "vizier:I/355/gaiadr3",
+        "colRA1": "t_ra",
+        "colDec1": "t_dec",
+        "selection": "all",
+        "MAXREC": "200000",
+        "cols2": "Source,RAdeg,DEdeg,e_RAdeg,e_DEdeg,RADEcor,Plx,e_Plx,pmRA,pmDE,Gmag,BPmag,RPmag,RUWE,Solved",
+        "cat1": "t_idx,t_ra,t_dec\n1,279.23473479,38.800355626666665\n0,279.23514382888357,38.78414314742795\n"
+      },
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/x-votable+xml"
+    }
+  ]
+}

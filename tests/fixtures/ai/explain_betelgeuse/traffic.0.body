@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>Betelgeuse</name>
+  <!-- Q8398865 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 0ms [0] -->
+    <INFO>from cache</INFO>
+    <oid>843879</oid>
+    <otype>s*r</otype>
+    <jpos>05:55:10.30 +07:24:25.4</jpos>
+    <jradeg>88.79293899</jradeg>
+    <jdedeg>7.407064</jdedeg>
+    <refPos>2007A&amp;A...474..653V</refPos>
+    <errRAmas>9.04</errRAmas><errDEmas>5.72</errDEmas>
+    <pm>
+      <v>29.77</v><e>1.22</e><q>A</q><r>2007A&amp;A...474..653V</r>
+      <pa>68</pa>
+      <pmRA>27.54</pmRA><epmRA>0.65</epmRA>
+      <pmDE>11.30</pmDE><epmDE>1.03</epmDE>
+    </pm>
+    <Vel><v>21.91</v><e>0.51</e><q>A</q><r>2005A&amp;A...430..165F</r></Vel>
+    <plx><v>6.55</v><e>0.83</e><q>A</q><r>2007A&amp;A...474..653V</r></plx>
+    <spType>M1-M2Ia-Iab</spType><spNum>0.01026700.0110.0000000000000000</spNum>
+    <oname>* alf Ori</oname>
+    <nrefs>1803</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ====Done (2026-Sep-28,11:03:54z)==== -->

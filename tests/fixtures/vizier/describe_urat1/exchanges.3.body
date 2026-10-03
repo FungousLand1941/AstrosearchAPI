@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-29T05:44:43 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-29T05:44:43">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-source=I%2F329%2Furat1&amp;-meta.all=">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+
+<RESOURCE ID="yCat_1329_1" name="I/329/urat1" type="meta">
+  <INFO name="nrows" value="228276482">Number of rows of the table</INFO>
+  <DESCRIPTION>
+    URAT1 Catalog (Zacharias+ 2015)
+    URAT1 catalog
+  </DESCRIPTION>
+  <PARAM name="-c" datatype="char" arraysize="32*" value="">
+    <DESCRIPTION>Query from a celestial position according to ASU syntax:
+      {RA{+|-}Dec|object_name}[,eq=equinox][,ep=epoch][,rm=[min/]max]
+      (see http://vizier.cds.unistra.fr/doc/asu.html)
+    </DESCRIPTION>
+  </PARAM>
+  <LINK content-role="query" action="votable?-source=I/329/urat1&amp;">
+    Action to Query the current RESOURCE, to be completed by PARAMs and FIELDs contents
+  </LINK>
+
+  <TABLE name="I/329/urat1" nrows="228276482">
+    <COOSYS ID="H" system="ICRS"/>
+    <TIMESYS ID="time_1" refposition="UNKNOWN" timeorigin="0.000000" timescale="UNKNOWN"/>
+    <!-- Definitions of GROUPs and FIELDs -->
+    <FIELD name="URAT1" ucd="meta.id;meta.main" display="1" datatype="char" arraysize="10*"><!-- ucd="ID_MAIN" -->
+      <DESCRIPTION>URAT1 recommended identifier (ZZZ-NNNNNN) (13)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RAICRS" ucd="pos.eq.ra;meta.main" ref="H" display="1" datatype="double" width="11" precision="7" unit="deg"><!-- ucd="POS_EQ_RA_MAIN" -->
+      <DESCRIPTION>Right ascension on ICRS, at "Epoch" (1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DEICRS" ucd="pos.eq.dec;meta.main" ref="H" display="1" datatype="double" width="11" precision="7" unit="deg"><!-- ucd="POS_EQ_DEC_MAIN" -->
+      <DESCRIPTION>Declination on ICRS, at "Epoch" (1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="sigs" ucd="stat.error" display="0" datatype="short" width="3" unit="mas"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Position error per coordinate, from scatter (2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="sigm" ucd="stat.error" display="0" datatype="short" width="3" unit="mas"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Position error per coordinate, from model (2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Ns" ucd="meta.number" display="0" datatype="short" width="2"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>(nst) Total number of sets the star is in (3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Nu" ucd="meta.number" display="0" datatype="short" width="2"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>(nsu) Number of sets used for mean position (3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Epoch" ucd="time.epoch;obs;stat.mean" ref="H" display="1" datatype="double" width="8" precision="3" unit="yr"><!-- ucd="TIME_EPOCH" -->
+      <DESCRIPTION>(epoc) Mean URAT observation epoch (1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="f.mag" ucd="phot.mag;em.opt.R" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_MAG_OPTICAL" -->
+      <DESCRIPTION>?(mmag) mean URAT model fit magnitude (4)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_f.mag" ucd="stat.error" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>?(sigp) URAT photometry error (5)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Nm" ucd="meta.number" display="0" datatype="short" width="2"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>(nsm) Number of sets used for URAT magnitude (3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="r" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>(ref) largest reference star flag (6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Nit" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>(nit) Total number of images (observations)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Niu" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>(niu) Number of images used for mean position</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Ngt" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>(ngt) Total number of 1st order grating observations</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Ngu" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>(ngu) Number of 1st order grating positions used</DESCRIPTION>
+    </FIELD>
+    <FIELD name="pmRA" ucd="pos.pm;pos.eq.ra" ref="H" display="1" datatype="float" width="6" precision="1" unit="mas/yr"><!-- ucd="POS_EQ_PMRA" -->
+      <DESCRIPTION>?(pmr) Proper motion RA*cosDec (from 2MASS) (7)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="pmDE" ucd="pos.pm;pos.eq.dec" ref="H" display="1" datatype="float" width="6" precision="1" unit="mas/yr"><!-- ucd="POS_EQ_PMDEC" -->
+      <DESCRIPTION>?(pmd) Proper motion in Declination (7)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_pm" ucd="stat.error" display="0" datatype="float" width="4" precision="1" unit="mas/yr"><!-- ucd="ERROR" -->
+      <DESCRIPTION>?(pme) Proper motion error per coordinate (8)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="mf2" ucd="meta.code" display="0" datatype="short" width="2"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[1/11] Match flag URAT with 2MASS (9)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="mfa" ucd="meta.code" display="0" datatype="short" width="2"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[1/11] Match flag URAT with APASS (9)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="G" ucd="meta.code" display="0" datatype="char" arraysize="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[-] "-" if there is no match with GSC2.4 (14)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="2Mkey" ucd="meta.id" display="0" datatype="long" width="10"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>?(id2) unique 2MASS star identification number</DESCRIPTION>
+      <VALUES null="-9223372036854775808" />
+    </FIELD>
+    <FIELD name="Jmag" ucd="phot.mag;em.IR.J" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_JHN_J" -->
+      <DESCRIPTION>?(jmag) 2MASS J-band magnitude</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Jmag" ucd="stat.error;phot.mag" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>?(ejmag) Error on Jmag</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="q_Jmag" ucd="meta.code.qual" display="0" datatype="char" arraysize="2"><!-- ucd="CODE_QUALITY" -->
+      <DESCRIPTION>[0,58]? J-band quality-confusion flag (10)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Hmag" ucd="phot.mag;em.IR.H" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_JHN_H" -->
+      <DESCRIPTION>?(hmag) 2MASS H-band magnitude</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Hmag" ucd="stat.error;phot.mag" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>?(ehmag) Error on H-band magnitude (10)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="q_Hmag" ucd="meta.code.qual" display="0" datatype="char" arraysize="2"><!-- ucd="CODE_QUALITY" -->
+      <DESCRIPTION>[0,58]? H-band quality-confusion flag (10)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Kmag" ucd="phot.mag;em.IR.K" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_JHN_K" -->
+      <DESCRIPTION>?(kmag) 2MASS Ks-band magnitude</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Kmag" ucd="stat.error;phot.mag" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>?(ekmag) Error on Ks-band magnitude (10)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="q_Kmag" ucd="meta.code.qual" display="0" datatype="char" arraysize="2"><!-- ucd="CODE_QUALITY" -->
+      <DESCRIPTION>[0,58]? Ks-band quality-confusion flag (10)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Nn" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>(ann) Number of APASS observation nights (12)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="No" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>(ano) Number of APASS observations (12)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Bmag" ucd="phot.mag;em.opt.B" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_MAG_B" -->
+      <DESCRIPTION>?(abm) APASS B-band magnitude (11)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Bmag" ucd="stat.error;phot.mag" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>?(ebm) Error on Bmag</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Vmag" ucd="phot.mag;em.opt.V" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_MAG_V" -->
+      <DESCRIPTION>?(avm) APASS V-band magnitude</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Vmag" ucd="stat.error;phot.mag" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>?(evm) Error on Vmag</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="gmag" ucd="phot.mag;em.opt.B" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_SDSS_G" -->
+      <DESCRIPTION>?(agm) APASS g-band magnitude</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_gmag" ucd="stat.error;phot.mag" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>?(egm) Error on gmag</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="rmag" ucd="phot.mag;em.opt.R" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_SDSS_R" -->
+      <DESCRIPTION>?(arm) APASS r-band magnitude</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_rmag" ucd="stat.error;phot.mag" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>?(erm) Error on rmag</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="imag" ucd="phot.mag;em.opt.I" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_SDSS_I" -->
+      <DESCRIPTION>?(aim) APASS i-band magnitude</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_imag" ucd="stat.error;phot.mag" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>?(eim) Error on imag</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+  </TABLE>
+<INFO name="matches" value="2">matching records</INFO>
+</RESOURCE>
+</VOTABLE>

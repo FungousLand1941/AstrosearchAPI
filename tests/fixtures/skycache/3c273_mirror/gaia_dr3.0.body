@@ -1,0 +1,788 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vosi:capabilities xmlns:tr="http://www.ivoa.net/xml/TAPRegExt/v1.0" 
+		xmlns:vosi="http://www.ivoa.net/xml/VOSICapabilities/v1.0" 
+		xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.1" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" 
+		xsi:schemaLocation="http://www.ivoa.net/xml/VOSICapabilities/v1.0 http://www.ivoa.net/xml/VOSICapabilities/v1.0 
+			http://www.ivoa.net/xml/TAPRegExt/v1.0 http://www.ivoa.net/xml/TAPRegExt/v1.0 
+			http://www.ivoa.net/xml/VODataService/v1.1 http://www.ivoa.net/xml/VODataService/v1.1"> 
+	<capability standardID="ivo://ivoa.net/std/TAP" xsi:type="tr:TableAccess">
+		<interface role="std" xsi:type="vs:ParamHTTP" version="1.1">
+			<accessURL use="base">https://gea.esac.esa.int/tap-server/tap</accessURL>
+		</interface>
+		<language>
+			<name>ADQL</name>
+			<version ivo-id="ivo://ivoa.net/std/ADQL#v2.0">2.0</version>
+			<version ivo-id="ivo://ivoa.net/std/ADQL#v2.1">2.1</version>
+			<description>ADQL 2.1</description>
+			<languageFeatures type="ivo://ivoa.net/std/tapregext#features-udf">
+				<feature>
+					<form>esdc_array_dims(n VARCHAR) -> VARCHAR</form>
+					<description><![CDATA[
+						Returns a text representation of array dimensions
+						Parameters:
+							n: Input array.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_array_element(n VARCHAR, position INTEGER) -> VARCHAR</form>
+					<description><![CDATA[
+						Returns the requested element (second argument) of the provided array as first argument in the input
+						Parameters:
+							n: Input array.
+							position: array position of the element to be retrieved where position = 1 refers to the first array element
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_array_length(n VARCHAR, dim INTEGER) -> INTEGER</form>
+					<description><![CDATA[
+						Returns the length of the requested array dimension
+						Parameters:
+							n: Input array.
+							dim: Input dimension.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_array_ndims(n VARCHAR) -> INTEGER</form>
+					<description><![CDATA[
+						Returns the number of dimensions of the array.
+						Parameters:
+							n: Input array.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_astrometric_parameter_error(e_ra_deg DOUBLE, e_de_deg DOUBLE, e_plx DOUBLE, e_pm_ra DOUBLE, e_pm_de DOUBLE, de_ra DOUBLE, plx_ra DOUBLE, pm_ra_ra DOUBLE, pm_de_ra DOUBLE, plx_de DOUBLE, pm_ra_de DOUBLE, pm_de_de DOUBLE, pm_ra_plx DOUBLE, pm_de_plx DOUBLE, pm_de_pm_ra DOUBLE, parallax DOUBLE, radial_velocity DOUBLE, e_rv DOUBLE) -> DOUBLE[21]</form>
+					<description><![CDATA[
+						Returns the astrometric parameter errors double array to be used as input for epoch_prop() function
+						Parameters:
+							e_ra_deg: Standard Error in Right Ascension (mas)
+							e_de_deg: Standard Error in Declination (mas)
+							e_plx: Standard Error in Parallax (mas)
+							e_pm_ra: Standard Error in Proper Motion in RA (mas/yr)
+							e_pm_de: Standard Error in Proper Motion in Dec (mas/yr)
+							de_ra: Correlation Coefficient RA/Dec
+							plx_ra: Correlation Coefficient Parallax/RA
+							pm_ra_ra: Correlation Coefficient Proper Motion in RA/RA
+							pm_de_ra: Correlation Coefficient Proper Motion in Dec/RA
+							plx_de: Correlation Coefficient Parallax/Dec
+							pm_ra_de: Correlation Coefficient Proper Motion in RA/Dec
+							pm_de_de: Correlation Coefficient, Proper Motion in Dec/Dec
+							pm_ra_plx: Correlation Coefficient Proper Motion in RA/Parallax
+							pm_de_plx: Correlation Coefficient, Proper Motion in Dec/Parallax
+							pm_de_pm_ra: Correlation Coefficient, Proper Motion in RA/Proper Motion in Dec
+							parallax: Parallax (mas)
+							radial_velocity: Radial Velocity (km/s)
+							e_rv: Standard Error in Radial Velocity (km/s)
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_astrometric_parameters(ra DOUBLE, de DOUBLE, parallax DOUBLE, pm_ra DOUBLE, pm_de DOUBLE, radial_velocity DOUBLE) -> DOUBLE[6]</form>
+					<description><![CDATA[
+						Returns the astrometric parameters double array to be used as input for epoch_prop() function
+						Parameters:
+							ra: Right Ascension (deg)
+							de: Declination (deg)
+							parallax: Parallax (mas)
+							pm_ra: Proper Motion in Right Ascension (mas/yr)
+							pm_de: Proper Motion in Declination (mas/yr)
+							radial_velocity: Radial Velocity (km/s)
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_cardinality(n VARCHAR) -> INTEGER</form>
+					<description><![CDATA[
+						Returns the total number of elements in the array, or 0 if the array is empty.
+						Parameters:
+							n: Input array.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_case_condition(default_value VARCHAR, conditions VARCHAR, results VARCHAR) -> VARCHAR</form>
+					<description><![CDATA[
+						For an array of input conditions and results, return the first one found true.
+						Parameters:
+							default_value: Value to return if all conditions are false.
+							conditions: Input conditions array.
+							results: Input results array.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_case_expression(input_value VARCHAR, default_value VARCHAR, condition_values VARCHAR, results VARCHAR) -> VARCHAR</form>
+					<description><![CDATA[
+						For an array of input conditions and results, return the first one found equal to input value.
+						Parameters:
+							input_value: Value to compare condition values with.
+							default_value: Value to return if none of condition_values equal input_value.
+							condition_values: Input results array.
+							results: Input results array.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_crossmatch_positional(table_schema_a VARCHAR, table_name_a VARCHAR, table_schema_b VARCHAR, table_name_b VARCHAR, radius DOUBLE, output_table_name VARCHAR) -> BIGINT</form>
+					<description><![CDATA[
+						For input tables, create a positional crossmatch for input radius and store it in a separate table.
+						Parameters:
+							table_schema_a: First table schema.
+							table_name_a: First table name.
+							table_schema_b: Second table schema.
+							table_name_b: Second table name.
+							radius: Crossmatch radius.
+							output_table_name: Output table name.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_current_date() -> TIMESTAMP</form>
+					<description><![CDATA[
+						Returns a DATE value that represents the current date
+						Parameters:
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_epoch_prop(astrometric_parameters DOUBLE[6], ref_epoch DOUBLE, out_epoch DOUBLE) -> DOUBLE[6]</form>
+					<description><![CDATA[
+						Returns all six input parameters (ra,dec,parallax,pm_ra,pm_dec,radial_velocity) propagated at the new arbitrary input epoch. Please note that the input argument radial_velocity denotes radial velocity in km/s while the corresponding output quantity is the radial proper motion in mas/yr computed as radial_velocity * parallax / 4.740,470,464
+						Parameters:
+							astrometric_parameters: Array with the full six input parameters needed (ra[deg],dec[deg],plx[mas],pm_ra[mas/yr],pm_dec[mas/yr],pm_rv[mas/yr])
+							ref_epoch: Reference Julian Epoch
+							out_epoch: Final Julian Epoch
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_epoch_prop(ra DOUBLE, de DOUBLE, parallax DOUBLE, pm_ra DOUBLE, pm_de DOUBLE, radial_velocity DOUBLE, ref_epoch DOUBLE, out_epoch DOUBLE) -> DOUBLE[6]</form>
+					<description><![CDATA[
+						Returns all six input parameters (ra,dec,parallax,pm_ra,pm_dec,radial_velocity) propagated at the new arbitrary input epoch. Please note that the input argument radial_velocity denotes radial velocity in km/s while the corresponding output quantity is the radial proper motion in mas/yr computed as radial_velocity * parallax / 4.740,470,464
+						Parameters:
+							ra: Right Ascension (deg)
+							de: Declination (deg)
+							parallax: Parallax (mas)
+							pm_ra: Proper Motion in Right Ascension (mas/yr)
+							pm_de: Proper Motion in Declination (mas/yr)
+							radial_velocity: Radial Velocity (km/s)
+							ref_epoch: Reference Julian Epoch
+							out_epoch: Final Julian Epoch
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_epoch_prop_covariance(ra DOUBLE, dec DOUBLE, parallax DOUBLE, pm_ra DOUBLE, pm_de DOUBLE, radial_velocity DOUBLE, e_ra_deg DOUBLE, e_de_deg DOUBLE, e_plx DOUBLE, e_pm_ra DOUBLE, e_pm_de DOUBLE, e_rv DOUBLE, de_ra DOUBLE, plx_ra DOUBLE, plx_de DOUBLE, pm_ra_ra DOUBLE, pm_ra_de DOUBLE, pm_ra_plx DOUBLE, pm_de_ra DOUBLE, pm_de_de DOUBLE, pm_de_plx DOUBLE, pm_de_pm_ra DOUBLE, ref_epoch DOUBLE, out_epoch DOUBLE) -> DOUBLE[6][6]</form>
+					<description><![CDATA[
+						Returns the propagated covariance matrix from the epoch_prop function
+						Parameters:
+							ra: Right Ascension (deg)
+							dec: Declination (deg)
+							parallax: Parallax (mas)
+							pm_ra: Proper Motion in Right Ascension (mas/yr)
+							pm_de: Proper Motion in Declination (mas/yr)
+							radial_velocity: Radial Velocity (km/s)
+							e_ra_deg: Standard Error in Right Ascension (mas)
+							e_de_deg: Standard Error in Declination (mas)
+							e_plx: Standard Error in Parallax (mas)
+							e_pm_ra: Standard Error in Proper Motion in RA (mas/yr)
+							e_pm_de: Standard Error in Proper Motion in Dec (mas/yr)
+							e_rv: Standard Error in Radial Velocity (km/s)
+							de_ra: Correlation Coefficient RA/Dec
+							plx_ra: Correlation Coefficient Parallax/RA
+							plx_de: Correlation Coefficient Parallax/Dec
+							pm_ra_ra: Correlation Coefficient Proper Motion in RA/RA
+							pm_ra_de: Correlation Coefficient Proper Motion in RA/Dec
+							pm_ra_plx: Correlation Coefficient Proper Motion in RA/Parallax
+							pm_de_ra: Correlation Coefficient Proper Motion in Dec/RA
+							pm_de_de: Correlation Coefficient, Proper Motion in Dec/Dec
+							pm_de_plx: Correlation Coefficient, Proper Motion in Dec/Parallax
+							pm_de_pm_ra: Correlation Coefficient, Proper Motion in RA/Proper Motion in Dec
+							ref_epoch: Reference Julian Epoch (yr)
+							out_epoch: Final Julian Epoch (yr)
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_epoch_prop_error(astrometric_parameters DOUBLE[6], astrometric_parameter_error DOUBLE[21], ref_epoch DOUBLE, out_epoch DOUBLE) -> DOUBLE[21]</form>
+					<description><![CDATA[
+						Returns the error vector with the uncertainties associated to the propagated astrometric parameters plus the set of propagated correlation parameters
+						Parameters:
+							astrometric_parameters: Array with the full six input parameters needed (ra[deg],dec[deg],plx[mas],pm_ra[mas/yr],pm_dec[mas/yr],pm_rv[mas/yr])
+							astrometric_parameter_error: Array with the 21 covariance matrix elements (output from astrometric_parameter_error ADQL function)
+							ref_epoch: Reference Julian Epoch
+							out_epoch: Final Julian Epoch
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_epoch_prop_error(ra DOUBLE, de DOUBLE, parallax DOUBLE, pm_ra DOUBLE, pm_de DOUBLE, radial_velocity DOUBLE, e_ra_deg DOUBLE, e_de_deg DOUBLE, e_plx DOUBLE, e_pm_ra DOUBLE, e_pm_de DOUBLE, e_rv DOUBLE, de_ra DOUBLE, plx_ra DOUBLE, pm_ra_ra DOUBLE, pm_de_ra DOUBLE, plx_de DOUBLE, pm_ra_de DOUBLE, pm_de_de DOUBLE, pm_ra_plx DOUBLE, pm_de_plx DOUBLE, pm_de_pm_ra DOUBLE, ref_epoch DOUBLE, out_epoch DOUBLE) -> DOUBLE[21]</form>
+					<description><![CDATA[
+						Returns the error vector with the uncertainties associated to the propagated astrometric parameters plus the set of propagated correlation parameters
+						Parameters:
+							ra: Right Ascension (deg)
+							de: Declination (deg)
+							parallax: Parallax (mas)
+							pm_ra: Proper Motion in Right Ascension (mas/yr)
+							pm_de: Proper Motion in Declination (mas/yr)
+							radial_velocity: Radial Velocity (km/s)
+							e_ra_deg: Standard Error in Right Ascension (mas)
+							e_de_deg: Standard Error in Declination (mas)
+							e_plx: Standard Error in Parallax (mas)
+							e_pm_ra: Standard Error in Proper Motion in RA (mas/yr)
+							e_pm_de: Standard Error in Proper Motion in Dec (mas/yr)
+							e_rv: Standard Error in Radial Velocity (km/s)
+							de_ra: Correlation Coefficient RA/Dec
+							plx_ra: Correlation Coefficient Parallax/RA
+							pm_ra_ra: Correlation Coefficient Proper Motion in RA/RA
+							pm_de_ra: Correlation Coefficient Proper Motion in Dec/RA
+							plx_de: Correlation Coefficient Parallax/Dec
+							pm_ra_de: Correlation Coefficient Proper Motion in RA/Dec
+							pm_de_de: Correlation Coefficient, Proper Motion in Dec/Dec
+							pm_ra_plx: Correlation Coefficient Proper Motion in RA/Parallax
+							pm_de_plx: Correlation Coefficient, Proper Motion in Dec/Parallax
+							pm_de_pm_ra: Correlation Coefficient, Proper Motion in RA/Proper Motion in Dec
+							ref_epoch: Reference Julian Epoch (yr)
+							out_epoch: Final Julian Epoch (yr)
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_epoch_prop_pos(ra DOUBLE, de DOUBLE, parallax DOUBLE, pm_ra DOUBLE, pm_de DOUBLE, radial_velocity DOUBLE, ref_epoch DOUBLE, out_epoch DOUBLE) -> VARCHAR</form>
+					<description><![CDATA[
+						Returns the new position (ra,dec) of the source at the new arbitrary input epoch
+						Parameters:
+							ra: Right Ascension (deg)
+							de: Declination (deg)
+							parallax: Parallax (mas)
+							pm_ra: Proper Motion in Right Ascension (mas/yr)
+							pm_de: Proper Motion in Declination (mas/yr)
+							radial_velocity: Radial Velocity (km/s)
+							ref_epoch: Reference Julian Epoch
+							out_epoch: Final Julian Epoch
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_greatest(v1 DOUBLE, v2 DOUBLE) -> DOUBLE</form>
+					<description><![CDATA[
+						Select the largest value among given arguments.
+						Parameters:
+							v1: First argument.
+							v2: Second argument.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_if_then_else(condition VARCHAR, ouput_value VARCHAR, default_value VARCHAR) -> VARCHAR</form>
+					<description><![CDATA[
+						If input condition is true, return output value. Otherwise return default value.
+						Parameters:
+							condition: Value to compare to true.
+							ouput_value: Value to return if condition is true.
+							default_value: Value to return if condition is false.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_least(v1 DOUBLE, v2 DOUBLE) -> DOUBLE</form>
+					<description><![CDATA[
+						Select the smallest value among given arguments.
+						Parameters:
+							v1: First argument.
+							v2: Second argument.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_left(string VARCHAR, n INTEGER) -> VARCHAR</form>
+					<description><![CDATA[
+						The function returns the first n characters in the string.
+						Parameters:
+							string: a string from which a number of the leftmost characters is returned.
+							n: an integer that specifies the number of left-most characters in the string should be returned. If n is negative, the function returns the leftmost characters in the string but last |n| (absolute) characters.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_length(string VARCHAR) -> INTEGER</form>
+					<description><![CDATA[
+						The function returns the number of characters in the string.
+						Parameters:
+							string: the string that you want to calculate its length.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_nullif(value1 VARCHAR, value2 VARCHAR) -> VARCHAR</form>
+					<description><![CDATA[
+						Returns a null value if value1 equals value2; otherwise it returns value1.
+						Parameters:
+							value1: Input value 1.
+							value2: Input value 2.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_position(substring VARCHAR, string VARCHAR) -> INTEGER</form>
+					<description><![CDATA[
+						The function returns the location of a substring in a string.
+						Parameters:
+							substring: the string that you want to locate.
+							string: the string for which the substring is searched.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_radial_velocity(pm_rv DOUBLE, parallax DOUBLE) -> DOUBLE</form>
+					<description><![CDATA[
+						Returns the radial velocity in units of mas/yr
+						Parameters:
+							pm_rv: Radial proper motion (mas/yr)
+							parallax: Parallax (mas)
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_right(string VARCHAR, n INTEGER) -> VARCHAR</form>
+					<description><![CDATA[
+						The function returns the last n characters in a string.
+						Parameters:
+							string: a string from which a number of the rightmost characters is returned.
+							n: an integer that specifies the number of right-most characters in the string should be returned. If n is negative, the function returns all characters in the string but first |n| (absolute) characters.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_stddev(n DOUBLE) -> DOUBLE</form>
+					<description><![CDATA[
+						Standard deviation.
+						Parameters:
+							n: Input value.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_substring(string VARCHAR, length INTEGER, start_position INTEGER) -> VARCHAR</form>
+					<description><![CDATA[
+						The function returns a part of string.
+						Parameters:
+							string: the string that you want to get a part extracted.
+							length: a positive integer that determines the number of characters that you want to extract from the string beginning at start_position. If the sum of start_position and length is greater than the number of characters in the string, the substring function returns the whole string beginning at start_position. The length parameter is optional. If you omit the length parameter, the substring function returns the whole string started at start_position.
+							start_position: an integer that specifies where you want to extract the substring. If start_position equals zero, the substring starts at the first character of the string. The start_position can be only positive
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_to_bigint(n DOUBLE) -> BIGINT</form>
+					<description><![CDATA[
+						Converts input value to BIGINT type.
+						Parameters:
+							n: Input value.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_to_boolean(n INTEGER) -> BOOLEAN</form>
+					<description><![CDATA[
+						Converts input value to BOOLEAN type.
+						Parameters:
+							n: Input value.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_to_char(n DOUBLE) -> VARCHAR</form>
+					<description><![CDATA[
+						Converts input value to VARCHAR type.
+						Parameters:
+							n: Input value.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_to_double(n DOUBLE) -> DOUBLE</form>
+					<description><![CDATA[
+						Converts input value to DOUBLE type.
+						Parameters:
+							n: Input value.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_to_integer(n DOUBLE) -> INTEGER</form>
+					<description><![CDATA[
+						Converts input value to INTEGER type.
+						Parameters:
+							n: Input value.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_to_real(n DOUBLE) -> REAL</form>
+					<description><![CDATA[
+						Converts input value to REAL type.
+						Parameters:
+							n: Input value.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_to_smallint(n DOUBLE) -> SMALLINT</form>
+					<description><![CDATA[
+						Converts input value to SMALLINT type.
+						Parameters:
+							n: Input value.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_translate(string VARCHAR, from VARCHAR, to VARCHAR) -> VARCHAR</form>
+					<description><![CDATA[
+						The function performs several single-character, one-to-one translation in one operation.
+						Parameters:
+							string: the string subjected to translation.
+							from: a set of characters in the first argument (_string_) that should be replaced.
+							to: a set of characters that replaces the _from_ in the _string_.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>esdc_trim(characters VARCHAR, string VARCHAR) -> VARCHAR</form>
+					<description><![CDATA[
+						removes the longest string that contains a specific character from a string. By default, the function removes spaces if you don’t specify explicitly which character you want to remove.
+						Parameters:
+							characters: optional parameter that defines a literal specifying explicitly which characters you want to remove in the string. Accepted literals are: LEADING, TRAILING and BOTH. Example of use: TRIM(BOTH, string)
+							string: the string for which the removal is requested. Mandatory parameter: example of use: TRIM(string)
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>gaia_healpix_index(norder INTEGER, gaia_source_id BIGINT) -> DOUBLE</form>
+					<description><![CDATA[
+						Returns the healpix index of the given norder extracted from the given gaia Source ID
+						Parameters:
+							norder: null
+							gaia_source_id: null
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>gaia_phot_bp_rp_excess_factor_corr(phot_g_mean_flux DOUBLE, phot_bp_mean_flux DOUBLE, phot_rp_mean_flux DOUBLE, bp_rp DOUBLE, data_release VARCHAR) -> DOUBLE</form>
+					<description><![CDATA[
+						Returns the corrected flux excess factor, denoted C*. This quantity, defined in Riello et al. (2021) for Gaia DR3 and Riello et al. (2026) for Gaia DR4, is constructed to be "close to" zero, with positive values indicating that the source has more flux in BP and RP combined than in the G-band and vice versa for negative values.
+						Parameters:
+							phot_g_mean_flux: mean G flux in electron.s**-1
+							phot_bp_mean_flux: mean BP flux in electron.s**-1
+							phot_rp_mean_flux: mean RP flux in electron.s**-1
+							bp_rp: BP-RP colour index
+							data_release: Gaia DR3 ("Gaia DR3", "DR3", "3") or Gaia DR4 ("Gaia DR4", "DR4", "4")
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>gavo_ipix(long REAL, lat REAL) -> BIGINT</form>
+					<description><![CDATA[
+						Returns the q3c ipix (Koposov and Bartunov, 2006) for a long/lat pair (it simply wraps the q3c_angpix function).
+						Parameters:
+							long: The longitude to compute the ipix for.
+							lat: The latitude to compute the ipix for.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>ivo_epoch_prop_pos(ra DOUBLE, de DOUBLE, parallax DOUBLE, pm_ra DOUBLE, pm_de DOUBLE, radial_velocity DOUBLE, ref_epoch DOUBLE, out_epoch DOUBLE) -> POINT</form>
+					<description><![CDATA[
+						Returns the new position (ra,dec) of the source at the new arbitrary input epoch
+						Parameters:
+							ra: Right Ascension (deg)
+							de: Declination (deg)
+							parallax: Parallax (mas)
+							pm_ra: Proper Motion in Right Ascension (mas/yr)
+							pm_de: Proper Motion in Declination (mas/yr)
+							radial_velocity: Radial Velocity (km/s)
+							ref_epoch: Reference Julian Epoch
+							out_epoch: Final Julian Epoch
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>ivo_geom_transform(from_sys VARCHAR, to_sys VARCHAR, geo VARCHAR) -> VARCHAR</form>
+					<description><![CDATA[
+						The function transforms ADQL geometries between various reference systems.
+						Parameters:
+							from_sys: name of the source reference system.
+							to_sys: name of the target reference system.
+							geo: an ADQL geometry (POINT, CIRCLE, POLYGON).
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>ivo_hashlist_has(hashlist VARCHAR, item VARCHAR) -> INTEGER</form>
+					<description><![CDATA[
+						The function returns 1 if, compared case-insensitively, the second argument is in the list of words encoded in the first argument, 0 otherwise.
+						Parameters:
+							hashlist: A string containing hash-separated terms.
+							item: A string containing a single term not containing a hash.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>ivo_hasword(needle VARCHAR, haystack VARCHAR) -> INTEGER</form>
+					<description><![CDATA[
+						Returns 1 if all tokens from the string needle are contained (in some sense) in the string haystack, 0 otherwise.
+						Parameters:
+							needle: A string to locate in haystack.
+							haystack: A text to match needle in.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>ivo_histogram(val REAL, lower REAL, upper REAL, nbins INTEGER) -> INTEGER[*]</form>
+					<description><![CDATA[
+						This aggregate function returns a histogram of val with nbins+2 elements. Assuming 0-based arrays, results[0] contains the number of underflows (i.e., val < lower), result[nbins+1] the number of overflows. Elements 1…nbins are the counts in nbins bins of width (upper−lower)/nbins. Clients will have to convert back to physical units using some external communication, as there currently is no (meta-) data as lower and upper in the TAP response.
+						Parameters:
+							val: the value to bin.
+							lower: the lower limit of the histogram
+							upper: the upper limit of the histogram
+							nbins: the number of "natural" bins in the histogram.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>ivo_interval_overlaps(a1 DOUBLE, b1 DOUBLE, a2 DOUBLE, b2 DOUBLE) -> INTEGER</form>
+					<description><![CDATA[
+						Function returns 1 if the interval [a1…b1] overlaps with the interval [a2…b2].
+						Parameters:
+							a1: The lower bound of the first interval.
+							b1: The upper bound of the first interval.
+							a2: The lower bound of the second interval.
+							b2: The upper bound of the second interval.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>ivo_nocasematch(value VARCHAR, pattern VARCHAR) -> INTEGER</form>
+					<description><![CDATA[
+						Evaluates value ILIKE pattern, i.e., pattern is defined as for the SQL LIKE operator, but the match is performed case-insensitively.
+						Parameters:
+							value: A string-valued SQL expression.
+							pattern: A SQL pattern for LIKE evaluation.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>ivo_normal_random(mu REAL, sigma REAL) -> REAL</form>
+					<description><![CDATA[
+						Returns a random number drawn from a normal distribution.
+						Parameters:
+							mu: The mean of the normal distribution.
+							sigma: The width of the normal distribution..
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>ivo_simbadpoint(identifier VARCHAR) -> POINT</form>
+					<description><![CDATA[
+						Queries Simbad for an identifier and returns the corresponding point.
+						Parameters:
+							identifier: A string containing an identifier Simbad can resolve.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>ivo_string_agg(expression VARCHAR, delimiter VARCHAR) -> VARCHAR</form>
+					<description><![CDATA[
+						An aggregate function returning all values of expression concatenated with delimiter.
+						Parameters:
+							expression: A SQL expression giving the strings to concatenate.
+							delimiter: A string used to concatenate the values of expression in each group.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>ivo_to_jd(d TIMESTAMP) -> REAL</form>
+					<description><![CDATA[
+						Converts a timestamp to a Julian date.
+						Parameters:
+							d: The SQL timestamp to convert.
+						]]>
+					</description>
+				</feature>
+				<feature>
+					<form>ivo_to_mjd(d TIMESTAMP) -> REAL</form>
+					<description><![CDATA[
+						Converts a timestamp to modified Julian date.
+						Parameters:
+							d: The SQL timestamp to convert.
+						]]>
+					</description>
+				</feature>
+			</languageFeatures>
+			<languageFeatures type="ivo://ivoa.net/std/tapregext#features-adqlgeo">
+				<feature>
+					<form>AREA</form>
+				</feature>
+				<feature>
+					<form>BOX</form>
+				</feature>
+				<feature>
+					<form>CENTROID</form>
+				</feature>
+				<feature>
+					<form>CIRCLE</form>
+				</feature>
+				<feature>
+					<form>CONTAINS</form>
+				</feature>
+				<feature>
+					<form>COORD1</form>
+				</feature>
+				<feature>
+					<form>COORD2</form>
+				</feature>
+				<feature>
+					<form>COORDSYS</form>
+				</feature>
+				<feature>
+					<form>DISTANCE</form>
+				</feature>
+				<feature>
+					<form>INTERSECTS</form>
+				</feature>
+				<feature>
+					<form>POINT</form>
+				</feature>
+				<feature>
+					<form>POLYGON</form>
+				</feature>
+				<feature>
+					<form>REGION</form>
+				</feature>
+			</languageFeatures>
+			<languageFeatures type="ivo://ivoa.net/std/tapregext#features-adql-common-table">
+				<feature>
+					<form>WITH</form>
+				</feature>
+			</languageFeatures>
+			<languageFeatures type="ivo://ivoa.net/std/tapregext#features-adql-string">
+				<feature>
+					<form>LOWER</form>
+				</feature>
+				<feature>
+					<form>UPPER</form>
+				</feature>
+				<feature>
+					<form>ILIKE</form>
+				</feature>
+			</languageFeatures>
+			<languageFeatures type="ivo://ivoa.net/std/tapregext#features-adql-sets">
+				<feature>
+					<form>UNION</form>
+				</feature>
+				<feature>
+					<form>EXCEPT</form>
+				</feature>
+				<feature>
+					<form>INTERSECT</form>
+				</feature>
+			</languageFeatures>
+			<languageFeatures type="ivo://ivoa.net/std/tapregext#features-adql-offset">
+				<feature>
+					<form>OFFSET</form>
+				</feature>
+			</languageFeatures>
+			<languageFeatures type="ivo://ivoa.net/std/tapregext#features-adql-conditional">
+				<feature>
+					<form>COALESCE</form>
+				</feature>
+			</languageFeatures>
+			<languageFeatures type="ivo://ivoa.net/std/tapregext#features-adql-type">
+				<feature>
+					<form>CAST</form>
+				</feature>
+			</languageFeatures>
+		</language>
+		<outputFormat>
+			<mime>application/x-votable+xml</mime>
+			<alias>votable_gzip</alias>
+		</outputFormat>
+		<outputFormat>
+			<mime>application/x-votable+xml</mime>
+			<alias>votable</alias>
+		</outputFormat>
+		<outputFormat>
+			<mime>application/x-votable+xml</mime>
+			<alias>votable_plain</alias>
+		</outputFormat>
+		<outputFormat>
+			<mime>text/csv</mime>
+			<alias>csv</alias>
+		</outputFormat>
+		<outputFormat>
+			<mime>text/ecsv</mime>
+			<alias>ecsv</alias>
+		</outputFormat>
+		<outputFormat>
+			<mime>text/tab-separated-values</mime>
+			<alias>tsv</alias>
+		</outputFormat>
+		<outputFormat>
+			<mime>application/json</mime>
+			<alias>json</alias>
+		</outputFormat>
+		<outputFormat>
+			<mime>application/fits</mime>
+			<alias>fits</alias>
+		</outputFormat>
+		<outputFormat>
+			<mime>text/xml</mime>
+			<alias>votable_plain_conesearch</alias>
+		</outputFormat>
+		<uploadMethod ivo-id="ivo://ivoa.net/std/TAPRegExt#upload-inline" />
+		<uploadMethod ivo-id="ivo://ivoa.net/std/TAPRegExt#upload-http" />
+		<uploadMethod ivo-id="ivo://ivoa.net/std/TAPRegExt#upload-ftp" />
+		<retentionPeriod>
+			<default>129600</default>
+			<hard>129600</hard>
+		</retentionPeriod>
+		<executionDuration>
+			<default>3600</default>
+			<hard>3600</hard>
+		</executionDuration>
+		<outputLimit>
+			<default unit="row">3000000</default>
+			<hard unit="row">3000000</hard>
+		</outputLimit>
+		<uploadLimit>
+			<default unit="byte">100000000</default>
+			<hard unit="byte">100000000</hard>
+		</uploadLimit>
+	</capability>
+	<capability standardID="ivo://ivoa.net/std/VOSI#availability">
+		<interface xsi:type="vs:ParamHTTP" role="std" version="1.0">
+			<accessURL use="full"> https://gea.esac.esa.int/tap-server/tap/availability </accessURL>
+		</interface>
+	</capability>
+	<capability standardID="ivo://ivoa.net/std/VOSI#tables-1.1">
+		<interface role="std" xsi:type="vs:ParamHTTP" version="1.1">
+			<accessURL use="full">https://gea.esac.esa.int/tap-server/tap/tables</accessURL>
+		</interface>
+	</capability>
+	<capability standardID="ivo://ivoa.net/std/DALI#examples">
+		<interface xsi:type="vr:WebBrowser">
+			<accessURL use="full">https://gea.esac.esa.int/tap-server/tap/examples/</accessURL>
+		</interface>
+	</capability>
+	<capability standardID="ivo://ivoa.net/std/VOSI#capabilities">
+		<interface xsi:type="vs:ParamHTTP" role="std" version="1.0">
+			<accessURL use="full"> https://gea.esac.esa.int/tap-server/tap/capabilities </accessURL>
+		</interface>
+	</capability>
+
+</vosi:capabilities>

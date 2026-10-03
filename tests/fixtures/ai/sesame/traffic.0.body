@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>M87</name>
+  <!-- Q8398720 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 0ms [0] -->
+    <INFO>from cache</INFO>
+    <oid>1937204</oid>
+    <otype>AGN</otype>
+    <jpos>12:30:49.42 +12:23:28.0</jpos>
+    <jradeg>187.70593077</jradeg>
+    <jdedeg>12.39112325</jdedeg>
+    <refPos>2020A&amp;A...644A.159C</refPos>
+    <errRAmas>0.030800</errRAmas><errDEmas>0.0305</errDEmas>
+    <pm>
+      <v>13.405</v><e>1.502</e><q>A</q><r>2018yCat.1345....0G</r>
+      <pa>323</pa>
+      <pmRA>-8.029</pmRA><epmRA>1.178</epmRA>
+      <pmDE>10.734</pmDE><epmDE>0.932</epmDE>
+    </pm>
+    <z><v>0.00420</v><e>0.00012</e><q>E</q><r>2009ApJS..182..543A</r></z>
+    <MType>E-E/S0</MType>
+    <oname>M  87</oname>
+    <nrefs>7969</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ====Done (2026-Sep-28,11:03:03z)==== -->

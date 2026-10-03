@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<VOTABLE xmlns="http://www.ivoa.net/xml/VOTable/v1.3" xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.4">
+ <RESOURCE type="results">
+  <INFO name="QUERY_STATUS" value="OK">No errors detected in query preprocessing</INFO>
+  <TABLE>
+   <DESCRIPTION>Query result for:&#xA;SELECT tu.t_idx AS t_idx, name AS name, ra AS ra, dec AS dec, x_pixel_error AS x_pixel_error, y_pixel_error AS y_pixel_error, count_rate AS count_rate, count_rate_error AS count_rate_error, detection_likelihood AS detection_likelihood, exposure AS exposure, source_extent AS source_extent, source_quality_flag AS source_quality_flag, &quot;time&quot; AS &quot;time&quot;, end_time AS end_time FROM rass2rxs, tap_upload_1790595055003_targets AS tu WHERE 1 = CONTAINS(POINT(&apos;ICRS&apos;, ra, dec), CIRCLE(&apos;ICRS&apos;, tu.t_ra, tu.t_dec, tu.t_rad))</DESCRIPTION>
+   <FIELD datatype="int" name="t_idx">
+    <VALUES null="-2147483648"/>
+   </FIELD>
+   <FIELD datatype="char" arraysize="*" ucd="meta.id;meta.main" name="name">
+    <DESCRIPTION>IAU Source Designation</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="deg" datatype="double" ucd="pos.eq.ra;meta.main" precision="F5" name="ra">
+    <DESCRIPTION>Right Ascension</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="deg" datatype="double" ucd="pos.eq.dec;meta.main" precision="F5" name="dec">
+    <DESCRIPTION>Declination</DESCRIPTION>
+   </FIELD>
+   <FIELD datatype="double" name="x_pixel_error"/>
+   <FIELD datatype="double" name="y_pixel_error"/>
+   <FIELD datatype="double" name="count_rate"/>
+   <FIELD datatype="double" name="count_rate_error"/>
+   <FIELD datatype="double" name="detection_likelihood"/>
+   <FIELD unit="s" datatype="double" ucd="time.duration;obs.exposure" precision="F2" name="exposure" width="8">
+    <DESCRIPTION>Source Exposure Time</DESCRIPTION>
+   </FIELD>
+   <FIELD datatype="double" name="source_extent"/>
+   <FIELD datatype="short" name="source_quality_flag">
+    <VALUES null="-32768"/>
+   </FIELD>
+   <FIELD unit="d" datatype="double" ucd="time.start;obs" precision="F6" name="time">
+    <DESCRIPTION>Start Time of Exposure When Source Is within FOV and Detector on</DESCRIPTION>
+   </FIELD>
+   <FIELD datatype="double" name="end_time"/>
+   <DATA>
+    <BINARY>
+     <STREAM encoding="base64">
+AAAAAAAAABUyUlhTIEoxMjI5MDYuNiswMjAzMDlAZ2jjKgZjx0AAa/M4cWCVP49J
+jDsMRYk/j13+uNgjQkAfdDlYEGJOP8LeANG3F1lAyKHUeuFHrkB3BFHrhR64
+P9AAAAAAAAAAAEDnjoGtIcERQOeOvW6mHY8AAAABAAAAFTJSWFMgSjEyMzA0
+OS45KzEyMjMyM0BndqhYeT3ZQCjHo5ggHNY/qBAfMfRu0j+oC6pYLb5/QCc6
+eGwiaAo/xW1c+qzZ6EC3gN64UeuFQHsf1wo9cKRAAwAAAAAAAAAAQOeOA7UA
+YRZA545Bl+Sxgw==
+     </STREAM>
+    </BINARY>
+   </DATA>
+  </TABLE>
+ </RESOURCE>
+</VOTABLE>

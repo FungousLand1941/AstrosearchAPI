@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>PKS 2155-304</name>
+  <!-- Q8483465 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 208ms [1] -->
+    <oid>1204862</oid>
+    <otype>BLL</otype>
+    <jpos>21:58:52.06 -30:13:32.1</jpos>
+    <jradeg>329.71693844</jradeg>
+    <jdedeg>-30.22558846</jdedeg>
+    <refPos>2020yCat.1350....0G</refPos>
+    <errRAmas>0.0171</errRAmas><errDEmas>0.0137</errDEmas>
+    <pm>
+      <v>0.084</v><e>0.028</e><q>A</q><r>2020yCat.1350....0G</r>
+      <pa>278</pa>
+      <pmRA>-0.083</pmRA><epmRA>0.022</epmRA>
+      <pmDE>0.012</pmDE><epmDE>0.018</epmDE>
+    </pm>
+    <z><v>0.116</v><e>0.002</e><q>D</q><r>2013MNRAS.435.1233G</r></z>
+    <plx><v>0.0158</v><e>0.0191</e><q>A</q><r>2020yCat.1350....0G</r></plx>
+    <oname>PKS J2158-3013</oname>
+    <alias>QSO B2155-304</alias>
+    <alias>2A 2151-316</alias>
+    <alias>3A 2156-306</alias>
+    <alias>2AGL J2157-3015</alias>
+    <alias>AT20G J215852-301332</alias>
+    <alias>ATO J329.7169-30.2256</alias>
+    <alias>CGRaBS J2158-3013</alias>
+    <alias>CRATES J215852-301328</alias>
+    <alias>2E 4544</alias>
+    <alias>2E 2155.9-3027</alias>
+    <alias>3EG J2158-3023</alias>
+    <alias>EGR J2200-3015</alias>
+    <alias>1ES 2155-30.4</alias>
+    <alias>2EUVE J2158-30.2</alias>
+    <alias>EUVE J2158-30.2</alias>
+    <alias>0FGL J2158.8-3014</alias>
+    <alias>1FGL J2158.8-3013</alias>
+    <alias>2FGL J2158.8-3013</alias>
+    <alias>3FGL J2158.8-3013</alias>
+    <alias>4FGL J2158.8-3013</alias>
+    <alias>1FHL J2158.8-3013</alias>
+    <alias>2FHL J2158.8-3013</alias>
+    <alias>3FHL J2158.8-3013</alias>
+    <alias>FL8Y J2158.8-3013</alias>
+    <alias>GLEAM J215852-301318</alias>
+    <alias>1H 2156-304</alias>
+    <alias>HESS J2158-302</alias>
+    <alias>H 2155-304</alias>
+    <alias>H 2154-304</alias>
+    <alias>H 2154-30</alias>
+    <alias>3HSP J215852.0-301332</alias>
+    <alias>ICRF J215852.0-301332</alias>
+    <alias>IERS B2155-304</alias>
+    <alias>INTREF 1064</alias>
+    <alias>IVS B2155-304</alias>
+    <alias>JCMTSE J215852.2-301332</alias>
+    <alias>JCMTSF J215852.2-301332</alias>
+    <alias>2MASS J21585206-3013321</alias>
+    <alias>NVSS J215852-301330</alias>
+    <alias>PKS 2155-304</alias>
+    <alias>PKS J2158-3013</alias>
+    <alias>PKS 2155-30</alias>
+    <alias>PMN J2158-3013</alias>
+    <alias>QSO J2158-3013</alias>
+    <alias>QSO B2155-3027</alias>
+    <alias>RBS 1807</alias>
+    <alias>2RE J2158-301</alias>
+    <alias>2RE J215852-301327</alias>
+    <alias>RE J215852-301324</alias>
+    <alias>RE J2158-301</alias>
+    <alias>RFC J2158-3013</alias>
+    <alias>RORF 2155-304</alias>
+    <alias>RX J2158.8-3013</alias>
+    <alias>1RXS J215852.2-301338</alias>
+    <alias>SHBL J215852.0-301331</alias>
+    <alias>SPASS J215851-301340</alias>
+    <alias>SUMSS J215852-301326</alias>
+    <alias>TeV J2158-302</alias>
+    <alias>TGSSADR J215852.0-301324</alias>
+    <alias>TIC 229013191</alias>
+    <alias>TXS 2155-304</alias>
+    <alias>VLSSr J215852.6-301328</alias>
+    <alias>VLSS J2158.8-3013</alias>
+    <alias>2WHSP J215852.0-301332</alias>
+    <alias>WISEA J215852.06-301332.0</alias>
+    <alias>WISE J215852.05-301332.0</alias>
+    <alias>2XMM J215852.0-301332</alias>
+    <alias>XSS J21583-3004</alias>
+    <alias>9Y-MST J2158-3013</alias>
+    <alias>[BDW2002] q2155-3027</alias>
+    <alias>[DGT2001] B2155-304</alias>
+    <alias>[FS2003] 1142</alias>
+    <alias>[HB93] 2155-304</alias>
+    <alias>[HSN2016] J329.71-30.22</alias>
+    <alias>[LBD96] J2155-304</alias>
+    <alias>[MGL2009] BZB J2158-3013</alias>
+    <alias>[MML2015] 5BZB J2158-3013</alias>
+    <alias>[QC93] 2155-304</alias>
+    <alias>[VV2000b] J215852.0-301332</alias>
+    <alias>[VV2003b] J215852.0-301332</alias>
+    <alias>[VV2006b] J215852.0-301332</alias>
+    <alias>[VV2010b] J215852.0-301332</alias>
+    <alias>[VV98b] J215852.0-301332</alias>
+    <alias>AAVSO 2153-30</alias>
+    <alias>Gaia DR3 6616660280724162688</alias>
+    <alias>Gaia DR1 6616660280724162688</alias>
+    <alias>Gaia DR2 6616660280724162688</alias>
+    <nrefs>1851</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ****Total of 1 crashes -->
+<!-- Configuration tested: /run/sesame.conf -->

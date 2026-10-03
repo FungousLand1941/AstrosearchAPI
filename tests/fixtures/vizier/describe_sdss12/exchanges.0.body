@@ -1,0 +1,1 @@
+{"metadata":[{"name":"table_name","description":"the table name","datatype":"CHAR","arraysize":"64*","ucd":"Metadata"},{"name":"description","description":"description","datatype":"CHAR","arraysize":"255*","ucd":"Metadata"},{"name":"nrows","datatype":"LONG","ucd":"Metadata"}],"data":[["\"V/147/sdss12\"","* output of the SDSS photometric catalog ( Alam S. et al.)",794013968]]}

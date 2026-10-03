@@ -1,0 +1,13 @@
+{
+  "case": "crossmatch_tycho2_barnard",
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+2001+%22TYC1%22+%7C%7C+%27-%27+%7C%7C+%22TYC2%22+%7C%7C+%27-%27+%7C%7C+%22TYC3%22+AS+%22TYC1-TYC2-TYC3%22%2C+%22RA%28ICRS%29%22%2C+%22DE%28ICRS%29%22%2C+%22e_RAdeg%22%2C+%22e_DEdeg%22%2C+%22EpRA-1990%22+%2B+1990+AS+%22EpRA-1990_jyear%22%2C+%22pmRA%22%2C+%22pmDE%22%2C+%22TYC1%22%2C+%22TYC2%22%2C+%22TYC3%22%2C+%22BTmag%22%2C+%22VTmag%22%2C+%22HIP%22%2C+DISTANCE%28POINT%28%27ICRS%27%2C+%22RA%28ICRS%29%22%2C+%22DE%28ICRS%29%22%29%2C+POINT%28%27ICRS%27%2C+269.453093596%2C+4.680265781%29%29+AS+match_dist+FROM+%22I%2F259%2Ftyc2%22+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RA%28ICRS%29%22%2C+%22DE%28ICRS%29%22%29%2C+CIRCLE%28%27ICRS%27%2C+269.453093596%2C+4.680265781%2C+0.0161713705%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    }
+  ]
+}

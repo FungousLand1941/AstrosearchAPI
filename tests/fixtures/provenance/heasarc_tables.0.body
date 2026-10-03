@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<VOTABLE xmlns="http://www.ivoa.net/xml/VOTable/v1.3" xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.4">
+ <RESOURCE type="results">
+  <INFO name="QUERY_STATUS" value="OK">No errors detected in query preprocessing</INFO>
+  <TABLE>
+   <DESCRIPTION>Query result for:&#xA;SELECT table_name, description FROM TAP_SCHEMA.tables WHERE table_name IN (&apos;csc&apos;, &apos;first&apos;, &apos;nvss&apos;, &apos;rass2rxs&apos;, &apos;rassbsc&apos;, &apos;xmmssc&apos;, &apos;&quot;csc&quot;&apos;, &apos;&quot;first&quot;&apos;, &apos;&quot;nvss&quot;&apos;, &apos;&quot;rass2rxs&quot;&apos;, &apos;&quot;rassbsc&quot;&apos;, &apos;&quot;xmmssc&quot;&apos;)</DESCRIPTION>
+   <FIELD datatype="char" arraysize="*" name="table_name"/>
+   <FIELD datatype="char" arraysize="*" name="description"/>
+   <DATA>
+    <BINARY>
+     <STREAM encoding="base64">
+AAAAByJmaXJzdCIAAAAyRmFpbnQgSW1hZ2VzIG9mIHRoZSBSYWRpbyBTa3kgYXQg
+VHdlbnR5IGNtIChGSVJTVCkAAAAEbnZzcwAAABtOUkFPIFZMQSBTa3kgU3Vy
+dmV5IENhdGFsb2cAAAAIcmFzczJyeHMAAAA3U2Vjb25kIFJPU0FUIEFsbC1T
+a3kgU3VydmV5IFBvaW50IFNvdXJjZSBDYXRhbG9nICgyUlhTKQAAAAdyYXNz
+YnNjAAAAJFJPU0FUIEFsbC1Ta3kgU3VydmV5OiBCcmlnaHQgU291cmNlcwAA
+AANjc2MAAAAeQ2hhbmRyYSBTb3VyY2UgQ2F0YWxvZywgdjIuMS4xAAAABnht
+bXNzYwAAADpYTU0tTmV3dG9uIFNlcmVuZGlwaXRvdXMgU291cmNlIENhdGFs
+b2c6IDVYTU0tRFIxNSBWZXJzaW9u
+     </STREAM>
+    </BINARY>
+   </DATA>
+  </TABLE>
+ </RESOURCE>
+</VOTABLE>

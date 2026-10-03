@@ -1,0 +1,22 @@
+{
+  "catalog": "first",
+  "target": "barnard_gaia2016",
+  "ra": 269.44850252543836,
+  "dec": 4.739420051112412,
+  "epoch": 2016.0,
+  "pm_ra_masyr": null,
+  "pm_dec_masyr": null,
+  "radius_arcsec": 10.0,
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://heasarc.gsfc.nasa.gov/xamin/vo/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+2001+name%2C+ra%2C+dec%2C+flux_20_cm%2C+int_flux_20_cm%2C+flux_20_cm_error%2C+fit_major_axis%2C+fit_minor_axis%2C+sidelobe_prob%2C+mean_epoch%2C+DISTANCE%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+POINT%28%27ICRS%27%2C+269.448502525%2C+4.739420051%29%29+AS+match_dist+FROM+first+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+269.448502525%2C+4.739420051%2C+0.0698611111%29%29+ORDER+BY+match_dist+ASC",
+      "status_code": 200,
+      "content_type": "text/xml",
+      "match": [
+        "FROM first "
+      ]
+    }
+  ]
+}

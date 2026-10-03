@@ -1,0 +1,13 @@
+{
+  "case": "crossmatch_ngc2451_d02pup",
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+%22Seq%22%2C+%22RA1996%22%2C+%22DE1996%22%2C+%22Vmag%22%2C+%22B-V%22%2C+%22e_Vmag%22%2C+%22e_B-V%22%2C+%22DRA%22%2C+DISTANCE%28POINT%28%27ICRS%27%2C+%22RA1996%22%2C+%22DE1996%22%29%2C+POINT%28%27ICRS%27%2C+114.932564874%2C+-38.139298102%29%29+AS+match_dist+FROM+%22J%2FAJ%2F122%2F1486%2Fccd%22+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RA1996%22%2C+%22DE1996%22%29%2C+CIRCLE%28%27ICRS%27%2C+114.932564874%2C+-38.139298102%2C+0.0013888889%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "case": "skybot_empty",
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://ssp.imcce.fr/webservices/skybot/api/conesearch.php?-ep=2460000.500000&-ra=180.0000000&-dec=80.0000000&-rs=30.000&-mime=json&-output=all&-observer=500&-filter=120&-objFilter=111&-refsys=EQJ2000&-from=AstroSearch",
+      "request_body": "",
+      "status_code": 204,
+      "content_type": "",
+      "location": ""
+    }
+  ]
+}

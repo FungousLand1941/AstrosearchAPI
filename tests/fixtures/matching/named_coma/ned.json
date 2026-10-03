@@ -1,0 +1,19 @@
+{
+  "catalog": "ned",
+  "target": "named_coma",
+  "search": {
+    "name": "Coma Cluster",
+    "sesame": "coma",
+    "radius_arcsec": 20.0
+  },
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://ned.ipac.caltech.edu/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+prefname%2C+ra%2C+dec%2C+uncmaja%2C+uncmina%2C+uncposa%2C+pos_bibcode%2C+prefphytype%2C+z%2C+zunc%2C+zflag%2C+n_gphot%2C+DISTANCE%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+POINT%28%27ICRS%27%2C+194.935020000%2C+27.912460000%29%29+AS+match_dist+FROM+NEDTAP.objdir+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+194.935020000%2C+27.912460000%2C+0.0055555556%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    }
+  ]
+}

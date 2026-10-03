@@ -1,0 +1,22 @@
+{
+  "scenario": "legacy_gap_color_fits",
+  "recorded_outcome": "16x16 coverage=1.0 blank=None degraded=None science=legacy_g",
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://alasky.cds.unistra.fr/hips-image-services/hips2fits?hips=CDS%2FP%2FDESI-Legacy-Surveys%2FDR10%2Fcolor&width=16&height=16&fov=0.016666666666666666&projection=TAN&ra=345.0&dec=-35.0&format=fits",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/fits",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://alasky.cds.unistra.fr/MocServer/query?RA=345.0&DEC=-35.0&SR=0.0002777777777777778&expr=ID%3DCDS%2FP%2FDESI-Legacy-Surveys%2FDR10%2Fr%7C%7CID%3DCDS%2FP%2FDESI-Legacy-Surveys%2FDR10%2Fg%7C%7CID%3DCDS%2FP%2FDESI-Legacy-Surveys%2FDR10%2Fz%7C%7CID%3DCDS%2FP%2FDESI-Legacy-Surveys%2FDR10%2Fi&get=id&fmt=json",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json;charset=ISO-8859-1",
+      "match": []
+    }
+  ]
+}

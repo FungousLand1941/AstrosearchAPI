@@ -1,0 +1,54 @@
+[
+  {
+    "TableName": "Table1",
+    "Rows": [
+      {
+        "objID": "1237651735760142397",
+        "type": 6,
+        "clean": 0,
+        "psfMag_u": 12.71448,
+        "psfMag_g": 12.80547,
+        "psfMag_r": 12.73124,
+        "psfMag_i": 12.47524,
+        "psfMag_z": 12.74448,
+        "psfMagErr_u": 0.03867705,
+        "psfMagErr_g": 0.0004134365,
+        "psfMagErr_r": 0.0004306684,
+        "psfMagErr_i": 0.0004219869,
+        "psfMagErr_z": 0.01543797,
+        "modelMag_u": 13.99292,
+        "modelMag_g": 12.9987,
+        "modelMag_r": 12.88812,
+        "modelMag_i": 12.64057,
+        "modelMag_z": 13.24212,
+        "modelMagErr_u": 0.005127098,
+        "modelMagErr_g": 0.001567604,
+        "modelMagErr_r": 0.002326744,
+        "modelMagErr_i": 0.001883445,
+        "modelMagErr_z": 0.005648687,
+        "sat_u": 0,
+        "sat_g": 1,
+        "sat_r": 1,
+        "sat_i": 1,
+        "sat_z": 0,
+        "photoz": null,
+        "photozErr": null,
+        "photoErrorClass": null,
+        "specObjID": "",
+        "z": null,
+        "zErr": null,
+        "zWarning": null,
+        "class": "",
+        "sciencePrimary": null
+      }
+    ]
+  },
+  {
+    "TableName": "SqlQuery",
+    "Rows": [
+      {
+        "query": "SELECT TOP 10 CAST(p.objID AS VARCHAR(24)) AS objID, p.type, p.clean, p.psfMag_u, p.psfMag_g, p.psfMag_r, p.psfMag_i, p.psfMag_z, p.psfMagErr_u, p.psfMagErr_g, p.psfMagErr_r, p.psfMagErr_i, p.psfMagErr_z, p.modelMag_u, p.modelMag_g, p.modelMag_r, p.modelMag_i, p.modelMag_z, p.modelMagErr_u, p.modelMagErr_g, p.modelMagErr_r, p.modelMagErr_i, p.modelMagErr_z, CASE WHEN (p.flags_u & dbo.fPhotoFlags('SATURATED')) != 0 THEN 1 ELSE 0 END AS sat_u, CASE WHEN (p.flags_g & dbo.fPhotoFlags('SATURATED')) != 0 THEN 1 ELSE 0 END AS sat_g, CASE WHEN (p.flags_r & dbo.fPhotoFlags('SATURATED')) != 0 THEN 1 ELSE 0 END AS sat_r, CASE WHEN (p.flags_i & dbo.fPhotoFlags('SATURATED')) != 0 THEN 1 ELSE 0 END AS sat_i, CASE WHEN (p.flags_z & dbo.fPhotoFlags('SATURATED')) != 0 THEN 1 ELSE 0 END AS sat_z, pz.z AS photoz, pz.zErr AS photozErr, pz.photoErrorClass, CAST(s.specObjID AS VARCHAR(24)) AS specObjID, s.z, s.zErr, s.zWarning, s.class, s.sciencePrimary FROM PhotoObj AS p LEFT OUTER JOIN Photoz AS pz ON pz.objID = p.objID LEFT OUTER JOIN SpecObj AS s ON s.bestObjID = p.objID WHERE p.objID = 1237651735760142397 ORDER BY s.sciencePrimary DESC"
+      }
+    ]
+  }
+]

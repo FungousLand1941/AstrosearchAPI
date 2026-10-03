@@ -1,0 +1,43 @@
+{
+  "catalog": "panstarrs_dr2",
+  "ra": 187.2779154,
+  "dec": 2.0523883,
+  "radius_deg": 0.2,
+  "report": {
+    "catalog": "panstarrs_dr2",
+    "region": {
+      "type": "cone",
+      "ra": 187.2779154,
+      "dec": 2.0523883,
+      "radius_deg": 0.2
+    },
+    "queries": 1,
+    "tiles_complete": 1,
+    "tiles_failed": 0,
+    "tiles_retried": 0,
+    "tiles_split_timeout": 0,
+    "rows_fetched": 5347,
+    "rows_stored": 5347,
+    "rows_replaced": 0,
+    "rows_deduplicated": 0,
+    "rows_total": 5347,
+    "region_covered_fraction": 1.0,
+    "coverage_area_deg2": 0.1227128861757416,
+    "elapsed_s": 11.534,
+    "providers_used": [
+      "mast"
+    ],
+    "warnings": [],
+    "store": "C:\\Users\\abhij\\AppData\\Local\\Temp\\tmpvig_t9av"
+  },
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://catalogs.mast.stsci.edu/api/v0.1/panstarrs/dr2/mean.json?ra=187.277915400&dec=2.052388300&radius=0.2000000000&columns=%5B%22objID%22%2C+%22objName%22%2C+%22raMean%22%2C+%22decMean%22%2C+%22raMeanErr%22%2C+%22decMeanErr%22%2C+%22epochMean%22%2C+%22nDetections%22%2C+%22qualityFlag%22%2C+%22gMeanPSFMag%22%2C+%22gMeanPSFMagErr%22%2C+%22rMeanPSFMag%22%2C+%22rMeanPSFMagErr%22%2C+%22iMeanPSFMag%22%2C+%22iMeanPSFMagErr%22%2C+%22zMeanPSFMag%22%2C+%22zMeanPSFMagErr%22%2C+%22yMeanPSFMag%22%2C+%22yMeanPSFMagErr%22%2C+%22iMeanKronMag%22%2C+%22distance%22%5D&sort_by=distance&pagesize=10001&nDetections.gt=1",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    }
+  ]
+}

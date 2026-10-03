@@ -28,10 +28,11 @@ dist/
 htmlcov/
 coverage.xml
 datasets/
-astronomy-data/
 
 # Editor and operating-system files
 .idea/
 .vscode/
 .DS_Store
 Thumbs.db
+
+astronomy-data/

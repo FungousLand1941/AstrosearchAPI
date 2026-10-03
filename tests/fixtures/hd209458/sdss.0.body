@@ -1,0 +1,87 @@
+[
+  {
+    "TableName": "Table1",
+    "Rows": [
+      {
+        "objID": 1237680272035348495,
+        "dist_arcsec": 0.494417166253914,
+        "ra": 330.794928795761,
+        "dec": 18.8842131594222,
+        "raErr": 0.402255264154244,
+        "decErr": 0.399986869406192,
+        "mjd": 55120,
+        "type": 3,
+        "clean": 0,
+        "mode": 1,
+        "psfMag_u": 9.259152,
+        "psfMag_g": 14.00349,
+        "psfMag_r": 11.10903,
+        "psfMag_i": 13.8714,
+        "psfMag_z": 8.236055,
+        "psfMagErr_r": 0.0004295507,
+        "modelMag_r": 11.28877,
+        "photoz": -9999,
+        "photozErr": -9999,
+        "specz": null,
+        "speczErr": null,
+        "specClass": ""
+      },
+      {
+        "objID": 1237680272035348531,
+        "dist_arcsec": 9.49240745379916,
+        "ra": 330.797750803297,
+        "dec": 18.8848458602526,
+        "raErr": 0.401807074513092,
+        "decErr": 0.399717026158513,
+        "mjd": 55120,
+        "type": 6,
+        "clean": 0,
+        "mode": 1,
+        "psfMag_u": 24.63466,
+        "psfMag_g": 25.11379,
+        "psfMag_r": 24.80213,
+        "psfMag_i": 18.31614,
+        "psfMag_z": 22.82667,
+        "psfMagErr_r": 25.23657,
+        "modelMag_r": 24.80203,
+        "photoz": null,
+        "photozErr": null,
+        "specz": null,
+        "speczErr": null,
+        "specClass": ""
+      },
+      {
+        "objID": 1237680272035348504,
+        "dist_arcsec": 9.90607948659959,
+        "ra": 330.795890948083,
+        "dec": 18.8869453976585,
+        "raErr": 0.00390464272150308,
+        "decErr": 0.00884840246505394,
+        "mjd": 55120,
+        "type": 3,
+        "clean": 0,
+        "mode": 1,
+        "psfMag_u": 24.63466,
+        "psfMag_g": 19.98073,
+        "psfMag_r": 17.49733,
+        "psfMag_i": 16.78083,
+        "psfMag_z": 22.82667,
+        "psfMagErr_r": 0.7781623,
+        "modelMag_r": 14.42974,
+        "photoz": -9999,
+        "photozErr": -9999,
+        "specz": null,
+        "speczErr": null,
+        "specClass": ""
+      }
+    ]
+  },
+  {
+    "TableName": "SqlQuery",
+    "Rows": [
+      {
+        "query": "SELECT TOP 201 n.objID AS objID, n.distance*60.0 AS dist_arcsec, p.ra, p.dec, p.raErr, p.decErr, p.mjd, p.type, p.clean, p.mode, p.psfMag_u, p.psfMag_g, p.psfMag_r, p.psfMag_i, p.psfMag_z, p.psfMagErr_r, p.modelMag_r, pz.z AS photoz, pz.zErr AS photozErr, s.z AS specz, s.zErr AS speczErr, s.class AS specClass FROM dbo.fGetNearbyObjEq(330.795020000, 18.884320000, 0.1666666667) AS n JOIN PhotoPrimary AS p ON p.objID = n.objID LEFT OUTER JOIN Photoz AS pz ON pz.objID = n.objID LEFT OUTER JOIN SpecObj AS s ON s.bestObjID = n.objID ORDER BY n.distance"
+      }
+    ]
+  }
+]

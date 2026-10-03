@@ -1,0 +1,19 @@
+{
+  "catalog": "vlass",
+  "target": "named_wr147",
+  "search": {
+    "name": "WR 147",
+    "sesame": "wr147",
+    "radius_arcsec": 3.0
+  },
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+202+Name%2C+RAJ2000%2C+DEJ2000%2C+e_RAJ2000%2C+e_DEJ2000%2C+Flux%2C+e_Flux%2C+Fpk%2C+Type%2C+Obs%2C+Flag%2C+DISTANCE%28POINT%28%27ICRS%27%2C+RAJ2000%2C+DEJ2000%29%2C+POINT%28%27ICRS%27%2C+309.181791507%2C+40.352037669%29%29+AS+match_dist+FROM+%22J%2FApJ%2F914%2F42%2Ftable5%22+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+RAJ2000%2C+DEJ2000%29%2C+CIRCLE%28%27ICRS%27%2C+309.181791507%2C+40.352037669%2C+0.0008352211%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "case": "crossmatch_abell_coma",
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+%22ACO%22%2C+%22_RA.icrs%22+AS+%22_RA.icrs%22%2C+%22_DE.icrs%22+AS+%22_DE.icrs%22%2C+%22z%22%2C+%22Count%22%2C+%22m10%22%2C+DISTANCE%28POINT%28%27ICRS%27%2C+%22_RA.icrs%22%2C+%22_DE.icrs%22%29%2C+POINT%28%27ICRS%27%2C+194.935020000%2C+27.912460000%29%29+AS+match_dist+FROM+%22VII%2F110A%2Ftable3%22+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22_RA.icrs%22%2C+%22_DE.icrs%22%29%2C+CIRCLE%28%27ICRS%27%2C+194.935020000%2C+27.912460000%2C+0.1666666667%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    }
+  ]
+}

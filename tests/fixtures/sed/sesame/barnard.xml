@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>Barnard's star</name>
+  <!-- Q8483454 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 0ms [0] -->
+    <INFO>from cache</INFO>
+    <oid>2669393</oid>
+    <otype>BY*</otype>
+    <jpos>17:57:48.49 +04:41:36.1</jpos>
+    <jradeg>269.45207696</jradeg>
+    <jdedeg>4.69336497</jdedeg>
+    <refPos>2020yCat.1350....0G</refPos>
+    <errRAmas>0.0262</errRAmas><errDEmas>0.0290</errDEmas>
+    <pm>
+      <v>10393.349</v><e>0.048</e><q>A</q><r>2020yCat.1350....0G</r>
+      <pa>355.577</pa>
+      <pmRA>-801.551</pmRA><epmRA>0.032</epmRA>
+      <pmDE>10362.394</pmDE><epmDE>0.036</epmDE>
+    </pm>
+    <Vel><v>-110.11</v><e>0.0002</e><q>A</q><r>2018MNRAS.475.1960F</r></Vel>
+    <plx><v>546.9759</v><e>0.0401</e><q>A</q><r>2020yCat.1350....0G</r></plx>
+    <spType>M4V</spType><spNum>0.00028000.0030.0000000000000000</spNum>
+    <oname>NAME Barnard's star</oname>
+    <alias>BD+04 3561a</alias>
+    <alias>AC2000 146626</alias>
+    <alias>ASCC 1153178</alias>
+    <alias>CCDM J17578+0441A</alias>
+    <alias>Ci 20 1069</alias>
+    <alias>CNS5 4449</alias>
+    <alias>CSI+04-17554</alias>
+    <alias>CSV 7737</alias>
+    <alias>1E 1755.3+0438</alias>
+    <alias>GAT 12</alias>
+    <alias>GCRV 10392</alias>
+    <alias>GEN# +0.00403561</alias>
+    <alias>G 140-24</alias>
+    <alias>GJ 699</alias>
+    <alias>GSC 00425-00184</alias>
+    <alias>GSC 00425-02502</alias>
+    <alias>HIC 87937</alias>
+    <alias>HIP 87937</alias>
+    <alias>IRAS 17553+0438</alias>
+    <alias>JP11 18</alias>
+    <alias>Karmn J17578+046</alias>
+    <alias>LFT 1385</alias>
+    <alias>LHS 57</alias>
+    <alias>LSPM J1757+0441</alias>
+    <alias>LTT 15309</alias>
+    <alias>2MASS J17574849+0441405</alias>
+    <alias>MCC 799</alias>
+    <alias>NAME Barnard's star</alias>
+    <alias>NAME Barnard Star</alias>
+    <alias>NLTT 45718</alias>
+    <alias>NSV 9910</alias>
+    <alias>8pc 549.01</alias>
+    <alias>PLX 4098</alias>
+    <alias>PLX 4098.00</alias>
+    <alias>PM J17578+0441N</alias>
+    <alias>StKM 2-1355</alias>
+    <alias>TIC 325554331</alias>
+    <alias>TYC 425-2502-1</alias>
+    <alias>UBV 15269</alias>
+    <alias>UCAC2 33428712</alias>
+    <alias>UCAC4 474-068224</alias>
+    <alias>USNO-B1.0 0946-00315199</alias>
+    <alias>USNO 347</alias>
+    <alias>USNO 876</alias>
+    <alias>uvby98 000403561</alias>
+    <alias>V* V2500 Oph</alias>
+    <alias>VVO 6</alias>
+    <alias>WEB 14849</alias>
+    <alias>WISEA J175747.94+044323.8</alias>
+    <alias>Zkh 269</alias>
+    <alias>[RHG95] 2849</alias>
+    <alias>Gaia DR3 4472832130942575872</alias>
+    <alias>Gaia DR2 4472832130942575872</alias>
+    <nrefs>924</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ====Done (2026-Sep-29,05:01:44z)==== -->

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="V">
+  <name>GJ 860 A</name>
+  <!-- Q8514929 #1 -->
+  <Resolver name="Vl=VizieR (local)"><!--delay: 0ms [0] -->
+    <INFO>++++Multiple (2) answers++++</INFO>
+    <INFO>from cache</INFO>
+    <jpos>22:28:05.34 +57:42:08.7</jpos>
+    <jradeg>337.02227</jradeg>
+    <jdedeg>+57.70242</jdedeg>
+    <oname>{Name} Gl 860</oname>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ====Done (2026-Sep-29,13:00:43z)==== -->

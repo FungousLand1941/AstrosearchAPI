@@ -1,0 +1,1250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-29T05:45:42 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-29T05:45:42">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-source=J%2FApJS%2F247%2F33%2F4fgl&amp;-meta.all=">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+
+<RESOURCE ID="yCat_22470033_1" name="J/ApJS/247/33/4fgl" type="meta">
+  <INFO name="nrows" value="5065">Number of rows of the table</INFO>
+  <DESCRIPTION>
+    The Fermi LAT fourth source catalog (4FGL) (Abdollahi+, 2020)
+    The 4th Fermi LAT point source catalog (4FGL) -- first 8 years (Aug 2008-Aug 2016)
+  </DESCRIPTION>
+
+<!-- The 4th Fermi LAT point source catalog (4FGL) _- first 8 years (Aug 2008-Aug 2016) (\originalcolumnnames) -->
+  <PARAM name="-c" datatype="char" arraysize="32*" value="">
+    <DESCRIPTION>Query from a celestial position according to ASU syntax:
+      {RA{+|-}Dec|object_name}[,eq=equinox][,ep=epoch][,rm=[min/]max]
+      (see http://vizier.cds.unistra.fr/doc/asu.html)
+    </DESCRIPTION>
+  </PARAM>
+  <LINK content-role="query" action="votable?-source=J/ApJS/247/33/4fgl&amp;">
+    Action to Query the current RESOURCE, to be completed by PARAMs and FIELDs contents
+  </LINK>
+
+  <TABLE name="J/ApJS/247/33/4fgl" nrows="5065">
+    <COOSYS ID="J2000" system="eq_FK5" equinox="J2000"/>
+    <!-- Definitions of GROUPs and FIELDs -->
+
+<!-- +++No column could be found to attach a LINK in table: J/ApJS/247/33/4fgl -->
+    <FIELD name="recno" ucd="meta.record" display="0" datatype="int" width="8"><!-- ucd="RECORD" -->
+      <DESCRIPTION>Record number assigned by the VizieR team. Should Not be used for identification.</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-5?-info=XML&amp;-out.add=.&amp;-source=J/ApJS/247/33/4fgl&amp;recno=${recno}"/>
+    </FIELD>
+    <FIELD name="4FGL" ucd="meta.id;meta.main" display="1" datatype="char" arraysize="13"><!-- ucd="ID_MAIN" -->
+      <DESCRIPTION>The 4FGL name (JHHMM.m+DDMM[c/e/i/s]) (Source_Name) (1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RAJ2000" ucd="pos.eq.ra;meta.main" ref="J2000" display="1" datatype="double" width="8" precision="4" unit="deg"><!-- ucd="POS_EQ_RA_MAIN" -->
+      <DESCRIPTION>Right ascension (J2000) (RAJ2000)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DEJ2000" ucd="pos.eq.dec;meta.main" ref="J2000" display="1" datatype="double" width="8" precision="4" unit="deg"><!-- ucd="POS_EQ_DEC_MAIN" -->
+      <DESCRIPTION>Declination (J2000) (DEJ2000)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="GLON" ucd="pos.galactic.lon" display="0" datatype="double" width="10" precision="6" unit="deg"><!-- ucd="POS_GAL_LON" -->
+      <DESCRIPTION>[0/360] Galactic longitude</DESCRIPTION>
+    </FIELD>
+    <FIELD name="GLAT" ucd="pos.galactic.lat" display="0" datatype="double" width="10" precision="6" unit="deg"><!-- ucd="POS_GAL_LAT" -->
+      <DESCRIPTION>[-88/88.8] Galactic latitude</DESCRIPTION>
+    </FIELD>
+    <FIELD name="amaj68" ucd="phys.angSize;pos.errorEllipse" display="0" datatype="double" width="9" precision="6" unit="deg"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0.004/0.8]? Long radius of error ellipse at 68% confidence (Conf_68_SemiMajor)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="amin68" ucd="phys.angSize;pos.errorEllipse" display="0" datatype="double" width="9" precision="6" unit="deg"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0.004/0.4]? Short radius of error ellipse at 68% confidence (Conf_68_SemiMinor)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PA68" ucd="pos.posAng;pos.errorEllipse" display="0" datatype="float" width="6" precision="2" unit="deg"><!-- ucd="POS_POS-ANG" -->
+      <DESCRIPTION>[-90/90]? Position angle of the 68% ellipse (Conf_68_PosAng)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="amaj95" ucd="phys.angSize;pos.errorEllipse" display="1" datatype="float" width="7" precision="4" unit="deg"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0.006/1.3]? Long radius of error ellipse at 95% confidence (Conf_95_SemiMajor)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="bmin95" ucd="phys.angSize;pos.errorEllipse" display="1" datatype="float" width="7" precision="4" unit="deg"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0.006/0.7]? Short radius of error ellipse at 95% confidence (Conf_95_SemiMinor)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PA95" ucd="pos.posAng;pos.errorEllipse" display="1" datatype="float" width="6" precision="2" unit="deg"><!-- ucd="POS_POS-ANG" -->
+      <DESCRIPTION>[-90/90]? Position angle of error ellipse at 95% confidence (Conf_95_PosAng)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ROI" ucd="obs.field" display="0" datatype="short" width="4"><!-- ucd="ID_REGION" -->
+      <DESCRIPTION>[1/1748]? RoI number (ROI_num)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="Name" ucd="meta.id" display="0" datatype="char" arraysize="17*"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>Cross-reference to the ExtendedSources extension (Extended_Source_Name)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Sig" ucd="stat.fit.goodness" display="1" datatype="double" width="9" precision="5"><!-- ucd="STAT_SIGNIFICANCE" -->
+      <DESCRIPTION>[4/793]? Source significance in {sigma} units over the 100MeV to 1TeV band (Signif_Avg)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E0" ucd="em.energy" display="0" datatype="double" width="11" precision="4" unit="MeV"><!-- ucd="PHYS_ENERGY_X" -->
+      <DESCRIPTION>[50.5/239425] Energy at which error on differential flux is minimal (Pivot_Energy)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="F1000i" ucd="phot.flux.density;em.gamma.hard" display="1" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>[8.8e-12/1.4e-6] Integral photon flux from 1 to 100GeV (Flux1000)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F1000i" ucd="stat.error" display="1" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[4.9e-12/4.4e-9]? 1{sigma} error on F1000i (Unc_Flux1000)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="EF100" ucd="phot.flux.density;em.gamma.hard" display="1" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>[5.9e-13/9.4e-9] Energy flux from 100MeV to 100GeV obtained by spectral fitting in erg/cm^2^/s (Energy_Flux100)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_EF100" ucd="stat.error" display="1" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[1.5e-13/3.3e-11]? 1{sigma} error on EF100 (Unc_Energy_Flux100)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Mod" ucd="src.spType;meta.modelled" display="1" datatype="char" arraysize="16*"><!-- ucd="MODEL_ID" -->
+      <DESCRIPTION>Spectral type in the global model ("PowerLaw", "LogParabola", "PLSuperExpCutoff") (SpetrumType)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="FpivPL" ucd="phot.flux;arith.ratio" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.MeV**-1.s**-1"><!-- ucd="PHOT_FLUX_REL" -->
+      <DESCRIPTION>? Differential flux (K) at Pivot_Energy in PowerLaw fit (PL_Flux_Density)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_FpivPL" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.MeV**-1.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} error on FpivPL (Unc_PL_Flux_Density)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PLGam" ucd="spect.index" display="1" datatype="double" width="9" precision="6"><!-- ucd="SPECT_SP-INDEX" -->
+      <DESCRIPTION>[0.9/3.9]? Photon index when fitting with PowerLaw (PL_Index)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_PLGam" ucd="spect.index" display="0" datatype="double" width="9" precision="6"><!-- ucd="SPECT_SP-INDEX" -->
+      <DESCRIPTION>[0.001/0.4]? 1{sigma} error on PLGam (Unc_PL_Index)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FpivLP" ucd="phot.flux;arith.ratio" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.MeV**-1.s**-1"><!-- ucd="PHOT_FLUX_REL" -->
+      <DESCRIPTION>Differential flux (K) at Pivot_Energy in LogParabola fit (LP_Flux_Density) (2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_FpivLP" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.MeV**-1.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} error on FpivLP (Unc_LP_Flux_Density)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="LPalpha" ucd="spect.index" display="0" datatype="double" width="9" precision="6"><!-- ucd="SPECT_SP-INDEX" -->
+      <DESCRIPTION>[-0.4/4.6] Photon index at Pivot_Energy ({alpha} of Equation 2) when fitting with LogParabola (LP_Index) (2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_LPalpha" ucd="spect.index" display="0" datatype="double" width="9" precision="6"><!-- ucd="SPECT_SP-INDEX" -->
+      <DESCRIPTION>[0.001/4.5]? 1{sigma} error on LPalpha (Unc_LP_Index)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="LPbeta" ucd="stat.fit.param" display="0" datatype="double" width="9" precision="6"><!-- ucd="FIT_PARAM_VALUE" -->
+      <DESCRIPTION>[-0.2/1] Curvature parameter ({beta} of Equation 2) when fitting with LogParabola (LP_beta) (2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_LPbeta" ucd="stat.fit.param" display="0" datatype="double" width="9" precision="6"><!-- ucd="FIT_PARAM_VALUE" -->
+      <DESCRIPTION>[0.0001/4.3]? 1{sigma} error on LPbeta (Unc_LP_beta)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="SigCurv1" ucd="stat.fit.goodness" display="0" datatype="double" width="10" precision="6"><!-- ucd="STAT_SIGNIFICANCE" -->
+      <DESCRIPTION>[0/208] Significance (in {sigma}units) of the fit improvement between PowerLaw and LogParabola (LP_SigCurv) (3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="FpivPLEC" ucd="phot.flux;arith.ratio" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.MeV**-1.s**-1"><!-- ucd="PHOT_FLUX_REL" -->
+      <DESCRIPTION>? Differential flux (K) at Pivot_Energy in PLSuperExpCutoff fit (PLEC_Flux_Density) (4)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_FpivPLEC" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.MeV**-1.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} error on FpivPLEC (Unc_PLEC_Flux_Density)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PLECGam" ucd="spect.index" display="0" datatype="double" width="9" precision="6"><!-- ucd="SPECT_SP-INDEX" -->
+      <DESCRIPTION>[-0.5/3.5]? Low-energy photon index ({Gamma} of Equation 4) when fitting with PLSuperExpCutoff (PLEC_Index) (4)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_PLECGam" ucd="spect.index" display="0" datatype="double" width="9" precision="6"><!-- ucd="SPECT_SP-INDEX" -->
+      <DESCRIPTION>[0.0001/7]? 1{sigma} error on PLECGam (Unc_PLEC_Index)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PLECa" ucd="stat.fit.param" display="0" datatype="double" width="9" precision="6"><!-- ucd="FIT_PARAM_VALUE" -->
+      <DESCRIPTION>[-0.001/0.097]? Exponential factor (a of Equation 4) when fitting with PLSuperExpCutoff (PLEC_Expfactor) (4)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_PLECa" ucd="stat.error" display="0" datatype="double" width="9" precision="6"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[1.6e-5/0.1]? 1{sigma} error on PLECExpf (Unc_PLEC_Expfactor)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PLECb" ucd="stat.fit.param" display="0" datatype="double" width="9" precision="6"><!-- ucd="FIT_PARAM_VALUE" -->
+      <DESCRIPTION>[0.46/1]? Exponential index (b of Equation 4) when fitting with PLSuperExpCutoff (PLEC_Exp_Index) (4)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_PLECb" ucd="stat.error" display="0" datatype="double" width="9" precision="6"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0.006/0.04]? 1{sigma} error on PLECb (Unc_PLEC_Exp_Index)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="SigCurv2" ucd="stat.fit.goodness" display="0" datatype="double" width="10" precision="6"><!-- ucd="STAT_SIGNIFICANCE" -->
+      <DESCRIPTION>[0/214] Significance (in {sigma} units) of the fit improvement between PLSuperExpCutoff and LogParabola (PEC_Sig Curv) (3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Npred" ucd="meta.number" display="0" datatype="double" width="11" precision="4"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>[16.3/205312] Predicted number of events in the model</DESCRIPTION>
+    </FIELD>
+    <FIELD name="F50" ucd="phot.flux;em.gamma.hard" display="1" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="SPECT_FLUX_VALUE" -->
+      <DESCRIPTION>[6e-20/6e-6] Integral photon flux in 50-100MeV (Band 1) (Flux_Band1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F50" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-4.8e-7/-7.1e-9]? 1{sigma} lower error on F50 (Lo_Unc_Flux_Band1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F50" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F50 (Up_Unc_Flux_Band1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100" ucd="phot.flux.density;em.gamma.hard" display="1" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>[2.4e-18/6.1e-6]Integral photon flux in 100-300MeV (Band 2) (Flux_Band2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-3.4e-7/-8.7e-10]? 1{sigma} lower error on F100 (Lo_Unc_Flux_Band2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100 (Up_Unc_Flux_Band2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F300" ucd="phot.flux" display="1" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="SPECT_FLUX_VALUE" -->
+      <DESCRIPTION>[3.8e-22/3.5e-6] Integral photon flux in 300Mev-1GeV (Band 3) (Flux_Band3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F300" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-4e-8/-6.6e-11]? 1{sigma} lower error on F300 (Lo_Unc_Flux_Band3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F300" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F300 (up_Unc_Flux_Band3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F1000" ucd="phot.flux.density;em.gamma.hard" display="1" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>[4.8e-20/1.2e-6] Integral photon flux in 1-3GeV (Band 4) (Flux_Band4)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F1000" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-5.1e-9/-1.8e-11]? 1{sigma} lower error on F1000 (Lo_Unc_Flux_Band4)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F1000" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F1000 (Up_Unc_Flux_Band4)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F3000" ucd="phot.flux" display="1" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="SPECT_FLUX_VALUE" -->
+      <DESCRIPTION>[5.8e-20/2.3e-7] Integral photon flux in 3-10GeV (Band 5) (Flux_Band5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F3000" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.3e-9/-5.2e-12]? 1{sigma} lower error on F3000 (Lo_Unc_Flux_Band5)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F3000" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F3000 (Up_Unc_Flux_Band5)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F10000" ucd="phot.flux.density;em.gamma.hard" display="1" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>[3e-24/1.2e-8] Integral photon flux in 10-30GeV (Band 6) (Flux_Band6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F10000" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-8e-10/-1.6e-12]? 1{sigma} lower error on F10000 (Lo_Unc_Flux_Band6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F10000" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F10000 (Up_Unc_Flux_Band6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F30000" ucd="phot.flux" display="1" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="SPECT_FLUX_VALUE" -->
+      <DESCRIPTION>[5.5e-24/2.4e-9] Integral photon flux in 30-300GeV (Band 7) (Flux_Band7)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F30000" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-2.3e-10/-1.4e-12]? 1{sigma} lower error on F30000 (Lo_Unc_Flux_Band7)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F30000" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F30000 (Up_Unc_Flux_Band7)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="nuFnu50" ucd="instr.bandwidth" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="SPECT_FLUX_VALUE" -->
+      <DESCRIPTION>[9.8e-24/9.7e-10] Spectral energy distribution over 50-100MeV in erg/cm2/s (nuFnu_Band1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="nuFnu100" ucd="instr.bandwidth" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="SPECT_FLUX_VALUE" -->
+      <DESCRIPTION>[5.8e-22/1.6e-9] Spectral energy distribution over 100-300MeV in erg/cm2/s (nuFnu_Band2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="nuFnu300" ucd="instr.bandwidth" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="SPECT_FLUX_VALUE" -->
+      <DESCRIPTION>[2.6e-25/2.5e-9] Spectral energy distribution over 300MeV-1GeV in erg/cm2/s (nuFnu_Band3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="nuFnu1000" ucd="instr.bandwidth" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="SPECT_FLUX_VALUE" -->
+      <DESCRIPTION>[1.2e-22/2.7e-9] Spectral energy distribution over 1-3GeV in erg/cm2/s (nuFnu_Band4)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="nuFnu3000" ucd="instr.bandwidth" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="SPECT_FLUX_VALUE" -->
+      <DESCRIPTION>[3e-22/1.4e-9] Spectral energy distribution over 3-10GeV in erg/cm2/s (nuFnu_Band5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="nuFnu10000" ucd="instr.bandwidth" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="SPECT_FLUX_VALUE" -->
+      <DESCRIPTION>[6.8e-26/2.2e-10] Spectral energy distribution over 10-30GeV in erg/cm2/s (nuFnu_Band6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="nuFnu30000" ucd="instr.bandwidth" display="0" datatype="double" width="12" precision="E5" unit="mW.m**-2"><!-- ucd="SPECT_FLUX_VALUE" -->
+      <DESCRIPTION>[1.5e-25/1.2e-10] Spectral energy distribution over 30-300GeV in erg/cm2/s (nuFnu_Band7)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS50" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>[0/25]? Square root of the Test Statistic in 50-100MeV (Sqrt_TS_Band1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="TS100" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>[0/122]? Square root of the Test Statistic in 100-300MeV (Sqrt_TS_Band2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="TS300" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>[0/351]? Square root of the Test Statistic in 300MeV-1GeV (Sqrt_TS_Band3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="TS1000" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>[0/544]? Square root of the Test Statistic in 1-3GeV (Sqrt_TS_Band4)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="TS3000" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>[0/466]? Square root of the Test Statistic in 3-10GeV (Sqrt_TS_Band5)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="TS10000" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>[0/151]? Square root of the Test Statistic in 10-30GeV (Sqrt_TS_Band6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="TS30000" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>[0/103]? Square root of the Test Statistic in 30-300GeV (Sqrt_TS_Band7)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="VarInd" ucd="src.var.index" display="1" datatype="double" width="12" precision="6"><!-- ucd="VAR_INDEX" -->
+      <DESCRIPTION>[0.3/50906]? Variability (Variability_Index) (5)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="fVar" ucd="phot.mag;arith.ratio" display="0" datatype="double" width="9" precision="6"><!-- ucd="VAR_AMPLITUDE_RATIO" -->
+      <DESCRIPTION>[0/2.6] Fractional variability computed from the fluxes in each year (Frac_Variability)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_fVar" ucd="stat.error" display="0" datatype="double" width="9" precision="6"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1{sigma} error on fVar (Unc_Frac_Variability)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="SigPk" ucd="stat.fit.goodness" display="0" datatype="double" width="9" precision="5"><!-- ucd="STAT_SIGNIFICANCE" -->
+      <DESCRIPTION>[3.2/356]? Source significance in peak interval in {sigma} units (Signif_Peak)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FPk" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>[9.8e-10/5.2e-6]? Peak integral photon flux from 100MeV to 100GeV (Flux_Peak)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_FPk" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[2.4e-10/3e-8]? 1{sigma} error on FPk (Unc_Flux_Peak)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="TPk" ucd="time.epoch" display="0" datatype="int" width="9" unit="s"><!-- ucd="TIME_MISC" -->
+      <DESCRIPTION>[255223712/476029728]? Time of center of interval in which peak flux was measured (Time_Peak)</DESCRIPTION>
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="IntPk" ucd="time.interval;phys.size" display="0" datatype="double" width="12" precision="E5" unit="s"><!-- ucd="TIME_INTERVAL" -->
+      <DESCRIPTION>[3.13e+7/3.16e+7]? Length of interval in which peak flux was measured (Peak_Interval)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100y1" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in year 1 (Flux_History1) (6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100y1" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-7e-8/-3.5e-11]? 1{sigma} lower error on F100y1 (Lo_Unc_Flux_History1) (7)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100y1" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100y1 (Up_Unc_Flux_History1) (7)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100y2" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in year 2 (Flux_History2) (6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100y2" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-6.6e-8/-1.8e-11]? 1{sigma} lower error on F100y2 (Lo_Unc_Flux_History2) (7)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100y2" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100y2 (Up_Unc_Flux_History2) (7)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100y3" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in year 3 (Flux_History3) (6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100y3" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-6.7e-8/-6.1e-11]? 1{sigma} lower error on F100y3 (Lo_Unc_Flux_History3) (7)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100y3" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100y3 (Up_Unc_Flux_History3) (7)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100y4" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in year 4 (Flux_History4) (6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100y4" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-6.7e-8/-2e-11]? 1{sigma} lower error on F100y4 (Lo_Unc_Flux_History4) (7)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100y4" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100y4 (Up_Unc_Flux_History4) (7)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100y5" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in year 5 (Flux_History5) (6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100y5" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-7e-8/-2.7e-11]? 1{sigma} lower error on F100y5 (Lo_Unc_Flux_History5) (7)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100y5" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100y5 (Up_Unc_Flux_History5) (7)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100y6" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in year 6 (Flux_History6) (6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100y6" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-6.7e-8/-2.2e-11]? 1{sigma} lower error on F100y6 (Lo_Unc_Flux_History6) (7)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100y6" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100y6 (Up_Unc_Flux_History6) (7)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100y7" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in year 7 (Flux_History7) (6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100y7" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-6.8e-8/-2.9e-11]? 1{sigma} lower error on F100y7 (Lo_Unc_Flux_History7) (7)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100y7" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100y7 (Up_Unc_Flux_History7) (7)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100y8" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in year 8 (Flux_History8) (6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100y8" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-6.61e-8/-4.8e-11]? 1{sigma} lower error on F100y8 (Lo_Unc_Flux_History8) (7)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100y8" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100y8 (Up_Unc_Flux_History8) (7)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="TS100y1" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in year 1 (Sqrt_TS_History1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100y2" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in year 2 (Sqrt_TS_History2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100y3" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in year 3 (Sqrt_TS_History3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100y4" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in year 4 (Sqrt_TS_History4)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100y5" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in year 5 (Sqrt_TS_History5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100y6" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in year 6 (Sqrt_TS_History6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100y7" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in year 7 (Sqrt_TS_History7)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100y8" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in year 8 (Sqrt_TS_History8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="VarInd2" ucd="meta.code;src.var.index" display="0" datatype="double" width="11" precision="4"><!-- ucd="VAR_INDEX" -->
+      <DESCRIPTION>? Variability index over two-month intervals (Variability2_Index) (8)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="fVar2" ucd="phot.mag;arith.ratio" display="0" datatype="double" width="9" precision="6"><!-- ucd="VAR_AMPLITUDE_RATIO" -->
+      <DESCRIPTION>Fractional variability computed from the fluxes every two months (Frac2_Variability)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_fVar2" ucd="stat.error" display="0" datatype="double" width="9" precision="6"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1{sigma} error on fVar2 (Unc_Frac2_Variability)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="SigPk2" ucd="stat.fit.goodness" display="0" datatype="double" width="9" precision="5"><!-- ucd="STAT_SIGNIFICANCE" -->
+      <DESCRIPTION>? Source significance in peak interval in {sigma} units (Signif2_Peak)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FPk2" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>? Peak integral photon flux from 100MeV to 100GeV (Flux2_Peak)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_FPk2" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} error on FPk2 (Unc_Flux2_Peak)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="TPk2" ucd="time.epoch" display="0" datatype="int" width="9" unit="s"><!-- ucd="TIME_MISC" -->
+      <DESCRIPTION>? Time of center of interval in which peak flux was measured (Time2_Peak)</DESCRIPTION>
+      <VALUES null="-2147483648" />
+    </FIELD>
+    <FIELD name="IntPk2" ucd="time.interval;phys.size" display="0" datatype="double" width="12" precision="E5" unit="s"><!-- ucd="TIME_INTERVAL" -->
+      <DESCRIPTION>? Length of interval in which peak flux was measured (Peak2_Interval)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m1" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 1st two-month interval (Flux2_History1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m1" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.2e-7/-2.2e-10]? 1{sigma} lower error on F100_2m1</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m1" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m1</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m2" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 2nd two-month interval (Flux2_History2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m2" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.2e-7/-1.2e-10]? 1{sigma} lower error on F100_2m2</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m2" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m2</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m3" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 3rd two-month interval (Flux2_History3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m3" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.2e-7/-1.9e-10]? 1{sigma} lower error on F100_2m3</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m3" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m3</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m4" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 4th two-month interval (Flux2_History4)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m4" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.2e-7/-1.3e-10]? 1{sigma} lower error on F100_2m4</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m4" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m4</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m5" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 5th two-month interval (Flux2_History5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m5" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.2e-7/-2.1e-10]? 1{sigma} lower error on F100_2m5</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m5" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m5</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m6" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 6th two-month interval (Flux2_History6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m6" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.2e-7/-1.4e-10]? 1{sigma} lower error on F100_2m6</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m6" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m6</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m7" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 7th two-month interval (Flux2_History7)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m7" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.1e-07/-1.5e-10]? 1{sigma} lower error on F100_2m7</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m7" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m7</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m8" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 8th two-month interval (Flux2_History8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m8" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.1e-7/-1.1e-10]? 1{sigma} lower error on F100_2m8</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m8" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m8</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m9" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 9th two-month interval (Flux2_History9)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m9" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.2e-7/-1.3e-10]? 1{sigma} lower error on F100_2m9</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m9" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m9</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m10" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 10th two-month interval (Flux2_History10)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m10" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.2e-07/-1.3e-10]? 1{sigma} lower error on F100_2m10</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m10" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m10</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m11" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 11th two-month interval (Flux2_History11)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m11" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.2e-7/-1.7e-10]? 1{sigma} lower error on F100_2m11</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m11" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m11</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m12" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 12th two-month interval (Flux2_History12)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m12" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.1e-7/-1.2e-10]? 1{sigma} lower error on F100_2m12</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m12" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m12</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m13" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 13th two-month interval (Flux2_History13)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m13" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.2e-7/-1.3e-10]? 1{sigma} lower error on F100_2m13</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m13" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m13</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m14" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 14th two-month interval (Flux2_History14)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m14" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.1e-07/-1.4e-10]? 1{sigma} lower error on F100_2m14</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m14" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m14</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m15" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 15th two-month interval (Flux2_History15)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m15" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.1e-7/-9.3e-11]? 1{sigma} lower error on F100_2m15</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m15" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m15</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m16" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 16th two-month interval (Flux2_History16)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m16" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.2e-7/-1.2e-10]? 1{sigma} lower error on F100_2m16</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m16" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m16</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m17" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 17th two-month interval (Flux2_History17)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m17" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.2e-7/-1.9e-10]? 1{sigma} lower error on F100_2m17</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m17" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m17</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m18" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 18th two-month interval (Flux2_History18)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m18" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.2e-7/-1.4e-10]? 1{sigma} lower error on F100_2m18</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m18" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m18</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m19" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 19th two-month interval (Flux2_History19)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m19" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.2e-7/-1.3e-10]? 1{sigma} lower error on F100_2m19</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m19" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m19</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m20" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 20th two-month interval (Flux2_History20)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m20" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.1e-07/-1.8e-10]? 1{sigma} lower error on F100_2m20</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m20" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m20</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m21" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 21th two-month interval (Flux2_History21)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m21" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.1e-7/-1e-10]? 1{sigma} lower error on F100_2m21</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m21" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m21</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m22" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 22th two-month interval (Flux2_History22)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m22" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.2e-7/-2.1e-10]? 1{sigma} lower error on F100_2m22</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m22" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m22</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m23" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 23th two-month interval (Flux2_History23)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m23" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.2e-7/-1.7e-10]? 1{sigma} lower error on F100_2m23</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m23" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m23</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m24" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 24th two-month interval (Flux2_History24)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m24" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.2e-7/-1.3e-10]? 1{sigma} lower error on F100_2m24</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m24" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m24</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m25" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 25th two-month interval (Flux2_History25)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m25" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.2e-7/-1.4e-10]? 1{sigma} lower error on F100_2m25</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m25" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m25</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m26" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 26th two-month interval (Flux2_History26)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m26" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.2e-7/-1.4e-10]? 1{sigma} lower error on F100_2m26</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m26" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m26</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m27" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 27th two-month interval (Flux2_History27)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m27" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.1e-7/-1.1e-10]? 1{sigma} lower error on F100_2m27</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m27" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m27</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m28" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 28th two-month interval (Flux2_History28)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m28" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.1e-07/-1.6e-10]? 1{sigma} lower error on F100_2m28</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m28" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m28</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m29" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 29th two-month interval (Flux2_History29)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m29" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.3e-7/-9.4e-11]? 1{sigma} lower error on F100_2m29</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m29" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m29</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m30" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 30th two-month interval (Flux2_History30)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m30" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.2e-7/-1.3e-10]? 1{sigma} lower error on F100_2m30</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m30" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m30</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m31" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 31th two-month interval (Flux2_History31)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m31" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.2e-7/-1.3e-10]? 1{sigma} lower error on F100_2m31</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m31" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m31</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m32" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 32th two-month interval (Flux2_History32)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m32" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.2e-07/-1.6e-10]? 1{sigma} lower error on F100_2m32</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m32" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m32</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m33" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 33th two-month interval (Flux2_History33)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m33" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.2e-7/-1e-10]? 1{sigma} lower error on F100_2m33</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m33" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m33</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m34" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 34th two-month interval (Flux2_History34)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m34" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.3e-7/-1.2e-10]? 1{sigma} lower error on F100_2m34</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m34" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m34</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m35" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 35th two-month interval (Flux2_History35)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m35" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.1e-7/-1.5e-10]? 1{sigma} lower error on F100_2m35</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m35" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m35</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m36" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 36th two-month interval (Flux2_History36)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m36" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.1e-7/-1.7e-10]? 1{sigma} lower error on F100_2m36</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m36" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m36</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m37" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 37th two-month interval (Flux2_History37)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m37" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.3e-7/-1.1e-10]? 1{sigma} lower error on F100_2m37</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m37" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m37</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m38" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 38th two-month interval (Flux2_History38)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m38" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.3e-7/-1e-10]? 1{sigma} lower error on F100_2m38</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m38" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m38</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m39" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 39th two-month interval (Flux2_History39)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m39" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.2e-7/-1.3e-10]? 1{sigma} lower error on F100_2m39</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m39" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m39</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m40" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 40th two-month interval (Flux2_History40)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m40" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.1e-7/-9.6e-11]? 1{sigma} lower error on F100_2m40</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m40" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m40</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m41" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 41th two-month interval (Flux2_History41)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m41" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.1e-7/-1.3e-10]? 1{sigma} lower error on F100_2m41</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m41" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m41</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m42" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 42th two-month interval (Flux2_History42)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m42" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.1e-7/-2.1e-10]? 1{sigma} lower error on F100_2m42</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m42" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m42</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m43" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 43th two-month interval (Flux2_History43)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m43" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.2e-7/-1.7e-10]? 1{sigma} lower error on F100_2m43</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m43" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m43</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m44" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 44th two-month interval (Flux2_History44)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m44" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.2e-7/-1.1e-10]? 1{sigma} lower error on F100_2m44</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m44" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m44</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m45" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 45th two-month interval (Flux2_History45)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m45" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.3e-7/-2.2e-10]? 1{sigma} lower error on F100_2m45</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m45" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m45</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m46" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 46th two-month interval (Flux2_History46)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m46" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.2e-7/-1.4e-10]? 1{sigma} lower error on F100_2m46</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m46" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m46</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m47" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 47th two-month interval (Flux2_History47)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m47" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.1e-7/-1.2e-10]? 1{sigma} lower error on F100_2m47</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m47" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m47</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F100_2m48" ucd="phot.flux.density;em.gamma.hard" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="PHOT_FLUX_GAMMA" -->
+      <DESCRIPTION>Integral photon flux from 100MeV to 100GeV in 48th two-month interval (Flux2_History48)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_F100_2m48" ucd="stat.error" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-1.2e-7/-1.4e-10]? 1{sigma} lower error on F100_2m48</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_F100_2m48" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="E5" unit="ph.cm**-2.s**-1"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1{sigma} upper error on F100_2m48</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="TS100_2m1" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in first two-month interval (Sqrt_TS2_History1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m2" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 2nd two-month interval (Sqrt_TS2_History2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m3" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 3rd two-month interval (Sqrt_TS2_History3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m4" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 4th two-month interval (Sqrt_TS2_History4)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m5" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 5th two-month interval (Sqrt_TS2_History5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m6" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 6th two-month interval (Sqrt_TS2_History6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m7" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 7th two-month interval (Sqrt_TS2_History7)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m8" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 8th two-month interval (Sqrt_TS2_History8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m9" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 9th two-month interval (Sqrt_TS2_History9)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m10" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 10th two-month interval (Sqrt_TS2_History10)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m11" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 11th two-month interval (Sqrt_TS2_History11)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m12" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 12th two-month interval (Sqrt_TS2_History12)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m13" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 13th two-month interval (Sqrt_TS2_History13)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m14" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 14th two-month interval (Sqrt_TS2_History14)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m15" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 15th two-month interval (Sqrt_TS2_History15)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m16" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 16th two-month interval (Sqrt_TS2_History16)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m17" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 17th two-month interval (Sqrt_TS2_History17)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m18" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 18th two-month interval (Sqrt_TS2_History18)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m19" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 19th two-month interval (Sqrt_TS2_History19)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m20" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 20th two-month interval (Sqrt_TS2_History20)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m21" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 21th two-month interval (Sqrt_TS2_History21)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m22" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 22th two-month interval (Sqrt_TS2_History22)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m23" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 23th two-month interval (Sqrt_TS2_History23)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m24" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 24th two-month interval (Sqrt_TS2_History24)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m25" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 25th two-month interval (Sqrt_TS2_History25)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m26" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 26th two-month interval (Sqrt_TS2_History26)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m27" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 27th two-month interval (Sqrt_TS2_History27)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m28" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 28th two-month interval (Sqrt_TS2_History28)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m29" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 29th two-month interval (Sqrt_TS2_History29)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m30" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 30th two-month interval (Sqrt_TS2_History30)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m31" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 31th two-month interval (Sqrt_TS2_History31)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m32" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 32th two-month interval (Sqrt_TS2_History32)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m33" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 33th two-month interval (Sqrt_TS2_History33)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m34" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 34th two-month interval (Sqrt_TS2_History34)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m35" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 35th two-month interval (Sqrt_TS2_History35)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m36" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 36th two-month interval (Sqrt_TS2_History36)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m37" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 37th two-month interval (Sqrt_TS2_History37)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m38" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 38th two-month interval (Sqrt_TS2_History38)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m39" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 39th two-month interval (Sqrt_TS2_History39)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m40" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 40th two-month interval (Sqrt_TS2_History40)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m41" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 41th two-month interval (Sqrt_TS2_History41)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m42" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 42th two-month interval (Sqrt_TS2_History42)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m43" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 43th two-month interval (Sqrt_TS2_History43)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m44" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 44th two-month interval (Sqrt_TS2_History44)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m45" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 45th two-month interval (Sqrt_TS2_History45)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m46" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 46th two-month interval (Sqrt_TS2_History46)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m47" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 47th two-month interval (Sqrt_TS2_History47)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="TS100_2m48" ucd="stat.likelihood;obs" display="0" datatype="double" width="10" precision="6"><!-- ucd="OBS_DETECT-SIGNIF" -->
+      <DESCRIPTION>Square root of the Test Statistic in 48th two-month interval (Sqrt_TS2_History48)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="FGL" ucd="meta.id.cross" display="1" datatype="char" arraysize="18"><!-- ucd="ID_CROSSID" -->
+      <DESCRIPTION>Most recent correspondence to previous FGL source catalogs, if any (ASSOC_FGL)</DESCRIPTION>
+<!-- Most recent correspondence to previous FGL source catalogs, if any (ASSOC_FGL) \linkRole{3FGL ; 2FGL and 1FGL catalogs (Acero+, 2015, J/ApJS/218/23 ; Nolan+, 2012, J/ApJS/199/31 or Abdo+, 2010, J/ApJS/188/405)} -->
+
+    </FIELD>
+    <FIELD name="FHL" ucd="meta.id.cross" display="0" datatype="char" arraysize="18"><!-- ucd="ID_CROSSID" -->
+      <DESCRIPTION>Most recent correspondence to previous FHL source catalogs, if any (ASSOC_FHL)</DESCRIPTION>
+<!-- Most recent correspondence to previous FHL source catalogs, if any (ASSOC_FHL) \linkRole{3FHL ; 2FHL and 1FHL catalogs (Ajello+, 2017, J/ApJS/232/18 ; Ackermann+, 2016J/ApJS/222/5 or Ackermann+, 2013, J/ApJS/209/34)} -->
+
+    </FIELD>
+    <FIELD name="2AGL" ucd="meta.id.cross" display="0" datatype="char" arraysize="12"><!-- ucd="ID_CROSSID" -->
+      <DESCRIPTION>Name of likely corresponding 2AGL source, if any (ASSOC_GAM1)</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-4?-info=XML&amp;-out.add=.&amp;-source=J/A+A/627/A13/table10&amp;2AGL=2AGL*${2AGL}"/>
+    </FIELD>
+    <FIELD name="3EG" ucd="meta.id.cross" display="0" datatype="char" arraysize="14"><!-- ucd="ID_CROSSID" -->
+      <DESCRIPTION>Name of likely corresponding 3EG source, if any (ASSOC_GAM2)</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-4?-info=XML&amp;-out.add=.&amp;-source=J/ApJS/123/79/3eg&amp;3EG=${3EG$+2}"/>
+    </FIELD>
+    <FIELD name="EGR" ucd="meta.id.cross" display="0" datatype="char" arraysize="15"><!-- ucd="ID_CROSSID" -->
+      <DESCRIPTION>Name of likely corresponding EGR source, if any (ASSOC_GAM3)</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-4?-info=XML&amp;-out.add=.&amp;-source=J/A+A/489/849/egr&amp;Name=${EGR}"/>
+    </FIELD>
+    <FIELD name="f_TeVCat" ucd="meta.code" display="0" datatype="char" arraysize="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Flag on TeVCat (TEVCAT_FLAG) (9)</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR?-6N&amp;-info=XML&amp;-out.add=.&amp;&amp;lt;&amp;quot;Note&amp;quot;&amp;catid=22470033&amp;notid=9&amp;-out.emph=${f_TeVCat}"/>
+    </FIELD>
+    <FIELD name="TeVCat" ucd="meta.id.cross" display="0" datatype="char" arraysize="21*"><!-- ucd="ID_CROSSID" -->
+      <DESCRIPTION>Name of likely corresponding TeV source from TeVCat, if any (ASSOC_TEV)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Cl1" ucd="meta.code.class" display="1" datatype="char" arraysize="5"><!-- ucd="CLASS_CODE" -->
+      <DESCRIPTION>Class designation for associated source; see Table 7 (CLASS1) (10)</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR?-6N&amp;-info=XML&amp;-out.add=.&amp;&amp;lt;&amp;quot;Note&amp;quot;&amp;catid=22470033&amp;notid=10&amp;-out.emph=${Cl1}"/>
+    </FIELD>
+    <FIELD name="Cl2" ucd="meta.code.class" display="0" datatype="char" arraysize="3"><!-- ucd="CLASS_CODE" -->
+      <DESCRIPTION>Class designation for low-confidence association (CLASS2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Assoc1" ucd="meta.id.cross" display="1" datatype="char" arraysize="28*"><!-- ucd="ID_CROSSID" -->
+      <DESCRIPTION>Name of identified or likely associated source</DESCRIPTION>
+<!-- Name of identified or likely associated source \linkRole{SIMBAD database} -->
+
+      <LINK href="http://simbad.cds.unistra.fr/simbad/sim-id?Ident=${Assoc1}"/>
+    </FIELD>
+    <FIELD name="Assoc2" ucd="meta.id.assoc" display="0" datatype="char" arraysize="24*"><!-- ucd="ID_ASSOCIATED" -->
+      <DESCRIPTION>Name of low-confidence association or of enclosing extended source</DESCRIPTION>
+    </FIELD>
+    <FIELD name="ProbBY" ucd="stat.fit.goodness" display="0" datatype="double" width="9" precision="6"><!-- ucd="STAT_PROBABILITY" -->
+      <DESCRIPTION>[0/1]? Probability of association according to the Bayesian method (ASSOC_PROB_BAY) (11)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ProbLR" ucd="stat.likelihood;stat.probability" display="0" datatype="double" width="9" precision="6"><!-- ucd="STAT_LIKELIHOOD-RATIO" -->
+      <DESCRIPTION>[0/1]? Probability of association according to the Likelihood Ratio method (ASSOC_PROB_LR) (12)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="RACdeg" ucd="meta.id.assoc;pos.eq.ra" display="0" datatype="double" width="14" precision="10" unit="deg"><!-- ucd="POS_EQ_RA_OTHER" -->
+      <DESCRIPTION>? Counterpart Assoc1 right ascension (RA_Counterpart)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="DECdeg" ucd="meta.id.assoc;pos.eq.dec" display="0" datatype="double" width="14" precision="10" unit="deg"><!-- ucd="POS_EQ_DEC_OTHER" -->
+      <DESCRIPTION>? Counterpart Assoc1 declination (DEC_Counterpart)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="errPos" ucd="meta.code.qual;instr.precision" display="0" datatype="double" width="11" precision="8" unit="deg"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[4e-08/2.5]? 95% precision of the counterpart localization (Unc_Counterpart) (13)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Flags" ucd="meta.code.error" display="1" datatype="short" width="4"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/2320] Source flags (binary coding as in Table 5) (0=no warning) (14)</DESCRIPTION>
+<!-- [0/2320] Source flags (binary coding as in Table 5) (0=no warning) (14) \pFile{_640x300}{J/ApJS/247/33/flags.htx}{Binary flag}; see text and Table 5 for more explanations -->
+
+
+<!-- No link in: \showFlag{${$cat}/flags}{${}} -->
+    </FIELD>
+    <FIELD name="LC" ucd="meta.ref.url" display="1" datatype="char" arraysize="2"><!-- ucd="DATA_LINK" -->
+      <DESCRIPTION>2-month and 1-year light curves for this source</DESCRIPTION>
+
+<!-- No link in: \pFile{_760x600}{${$cat}/lcs/${4FGL}_LC.png}{LC} -->
+    </FIELD>
+    <FIELD name="Simbad" ucd="meta.ref.url" display="1" datatype="char" arraysize="6*"><!-- ucd="DATA_LINK" -->
+      <DESCRIPTION>Simbad column added by the CDS</DESCRIPTION>
+<!-- ask the {\bf\fg{FireBrick}Simbad} data-base about this object -->
+
+    </FIELD>
+  </TABLE>
+<INFO name="matches" value="2">matching records</INFO>
+</RESOURCE>
+</VOTABLE>

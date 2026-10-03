@@ -1,0 +1,12 @@
+{
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://skyserver.sdss.org/dr18/SkyServerWS/ConeSearch/ConeSearchService?ra=187.2779154&dec=2.0523883&sr=0.1666666667&format=csv",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "text/plain",
+      "match": []
+    }
+  ]
+}

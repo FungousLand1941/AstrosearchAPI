@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-29T03:47:12 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-29T03:47:12">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-meta=&amp;-meta.max=50&amp;-words=Fermi+LAT&amp;-ucd=pos.errorEllipse">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+
+<RESOURCE ID="yCat_9067" name="IX/67" type="meta">
+  <DESCRIPTION>Incremental Fermi LAT 4th source cat. (4FGL-DR3) (Fermi-LAT col., 2022)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/ix/67">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/ix/67">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Abdollahi S.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2022ApJS..260...53A">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJS">    Journal name  </INFO>
+  <INFO name="original_date" value="2022">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/IX/67">    Dataset landing page  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.630714">popularity index</INFO>
+  <INFO name="cpopu" value="32244">number of calls</INFO>
+  <INFO name="-kw.Mission" value="Fermi"/>
+  <INFO name="-kw.Wavelength" value="Gamma-ray"/>
+  <INFO name="-kw.Wavelength" value="X-ray"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=IX/67"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_9072" name="IX/72" type="meta">
+  <DESCRIPTION>Fermi LAT Fourth Source Cat. DR4 (4FGL-DR4) (Ballet+, 2023)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/ix/72">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/ix/72">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Ballet J.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2023arXiv230712546B">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="arXi">    Journal name  </INFO>
+  <INFO name="original_date" value="2023">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/IX/72">    Dataset landing page  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.544913">popularity index</INFO>
+  <INFO name="cpopu" value="7854">number of calls</INFO>
+  <INFO name="-kw.Mission" value="Fermi"/>
+  <INFO name="-kw.Wavelength" value="Gamma-ray"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=IX/72"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_22180023" name="J/ApJS/218/23" type="meta">
+  <DESCRIPTION>Fermi LAT third source catalog (3FGL) (Acero+, 2015)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apjs/218/23">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apjs/218/23">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Acero F.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2015ApJS..218...23A">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJS">    Journal name  </INFO>
+  <INFO name="original_date" value="2015">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJS/218/23">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.22180023">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.585685">popularity index</INFO>
+  <INFO name="cpopu" value="15366">number of calls</INFO>
+  <INFO name="-kw.Mission" value="Fermi"/>
+  <INFO name="-kw.Wavelength" value="Gamma-ray"/>
+  <INFO name="-kw.Wavelength" value="Radio"/>
+  <INFO name="-kw.Astronomy" value="AGN"/>
+  <INFO name="-kw.Astronomy" value="BL_Lac_objects"/>
+  <INFO name="-kw.Astronomy" value="Pulsars"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJS/218/23"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+
+<RESOURCE ID="yCat_22470033" name="J/ApJS/247/33" type="meta">
+  <DESCRIPTION>The Fermi LAT fourth source catalog (4FGL) (Abdollahi+, 2020)</DESCRIPTION>
+  <INFO name="ivoid" value="ivo://cds.vizier/j/apjs/247/33">    IVOID of underlying data collection  </INFO>
+  <INFO name="data_ivoid" value="ivo://cds.vizier/j/apjs/247/33">    IVOID of underlying data collection  </INFO>
+  <INFO name="creator" value="Abdollahi S.">    First author or institution  </INFO>
+  <INFO name="cites" value="bibcode:2020ApJS..247...33A">    Article or Data origin sources  </INFO>
+  <INFO name="journal" value="ApJS">    Journal name  </INFO>
+  <INFO name="original_date" value="2020">    Year of the article publication  </INFO>
+  <INFO name="reference_url" value="https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJS/247/33">    Dataset landing page  </INFO>
+  <INFO name="citation" value="doi:10.26093/cds/vizier.22470033">    Dataset identifier that can be used for citation  </INFO>
+  <INFO name="rights_uri" value="https://cds.unistra.fr/vizier-org/licences_vizier.html">    Licence URI  </INFO>
+  <INFO name="ipopu" value="0.598697">popularity index</INFO>
+  <INFO name="cpopu" value="19036">number of calls</INFO>
+  <INFO name="-kw.Mission" value="Fermi"/>
+  <INFO name="-kw.Wavelength" value="Gamma-ray"/>
+  <INFO name="-kw.Wavelength" value="Radio"/>
+  <INFO name="-kw.Astronomy" value="AGN"/>
+  <INFO name="-kw.Astronomy" value="BL_Lac_objects"/>
+  <INFO name="-kw.Astronomy" value="Pulsars"/>
+  <INFO name="-density" value="0"/>
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=J/ApJS/247/33"/>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+<INFO name="matches" value="8">matching records</INFO>
+
+<INFO name="Warning" value="can't find table or catalogue: LAT"/>
+</VOTABLE>

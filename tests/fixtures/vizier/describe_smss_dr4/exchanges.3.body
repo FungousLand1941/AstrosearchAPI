@@ -1,0 +1,487 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-29T07:47:39 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-29T07:47:39">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-source=II%2F379%2Fsmssdr4&amp;-meta.all=">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+
+<RESOURCE ID="yCat_2379_1" name="II/379/smssdr4" type="meta">
+  <INFO name="nrows" value="724329344">Number of rows of the table</INFO>
+  <DESCRIPTION>
+    SkyMapper Southern Sky Survey. DR4 (Onken+, 2024)
+    SkyMapper DR4
+  </DESCRIPTION>
+
+<!-- SkyMapper DR4 (\originalcolumnnames) -->
+  <PARAM name="-c" datatype="char" arraysize="32*" value="">
+    <DESCRIPTION>Query from a celestial position according to ASU syntax:
+      {RA{+|-}Dec|object_name}[,eq=equinox][,ep=epoch][,rm=[min/]max]
+      (see http://vizier.cds.unistra.fr/doc/asu.html)
+    </DESCRIPTION>
+  </PARAM>
+  <LINK content-role="query" action="votable?-source=II/379/smssdr4&amp;">
+    Action to Query the current RESOURCE, to be completed by PARAMs and FIELDs contents
+  </LINK>
+
+  <TABLE name="II/379/smssdr4" nrows="724329344">
+    <COOSYS ID="H_2000.000" system="ICRS" epoch="2000.000"/>
+    <!-- Definitions of GROUPs and FIELDs -->
+    <FIELD name="SMSS" ucd="meta.id" display="1" datatype="char" arraysize="18*"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>SkyMapper Southern Survey designation of the form SMSS Jhhmmss.ss+/-ddmmss.s derived from mean ICRS coordinates (smss_j)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RAICRS" ucd="pos.eq.ra;meta.main" ref="H_2000.000" display="1" datatype="double" width="10" precision="6" unit="deg"><!-- ucd="POS_EQ_RA_MAIN" -->
+      <DESCRIPTION>Mean ICRS Right Ascension of the object (ICRS, Ep=J2000) (raj2000)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DEICRS" ucd="pos.eq.dec;meta.main" ref="H_2000.000" display="1" datatype="double" width="10" precision="6" unit="deg"><!-- ucd="POS_EQ_DEC_MAIN" -->
+      <DESCRIPTION>Mean ICRS Declination of the object (ICRS, Ep=J2000) (dej2000)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="ObjectId" ucd="meta.id;meta.main" display="1" datatype="long" width="10"><!-- ucd="ID_MAIN" -->
+      <DESCRIPTION>Global unique object ID in the master table (object_id)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_RAICRS" ucd="stat.stdev;pos.eq.ra" display="1" datatype="short" width="4" unit="mas"><!-- ucd="ERROR" -->
+      <DESCRIPTION>RMS variation around the mean Right Ascension (e_raj2000)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_DEICRS" ucd="stat.stdev;pos.eq.dec" display="1" datatype="short" width="4" unit="mas"><!-- ucd="ERROR" -->
+      <DESCRIPTION>RMS variation around the mean Declination (e_dej2000)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="EpMean" ucd="time.epoch;stat.mean" display="1" datatype="double" width="10" precision="4" unit="d"><!-- ucd="TIME_EPOCH" -->
+      <DESCRIPTION>Mean MJD epoch of the observations (mean_epoch)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_EpMean" ucd="stat.stdev;time.epoch" display="0" datatype="double" width="9" precision="4" unit="d"><!-- ucd="ERROR" -->
+      <DESCRIPTION>RMS variation around the mean epoch (rms_epoch)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="GLON" ucd="pos.galactic.lon" display="0" datatype="double" width="10" precision="6" unit="deg"><!-- ucd="POS_GAL_LON" -->
+      <DESCRIPTION>Galactic longitude derived from ICRS coordinates. Not to be used as primary astrometric reference. (glon)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="GLAT" ucd="pos.galactic.lat" display="0" datatype="double" width="10" precision="6" unit="deg"><!-- ucd="POS_GAL_LAT" -->
+      <DESCRIPTION>Galactic latitude derived from ICRS coordinates. Not to be used as primary astrometric reference. (glat)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Niflags" ucd="meta.code" display="0" datatype="int" width="8"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Total number of flagged pixels from bad or saturated or crosstalk-affected pixel masks across all observations (nimaflags)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="flags" ucd="meta.code" display="1" datatype="int" width="5"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Bitwise OR of Source Extractor flags across all observations (flags)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Ngood" ucd="meta.number" display="0" datatype="int" width="5"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of observations used across all filters (ngood)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Ngoodmin" ucd="meta.number" display="0" datatype="short" width="4"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Minimum number of observations used in any filter (excluding filters with 0 observations) (ngood_min)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="flagsu" ucd="meta.code" display="0" datatype="int" width="5"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Bitwise OR of Source Extractor flags from u-band measurements in photometry table (u_flags)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Niflagsu" ucd="meta.code" display="0" datatype="int" width="5"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of flagged pixels from bad or saturated or crosstalk-affected pixels masks from u-band measurements in photometry table (u_nimaflags)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Ngoodu" ucd="meta.number" display="0" datatype="short" width="4"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of u-band observations used (u_ngood)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Nnclipu" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of u-band observations with magnitudes clipped from the final PSF magnitude estimate (u_nclip)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="flagsv" ucd="meta.code" display="0" datatype="int" width="5"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Bitwise OR of Source Extractor flags from v-band measurements in photometry table (v_flags)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Niflagsv" ucd="meta.code" display="0" datatype="int" width="5"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of flagged pixels from bad or saturated or crosstalk-affected pixels masks from v-band measurements in photometry table (v_nimaflags)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Ngoodv" ucd="meta.number" display="0" datatype="short" width="4"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of v-band observations used (v_ngood)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Nnclipv" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of v-band observations with magnitudes clipped from the final PSF magnitude estimate (v_nclip)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="flagsg" ucd="meta.code" display="0" datatype="int" width="5"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Bitwise OR of Source Extractor flags from g-band measurements in photometry table (g_flags)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Niflagsg" ucd="meta.code" display="0" datatype="int" width="5"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of flagged pixels from bad or saturated or crosstalk-affected pixels masks from g-band measurements in photometry table (g_nimaflags)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Ngoodg" ucd="meta.number" display="0" datatype="short" width="4"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of g-band observations used (g_ngood)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Nnclipg" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of g-band observations with magnitudes clipped from the final PSF magnitude estimate (g_nclip)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="flagsr" ucd="meta.code" display="0" datatype="int" width="5"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Bitwise OR of Source Extractor flags from r-band measurements in photometry table (r_flags)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Niflagsr" ucd="meta.code" display="0" datatype="int" width="5"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of flagged pixels from bad or saturated or crosstalk-affected pixels masks from r-band measurements in photometry table (r_nimaflags)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Ngoodr" ucd="meta.number" display="0" datatype="short" width="4"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of r-band observations used (r_ngood)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Nnclipr" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of r-band observations with magnitudes clipped from the final PSF magnitude estimate (r_nclip)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="flagsi" ucd="meta.code" display="0" datatype="int" width="5"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Bitwise OR of Source Extractor flags from i-band measurements in photometry table (i_flags)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Niflagsi" ucd="meta.code" display="0" datatype="int" width="5"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of flagged pixels from bad or saturated or crosstalk-affected pixels masks from i-band measurements in photometry table (i_nimaflags)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Ngoodi" ucd="meta.number" display="0" datatype="short" width="4"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of i-band observations used (i_ngood)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Nnclipi" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of i-band observations with magnitudes clipped from the final PSF magnitude estimate (i_nclip)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="flagsz" ucd="meta.code" display="0" datatype="int" width="5"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Bitwise OR of Source Extractor flags from z-band measurements in photometry table (z_flags)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Niflagsz" ucd="meta.code" display="0" datatype="int" width="5"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of flagged pixels from bad or saturated or crosstalk-affected pixels masks from z-band measurements in photometry table (z_nimaflags)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Ngoodz" ucd="meta.number" display="0" datatype="short" width="4"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of z-band observations used (z_ngood)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Nnclipz" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of z-band observations with magnitudes clipped from the final PSF magnitude estimate (z_nclip)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="ClassStar" ucd="src.class.starGalaxy;stat.max" display="1" datatype="float" width="6" precision="3"><!-- ucd="CLASS_STAR/GALAXY" -->
+      <DESCRIPTION>Maximum stellarity index from photometry table (between 0=no star and 1=star) (class_star)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="chi2PSF" ucd="stat.fit.chi2;stat.max" display="0" datatype="double" width="12" precision="E5"><!-- ucd="FIT_CHI2" -->
+      <DESCRIPTION>? Maximum chi-squared from photometry table (chi2_psf)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="RadrPetro" ucd="phys.angSize;stat.mean" display="1" datatype="float" width="5" precision="2" unit="pix"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>? Mean r-band Petrosian radius (radius_petro)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FWHM" ucd="phys.angSize;stat.mean" display="0" datatype="double" width="12" precision="E5" unit="pix"><!-- ucd="EXTENSION_FWHM_CIRC" -->
+      <DESCRIPTION>Mean FWHM of detections (mean_fwhm)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="uPSF" ucd="phot.mag;stat.mean" display="1" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_SDSS_U" -->
+      <DESCRIPTION>? Weighted mean u-band PSF magnitude (u_psf)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_uPSF" ucd="stat.error;phot.mag" display="0" datatype="float" width="7" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error in weighted mean u-band PSF magnitude (e_u_psf)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="uPetro" ucd="phot.mag;stat.mean" display="1" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_SDSS_U" -->
+      <DESCRIPTION>? Weighted mean u-band Petrosian magnitude (u_petro)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_uPetro" ucd="stat.error;phot.mag" display="0" datatype="double" width="9" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error in weighted mean u-band Petrosian magnitude (e_u_petro)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="uapc05" ucd="phot.mag;stat.mean" display="0" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_SDSS_U" -->
+      <DESCRIPTION>? Weighted mean u-band aperture-corrected magnitude from flux in 5 arcsec diameter (u_apc05)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_uapc05" ucd="stat.error;phot.mag" display="0" datatype="float" width="7" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error in weighted mean u-band aperture-corrected magnitude from flux in 5 arcsec diameter (e_u_apc05)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ummvar" ucd="phot.mag;stat" display="0" datatype="float" width="7" precision="4" unit="mag"><!-- ucd="PHOT_MAG_LIMIT" -->
+      <DESCRIPTION>? Magnitude range between minimum and maximum unclipped u-band PSF magnitudes (u_mmvar)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="vPSF" ucd="phot.mag;stat.mean" display="1" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_MAG_V" -->
+      <DESCRIPTION>? Weighted mean v-band PSF magnitude (v_psf)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_vPSF" ucd="stat.error;phot.mag" display="0" datatype="float" width="7" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error in weighted mean v-band PSF magnitude (e_v_psf)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="vPetro" ucd="phot.mag;stat.mean" display="1" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_MAG_V" -->
+      <DESCRIPTION>? Weighted mean v-band Petrosian magnitude (v_petro)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_vPetro" ucd="stat.error;phot.mag" display="0" datatype="double" width="11" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error in weighted mean v-band Petrosian magnitude (e_v_petro)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="vapc05" ucd="phot.mag;stat.mean" display="0" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_MAG_V" -->
+      <DESCRIPTION>? Weighted mean v-band aperture-corrected magnitude from flux in 5 arcsec diameter (v_apc05)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_vapc05" ucd="stat.error;phot.mag" display="0" datatype="float" width="7" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error in weighted mean v-band aperture-corrected magnitude from flux in 5 arcsec diameter (e_v_apc05)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="vmmvar" ucd="phot.mag;stat" display="0" datatype="float" width="7" precision="4" unit="mag"><!-- ucd="PHOT_MAG_LIMIT" -->
+      <DESCRIPTION>? Magnitude range between minimum and maximum unclipped v-band PSF magnitudes (v_mmvar)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="gPSF" ucd="phot.mag;stat.mean" display="1" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_SDSS_G" -->
+      <DESCRIPTION>? Weighted mean g-band PSF magnitude (g_psf)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_gPSF" ucd="stat.error;phot.mag" display="0" datatype="float" width="7" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error in weighted mean g-band PSF magnitude (e_g_psf)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="gPetro" ucd="phot.mag;stat.mean" display="1" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_SDSS_G" -->
+      <DESCRIPTION>? Weighted mean g-band Petrosian magnitude (g_petro)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_gPetro" ucd="stat.error;phot.mag" display="0" datatype="double" width="10" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error in weighted mean g-band Petrosian magnitude (e_g_petro)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="gapc05" ucd="phot.mag;stat.mean" display="0" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_SDSS_G" -->
+      <DESCRIPTION>? Weighted mean g-band aperture-corrected magnitude from flux in 5 arcsec diameter (g_apc05)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_gapc05" ucd="stat.error;phot.mag" display="0" datatype="float" width="7" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error in weighted mean g-band aperture-corrected magnitude from flux in 5 arcsec diameter (e_g_apc05)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="gmmvar" ucd="phot.mag;stat" display="0" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_MAG_LIMIT" -->
+      <DESCRIPTION>? Magnitude range between minimum and maximum unclipped g-band PSF magnitudes (g_mmvar)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="rPSF" ucd="phot.mag;stat.mean" display="1" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_SDSS_R" -->
+      <DESCRIPTION>? Weighted mean r-band PSF magnitude (r_psf)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_rPSF" ucd="stat.error;phot.mag" display="0" datatype="float" width="7" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error in weighted mean r-band PSF magnitude (e_r_psf)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="rPetro" ucd="phot.mag;stat.mean" display="1" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_SDSS_R" -->
+      <DESCRIPTION>? Weighted mean r-band Petrosian magnitude (r_petro)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_rPetro" ucd="stat.error;phot.mag" display="0" datatype="double" width="10" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error in weighted mean r-band Petrosian magnitude (e_r_petro)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="rapc05" ucd="phot.mag;stat.mean" display="0" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_SDSS_R" -->
+      <DESCRIPTION>? Weighted mean r-band aperture-corrected magnitude from flux in 5 arcsec diameter (r_apc05)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_rapc05" ucd="stat.error;phot.mag" display="0" datatype="float" width="7" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error in weighted mean r-band aperture-corrected magnitude from flux in 5 arcsec diameter (e_r_apc05)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="rmmvar" ucd="phot.mag;stat" display="0" datatype="float" width="7" precision="4" unit="mag"><!-- ucd="PHOT_MAG_LIMIT" -->
+      <DESCRIPTION>? Magnitude range between minimum and maximum unclipped -band PSF magnitudes (r_mmvar)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="iPSF" ucd="phot.mag;stat.mean" display="1" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_SDSS_I" -->
+      <DESCRIPTION>? Weighted mean i-band PSF magnitude (i_psf)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_iPSF" ucd="stat.error;phot.mag" display="0" datatype="float" width="7" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error in weighted mean i-band PSF magnitude (e_i_psf)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="iPetro" ucd="phot.mag;stat.mean" display="1" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_SDSS_I" -->
+      <DESCRIPTION>? Weighted mean i-band Petrosian magnitude (i_petro)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_iPetro" ucd="stat.error;phot.mag" display="0" datatype="double" width="11" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error in weighted mean i-band Petrosian magnitude (e_i_petro)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="iapc05" ucd="phot.mag;stat.mean" display="0" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_SDSS_I" -->
+      <DESCRIPTION>? Weighted mean i-band aperture-corrected magnitude from flux in 5 arcsec diameter (i_apc05)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_iapc05" ucd="stat.error;phot.mag" display="0" datatype="float" width="7" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error in weighted mean i-band aperture-corrected magnitude from flux in 5 arcsec diameter (e_i_apc05)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="immvar" ucd="phot.mag;stat" display="0" datatype="float" width="7" precision="4" unit="mag"><!-- ucd="PHOT_MAG_LIMIT" -->
+      <DESCRIPTION>? Magnitude range between minimum and maximum unclipped i-band PSF magnitudes (i_mmvar)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="zPSF" ucd="phot.mag;stat.mean" display="1" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_SDSS_Z" -->
+      <DESCRIPTION>? Weighted mean z-band PSF magnitude (z_psf)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_zPSF" ucd="stat.error;phot.mag" display="0" datatype="float" width="7" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error in weighted mean z-band PSF magnitude (e_z_psf)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="zPetro" ucd="phot.mag;stat.mean" display="1" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_SDSS_Z" -->
+      <DESCRIPTION>? Weighted mean z-band Petrosian magnitude (z_petro)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_zPetro" ucd="stat.error;phot.mag" display="0" datatype="double" width="11" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error in weighted mean z-band Petrosian magnitude (e_z_petro)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="zapc05" ucd="phot.mag;stat.mean" display="0" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_SDSS_Z" -->
+      <DESCRIPTION>? Weighted mean z-band aperture-corrected magnitude from flux in 5 arcsec diameter (z_apc05)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_zapc05" ucd="stat.error;phot.mag" display="0" datatype="float" width="7" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Error in weighted mean z-band aperture-corrected magnitude from flux in 5 arcsec diameter (e_z_apc05)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="zmmvar" ucd="phot.mag;stat" display="0" datatype="float" width="7" precision="4" unit="mag"><!-- ucd="PHOT_MAG_LIMIT" -->
+      <DESCRIPTION>? Magnitude range between minimum and maximum unclipped z-band PSF magnitudes (z_mmvar)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="selfId1" ucd="meta.id.cross" display="0" datatype="long" width="10"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>Unique identifier (object_id) of closest SMSS DR4 source (self_id1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="selfId2" ucd="meta.id.cross" display="0" datatype="long" width="10"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>Unique identifier (object_id) of second-closest SMSS DR4 source (self_id2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="selfId3" ucd="meta.id.cross" display="0" datatype="long" width="10"><!-- ucd="ID_CROSSID" -->
+      <DESCRIPTION>Unique identifier (object_id) of third-closest SMSS DR4 source (self_id3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="selfDist1" ucd="pos.angDistance" display="0" datatype="float" width="5" precision="2" unit="arcsec"><!-- ucd="PHYS_DISTANCE_TRUE" -->
+      <DESCRIPTION>Distance on sky to closest SMSS DR4 source (self_dist1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="selfDist2" ucd="pos.angDistance" display="0" datatype="float" width="5" precision="2" unit="arcsec"><!-- ucd="PHYS_DISTANCE_TRUE" -->
+      <DESCRIPTION>Distance on sky to second-closest SMSS DR4 source (self_dist2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="selfDist4" ucd="pos.angDistance" display="0" datatype="float" width="5" precision="2" unit="arcsec"><!-- ucd="PHYS_DISTANCE_TRUE" -->
+      <DESCRIPTION>Distance on sky to third-closest SMSS DR4 source (self_dist3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Nself-15" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of SMSS DR4 sources within 15 arcsec (cnt_self_15)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Refcat2Id" ucd="meta.id.cross" display="0" datatype="int" width="9"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>Unique identifier (objid) of closest ATLAS Refcat2 source (only useful for this copy of Refcat2) (refcat2_id)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Gaia3Id1" ucd="meta.id.cross" display="0" datatype="long" width="19"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>Unique identifier (source_id) of closest Gaia DR3 source (gaia_dr3_id1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Gaia3Id2" ucd="meta.id.cross" display="0" datatype="long" width="19"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>Unique identifier (source_id) of second-closest Gaia DR3 source (gaia_dr3_id2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="ALLWISECntr" ucd="meta.id.cross" display="0" datatype="long" width="19"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>Unique identifier (cntr) of closest AllWISE source (allwise_cntr)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="PS1dr1Id" ucd="meta.id.cross" display="0" datatype="long" width="18"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>Unique identifier (objid) of closest Pan-STARRS1 DR1 source (ps1_dr1_id)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="GALEXId" ucd="meta.id.cross" display="0" datatype="long" width="19"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>Unique identifier (objid) of closest GALEX GUVcat AIS source (Bianchi et al. 2017) (galex_guv_id)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="VHS6Id" ucd="meta.id.cross" display="0" datatype="long" width="12"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>Unique identifier (objid) of closest VHS DR6 source (vhs_dr6_id)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="LS9Id" ucd="meta.id.cross" display="0" datatype="long" width="18"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>Unique identifier (unique_id) of closest Legacy Survey DR9 source (ls_dr9_id)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DES2Id" ucd="meta.id.cross" display="0" datatype="long" width="10"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>Unique identifier (coadd_object_id) of closest DES DR2 source (des_dr2_id)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="2MASSKey" ucd="meta.id.cross" display="0" datatype="long" width="10"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>Unique identifier (pts_key) of closest 2MASS PSC source (twomass_key)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Refcat2Dist" ucd="pos.angDistance" display="0" datatype="float" width="5" precision="2" unit="arcsec"><!-- ucd="PHYS_DISTANCE_TRUE" -->
+      <DESCRIPTION>? Distance on sky to closest ATLAS Refcat2 source (refcat2_dist)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Gaia3Dist1" ucd="pos.angDistance" display="0" datatype="float" width="5" precision="2" unit="arcsec"><!-- ucd="PHYS_DISTANCE_TRUE" -->
+      <DESCRIPTION>? Distance on sky to closest Gaia DR3 source (gaia_dr3_dist1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Gaia3Dist2" ucd="pos.angDistance" display="0" datatype="float" width="5" precision="2" unit="arcsec"><!-- ucd="PHYS_DISTANCE_TRUE" -->
+      <DESCRIPTION>? Distance on sky to second-closest Gaia DR3 source (gaia_dr3_dist2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="CATWISEDist" ucd="pos.distance" display="0" datatype="float" width="5" precision="2" unit="arcsec"><!-- ucd="PHYS_DISTANCE_TRUE" -->
+      <DESCRIPTION>? Distance on sky to closest CatWISE2020 source (catwise_dist)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PS1dr1Dist" ucd="pos.angDistance" display="0" datatype="float" width="5" precision="2" unit="arcsec"><!-- ucd="PHYS_DISTANCE_TRUE" -->
+      <DESCRIPTION>? Distance on sky to closest Pan-STARRS1 DR1 source (ps1_dr1_dist)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="GALEXDist" ucd="pos.angDistance" display="0" datatype="float" width="5" precision="2" unit="arcsec"><!-- ucd="PHYS_DISTANCE_TRUE" -->
+      <DESCRIPTION>? Distance on sky to closest GALEX GUVcat AIS source (galex_guv_dist)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="VHS6Dist" ucd="pos.angDistance" display="0" datatype="float" width="5" precision="2" unit="arcsec"><!-- ucd="PHYS_DISTANCE_TRUE" -->
+      <DESCRIPTION>? Distance on sky to closest VHS DR6 source (vhs_dr6_dist)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="LS9Dist" ucd="pos.angDistance" display="0" datatype="float" width="5" precision="2" unit="arcsec"><!-- ucd="PHYS_DISTANCE_TRUE" -->
+      <DESCRIPTION>? Distance on sky to closest Legacy Survey DR9 source (ls_dr9_dist)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="DES2Dist" ucd="pos.angDistance" display="0" datatype="float" width="5" precision="2" unit="arcsec"><!-- ucd="PHYS_DISTANCE_TRUE" -->
+      <DESCRIPTION>? Distance on sky to closest DES DR2 source (des_dr2_dist)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ALLWISEDist" ucd="pos.angDistance" display="0" datatype="float" width="5" precision="2" unit="arcsec"><!-- ucd="PHYS_DISTANCE_TRUE" -->
+      <DESCRIPTION>? Distance on sky to closest AllWISE source (allwise_dist)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="2MASSDist" ucd="pos.angDistance" display="0" datatype="float" width="5" precision="2" unit="arcsec"><!-- ucd="PHYS_DISTANCE_TRUE" -->
+      <DESCRIPTION>? Distance on sky to closest 2MASS PSC source (twomass_dist)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="NSC2Dist" ucd="pos.angDistance" display="0" datatype="float" width="5" precision="2" unit="arcsec"><!-- ucd="PHYS_DISTANCE_TRUE" -->
+      <DESCRIPTION>? Distance on sky to closest NSC DR2 source (nsc_dr2_dist)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="SPLUS3Dist" ucd="pos.angDistance" display="0" datatype="float" width="5" precision="2" unit="arcsec"><!-- ucd="PHYS_DISTANCE_TRUE" -->
+      <DESCRIPTION>? Distance on sky to closest S-PLUS DR3 source (splus_dr3_dist)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E(B-V)sfd" ucd="phot.color.excess;phys.absorption" display="0" datatype="double" width="8" precision="4" unit="mag"><!-- ucd="PHOT_COLOR_EXCESS" -->
+      <DESCRIPTION>E(B-V) from Schlegel+1998 extinction maps at the ICRS coordinates (ebmv_sfd)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="E(B-V)gnilc" ucd="phot.color.excess;phys.absorption" display="0" datatype="double" width="8" precision="4" unit="mag"><!-- ucd="PHOT_COLOR_EXCESS" -->
+      <DESCRIPTION>E(B-V) from Planck satellite GNILC reddening maps at the ICRS coordinates (ebmv_gnilc)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_E(B-V)gnilc" ucd="stat.error;phot.color.excess;phys.absorption" display="0" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Error in the E(B-V) from GNILC (ebmv_g_err)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="flagsPSF" ucd="meta.code" display="0" datatype="short" width="2"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Bitmask indicating whether photometry is likely biased by neighbours at &gt;1%; bits 0-5 correspond to filters z-u (flags_psf)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="NGaia3-15" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of Gaia DR3 sources within 15 arcsec (cnt_gaia_dr3_15)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="ALLWISEId" ucd="meta.id.cross" display="0" datatype="char" arraysize="18*"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>Unique identifier (id) of closest CatWISE2020 source (catwise_id)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="NSC2Id" ucd="meta.id.cross" display="0" datatype="char" arraysize="14*"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>Unique identifier (id) of closest NSC DR2 source (nsc_dr2_id)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="SPLUS3Id" ucd="meta.id.cross" display="0" datatype="char" arraysize="24*"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>Unique identifier of closest S-PLUS DR3 source (splus_dr3_id)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="u-v" ucd="phot.color" display="0" datatype="double" width="8" precision="4" unit="mag"><!-- ucd="PHOT_CI_OPT" -->
+      <DESCRIPTION>? u-v colour (u_psf-v_psf) (u_v)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="v-g" ucd="phot.color" display="0" datatype="double" width="8" precision="4" unit="mag"><!-- ucd="PHOT_CI_OPT" -->
+      <DESCRIPTION>? v-g colour (v_psf-g_psf) (v_g)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="g-r" ucd="phot.color" display="0" datatype="double" width="8" precision="4" unit="mag"><!-- ucd="PHOT_CI_OPT" -->
+      <DESCRIPTION>? g-r colour (g_psf-r_psf) (g_r)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="r-i" ucd="phot.color" display="0" datatype="double" width="8" precision="4" unit="mag"><!-- ucd="PHOT_CI_OPT" -->
+      <DESCRIPTION>? r-i colour (r_psf-i_psf) (r_i)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="i-z" ucd="phot.color" display="0" datatype="double" width="8" precision="4" unit="mag"><!-- ucd="PHOT_CI_OPT" -->
+      <DESCRIPTION>? i-z colour (i_psf-z_psf) (i_z)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+  </TABLE>
+<INFO name="matches" value="2">matching records</INFO>
+</RESOURCE>
+</VOTABLE>

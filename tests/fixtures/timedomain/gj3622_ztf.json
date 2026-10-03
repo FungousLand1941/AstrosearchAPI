@@ -1,0 +1,37 @@
+{
+  "case": "gj3622_ztf",
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://cds.unistra.fr/cgi-bin/nph-sesame/-oxp/SNV?GJ%203622",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "text/plain",
+      "location": ""
+    },
+    {
+      "method": "POST",
+      "url": "https://irsa.ipac.caltech.edu/TAP/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&FORMAT=csv&QUERY=SELECT+table_name+FROM+TAP_SCHEMA.tables+WHERE+table_name+LIKE+%27ztf_objects_dr%25%27",
+      "status_code": 200,
+      "content_type": "text/csv",
+      "location": ""
+    },
+    {
+      "method": "POST",
+      "url": "https://irsa.ipac.caltech.edu/TAP/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&FORMAT=csv&QUERY=SELECT+oid%2C+ra%2C+dec%2C+filtercode%2C+field%2C+ccdid%2C+qid%2C+ngoodobs+FROM+ztf_objects_dr24+WHERE+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+162.0561273%2C+-11.3452472%2C+0.00258291%29%29+%3D+1",
+      "status_code": 200,
+      "content_type": "text/csv",
+      "location": ""
+    },
+    {
+      "method": "GET",
+      "url": "https://irsa.ipac.caltech.edu/cgi-bin/ZTF/nph_light_curves?ID=367106400002259&ID=367206400017938&ID=367206400029887&COLLECTION=ztf_dr24&FORMAT=csv",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "text/csv",
+      "location": ""
+    }
+  ]
+}

@@ -1,0 +1,828 @@
+{
+ "catalogs": [
+  "allwise",
+  "chandra",
+  "exoplanet_archive",
+  "first",
+  "gaia_dr3",
+  "lotss",
+  "ned",
+  "nvss",
+  "panstarrs_dr2",
+  "rosat",
+  "sdss",
+  "simbad",
+  "twomass_psc",
+  "vlass",
+  "xmm"
+ ],
+ "citations": {
+  "allwise": "Wright et al. 2010, AJ 140, 1868 (2010AJ....140.1868W); Mainzer et al. 2011, ApJ 731, 53; DOI 10.26131/IRSA1",
+  "chandra": "Evans et al. 2024, ApJS 274, 22 (CSC 2.1); Evans et al. 2010, ApJS 189, 37; DOI 10.25574/csc2.1",
+  "exoplanet_archive": "Akeson et al. 2013, PASP 125, 989 (2013PASP..125..989A); pscomppars DOI 10.26133/NEA13",
+  "first": "Becker, White & Helfand 1995, ApJ 450, 559; Helfand, White & Becker 2015, ApJ 801, 26",
+  "gaia_dr3": "Gaia Collaboration, Vallenari et al. 2023, A&A 674, A1 (2023A&A...674A...1G); Gaia Collaboration, Prusti et al. 2016, A&A 595, A1",
+  "lotss": "Shimwell et al. 2026, A&A 707, A198 (LoTSS-DR3); Shimwell et al. 2022, A&A 659, A1 (DR2)",
+  "ned": "NASA/IPAC Extragalactic Database (NED), DOI 10.26132/NED1",
+  "nvss": "Condon et al. 1998, AJ 115, 1693 (1998AJ....115.1693C)",
+  "panstarrs_dr2": "Chambers et al. 2016, arXiv:1612.05560; Flewelling et al. 2020, ApJS 251, 7; DOI 10.17909/s0zg-jx37",
+  "rosat": "Boller et al. 2016, A&A 588, A103 (2016A&A...588A.103B); positional errors: Freund et al. 2022, A&A 664, A105",
+  "sdss": "Almeida et al. 2023, ApJS 267, 44 (SDSS DR18); York et al. 2000, AJ 120, 1579; Beck et al. 2016, MNRAS 460, 1371",
+  "simbad": "Wenger et al. 2000, A&AS 143, 9 (2000A&AS..143....9W)",
+  "twomass_psc": "Skrutskie et al. 2006, AJ 131, 1163 (2006AJ....131.1163S); DOI 10.26131/IRSA2",
+  "vlass": "Lacy et al. 2020, PASP 132, 035001; Bruzewski et al. 2021, ApJ 914, 42 (2021ApJ...914...42B)",
+  "xmm": "Webb et al. 2020, A&A 641, A136 (2020A&A...641A.136W); Webb, Traulsen et al. 2026 (5XMM-DR15)"
+ },
+ "dec": 2.0523883,
+ "note": "Catalog rows parsed by providers.py from the real archive responses recorded in tests/fixtures/3c273.",
+ "ra": 187.2779154,
+ "radius_arcsec": 10.0,
+ "sources": [
+  {
+   "catalog": "gaia_dr3",
+   "data": {},
+   "dec": 2.052388668185861,
+   "epoch": 2016.0,
+   "metadata": {
+    "citation": "Gaia Collaboration, Vallenari et al. 2023, A&A 674, A1 (2023A&A...674A...1G); Gaia Collaboration, Prusti et al. 2016, A&A 595, A1",
+    "physical": {
+     "parallax": -0.015950290834234743
+    },
+    "wavelength": "optical"
+   },
+   "position_uncertainty_arcsec": 1.5724720886718355e-05,
+   "positional_error_arcsec": 1.5724720886718355e-05,
+   "proper_motion_dec_masyr": 0.09846797908921764,
+   "proper_motion_ra_masyr": -0.022885672495060565,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/gaia_dr3.json"
+   },
+   "ra": 187.2779158387138,
+   "source_id": "3700386905605055360"
+  },
+  {
+   "catalog": "simbad",
+   "data": {},
+   "dec": 2.05238823055,
+   "epoch": 2000.0,
+   "metadata": {
+    "citation": "Wenger et al. 2000, A&AS 143, 9 (2000A&AS..143....9W)",
+    "physical": {
+     "object_type": "BLL",
+     "parallax": 0.010800000000000002,
+     "redshift": 0.15756751
+    },
+    "wavelength": "multi"
+   },
+   "position_uncertainty_arcsec": 1.57165517846632e-05,
+   "positional_error_arcsec": 1.57165517846632e-05,
+   "proper_motion_dec_masyr": 0.098,
+   "proper_motion_ra_masyr": -0.023,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/simbad.json"
+   },
+   "ra": 187.27791594049,
+   "source_id": "3C 273"
+  },
+  {
+   "catalog": "simbad",
+   "data": {},
+   "dec": 2.052222222222222,
+   "epoch": 2000.0,
+   "metadata": {
+    "citation": "Wenger et al. 2000, A&AS 143, 9 (2000A&AS..143....9W)",
+    "physical": {
+     "object_type": "X"
+    },
+    "wavelength": "multi"
+   },
+   "position_uncertainty_arcsec": 5.0,
+   "positional_error_arcsec": 5.0,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/simbad.json"
+   },
+   "ra": 187.27916666666664,
+   "source_id": "[CME2001] 3C 273 1"
+  },
+  {
+   "catalog": "ned",
+   "data": {},
+   "dec": 2.05238833333,
+   "epoch": null,
+   "metadata": {
+    "citation": "NASA/IPAC Extragalactic Database (NED), DOI 10.26132/NED1",
+    "physical": {
+     "object_type": "QSO",
+     "redshift": 0.158338994
+    },
+    "wavelength": "extragalactic"
+   },
+   "position_uncertainty_arcsec": 3.452535300326414e-05,
+   "positional_error_arcsec": 3.452535300326414e-05,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/ned.json"
+   },
+   "ra": 187.27791541667,
+   "source_id": "3C 273"
+  },
+  {
+   "catalog": "ned",
+   "data": {},
+   "dec": 2.05229440308,
+   "epoch": null,
+   "metadata": {
+    "citation": "NASA/IPAC Extragalactic Database (NED), DOI 10.26132/NED1",
+    "physical": {
+     "object_type": "AbLS",
+     "redshift": 0.0876000002
+    },
+    "wavelength": "extragalactic"
+   },
+   "position_uncertainty_arcsec": 0.06036820355120732,
+   "positional_error_arcsec": 0.06036820355120732,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/ned.json"
+   },
+   "ra": 187.27770919771,
+   "source_id": "[HB89] 1226+023 ABS17"
+  },
+  {
+   "catalog": "ned",
+   "data": {},
+   "dec": 2.05229440308,
+   "epoch": null,
+   "metadata": {
+    "citation": "NASA/IPAC Extragalactic Database (NED), DOI 10.26132/NED1",
+    "physical": {
+     "object_type": "AbLS",
+     "redshift": 0.00728000002
+    },
+    "wavelength": "extragalactic"
+   },
+   "position_uncertainty_arcsec": 0.06036820355120732,
+   "positional_error_arcsec": 0.06036820355120732,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/ned.json"
+   },
+   "ra": 187.27770919771,
+   "source_id": "[HB89] 1226+023 ABS18"
+  },
+  {
+   "catalog": "ned",
+   "data": {},
+   "dec": 2.05229440996,
+   "epoch": null,
+   "metadata": {
+    "citation": "NASA/IPAC Extragalactic Database (NED), DOI 10.26132/NED1",
+    "physical": {
+     "object_type": "AbLS",
+     "redshift": 0.119999997
+    },
+    "wavelength": "extragalactic"
+   },
+   "position_uncertainty_arcsec": 0.06036820355120732,
+   "positional_error_arcsec": 0.06036820355120732,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/ned.json"
+   },
+   "ra": 187.27770916996,
+   "source_id": "[HB89] 1226+023 ABS01"
+  },
+  {
+   "catalog": "ned",
+   "data": {},
+   "dec": 2.05229440996,
+   "epoch": null,
+   "metadata": {
+    "citation": "NASA/IPAC Extragalactic Database (NED), DOI 10.26132/NED1",
+    "physical": {
+     "object_type": "AbLS",
+     "redshift": 0.0899000019
+    },
+    "wavelength": "extragalactic"
+   },
+   "position_uncertainty_arcsec": 0.06036820355120732,
+   "positional_error_arcsec": 0.06036820355120732,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/ned.json"
+   },
+   "ra": 187.27770916996,
+   "source_id": "[HB89] 1226+023 ABS02"
+  },
+  {
+   "catalog": "ned",
+   "data": {},
+   "dec": 2.05229440996,
+   "epoch": null,
+   "metadata": {
+    "citation": "NASA/IPAC Extragalactic Database (NED), DOI 10.26132/NED1",
+    "physical": {
+     "object_type": "AbLS",
+     "redshift": 0.0834999979
+    },
+    "wavelength": "extragalactic"
+   },
+   "position_uncertainty_arcsec": 0.06036820355120732,
+   "positional_error_arcsec": 0.06036820355120732,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/ned.json"
+   },
+   "ra": 187.27770916996,
+   "source_id": "[HB89] 1226+023 ABS03"
+  },
+  {
+   "catalog": "ned",
+   "data": {},
+   "dec": 2.05229440996,
+   "epoch": null,
+   "metadata": {
+    "citation": "NASA/IPAC Extragalactic Database (NED), DOI 10.26132/NED1",
+    "physical": {
+     "object_type": "AbLS",
+     "redshift": 0.0665000007
+    },
+    "wavelength": "extragalactic"
+   },
+   "position_uncertainty_arcsec": 0.06036820355120732,
+   "positional_error_arcsec": 0.06036820355120732,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/ned.json"
+   },
+   "ra": 187.27770916996,
+   "source_id": "[HB89] 1226+023 ABS04"
+  },
+  {
+   "catalog": "ned",
+   "data": {},
+   "dec": 2.05229440996,
+   "epoch": null,
+   "metadata": {
+    "citation": "NASA/IPAC Extragalactic Database (NED), DOI 10.26132/NED1",
+    "physical": {
+     "object_type": "AbLS",
+     "redshift": 0.0489999987
+    },
+    "wavelength": "extragalactic"
+   },
+   "position_uncertainty_arcsec": 0.06036820355120732,
+   "positional_error_arcsec": 0.06036820355120732,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/ned.json"
+   },
+   "ra": 187.27770916996,
+   "source_id": "[HB89] 1226+023 ABS05"
+  },
+  {
+   "catalog": "ned",
+   "data": {},
+   "dec": 2.05229440996,
+   "epoch": null,
+   "metadata": {
+    "citation": "NASA/IPAC Extragalactic Database (NED), DOI 10.26132/NED1",
+    "physical": {
+     "object_type": "AbLS",
+     "redshift": 0.00520000001
+    },
+    "wavelength": "extragalactic"
+   },
+   "position_uncertainty_arcsec": 0.06036820355120732,
+   "positional_error_arcsec": 0.06036820355120732,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/ned.json"
+   },
+   "ra": 187.27770916996,
+   "source_id": "[HB89] 1226+023 ABS06"
+  },
+  {
+   "catalog": "ned",
+   "data": {},
+   "dec": 2.05229440996,
+   "epoch": null,
+   "metadata": {
+    "citation": "NASA/IPAC Extragalactic Database (NED), DOI 10.26132/NED1",
+    "physical": {
+     "object_type": "AbLS",
+     "redshift": 0.00329999998
+    },
+    "wavelength": "extragalactic"
+   },
+   "position_uncertainty_arcsec": 0.06036820355120732,
+   "positional_error_arcsec": 0.06036820355120732,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/ned.json"
+   },
+   "ra": 187.27770916996,
+   "source_id": "[HB89] 1226+023 ABS07"
+  },
+  {
+   "catalog": "ned",
+   "data": {},
+   "dec": 2.05229440996,
+   "epoch": null,
+   "metadata": {
+    "citation": "NASA/IPAC Extragalactic Database (NED), DOI 10.26132/NED1",
+    "physical": {
+     "object_type": "AbLS",
+     "redshift": 0.146599993
+    },
+    "wavelength": "extragalactic"
+   },
+   "position_uncertainty_arcsec": 0.06036820355120732,
+   "positional_error_arcsec": 0.06036820355120732,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/ned.json"
+   },
+   "ra": 187.27770916996,
+   "source_id": "[HB89] 1226+023 ABS08"
+  },
+  {
+   "catalog": "ned",
+   "data": {},
+   "dec": 2.05229440996,
+   "epoch": null,
+   "metadata": {
+    "citation": "NASA/IPAC Extragalactic Database (NED), DOI 10.26132/NED1",
+    "physical": {
+     "object_type": "AbLS",
+     "redshift": 0.0900999978
+    },
+    "wavelength": "extragalactic"
+   },
+   "position_uncertainty_arcsec": 0.06036820355120732,
+   "positional_error_arcsec": 0.06036820355120732,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/ned.json"
+   },
+   "ra": 187.27770916996,
+   "source_id": "[HB89] 1226+023 ABS09"
+  },
+  {
+   "catalog": "ned",
+   "data": {},
+   "dec": 2.05229440996,
+   "epoch": null,
+   "metadata": {
+    "citation": "NASA/IPAC Extragalactic Database (NED), DOI 10.26132/NED1",
+    "physical": {
+     "object_type": "AbLS",
+     "redshift": 0.063500002
+    },
+    "wavelength": "extragalactic"
+   },
+   "position_uncertainty_arcsec": 0.06036820355120732,
+   "positional_error_arcsec": 0.06036820355120732,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/ned.json"
+   },
+   "ra": 187.27770916996,
+   "source_id": "[HB89] 1226+023 ABS10"
+  },
+  {
+   "catalog": "ned",
+   "data": {},
+   "dec": 2.05229440996,
+   "epoch": null,
+   "metadata": {
+    "citation": "NASA/IPAC Extragalactic Database (NED), DOI 10.26132/NED1",
+    "physical": {
+     "object_type": "AbLS",
+     "redshift": 0.0610000007
+    },
+    "wavelength": "extragalactic"
+   },
+   "position_uncertainty_arcsec": 0.06036820355120732,
+   "positional_error_arcsec": 0.06036820355120732,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/ned.json"
+   },
+   "ra": 187.27770916996,
+   "source_id": "[HB89] 1226+023 ABS11"
+  },
+  {
+   "catalog": "ned",
+   "data": {},
+   "dec": 2.05229440996,
+   "epoch": null,
+   "metadata": {
+    "citation": "NASA/IPAC Extragalactic Database (NED), DOI 10.26132/NED1",
+    "physical": {
+     "object_type": "AbLS",
+     "redshift": 0.0487999991
+    },
+    "wavelength": "extragalactic"
+   },
+   "position_uncertainty_arcsec": 0.06036820355120732,
+   "positional_error_arcsec": 0.06036820355120732,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/ned.json"
+   },
+   "ra": 187.27770916996,
+   "source_id": "[HB89] 1226+023 ABS12"
+  },
+  {
+   "catalog": "ned",
+   "data": {},
+   "dec": 2.05229440996,
+   "epoch": null,
+   "metadata": {
+    "citation": "NASA/IPAC Extragalactic Database (NED), DOI 10.26132/NED1",
+    "physical": {
+     "object_type": "AbLS",
+     "redshift": 0.0323860012
+    },
+    "wavelength": "extragalactic"
+   },
+   "position_uncertainty_arcsec": 0.06036820355120732,
+   "positional_error_arcsec": 0.06036820355120732,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/ned.json"
+   },
+   "ra": 187.27770916996,
+   "source_id": "[HB89] 1226+023 ABS13"
+  },
+  {
+   "catalog": "ned",
+   "data": {},
+   "dec": 2.05229440996,
+   "epoch": null,
+   "metadata": {
+    "citation": "NASA/IPAC Extragalactic Database (NED), DOI 10.26132/NED1",
+    "physical": {
+     "object_type": "AbLS",
+     "redshift": 0.0290070008
+    },
+    "wavelength": "extragalactic"
+   },
+   "position_uncertainty_arcsec": 0.06036820355120732,
+   "positional_error_arcsec": 0.06036820355120732,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/ned.json"
+   },
+   "ra": 187.27770916996,
+   "source_id": "[HB89] 1226+023 ABS14"
+  },
+  {
+   "catalog": "ned",
+   "data": {},
+   "dec": 2.05229440996,
+   "epoch": null,
+   "metadata": {
+    "citation": "NASA/IPAC Extragalactic Database (NED), DOI 10.26132/NED1",
+    "physical": {
+     "object_type": "AbLS",
+     "redshift": 0.0258750003
+    },
+    "wavelength": "extragalactic"
+   },
+   "position_uncertainty_arcsec": 0.06036820355120732,
+   "positional_error_arcsec": 0.06036820355120732,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/ned.json"
+   },
+   "ra": 187.27770916996,
+   "source_id": "[HB89] 1226+023 ABS15"
+  },
+  {
+   "catalog": "ned",
+   "data": {},
+   "dec": 2.05229440996,
+   "epoch": null,
+   "metadata": {
+    "citation": "NASA/IPAC Extragalactic Database (NED), DOI 10.26132/NED1",
+    "physical": {
+     "object_type": "AbLS",
+     "redshift": 0.0215620007
+    },
+    "wavelength": "extragalactic"
+   },
+   "position_uncertainty_arcsec": 0.06036820355120732,
+   "positional_error_arcsec": 0.06036820355120732,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/ned.json"
+   },
+   "ra": 187.27770916996,
+   "source_id": "[HB89] 1226+023 ABS16"
+  },
+  {
+   "catalog": "ned",
+   "data": {},
+   "dec": 2.05170571462257,
+   "epoch": null,
+   "metadata": {
+    "citation": "NASA/IPAC Extragalactic Database (NED), DOI 10.26132/NED1",
+    "physical": {},
+    "wavelength": "extragalactic"
+   },
+   "position_uncertainty_arcsec": 0.504636,
+   "positional_error_arcsec": 0.504636,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/ned.json"
+   },
+   "ra": 187.278253512403,
+   "source_id": "GALEXMSC J122906.78+020306.1"
+  },
+  {
+   "catalog": "ned",
+   "data": {},
+   "dec": 2.05036,
+   "epoch": null,
+   "metadata": {
+    "citation": "NASA/IPAC Extragalactic Database (NED), DOI 10.26132/NED1",
+    "physical": {},
+    "wavelength": "extragalactic"
+   },
+   "position_uncertainty_arcsec": 0.2,
+   "positional_error_arcsec": 0.2,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/ned.json"
+   },
+   "ra": 187.27616083333297,
+   "source_id": "[VFK2015] J187.27616+02.05035"
+  },
+  {
+   "catalog": "twomass_psc",
+   "data": {},
+   "dec": 2.052387,
+   "epoch": 2000.1501848049281,
+   "metadata": {
+    "citation": "Skrutskie et al. 2006, AJ 131, 1163 (2006AJ....131.1163S); DOI 10.26131/IRSA2",
+    "physical": {},
+    "wavelength": "infrared"
+   },
+   "position_uncertainty_arcsec": 0.13285330316154184,
+   "positional_error_arcsec": 0.13285330316154184,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/twomass_psc.json"
+   },
+   "ra": 187.277897,
+   "source_id": "12290669+0203085"
+  },
+  {
+   "catalog": "allwise",
+   "data": {},
+   "dec": 2.052393,
+   "epoch": 2010.7522462088707,
+   "metadata": {
+    "citation": "Wright et al. 2010, AJ 140, 1868 (2010AJ....140.1868W); Mainzer et al. 2011, ApJ 731, 53; DOI 10.26131/IRSA1",
+    "physical": {},
+    "wavelength": "infrared"
+   },
+   "position_uncertainty_arcsec": 0.028551094549946768,
+   "positional_error_arcsec": 0.028551094549946768,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/allwise.json"
+   },
+   "ra": 187.27790669999996,
+   "source_id": "J122906.69+020308.6"
+  },
+  {
+   "catalog": "panstarrs_dr2",
+   "data": {},
+   "dec": 2.0523890032605503,
+   "epoch": 2011.7433453589101,
+   "metadata": {
+    "citation": "Chambers et al. 2016, arXiv:1612.05560; Flewelling et al. 2020, ApJS 251, 7; DOI 10.17909/s0zg-jx37",
+    "physical": {},
+    "wavelength": "optical"
+   },
+   "position_uncertainty_arcsec": 0.015000751183743196,
+   "positional_error_arcsec": 0.015000751183743196,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/panstarrs_dr2.json"
+   },
+   "ra": 187.27791713178965,
+   "source_id": "110461872779253351"
+  },
+  {
+   "catalog": "panstarrs_dr2",
+   "data": {},
+   "dec": 2.05428258,
+   "epoch": 2011.027675108364,
+   "metadata": {
+    "citation": "Chambers et al. 2016, arXiv:1612.05560; Flewelling et al. 2020, ApJS 251, 7; DOI 10.17909/s0zg-jx37",
+    "physical": {},
+    "wavelength": "optical"
+   },
+   "position_uncertainty_arcsec": 0.036067159724008965,
+   "positional_error_arcsec": 0.036067159724008965,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/panstarrs_dr2.json"
+   },
+   "ra": 187.2782606,
+   "source_id": "110461872781485699"
+  },
+  {
+   "catalog": "panstarrs_dr2",
+   "data": {},
+   "dec": 2.05482254,
+   "epoch": 2010.4888053907735,
+   "metadata": {
+    "citation": "Chambers et al. 2016, arXiv:1612.05560; Flewelling et al. 2020, ApJS 251, 7; DOI 10.17909/s0zg-jx37",
+    "physical": {},
+    "wavelength": "optical"
+   },
+   "position_uncertainty_arcsec": 0.041244349154303715,
+   "positional_error_arcsec": 0.041244349154303715,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/panstarrs_dr2.json"
+   },
+   "ra": 187.27796001999997,
+   "source_id": "110461872779676212"
+  },
+  {
+   "catalog": "sdss",
+   "data": {},
+   "dec": 2.05239052911312,
+   "epoch": 2000.3381245722107,
+   "metadata": {
+    "citation": "Almeida et al. 2023, ApJS 267, 44 (SDSS DR18); York et al. 2000, AJ 120, 1579; Beck et al. 2016, MNRAS 460, 1371",
+    "physical": {},
+    "wavelength": "optical"
+   },
+   "position_uncertainty_arcsec": 0.07398024344821617,
+   "positional_error_arcsec": 0.07398024344821617,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/sdss.json"
+   },
+   "ra": 187.277924298517,
+   "source_id": "1237651735760142397"
+  },
+  {
+   "catalog": "first",
+   "data": {},
+   "dec": 2.05248056,
+   "epoch": 1998.6165639972628,
+   "metadata": {
+    "citation": "Becker, White & Helfand 1995, ApJ 450, 559; Helfand, White & Becker 2015, ApJ 801, 26",
+    "physical": {},
+    "wavelength": "radio"
+   },
+   "position_uncertainty_arcsec": 0.18407570378132102,
+   "positional_error_arcsec": 0.18407570378132102,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/first.json"
+   },
+   "ra": 187.27806666999996,
+   "source_id": "FIRST J122906.7+020308"
+  },
+  {
+   "catalog": "nvss",
+   "data": {},
+   "dec": 2.05141667,
+   "epoch": null,
+   "metadata": {
+    "citation": "Condon et al. 1998, AJ 115, 1693 (1998AJ....115.1693C)",
+    "physical": {},
+    "wavelength": "radio"
+   },
+   "position_uncertainty_arcsec": 0.5302077522848612,
+   "positional_error_arcsec": 0.5302077522848612,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/nvss.json"
+   },
+   "ra": 187.27670833,
+   "source_id": "NVSS J122906+020305"
+  },
+  {
+   "catalog": "lotss",
+   "data": {},
+   "dec": 2.0512363081,
+   "epoch": null,
+   "metadata": {
+    "citation": "Shimwell et al. 2026, A&A 707, A198 (LoTSS-DR3); Shimwell et al. 2022, A&A 659, A1 (DR2)",
+    "physical": {},
+    "wavelength": "radio"
+   },
+   "position_uncertainty_arcsec": 2.0117200854946247,
+   "positional_error_arcsec": 2.0117200854946247,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/lotss.json"
+   },
+   "ra": 187.27634928332,
+   "source_id": "ILTJ122906.32+020304.4"
+  },
+  {
+   "catalog": "rosat",
+   "data": {},
+   "dec": 2.05271,
+   "epoch": 1990.9664231912438,
+   "metadata": {
+    "citation": "Boller et al. 2016, A&A 588, A103 (2016A&A...588A.103B); positional errors: Freund et al. 2022, A&A 664, A105",
+    "physical": {},
+    "wavelength": "xray"
+   },
+   "position_uncertainty_arcsec": 3.755106920372298,
+   "positional_error_arcsec": 3.755106920372298,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/rosat.json"
+   },
+   "ra": 187.27773,
+   "source_id": "2RXS J122906.6+020309"
+  },
+  {
+   "catalog": "chandra",
+   "data": {},
+   "dec": 2.0524019046366413,
+   "epoch": null,
+   "metadata": {
+    "citation": "Evans et al. 2024, ApJS 274, 22 (CSC 2.1); Evans et al. 2010, ApJS 189, 37; DOI 10.25574/csc2.1",
+    "physical": {},
+    "wavelength": "xray"
+   },
+   "position_uncertainty_arcsec": 0.33050709655580757,
+   "positional_error_arcsec": 0.33050709655580757,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/chandra.json"
+   },
+   "ra": 187.2778492039563,
+   "source_id": "2CXO J122906.6+020308"
+  },
+  {
+   "catalog": "xmm",
+   "data": {},
+   "dec": 2.05241989493761,
+   "epoch": 2012.2338168777094,
+   "metadata": {
+    "citation": "Webb et al. 2020, A&A 641, A136 (2020A&A...641A.136W); Webb, Traulsen et al. 2026 (5XMM-DR15)",
+    "physical": {},
+    "wavelength": "xray"
+   },
+   "position_uncertainty_arcsec": 0.8800000000473284,
+   "positional_error_arcsec": 0.8800000000473284,
+   "proper_motion_dec_masyr": null,
+   "proper_motion_ra_masyr": null,
+   "provenance": {
+    "derived_from": "tests/fixtures/3c273/xmm.json"
+   },
+   "ra": 187.277841896253,
+   "source_id": "5XMM J122906.6+020308"
+  }
+ ],
+ "target": "3C 273"
+}

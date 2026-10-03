@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-29T05:44:09 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-29T05:44:10">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-source=II%2F246&amp;-meta=">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+
+<RESOURCE ID="yCat_2246_1" name="II/246/out" type="meta">
+  <DESCRIPTION>
+    2MASS All-Sky Catalog of Point Sources (Cutri+ 2003)
+    2MASS Point Source Catalogue, output (on a total of 470,992,970 sources)
+  </DESCRIPTION>
+
+<!-- The Point Source catalogue of 470,992,970 sources. \inputViz{2mass.intro.htx} -->
+  <LINK content-role="hints" action="votable?-meta.what&amp;-source=II/246/out"/>
+<INFO name="matches" value="1">matching records</INFO>
+  <RESOURCE/><!-- required by VOTable1.2 schema -->
+</RESOURCE>
+</VOTABLE>

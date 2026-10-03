@@ -1,0 +1,332 @@
+{
+  "catalog": "alerce_duplicates",
+  "params": {
+    "broker": "alerce",
+    "since_mjd": 61308.5221,
+    "until_mjd": 61311.5221,
+    "limit": 15,
+    "options": {
+      "classifier": "lc_classifier",
+      "class_name": "AGN",
+      "mjd_field": "lastmjd"
+    },
+    "alert_ids": [
+      "ZTF18actadei",
+      "ZTF19aampqti",
+      "ZTF18aahpbal",
+      "ZTF18accnfvw",
+      "ZTF19aaysifx",
+      "ZTF18accnmxe",
+      "ZTF18aacgehv",
+      "ZTF18acbwaow",
+      "ZTF20achostw",
+      "ZTF18aaacqmh",
+      "ZTF18aczejib",
+      "ZTF18aczdenj",
+      "ZTF18acuseuu"
+    ],
+    "repeated": [
+      "ZTF18actadei",
+      "ZTF19aampqti",
+      "ZTF18accnfvw",
+      "ZTF18aacgehv",
+      "ZTF18acbwaow",
+      "ZTF18aczejib",
+      "ZTF18aczdenj"
+    ],
+    "versions": {
+      "ZTF18actadei": "lc_classifier_1.1.13",
+      "ZTF19aampqti": "lc_classifier_1.1.13",
+      "ZTF18aahpbal": "lc_classifier_1.1.13",
+      "ZTF18accnfvw": "lc_classifier_1.1.13",
+      "ZTF19aaysifx": "lc_classifier_1.1.13",
+      "ZTF18accnmxe": "lc_classifier_1.1.13",
+      "ZTF18aacgehv": "lc_classifier_1.1.13",
+      "ZTF18acbwaow": "lc_classifier_1.1.13",
+      "ZTF20achostw": "lc_classifier_1.1.13",
+      "ZTF18aaacqmh": "lc_classifier_1.1.13",
+      "ZTF18aczejib": "lc_classifier_1.1.13",
+      "ZTF18aczdenj": "lc_classifier_1.1.13",
+      "ZTF18acuseuu": "lc_classifier_1.1.13"
+    },
+    "probabilities": {
+      "ZTF18actadei": 0.497556,
+      "ZTF19aampqti": 0.362068,
+      "ZTF18aahpbal": 0.50018,
+      "ZTF18accnfvw": 0.533172,
+      "ZTF19aaysifx": 0.51408,
+      "ZTF18accnmxe": 0.472264,
+      "ZTF18aacgehv": 0.668744,
+      "ZTF18acbwaow": 0.49632,
+      "ZTF20achostw": 0.42994,
+      "ZTF18aaacqmh": 0.17812,
+      "ZTF18aczejib": 0.47736,
+      "ZTF18aczdenj": 0.5798,
+      "ZTF18acuseuu": 0.485304
+    },
+    "truncated": true,
+    "boundary_mjd": 61309.53011569986,
+    "requests": 30,
+    "warnings": [
+      "alerce: 2 object(s) dropped: their newest lc_classifier version ranks another class than 'AGN' first (their 'AGN' row came from an older version), e.g. ZTF18acusetg (CV/Nova 0.14208 in lc_classifier_1.1.13), ZTF21aaqvvvt (Blazar 0.412496 in lc_classifier_1.1.13)"
+    ]
+  },
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/?classifier=lc_classifier&ranking=1&class=AGN&lastmjd=61308.522100&lastmjd=61311.522100&page_size=16&order_by=lastmjd&order_mode=DESC",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/?classifier=lc_classifier&ranking=1&class=AGN&lastmjd=61308.522100&lastmjd=61309.53210650012&page_size=16&order_by=lastmjd&order_mode=DESC",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18actadei/probabilities?classifier=lc_classifier",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF19aampqti/probabilities?classifier=lc_classifier",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18accnfvw/probabilities?classifier=lc_classifier",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18aacgehv/probabilities?classifier=lc_classifier",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18acbwaow/probabilities?classifier=lc_classifier",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18aczejib/probabilities?classifier=lc_classifier",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18aczdenj/probabilities?classifier=lc_classifier",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18actadei/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF21aaqvvvt/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF19aampqti/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18acusetg/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18aahpbal/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18accnfvw/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF19aaysifx/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18accnmxe/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18aacgehv/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF20achostw/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18acbwaow/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18aczdenj/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18acuseuu/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18aaacqmh/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18aczejib/detections",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18acusetg/probabilities?classifier=lc_classifier",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF21aaqvvvt/probabilities?classifier=lc_classifier",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18aahpbal/probabilities?classifier=lc_classifier",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF19aaysifx/probabilities?classifier=lc_classifier",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18accnmxe/probabilities?classifier=lc_classifier",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF20achostw/probabilities?classifier=lc_classifier",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18aaacqmh/probabilities?classifier=lc_classifier",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://api.alerce.online/ztf/v1/objects/ZTF18acuseuu/probabilities?classifier=lc_classifier",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    }
+  ]
+}

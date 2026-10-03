@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>2MASSI J0415195-093506</name>
+  <!-- Q8483495 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 0ms [0] -->
+    <INFO>from cache</INFO>
+    <oid>702025</oid>
+    <otype>BD*</otype>
+    <jpos>04:15:19.54 -09:35:06.6</jpos>
+    <jradeg>63.831432</jradeg>
+    <jdedeg>-9.585187</jdedeg>
+    <refPos>2003yCat.2246....0C</refPos>
+    <errRAmas>110</errRAmas><errDEmas>110</errDEmas>
+    <pm>
+      <v>2255</v><e>4</e><q>D</q><r>2009AJ....137....1F</r>
+      <pa>76.5</pa>
+      <pmRA>2193</pmRA><epmRA>3</epmRA>
+      <pmDE>527</pmDE><epmDE>2</epmDE>
+    </pm>
+    <Vel><v>49.6</v><e>1.2</e><q>B</q><r>2021ApJS..257...45H</r></Vel>
+    <plx><v>174.34</v><e>2.76</e><q>C</q><r>2012ApJ...752...56F</r></plx>
+    <spType>T8.0</spType><spNum>0.0003D400.0000.0000000000000000</spNum>
+    <oname>2MASSI J0415195-093506</oname>
+    <alias>2MASS J04151954-0935066</alias>
+    <alias>CNS5 1054</alias>
+    <alias>2MASSI J0415195-093506</alias>
+    <alias>2MASSW J0415195-093506</alias>
+    <alias>TIC 67773411</alias>
+    <alias>WISEA J041521.26-093500.4</alias>
+    <alias>WISEP J041521.20-093500.6</alias>
+    <alias>WISE J041521.21-093500.6</alias>
+    <alias>[B2006] J041519.5-093506</alias>
+    <alias>EQ J0415-0935</alias>
+    <nrefs>184</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ====Done (2026-Sep-29,05:02:02z)==== -->

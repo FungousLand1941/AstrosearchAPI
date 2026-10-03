@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-29T05:45:03 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-29T05:45:03">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-source=VII%2F110A%2Ftable3&amp;-meta.all=">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+
+<RESOURCE ID="yCat_7110_1" name="VII/110A/table3" type="meta">
+  <INFO name="nrows" value="2712">Number of rows of the table</INFO>
+  <DESCRIPTION>
+    Rich Clusters of Galaxies (Abell+ 1989)
+    Revised northern "Abell Catalog"
+  </DESCRIPTION>
+  <PARAM name="-c" datatype="char" arraysize="32*" value="">
+    <DESCRIPTION>Query from a celestial position according to ASU syntax:
+      {RA{+|-}Dec|object_name}[,eq=equinox][,ep=epoch][,rm=[min/]max]
+      (see http://vizier.cds.unistra.fr/doc/asu.html)
+    </DESCRIPTION>
+  </PARAM>
+  <LINK content-role="query" action="votable?-source=VII/110A/table3&amp;">
+    Action to Query the current RESOURCE, to be completed by PARAMs and FIELDs contents
+  </LINK>
+
+  <TABLE name="VII/110A/table3" nrows="2712">
+    <COOSYS ID="B1950" system="eq_FK4" equinox="B1950"/>
+    <!-- Definitions of GROUPs and FIELDs -->
+<!--The precision of the computed positions has been increased compared to the original positions-->
+    <FIELD name="recno" ucd="meta.record" display="0" datatype="int" width="8"><!-- ucd="RECORD" -->
+      <DESCRIPTION>Record number assigned by the VizieR team. Should Not be used for identification.</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-5?-info=XML&amp;-out.add=.&amp;-source=VII/110A/table3&amp;recno=${recno}"/>
+    </FIELD>
+    <FIELD name="ACO" ucd="meta.id;meta.main" display="1" datatype="short" width="4"><!-- ucd="ID_MAIN" -->
+      <DESCRIPTION>[1,2712]+ "Abell" number</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-5?-info=XML&amp;-out.add=.&amp;-source=VII/110A/table3&amp;recno=${recno}"/>
+    </FIELD>
+    <FIELD name="RAB1950" ucd="pos.eq.ra;meta.main" ref="B1950" display="1" datatype="char" arraysize="7" xtype="hms"><!-- ucd="POS_EQ_RA_MAIN" -->
+      <DESCRIPTION>right ascension (B1950)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DEB1950" ucd="pos.eq.dec;meta.main" ref="B1950" display="1" datatype="char" arraysize="6" xtype="dms"><!-- ucd="POS_EQ_DEC_MAIN" -->
+      <DESCRIPTION>declination (B1950)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="BMtype" ucd="src.class.struct" display="1" datatype="char" arraysize="7*"><!-- ucd="CLASS_STRUCT" -->
+      <DESCRIPTION>[- I:] cluster classification in the Bautz- Morgan system</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Count" ucd="meta.number" display="1" datatype="short" width="3" unit="ct"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>[0,] number of cluster members between m3 and m3+2, corrected for background</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Xpos" ucd="pos.cartesian.x;instr.plate" display="0" datatype="short" width="3" unit="mm"><!-- ucd="POS_PLATE_X" -->
+      <DESCRIPTION>rectangular coordinates of the apparent cluster center, referred to the south-east (lower left) edge of the Palomar Sky Survey prints (x coordinate)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Ypos" ucd="pos.cartesian.y;instr.plate" display="0" datatype="short" width="3" unit="mm"><!-- ucd="POS_PLATE_Y" -->
+      <DESCRIPTION>same with above (y coordinate)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="GLON" ucd="pos.galactic.lon" display="0" datatype="float" width="6" precision="2" unit="deg"><!-- ucd="POS_GAL_LON" -->
+      <DESCRIPTION>galactic longitude l2</DESCRIPTION>
+    </FIELD>
+    <FIELD name="GLAT" ucd="pos.galactic.lat" display="0" datatype="float" width="6" precision="2" unit="deg"><!-- ucd="POS_GAL_LAT" -->
+      <DESCRIPTION>galactic latitude b2</DESCRIPTION>
+    </FIELD>
+    <FIELD name="z" ucd="src.redshift" display="1" datatype="float" width="7" precision="4"><!-- ucd="REDSHIFT_HC" -->
+      <DESCRIPTION>? cluster redshift from Struble and Rood (1987ApJS...63..555S)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Rich" ucd="src.class.richness" display="1" datatype="unsignedByte" width="1"><!-- ucd="CLASS_RICHNESS" -->
+      <DESCRIPTION>richness, from Abell (1958ApJS....3..211A)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Dclass" ucd="src.class.distance" display="1" datatype="unsignedByte" width="1"><!-- ucd="CLASS_DISTANCE" -->
+      <DESCRIPTION>distance class, from Abell (1958)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="m10" ucd="phot.mag" display="1" datatype="float" width="4" precision="1" unit="mag"><!-- ucd="PHOT_MAG_UNDEF" -->
+      <DESCRIPTION>red magnitude of the tenth brightest cluster member, from Abell (1958)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="_RA.icrs" ucd="pos.eq.ra" display="1" datatype="char" arraysize="10" xtype="hms"><!-- ucd="POS_EQ_RA_OTHER" -->
+      <DESCRIPTION>Right ascension (ICRS) (computed by VizieR, not part of the original data)</DESCRIPTION>
+      <VALUES null=" " />
+    </FIELD>
+    <FIELD name="_DE.icrs" ucd="pos.eq.dec" display="1" datatype="char" arraysize="9" xtype="dms"><!-- ucd="POS_EQ_DEC_OTHER" -->
+      <DESCRIPTION>Declination (ICRS) (computed by VizieR, not part of the original data)</DESCRIPTION>
+      <VALUES null=" " />
+    </FIELD>
+  </TABLE>
+<INFO name="matches" value="2">matching records</INFO>
+</RESOURCE>
+</VOTABLE>

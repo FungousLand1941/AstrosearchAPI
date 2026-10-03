@@ -1,0 +1,75 @@
+{
+  "catalog": "xmatch_final",
+  "params": {
+    "alerts": [
+      {
+        "broker": "manual",
+        "object_id": "ZTF26abuxdqd",
+        "ra": 299.0526,
+        "dec": 8.4242,
+        "mjd": 61313.1573,
+        "magpsf": null,
+        "band": null,
+        "classification": null,
+        "probability": null,
+        "url": "",
+        "survey": "none",
+        "magpsf_err": null,
+        "first_mjd": null,
+        "extra": {},
+        "is_negative": null,
+        "id": "manual:ZTF26abuxdqd"
+      }
+    ]
+  },
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://simbad.cds.unistra.fr/simbad/sim-tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+b.main_id%2C+b.ra%2C+b.dec%2C+b.coo_err_maj%2C+b.coo_err_min%2C+b.coo_err_angle%2C+b.coo_qual%2C+b.coo_wavelength%2C+b.coo_bibcode%2C+b.otype%2C+b.sp_type%2C+b.rvz_redshift%2C+b.plx_value%2C+b.pmra%2C+b.pmdec%2C+f.V%2C+f.G%2C+f.K%2C+DISTANCE%28POINT%28%27ICRS%27%2C+b.ra%2C+b.dec%29%2C+POINT%28%27ICRS%27%2C+299.052600000%2C+8.424200000%29%29+AS+match_dist+FROM+basic+AS+b+LEFT+OUTER+JOIN+allfluxes+AS+f+ON+f.oidref+%3D+b.oid+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+b.ra%2C+b.dec%29%2C+CIRCLE%28%27ICRS%27%2C+299.052600000%2C+8.424200000%2C+0.0005555556%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://simbad.cds.unistra.fr/simbad/sim-tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+b.main_id%2C+b.ra%2C+b.dec%2C+b.coo_err_maj%2C+b.coo_err_min%2C+b.coo_err_angle%2C+b.coo_qual%2C+b.coo_wavelength%2C+b.coo_bibcode%2C+b.otype%2C+b.sp_type%2C+b.rvz_redshift%2C+b.plx_value%2C+b.pmra%2C+b.pmdec%2C+f.V%2C+f.G%2C+f.K%2C+DISTANCE%28POINT%28%27ICRS%27%2C+b.ra%2C+b.dec%29%2C+POINT%28%27ICRS%27%2C+299.052600000%2C+8.424200000%29%29+AS+match_dist+FROM+basic+AS+b+LEFT+OUTER+JOIN+allfluxes+AS+f+ON+f.oidref+%3D+b.oid+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+b.ra%2C+b.dec%29%2C+CIRCLE%28%27ICRS%27%2C+299.052600000%2C+8.424200000%2C+0.0166666667%29%29+AND+%28b.otype+IN+%28%27G%27%2C+%27G%3F%27%2C+%27AGN%27%2C+%27AG%3F%27%2C+%27LIN%27%2C+%27QSO%27%2C+%27Q%3F%27%2C+%27Bla%27%2C+%27Bz%3F%27%2C+%27BLL%27%2C+%27BL%3F%27%2C+%27rG%27%2C+%27SyG%27%2C+%27Sy1%27%2C+%27Sy2%27%2C+%27bCG%27%2C+%27EmG%27%2C+%27GiC%27%2C+%27BiC%27%2C+%27GiG%27%2C+%27GiP%27%2C+%27H2G%27%2C+%27LSB%27%2C+%27SBG%27%2C+%27IG%27%2C+%27PaG%27%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://ned.ipac.caltech.edu/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+prefname%2C+ra%2C+dec%2C+uncmaja%2C+uncmina%2C+uncposa%2C+pos_bibcode%2C+prefphytype%2C+z%2C+zunc%2C+zflag%2C+n_gphot%2C+DISTANCE%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+POINT%28%27ICRS%27%2C+299.052600000%2C+8.424200000%29%29+AS+match_dist+FROM+NEDTAP.objdir+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+299.052600000%2C+8.424200000%2C+0.0005555556%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://ned.ipac.caltech.edu/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+prefname%2C+ra%2C+dec%2C+uncmaja%2C+uncmina%2C+uncposa%2C+pos_bibcode%2C+prefphytype%2C+z%2C+zunc%2C+zflag%2C+n_gphot%2C+DISTANCE%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+POINT%28%27ICRS%27%2C+299.052600000%2C+8.424200000%29%29+AS+match_dist+FROM+NEDTAP.objdir+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+299.052600000%2C+8.424200000%2C+0.0166666667%29%29+AND+%28prefphytype+IN+%28%27G%27%2C+%27GPair%27%2C+%27GTrpl%27%2C+%27G_Lens%27%2C+%27QSO%27%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+PGC%2C+RAJ2000%2C+DEJ2000%2C+OType%2C+logD25%2C+logR25%2C+PA%2C+ANames%2C+DISTANCE%28POINT%28%27ICRS%27%2C+RAJ2000%2C+DEJ2000%29%2C+POINT%28%27ICRS%27%2C+299.052600000%2C+8.424200000%29%29+AS+match_dist+FROM+%22VII%2F237%2Fpgc%22+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+RAJ2000%2C+DEJ2000%29%2C+CIRCLE%28%27ICRS%27%2C+299.052600000%2C+8.424200000%2C+6.0000000000%29%29+AND+%28%28OType+LIKE+%27G%25%27+OR+OType+LIKE+%27M%25%27%29+AND+%28DISTANCE%28POINT%28%27ICRS%27%2C+RAJ2000%2C+DEJ2000%29%2C+POINT%28%27ICRS%27%2C+299.052600000%2C+8.424200000%29%29+%3C%3D+0.0166666667+OR+12+%2A+POWER%2810%2C+logD25%29+%3E%3D+3600.0+%2A+DISTANCE%28POINT%28%27ICRS%27%2C+RAJ2000%2C+DEJ2000%29%2C+POINT%28%27ICRS%27%2C+299.052600000%2C+8.424200000%29%29%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://gea.esac.esa.int/tap-server/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+source_id%2C+ra%2C+dec%2C+ra_error%2C+dec_error%2C+ra_dec_corr%2C+ref_epoch%2C+parallax%2C+parallax_error%2C+pmra%2C+pmdec%2C+phot_g_mean_mag%2C+phot_bp_mean_mag%2C+phot_rp_mean_mag%2C+ruwe%2C+astrometric_params_solved%2C+pmra_error%2C+pmdec_error%2C+pmra_pmdec_corr%2C+astrometric_excess_noise%2C+astrometric_excess_noise_sig%2C+in_galaxy_candidates%2C+classprob_dsc_combmod_star%2C+classprob_dsc_combmod_galaxy%2C+classprob_dsc_combmod_quasar%2C+DISTANCE%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+POINT%28%27ICRS%27%2C+299.052600000%2C+8.424200000%29%29+AS+match_dist+FROM+gaiadr3.gaia_source+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+299.052600000%2C+8.424200000%2C+0.0005555556%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    }
+  ]
+}

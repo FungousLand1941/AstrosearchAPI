@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<VOTABLE xmlns="http://www.ivoa.net/xml/VOTable/v1.3" xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.4">
+ <RESOURCE type="results">
+  <INFO name="QUERY_STATUS" value="OK">No errors detected in query preprocessing</INFO>
+  <TABLE>
+   <DESCRIPTION>Query result for:&#xA;SELECT tu.t_idx AS t_idx, srcid AS srcid, name AS name, ra AS ra, dec AS dec, error_radius AS error_radius, error_ell_major AS error_ell_major, error_ell_minor AS error_ell_minor, ep_flux AS ep_flux, ep_flux_error AS ep_flux_error, ep_det_ml AS ep_det_ml, sum_flag AS sum_flag, n_obs AS n_obs, n_contrib AS n_contrib, extent AS extent, &quot;time&quot; AS &quot;time&quot;, end_time AS end_time FROM xmmssc, tap_upload_1790595133734_targets AS tu WHERE 1 = CONTAINS(POINT(&apos;ICRS&apos;, ra, dec), CIRCLE(&apos;ICRS&apos;, tu.t_ra, tu.t_dec, tu.t_rad))</DESCRIPTION>
+   <FIELD datatype="int" name="t_idx">
+    <VALUES null="-2147483648"/>
+   </FIELD>
+   <FIELD datatype="char" arraysize="*" ucd="meta.id;src" name="srcid">
+    <DESCRIPTION>Unique Source Identifier</DESCRIPTION>
+   </FIELD>
+   <FIELD datatype="char" arraysize="*" ucd="meta.id;meta.main" name="name">
+    <DESCRIPTION>Source Designation (IAU)</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="deg" datatype="double" ucd="pos.eq.ra;meta.main" precision="F6" name="ra">
+    <DESCRIPTION>Corrected Right Ascension of the Source</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="deg" datatype="double" ucd="pos.eq.dec;meta.main" precision="F6" name="dec">
+    <DESCRIPTION>Corrected Declination of the Source</DESCRIPTION>
+   </FIELD>
+   <FIELD datatype="double" name="error_radius"/>
+   <FIELD datatype="double" name="error_ell_major"/>
+   <FIELD datatype="double" name="error_ell_minor"/>
+   <FIELD datatype="double" name="ep_flux"/>
+   <FIELD datatype="double" name="ep_flux_error"/>
+   <FIELD datatype="double" name="ep_det_ml"/>
+   <FIELD datatype="short" name="sum_flag">
+    <VALUES null="-32768"/>
+   </FIELD>
+   <FIELD datatype="int" name="n_obs">
+    <VALUES null="-2147483648"/>
+   </FIELD>
+   <FIELD datatype="int" name="n_contrib">
+    <VALUES null="-2147483648"/>
+   </FIELD>
+   <FIELD unit="arcsec" datatype="double" ucd="phys.angSize" precision="E5" name="extent">
+    <DESCRIPTION>Extent Radius (arcsec)</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="d" datatype="double" ucd="time.start;obs" precision="F4" name="time">
+    <DESCRIPTION>Date of Earliest Observation Containing a Detection of the Unique Source</DESCRIPTION>
+   </FIELD>
+   <FIELD datatype="double" name="end_time"/>
+   <DATA>
+    <BINARY>
+     <STREAM encoding="base64">
+AAAAAAAAABAzMDExMjc3MDEwMTAwMDAxAAAAFTVYTU0gSjEyMjkwNi42KzAyMDMw
+OEBnaOQUsDuwQABrWx8zVZY+6xGAD2zK/n/4AAAAAAAAPvQIKgL5Ur4942Bl
++PfNKD0fzVONwQLsQbnUywAAAAAAAQAAACsAAAAqAAAAAAAAAABA6T+MLePv
+V0Dtc62GKbfvAAAAAQAAABAzMDExNDEyMDEwMTAwMDAxAAAAFTVYTU0gSjEy
+MzA0OS4zKzEyMjMzMEBndpM36J7mQCjIiM/pbIM/b/28Le4k4X/4AAAAAAAA
+P2NGxDSiye890eUnLFcbYz0hCi3suFayQXlDaEAAAAAAAQAAAEQAAAAHQDXp
+s9B8hLZA6UBNBbBbAEDtLY9CFf86AAAAAgAAABAzMDEzMDkyMDEwMTAwMDkz
+AAAAFTVYTU0gSjIyMDMxMC41KzE4NTMwNEB0rLRSYZ1uQDLibyatatQ/+RP9
+DQZ4wD/8/ZVXFLnLP/k6p5u63Ao81fPwXeOlfTzOoDBlib5YQCzI24uscQ0A
+AQAAAAMAAAADAAAAAAAAAABA6VS8REREQEDqZMwV5vgI
+     </STREAM>
+    </BINARY>
+   </DATA>
+  </TABLE>
+ </RESOURCE>
+</VOTABLE>

@@ -1,0 +1,22 @@
+{
+  "scenario": "stack_explicit_3c273",
+  "recorded_outcome": "checked=True panels=[('vlass', 'radio', '1.97\u20134.01 GHz', False), ('2mass', 'infrared', '1.15\u20132.3 \u00b5m', True), ('CDS/P/Mellinger/color', 'optical', '400\u2013800 nm', True), ('dss2', 'optical', '400\u2013600 nm', True), ('rass', 'xray', '0.1\u20132.4 keV', True)]",
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://alasky.cds.unistra.fr/MocServer/query?expr=ID%3DCDS%2FP%2FMellinger%2Fcolor&get=record&fmt=json&fields=ID%2Cobs_title%2Cem_min%2Cem_max%2Cbib_reference%2Cdataproduct_subtype%2Chips_tile_format",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json;charset=ISO-8859-1",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://alasky.cds.unistra.fr/MocServer/query?RA=187.2779154&DEC=2.0523883&SR=0.0002777777777777778&expr=ID%3DNRAO%2FP%2FVLASS-Quicklook-MedianStack%7C%7CID%3DCDS%2FP%2FMellinger%2Fcolor&get=id&fmt=json",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json;charset=ISO-8859-1",
+      "match": []
+    }
+  ]
+}

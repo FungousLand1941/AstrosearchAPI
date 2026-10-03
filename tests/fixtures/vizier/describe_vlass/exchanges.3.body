@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-29T05:42:16 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-29T05:42:16">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-source=J%2FApJS%2F255%2F30%2Fcomp&amp;-meta.all=">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+
+<RESOURCE ID="yCat_22550030_1" name="J/ApJS/255/30/comp" type="meta">
+  <INFO name="nrows" value="3381277">Number of rows of the table</INFO>
+  <DESCRIPTION>
+    VLASS QL Ep.1 Catalog, CIRADA version (Gordon+, 2021)
+    Detected components and properties
+  </DESCRIPTION>
+  <PARAM name="-c" datatype="char" arraysize="32*" value="">
+    <DESCRIPTION>Query from a celestial position according to ASU syntax:
+      {RA{+|-}Dec|object_name}[,eq=equinox][,ep=epoch][,rm=[min/]max]
+      (see http://vizier.cds.unistra.fr/doc/asu.html)
+    </DESCRIPTION>
+  </PARAM>
+  <LINK content-role="query" action="votable?-source=J/ApJS/255/30/comp&amp;">
+    Action to Query the current RESOURCE, to be completed by PARAMs and FIELDs contents
+  </LINK>
+
+  <TABLE name="J/ApJS/255/30/comp" nrows="3381277">
+    <COOSYS ID="J2000" system="eq_FK5" equinox="J2000"/>
+    <!-- Definitions of GROUPs and FIELDs -->
+
+<!-- +++No column could be found to attach a LINK in table: J/ApJS/255/30/comp -->
+    <FIELD name="recno" ucd="meta.record" display="0" datatype="int" width="8"><!-- ucd="RECORD" -->
+      <DESCRIPTION>Record number assigned by the VizieR team. Should Not be used for identification.</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-5?-info=XML&amp;-out.add=.&amp;-source=J/ApJS/255/30/comp&amp;recno=${recno}"/>
+    </FIELD>
+    <FIELD name="CompName" ucd="meta.id;meta.main" display="1" datatype="char" arraysize="31"><!-- ucd="ID_MAIN" -->
+      <DESCRIPTION>IAU name of the component, VLASS1QLCIR JHHMMSS.ss+DDMMSS.s (Component) (1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="CompId" ucd="meta.id" display="1" datatype="short" width="4"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>[-588/218] The PyBDSF ID of the component in the subtile (Component) (2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="IslId" ucd="meta.id" display="0" datatype="short" width="3"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>[0/624] The PyBDSF ID of the flux island in the subtile (Isl_id) (2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RAJ2000" ucd="pos.eq.ra;meta.main" ref="J2000" display="1" datatype="double" width="12" precision="8" unit="deg"><!-- ucd="POS_EQ_RA_MAIN" -->
+      <DESCRIPTION>[0.0/360.0] Right Ascension (J2000) (RA)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DEJ2000" ucd="pos.eq.dec;meta.main" ref="J2000" display="1" datatype="double" width="12" precision="8" unit="deg"><!-- ucd="POS_EQ_DEC_MAIN" -->
+      <DESCRIPTION>[-40.02/89.83] Declination (J2000) (DEC)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_RAJ2000" ucd="stat.error;pos.eq.ra" display="0" datatype="double" width="12" precision="8" unit="deg"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma uncertainty in RA (E_RA) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_DEJ2000" ucd="stat.error;pos.eq.dec" display="0" datatype="double" width="12" precision="8" unit="deg"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma uncertainty in DEC (E_DEC) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Ftot" ucd="phot.flux.density;em.radio.1500-3000MHz" display="1" datatype="double" width="9" precision="3" unit="mJy"><!-- ucd="PHOT_FLUX_RADIO_2.7G" -->
+      <DESCRIPTION>The integrated flux density of the component in the S-band (2-4GHz) (Total_flux) (3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_Ftot" ucd="stat.error" display="1" datatype="float" width="7" precision="3" unit="mJy"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma uncertainty in total flux (E_Total_f) (3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Fpeak" ucd="phot.flux.density;em.radio.1500-3000MHz" display="1" datatype="double" width="8" precision="3" unit="mJy/beam"><!-- ucd="PHOT_FLUX_RADIO_2.7G" -->
+      <DESCRIPTION>Peak brightness of the component in the S-band (2-4GHz) (Peak_flux) (3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_Fpeak" ucd="stat.error" display="1" datatype="float" width="6" precision="3" unit="mJy/beam"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma uncertainty in peak flux (E_Peak_fl) (3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Maj" ucd="stat.fit.param;meta.modelled" display="0" datatype="double" width="9" precision="4" unit="arcsec"><!-- ucd="EXTENSION_DIAM" -->
+      <DESCRIPTION>? Major axis of the component fit (Maj) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Maj" ucd="stat.error" display="0" datatype="double" width="8" precision="4" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma uncertainty in Maj (E_Maj) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Min" ucd="phys.angSize;src" display="0" datatype="double" width="9" precision="4" unit="arcsec"><!-- ucd="EXTENSION_MIN" -->
+      <DESCRIPTION>? Minor axis of the component fit (Min) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Min" ucd="stat.error;stat.min" display="0" datatype="double" width="8" precision="4" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma uncertainty in Min (E_Min) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PA" ucd="pos.posAng;meta.modelled" display="0" datatype="double" width="9" precision="4" unit="deg"><!-- ucd="POS_POS-ANG" -->
+      <DESCRIPTION>? Position angle of the component fit (PA) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_PA" ucd="stat.error" display="0" datatype="double" width="9" precision="4" unit="deg"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma uncertainty in PA (E_PA) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FtotIsl" ucd="phot.flux.density;em.radio.1500-3000MHz" display="0" datatype="double" width="9" precision="3" unit="mJy"><!-- ucd="PHOT_FLUX_RADIO_2.7G" -->
+      <DESCRIPTION>Integrated flux density of the entire flux island (Isl_Total)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_FtotIsl" ucd="stat.error" display="0" datatype="float" width="7" precision="3" unit="mJy"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma uncertainty in FtotIsl (E_Isl_Tot)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Islrms" ucd="stat.stdev;phot.flux.density" display="1" datatype="float" width="6" precision="3" unit="mJy/beam"><!-- ucd="INST_NOISE" -->
+      <DESCRIPTION>Local rms noise of the flux island (Isl_rms)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Islmean" ucd="phot.flux.density;stat.mean" display="0" datatype="float" width="6" precision="3" unit="mJy/beam"><!-- ucd="STAT_MEAN" -->
+      <DESCRIPTION>Mean value of the flux island (Isl_mean)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="ResIdIslrms" ucd="stat.fit.residual;phot.flux.density" display="0" datatype="float" width="7" precision="3" unit="mJy/beam"><!-- ucd="INST_NOISE" -->
+      <DESCRIPTION>Local rms noise of the residual for the flux island (Resid_Isl) (3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="ResidIslmean" ucd="instr.det.noise" display="0" datatype="double" width="8" precision="3" unit="mJy/beam"><!-- ucd="INST_NOISE" -->
+      <DESCRIPTION>Mean value of the residual for the flux island (Resid_Isl) (3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RAMdeg" ucd="pos.eq.ra" display="0" datatype="double" width="12" precision="8" unit="deg"><!-- ucd="POS_EQ_RA_OTHER" -->
+      <DESCRIPTION>Right Ascension (J2000) of the component peak brightness (RA_max)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DEMdeg" ucd="pos.eq.dec" display="0" datatype="double" width="12" precision="8" unit="deg"><!-- ucd="POS_EQ_DEC_OTHER" -->
+      <DESCRIPTION>Declination (J2000) of the component peak brightness (DEC_max)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_RAMdeg" ucd="stat.error" display="0" datatype="double" width="12" precision="8" unit="deg"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma uncertainty in RAMdeg (E_RA_max) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_DEMdeg" ucd="stat.error" display="0" datatype="double" width="12" precision="8" unit="deg"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma uncertainty in DEMdeg (E_DEC_max) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="SCode" ucd="meta.code" display="1" datatype="char" arraysize="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[SCME] Component type (S_Code) (4)</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR?-6N&amp;-info=XML&amp;-out.add=.&amp;&amp;lt;&amp;quot;Note&amp;quot;&amp;catid=22550030&amp;notid=4&amp;-out.emph=${SCode}"/>
+    </FIELD>
+    <FIELD name="Xposn" ucd="pos.cartesian.x;instr.det" display="0" datatype="double" width="11" precision="5" unit="pix"><!-- ucd="POS_CCD_X" -->
+      <DESCRIPTION>X-pixel coordinate of the component in the subtile (Xposn)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_Xposn" ucd="stat.error;pos.cartesian.x" display="0" datatype="double" width="9" precision="5" unit="pix"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma uncertainty in Xposn (E_Xposn) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Yposn" ucd="pos.cartesian.y;instr.det" display="0" datatype="double" width="11" precision="5" unit="pix"><!-- ucd="POS_CCD_Y" -->
+      <DESCRIPTION>Y-pixel coordinate of the component in the subtile (Yposn)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_Yposn" ucd="stat.error;pos.cartesian.y" display="0" datatype="double" width="9" precision="5" unit="pix"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma uncertainty in Yposn (E_Yposn) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="XposnMax" ucd="pos.cartesian.x;instr.det" display="0" datatype="double" width="11" precision="5" unit="pix"><!-- ucd="POS_CCD_X" -->
+      <DESCRIPTION>X-pixel coordinate of the component peak brightness in the subtile (Xposn_max)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_XposnMax" ucd="stat.error;pos.cartesian.x" display="0" datatype="double" width="9" precision="5" unit="pix"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma uncertainty in Xposn_max (E_Xposn_m) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="YposnMax" ucd="pos.cartesian.y;instr.det" display="0" datatype="double" width="9" precision="4" unit="pix"><!-- ucd="POS_CCD_Y" -->
+      <DESCRIPTION>Y-pixel coordinate of the component peak brightness in the subtile (Yposn_max)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_YposnMax" ucd="stat.error;pos.cartesian.y" display="0" datatype="double" width="9" precision="4" unit="pix"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma uncertainty in Yposn_max (E_Yposn_m) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="MajImgPlane" ucd="phys.angSize" display="0" datatype="double" width="8" precision="4" unit="arcsec"><!-- ucd="EXTENSION_DIAM" -->
+      <DESCRIPTION>? Major axis of the component fit in the image plane (Maj_img_p) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_MajImgPlane" ucd="stat.error" display="0" datatype="double" width="8" precision="4" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma uncertainty in Maj_img_plane (E_Maj_img) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="MinImgPlane" ucd="phys.angSize;src" display="0" datatype="double" width="8" precision="4" unit="arcsec"><!-- ucd="EXTENSION_MIN" -->
+      <DESCRIPTION>? Minor axis of the component fit in the image plane (Min_img_p)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_MinImgPlane" ucd="stat.error" display="0" datatype="double" width="8" precision="4" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma uncertainty in Min_img_plane (E_Min_img) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="PAImgPlane" ucd="pos.posAng;meta.modelled" display="0" datatype="double" width="9" precision="4" unit="deg"><!-- ucd="POS_POS-ANG" -->
+      <DESCRIPTION>? Position angle of the component fit in the image plane (PA_img_pl) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_PAImgPlane" ucd="stat.error" display="0" datatype="double" width="8" precision="4" unit="deg"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma uncertainty in PA_img_plane (E_PA_img_) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="DCMaj" ucd="phys.angSize" display="1" datatype="double" width="8" precision="4" unit="arcsec"><!-- ucd="EXTENSION_DIAM" -->
+      <DESCRIPTION>? Major axis of the component fit after deconvolution from the VLASS beam (DC_Maj) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_DCMaj" ucd="stat.error" display="0" datatype="double" width="8" precision="4" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma uncertainty in DC_Maj (E_DC_Maj) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="DCMin" ucd="phys.angSize;src" display="1" datatype="double" width="8" precision="4" unit="arcsec"><!-- ucd="EXTENSION_MIN" -->
+      <DESCRIPTION>? Minor axis of the component fit after deconvolution from the VLASS beam (DC_Min) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_DCMin" ucd="stat.error" display="0" datatype="double" width="8" precision="4" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma uncertainty in DC_Min (E_DC_Min) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="DCPA" ucd="pos.posAng;meta.modelled" display="1" datatype="double" width="8" precision="4" unit="deg"><!-- ucd="POS_POS-ANG" -->
+      <DESCRIPTION>? Position angle of the component fit after deconvolution from the VLASS beam (DC_PA) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_DCPA" ucd="stat.error" display="0" datatype="double" width="8" precision="4" unit="deg"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma uncertainty in DC_PA (E_DC_PA) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="DCMajImgPlane" ucd="phys.angSize" display="0" datatype="double" width="8" precision="4" unit="arcsec"><!-- ucd="EXTENSION_DIAM" -->
+      <DESCRIPTION>? Major axis of the component fit in the image plane after deconvolution from the VLASS beam (DC_Maj_im) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_DCMajImgPlane" ucd="stat.error" display="0" datatype="double" width="8" precision="4" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma uncertainty in DC_Maj_img_plane (E_DC_Maj_) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="DCMinImgPlane" ucd="phys.angSize;src" display="0" datatype="double" width="8" precision="4" unit="arcsec"><!-- ucd="EXTENSION_MIN" -->
+      <DESCRIPTION>? Minor axis of the component fit in the image plane after deconvolution from the VLASS beam (DC_Min_im) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_DCMinImgPlane" ucd="stat.error" display="0" datatype="double" width="8" precision="4" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma uncertainty in DC_Min_img_plane (E_DC_Min_) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="DCPAImgPlane" ucd="pos.posAng;meta.modelled" display="0" datatype="double" width="8" precision="4" unit="deg"><!-- ucd="POS_POS-ANG" -->
+      <DESCRIPTION>? Position angle of the component fit in the image plane after deconvolution from the VLASS beam (DC_PA_img) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_DCPAImgPlane" ucd="stat.error" display="0" datatype="double" width="8" precision="4" unit="deg"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma uncertainty in DC_PA_img_plane (E_DC_PA_i)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Tile" ucd="obs.field" display="0" datatype="char" arraysize="6"><!-- ucd="ID_FIELD" -->
+      <DESCRIPTION>VLASS tile (Tile) (5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Subtile" ucd="obs.field" display="1" datatype="char" arraysize="14"><!-- ucd="ID_FIELD" -->
+      <DESCRIPTION>Name of the Subtile the component was detected in (Subtile)</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-4?-info=XML&amp;-out.add=.&amp;-source=J/ApJS/255/30/subtile&amp;Tile=${Tile}&amp;Subtile=${Subtile}"/>
+    </FIELD>
+    <FIELD name="RASdeg" ucd="pos.eq.ra" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_RA_OTHER" -->
+      <DESCRIPTION>Right Ascension (J2000) of the Subtile (QL_image_)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DESdeg" ucd="pos.eq.dec" display="0" datatype="double" width="9" precision="5" unit="deg"><!-- ucd="POS_EQ_DEC_OTHER" -->
+      <DESCRIPTION>Declination (J2000) of the Subtile (QL_image_)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="NVSSdist" ucd="pos.angDistance" display="1" datatype="double" width="10" precision="5" unit="arcsec"><!-- ucd="POS_ANG_DIST_GENERAL" -->
+      <DESCRIPTION>Angular separation from the nearest NVSS source (NVSS_dist) (6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="FIRSTdist" ucd="pos.angDistance" display="1" datatype="double" width="12" precision="5" unit="arcsec"><!-- ucd="POS_ANG_DIST_GENERAL" -->
+      <DESCRIPTION>Angular separation from the nearest FIRST source (FIRST_dis) (7)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="PeakToRing" ucd="phot.flux;arith.ratio" display="1" datatype="double" width="9" precision="4"><!-- ucd="PHOT_FLUX_RATIO" -->
+      <DESCRIPTION>? Ratio of maximum brightness within 5" of the component to the maximum brightness in an annulus centred on the component with inner and outer radii of 5" and 10" (Peak_to_r) (8)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="DupFlag" ucd="meta.code" display="1" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/2] Flag to identify duplicate detections (Duplicate) (9)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="QualFlag" ucd="meta.code.qual" display="1" datatype="unsignedByte" width="1"><!-- ucd="CODE_QUALITY" -->
+      <DESCRIPTION>[0/7] Flag to denote the Quality of the detection (Quality_f) (10)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="NNdist" ucd="pos.angDistance" display="1" datatype="double" width="10" precision="5" unit="arcsec"><!-- ucd="POS_ANG_DIST_GENERAL" -->
+      <DESCRIPTION>? Angular separation from nearest other fitted component in the catalog after accounting for duplicates (NN_dist) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="BMaj" ucd="phys.angSize" display="0" datatype="float" width="5" precision="2" unit="arcsec"><!-- ucd="EXTENSION_DIAM" -->
+      <DESCRIPTION>Major axis of the VLASS beam (BMAJ)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="BMin" ucd="phys.angSize;src" display="0" datatype="float" width="5" precision="2" unit="arcsec"><!-- ucd="EXTENSION_MIN" -->
+      <DESCRIPTION>Minor axis of the VLASS beam (BMIN)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="BPA" ucd="pos.posAng;instr.beam" display="0" datatype="short" width="3" unit="deg"><!-- ucd="POS_POS-ANG" -->
+      <DESCRIPTION>[-90/90]? Position angle of the VLASS beam (BPA)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="MainSample" ucd="meta.code" display="1" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/1] Part of the main sample used for the scientific analyses presented in the paper (main_samp) (11)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="QLcutout" ucd="meta.ref.url" display="1" datatype="char" arraysize="237*"><!-- ucd="DATA_LINK" -->
+      <DESCRIPTION>Link to a 3 arcminute square cutout of the component (QL_cutout)</DESCRIPTION>
+    </FIELD>
+  </TABLE>
+<INFO name="matches" value="2">matching records</INFO>
+</RESOURCE>
+</VOTABLE>

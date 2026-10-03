@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>Groombridge 1830</name>
+  <!-- Q8483477 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 0ms [0] -->
+    <INFO>from cache</INFO>
+    <oid>1858507</oid>
+    <otype>Pe*</otype>
+    <jpos>11:52:58.76 +37:43:07.2</jpos>
+    <jradeg>178.24486391</jradeg>
+    <jdedeg>37.7186817</jdedeg>
+    <refPos>2020yCat.1350....0G</refPos>
+    <errRAmas>0.0139</errRAmas><errDEmas>0.0145</errDEmas>
+    <pm>
+      <v>7061.731</v><e>0.022</e><q>A</q><r>2020yCat.1350....0G</r>
+      <pa>145.472</pa>
+      <pmRA>4002.655</pmRA><epmRA>0.015</epmRA>
+      <pmDE>-5817.800</pmDE><epmDE>0.016</epmDE>
+    </pm>
+    <Vel><v>-98.008</v><e>0.0008</e><q>A</q><r>2018A&amp;A...616A...7S</r></Vel>
+    <plx><v>109.0296</v><e>0.0197</e><q>A</q><r>2020yCat.1350....0G</r></plx>
+    <spType>K1V_Fe-1.5</spType><spNum>0.0001FE00.0030.0000000000000000</spNum>
+    <oname>HD 103095</oname>
+    <alias>HD 103095</alias>
+    <alias>AC2000 1342199</alias>
+    <alias>AG+38 1155</alias>
+    <alias>AP J11525880+3743060</alias>
+    <alias>ASCC 493288</alias>
+    <alias>BD+38 2285</alias>
+    <alias>Ci 20 666</alias>
+    <alias>CNS5 2914</alias>
+    <alias>CSI+38 2285 1</alias>
+    <alias>CSI+38 2285 2</alias>
+    <alias>FK5 1307</alias>
+    <alias>GC 16253</alias>
+    <alias>GCRV 7170</alias>
+    <alias>GEN# +1.00103095</alias>
+    <alias>G 176-64</alias>
+    <alias>G 148-18</alias>
+    <alias>G 122-51</alias>
+    <alias>GJ 451</alias>
+    <alias>Gmb 1830</alias>
+    <alias>HIC 57939</alias>
+    <alias>HIP 57939</alias>
+    <alias>HR 4550</alias>
+    <alias>JP11 2117</alias>
+    <alias>LAL 22369</alias>
+    <alias>LFT 855</alias>
+    <alias>LHS 44</alias>
+    <alias>LSPM J1152+3743</alias>
+    <alias>LTT 13276</alias>
+    <alias>2MASS J11525880+3743060</alias>
+    <alias>N30 2765</alias>
+    <alias>NGP 38 28</alias>
+    <alias>NLTT 28839</alias>
+    <alias>NSV 5374</alias>
+    <alias>PLX 2745</alias>
+    <alias>PLX 2745.00</alias>
+    <alias>PMC 90-93 904</alias>
+    <alias>PM 11501+3805</alias>
+    <alias>PPM 76134</alias>
+    <alias>SAO 62738</alias>
+    <alias>SKY# 22410</alias>
+    <alias>SPOCS 511</alias>
+    <alias>TD1 15918</alias>
+    <alias>TIC 309599261</alias>
+    <alias>TYC 3014-574-1</alias>
+    <alias>UBV 10675</alias>
+    <alias>UBV M 17454</alias>
+    <alias>USNO-B1.0 1277-00248147</alias>
+    <alias>USNO 841</alias>
+    <alias>uvby98 100103095</alias>
+    <alias>V* CF UMa</alias>
+    <alias>WEB 10381</alias>
+    <alias>WISEA J115302.28+374206.6</alias>
+    <alias>Zkh 173</alias>
+    <alias>Zkh 174</alias>
+    <alias>[GKL99] 250</alias>
+    <alias>[RHG95] 1860</alias>
+    <alias>Gaia DR2 4034171629042489088</alias>
+    <alias>Gaia DR3 4034171629042489088</alias>
+    <nrefs>854</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ====Done (2026-Sep-29,05:01:55z)==== -->

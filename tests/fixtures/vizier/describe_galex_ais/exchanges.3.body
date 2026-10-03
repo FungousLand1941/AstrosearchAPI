@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-29T07:46:41 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-29T07:46:41">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-source=II%2F335%2Fgalex_ais&amp;-meta.all=">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+
+<RESOURCE ID="yCat_2335_1" name="II/335/galex_ais" type="meta">
+  <INFO name="nrows" value="82992086">Number of rows of the table</INFO>
+  <DESCRIPTION>
+    Revised catalog of GALEX UV sources (GUVcat_AIS GR6+7) (Bianchi+ 2017)
+    the revised GALEX catalog of UV sources (GUVcat_AIS) from GR6+7 (82,992,086 sources)
+  </DESCRIPTION>
+
+<!-- Sample of the revised GALEX catalog of UV sources (GUVcat_AIS) from GR6+7 (82,992,086 sources) (\originalcolumnnames) -->
+  <PARAM name="-c" datatype="char" arraysize="32*" value="">
+    <DESCRIPTION>Query from a celestial position according to ASU syntax:
+      {RA{+|-}Dec|object_name}[,eq=equinox][,ep=epoch][,rm=[min/]max]
+      (see http://vizier.cds.unistra.fr/doc/asu.html)
+    </DESCRIPTION>
+  </PARAM>
+  <LINK content-role="query" action="votable?-source=II/335/galex_ais&amp;">
+    Action to Query the current RESOURCE, to be completed by PARAMs and FIELDs contents
+  </LINK>
+
+  <TABLE name="II/335/galex_ais" nrows="82992086">
+    <COOSYS ID="J2000" system="eq_FK5" equinox="J2000"/>
+    <!-- Definitions of GROUPs and FIELDs -->
+    <FIELD name="RAJ2000" ucd="pos.eq.ra;meta.main" ref="J2000" display="1" datatype="double" width="10" precision="6" unit="deg"><!-- ucd="POS_EQ_RA_MAIN" -->
+      <DESCRIPTION>Source's right ascension (J2000) (RA)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DEJ2000" ucd="pos.eq.dec;meta.main" ref="J2000" display="1" datatype="double" width="10" precision="6" unit="deg"><!-- ucd="POS_EQ_DEC_MAIN" -->
+      <DESCRIPTION>Source's declination (J2000) (DEC)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Name" ucd="meta.id" display="1" datatype="char" arraysize="22*"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>GALEX identifier in JHHMMSS.s+DDMMSS format; column added by CDS</DESCRIPTION>
+<!-- GALEX identifier in JHHMMSS.s+DDMMSS format; {\fg{red3}Column added by CDS} -->
+
+    </FIELD>
+    <FIELD name="objid" ucd="meta.id;meta.main" display="0" datatype="long" width="19"><!-- ucd="ID_MAIN" -->
+      <DESCRIPTION>GALEX identifier for the source (objid)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="phID" ucd="meta.id" display="0" datatype="long" width="19"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>Pointer to photoExtract Table (id of original observation on which the measurement was taken) (photoextractid)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Cat" ucd="meta.id;meta.dataset" display="0" datatype="char" arraysize="3"><!-- ucd="ID_CATALOG" -->
+      <DESCRIPTION>Survey type (always "AIS" = All-sky Imaging Survey) (mpstype)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RAfdeg" ucd="pos.eq.ra" display="0" datatype="double" width="10" precision="6" unit="deg"><!-- ucd="POS_EQ_RA_OTHER" -->
+      <DESCRIPTION>RA of center of field (avaspra)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DEfdeg" ucd="pos.eq.dec" display="0" datatype="double" width="10" precision="6" unit="deg"><!-- ucd="POS_EQ_DEC_OTHER" -->
+      <DESCRIPTION>DE of center of field (avaspdec)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="FUVexp" ucd="time.duration;obs.exposure" display="0" datatype="float" width="6" precision="2" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>[30/709] FUV exposure time</DESCRIPTION>
+    </FIELD>
+    <FIELD name="NUVexp" ucd="time.duration;obs.exposure" display="0" datatype="double" width="7" precision="2" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>[30/1134] NUV exposure time</DESCRIPTION>
+    </FIELD>
+    <FIELD name="GLON" ucd="pos.galactic.lon" display="0" datatype="double" width="8" precision="4" unit="deg"><!-- ucd="POS_GAL_LON" -->
+      <DESCRIPTION>Galactic longitude</DESCRIPTION>
+    </FIELD>
+    <FIELD name="GLAT" ucd="pos.galactic.lat" display="0" datatype="double" width="8" precision="4" unit="deg"><!-- ucd="POS_GAL_LAT" -->
+      <DESCRIPTION>Galactic latitude</DESCRIPTION>
+    </FIELD>
+    <FIELD name="tile" ucd="obs.field" display="0" datatype="int" width="5"><!-- ucd="ID_FIELD" -->
+      <DESCRIPTION>[50000/50491] Tile number (tilenum)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="img" ucd="meta.id" display="0" datatype="short" width="4"><!-- ucd="INST_DET_SIZE" -->
+      <DESCRIPTION>[33/3172] Image number (img)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="sv" ucd="meta.id" display="0" datatype="short" width="2"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>[1/99] Number of subvisit if exposure was divided (subvisit)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="r.fov" ucd="pos.angDistance" display="1" datatype="double" width="9" precision="6" unit="deg"><!-- ucd="POS_ANG_DIST_GENERAL" -->
+      <DESCRIPTION>[/0.6] Distance of source from center of the field (fov_radius)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Obs" ucd="meta.note" display="0" datatype="unsignedByte" width="1"><!-- ucd="OBS_TYPE" -->
+      <DESCRIPTION>[1] Observation type (1=multi) (type)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="b" ucd="meta.code" display="1" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[1/3] bands: 1=NUV, 2=FUV, 3=both (band)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="E(B-V)" ucd="phot.color.excess" display="0" datatype="float" width="7" precision="4" unit="mag"><!-- ucd="PHOT_COLOR_EXCESS" -->
+      <DESCRIPTION>[0.0007/0.5] E(B-V) Galactic Reddening (from Schlegel+ 1998ApJ...500..525S maps) (E_bv)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Sp?" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/1] 1 if a spectrum exists (istherespectrum)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="chkf" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/1] Astrometry check type (chkobj_type)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="FUVmag" ucd="phot.mag;em.UV.100-200nm" display="1" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_UV_1500" -->
+      <DESCRIPTION>[10.6/23.8]? GALEX FUV calibrated magnitude in AB system (fuv_mag)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_FUVmag" ucd="stat.error;phot.mag;em.UV.100-200nm" display="1" datatype="float" width="7" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0.001/0.6]? FUV mag error (fuv_magerr)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="NUVmag" ucd="phot.mag;em.UV.200-300nm" display="1" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_MAG_UV" -->
+      <DESCRIPTION>[9.6/24.5] GALEX NUV calibrated magnitude in AB system (nuv_mag)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_NUVmag" ucd="stat.error;phot.mag" display="1" datatype="float" width="7" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0.0007/0.5] NUV mag error (nuv_magerr)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="FUV.a" ucd="phot.mag;em.UV.100-200nm" display="0" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_UV_1500" -->
+      <DESCRIPTION>[-8.2/5]? FUV Kron-like elliptical aperture magnitude (fuv_mag_auto)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_FUV.a" ucd="stat.error;phot.mag;em.UV.100-200nm" display="0" datatype="float" width="7" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0.001/0.6]? FUV RMS error for AUTO magnitude (fuv_magerr_auto)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="NUV.a" ucd="phot.mag;em.UV.200-300nm" display="0" datatype="double" width="8" precision="4" unit="mag"><!-- ucd="PHOT_MAG_UV" -->
+      <DESCRIPTION>[-10.5/4.4] NUV Kron-like elliptical aperture magnitude (nuv_mag_auto)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_NUV.a" ucd="stat.error" display="0" datatype="float" width="7" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0.0007/0.5] NUV RMS error for AUTO magnitude (nuv_magerr_auto)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="FUV.4" ucd="phot.mag;em.UV.100-200nm" display="0" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_UV_1500" -->
+      <DESCRIPTION>[-7.2/99]? FUV mag aperture (8 pix diameter) (fuv_mag_aper_4)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_FUV.4" ucd="stat.error;phot.mag;em.UV.100-200nm" display="0" datatype="double" width="9" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0.002/4911]? FUV mag aperture error (8 pix diameter) (fuv_magerr_aper_4)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="NUV.4" ucd="phot.mag;em.UV.200-300nm" display="0" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_MAG_UV" -->
+      <DESCRIPTION>[-7.5/99] NUV mag aperture (8 pix diameter) (nuv_mag_aper_4)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_NUV.4" ucd="stat.error" display="0" datatype="double" width="9" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0.001/2559] NUV mag aperture error (8 pix diameter) (nuv_magerr_aper_4)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="FUV.6" ucd="phot.mag;em.UV.100-200nm" display="0" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_UV_1500" -->
+      <DESCRIPTION>[-7.4/99]? FUV mag aperture (17 pix diameter) (fuv_mag_aper_6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_FUV.6" ucd="stat.error;phot.mag;em.UV.100-200nm" display="0" datatype="double" width="10" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0.001/37286]? FUV mag aperture error (17 pix diameter) (fuv_magerr_aper_6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="NUV.6" ucd="phot.mag;em.UV.200-300nm" display="0" datatype="double" width="7" precision="4" unit="mag"><!-- ucd="PHOT_MAG_UV" -->
+      <DESCRIPTION>[-8.3/99] NUV mag aperture (17 pix diameter) (nuv_mag_aper_6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_NUV.6" ucd="stat.error" display="0" datatype="double" width="13" precision="4" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0.001/15473111] NUV mag aperture error (17 pix diameter) (nuv_magerr_aper_6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Fafl" ucd="meta.code" display="1" datatype="short" width="3"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/416]? FUV artifact flag (logical OR near source) (fuv_artifact)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="Nafl" ucd="meta.code" display="1" datatype="short" width="3"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/913] NUV artifact flag (logical OR near source) (nuv_artifact)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Fexf" ucd="meta.code" display="1" datatype="short" width="2"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/19]? Extraction flags for FUV band (fuv_flags)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="Nexf" ucd="meta.code" display="1" datatype="short" width="2"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/51] Extraction flags for NUV band (nuv_flags)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Fflux" ucd="phot.flux;em.UV" display="0" datatype="double" width="12" precision="5" unit="uJy"><!-- ucd="PHOT_FLUX_UV" -->
+      <DESCRIPTION>[1/201899]? FUV calibrated flux (fuv_flux)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Fflux" ucd="stat.error" display="0" datatype="double" width="11" precision="5" unit="uJy"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0.5/18719]? FUV flux error (fuv_fluxerr)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Nflux" ucd="phot.flux;em.UV" display="0" datatype="double" width="12" precision="5" unit="uJy"><!-- ucd="PHOT_FLUX_UV" -->
+      <DESCRIPTION>[0.6/202886] NUV calibrated flux (nuv_flux)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_Nflux" ucd="stat.error" display="0" datatype="double" width="10" precision="5" unit="uJy"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0.2/3649] NUV flux error (nuv_fluxerr)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="FXpos" ucd="pos.cartesian.x;instr.det" display="0" datatype="double" width="7" precision="2" unit="pix"><!-- ucd="POS_CCD_X" -->
+      <DESCRIPTION>? Source position in FUV image along x (fuv_x_image)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="FYpos" ucd="pos.cartesian.y;instr.det" display="0" datatype="double" width="7" precision="2" unit="pix"><!-- ucd="POS_CCD_Y" -->
+      <DESCRIPTION>? Source position in UV image along y (fuv_y_image)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="NXpos" ucd="pos.cartesian.x;instr.det" display="0" datatype="double" width="7" precision="2" unit="pix"><!-- ucd="POS_CCD_X" -->
+      <DESCRIPTION>Source position in NUV image along x (nuv_x_image)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="NYpos" ucd="pos.cartesian.y;instr.det" display="0" datatype="double" width="7" precision="2" unit="pix"><!-- ucd="POS_CCD_Y" -->
+      <DESCRIPTION>Source position in NUV image along y (nuv_y_image)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Fima" ucd="phys.angSize" display="0" datatype="double" width="8" precision="3" unit="pix"><!-- ucd="EXTENSION_FWHM_CIRC" -->
+      <DESCRIPTION>? Source FWHM in FUV assuming a gaussian core (fuv_fwhm_image)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Nima" ucd="phys.angSize" display="0" datatype="double" width="7" precision="3" unit="pix"><!-- ucd="EXTENSION_FWHM_CIRC" -->
+      <DESCRIPTION>Source FWHM in NUV assuming a gaussian core (nuv_fwhm_image)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Fr" ucd="phys.angSize" display="1" datatype="double" width="9" precision="6" unit="deg"><!-- ucd="ID_MAIN:1" -->
+      <DESCRIPTION>[-0.2/0.3]? Source FWHM in FUV assuming a gaussian core (fuv_fwhm_world)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Nr" ucd="phys.angSize" display="1" datatype="double" width="9" precision="6" unit="deg"><!-- ucd="ID_MAIN:1" -->
+      <DESCRIPTION>[-0.1/0.5] Source FWHM in NUV assuming a gaussian core (nuv_fwhm_world)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="nS/G" ucd="src.class.starGalaxy" display="0" datatype="float" width="7" precision="4"><!-- ucd="CLASS_STAR/GALAXY" -->
+      <DESCRIPTION>Star/galaxy classifier from NUV (nuv_class_star)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="fS/G" ucd="src.class.starGalaxy" display="0" datatype="float" width="7" precision="4"><!-- ucd="CLASS_STAR/GALAXY" -->
+      <DESCRIPTION>? Star/galaxy classifier from FUV (fuv_class_star)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="nell" ucd="src.ellipticity" display="0" datatype="float" width="7" precision="4"><!-- ucd="PHYS_ELLIPTICITY" -->
+      <DESCRIPTION>1-b/a in NUV (nuv_ellipticity)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="fell" ucd="src.ellipticity" display="0" datatype="float" width="7" precision="4"><!-- ucd="PHYS_ELLIPTICITY" -->
+      <DESCRIPTION>? 1-b/a in FUV (fuv_ellipticity)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="nPA" ucd="pos.posAng" display="0" datatype="float" width="6" precision="2" unit="deg"><!-- ucd="POS_POS-ANG" -->
+      <DESCRIPTION>Position angle in NUV (nuv_theta_j2000)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_nPA" ucd="stat.error" display="0" datatype="float" width="6" precision="2" unit="deg"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-90/] Position angle error in NUV (nuv_errtheta_j2000)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="fPA" ucd="pos.posAng" display="0" datatype="float" width="6" precision="2" unit="deg"><!-- ucd="POS_POS-ANG" -->
+      <DESCRIPTION>? Position angle in FUV (fuv_theta_j2000)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_fPA" ucd="stat.error" display="0" datatype="float" width="6" precision="2" unit="deg"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-90/]? Position angle error in FUV (fuv_errtheta_j2000)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Fnr" ucd="phys.angSize" display="0" datatype="float" width="8" precision="E1" unit="pix"><!-- ucd="EXTENSION_FWHM_CIRC" -->
+      <DESCRIPTION>[/965]? FUV FWHM IMAGE value from -fd-ncat.fits (fuv_ncat_fwhm_image) (4)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="F3r" ucd="phys.angSize;src" display="0" datatype="float" width="8" precision="E1" unit="pix"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>[/1.98E7]? FUV flux radius (fuv_ncat_flux_rad_3) (4)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Nar" ucd="phys.angSize;src" display="0" datatype="double" width="8" precision="5"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>[3.5/13.2] Kron apertures in units of a or b (nuv_kron_radius)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Narms" ucd="phys.angSize.smajAxis" display="0" datatype="double" width="9" precision="6" unit="deg"><!-- ucd="EXTENSION_FWHM_MAJ" -->
+      <DESCRIPTION>[0.0002/0.1] Profile RMS along major axis (nuv_a_world)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Nbrms" ucd="phys.angSize.sminAxis" display="0" datatype="double" width="9" precision="6" unit="deg"><!-- ucd="EXTENSION_FWHM_MIN" -->
+      <DESCRIPTION>[0.00004/0.06] Profile RMS along minor axis (nuv_b_world)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Far" ucd="phys.angSize;src" display="0" datatype="double" width="8" precision="5"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>[3.5/11]? Kron apertures in units of a or b (fuv_kron_radius)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Farms" ucd="phys.angSize.smajAxis" display="0" datatype="double" width="9" precision="6" unit="deg"><!-- ucd="EXTENSION_FWHM_MAJ" -->
+      <DESCRIPTION>[0.0002/0.06]? Profile RMS along major axis (fuv_a_world)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Fbrms" ucd="phys.angSize.sminAxis" display="0" datatype="double" width="9" precision="6" unit="deg"><!-- ucd="EXTENSION_FWHM_MIN" -->
+      <DESCRIPTION>[0.0001/0.03]? Profile RMS along minor axis (fuv_b_world)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="NUVw" ucd="time.expo" display="0" datatype="float" width="5" precision="1" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>[0/964] NUV effective exposure (flat-field response value) at the source position (nuv_weight)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="FUVw" ucd="time.expo" display="0" datatype="float" width="5" precision="1" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>[0/700] FUV effective exposure (fuv_weight)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Prob" ucd="stat.probability" display="0" datatype="double" width="12" precision="E5"><!-- ucd="STAT_PROBABILITY" -->
+      <DESCRIPTION>? Probability of the FUVxNUV match (prob)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Sep" ucd="pos.angDistance" display="0" datatype="float" width="5" precision="2" unit="arcsec"><!-- ucd="POS_ANG_DIST_GENERAL" -->
+      <DESCRIPTION>[0/7.1]? Separation between FUV and NUV position of the source in the same observation (sep)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Nerr" ucd="stat.error;pos" display="0" datatype="float" width="5" precision="2" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0.4/3.3] Position error of the source in the NUV image (nuv_poserr)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Ferr" ucd="stat.error;pos" display="0" datatype="float" width="5" precision="2" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0.4/2.4]? Position error of the source in the FUV image (fuv_poserr)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Ierr" ucd="stat.error;pos" display="0" datatype="float" width="5" precision="2" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0.4/3.4]? Inter-band position error (ib_poserr)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Nperr" ucd="stat.error;pos" display="0" datatype="float" width="5" precision="2" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0.001/2.8] NUV Poisson position error (nuv_pperr)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Fperr" ucd="stat.error;pos" display="0" datatype="float" width="5" precision="2" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0.001/1.6]? FUV Poisson position error (fuv_pperr)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="CV" ucd="meta.code" display="0" datatype="char" arraysize="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[CV] Whether the source comes from a coadd or visit (corv)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="G" ucd="meta.note" display="0" datatype="short" width="2"><!-- ucd="NOTE" -->
+      <DESCRIPTION>[-1/1] Neighbours rank (grank) (1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="N" ucd="meta.number" display="0" datatype="short" width="2"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>[1/12] Number of sources within 2.5", if this is a primary (ngrank)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="primid" ucd="meta.id.assoc" display="0" datatype="long" width="19"><!-- ucd="ID_ASSOCIATED" -->
+      <DESCRIPTION>objid of the primary (only of use for the "plus" catalog) (primgid)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="groupid" ucd="meta.id.assoc" display="0" datatype="char" arraysize="239*"><!-- ucd="ID_ASSOCIATED" -->
+      <DESCRIPTION>objid's of all sources (AIS) within 2.5", concatenated by "+" (groupgid)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Gd" ucd="meta.note" display="0" datatype="short" width="2"><!-- ucd="NOTE" -->
+      <DESCRIPTION>[-1/1] as for "G" (grank), but based on distance criterion (grankdist) (1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Nd" ucd="meta.number" display="0" datatype="short" width="2"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>[1/12] as for "N" (ngrank), but based on distance criterion (ngrankdist)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="primidd" ucd="meta.id.assoc" display="0" datatype="long" width="19"><!-- ucd="ID_ASSOCIATED" -->
+      <DESCRIPTION>objid of the closest primary, based on distance criterion (primgiddist)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="groupidd" ucd="meta.id.assoc" display="0" datatype="char" arraysize="239*"><!-- ucd="ID_ASSOCIATED" -->
+      <DESCRIPTION>objid's of all sources (AIS) within 2.5", based on distance criterion (groupgiddist)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="groupTot" ucd="meta.id.assoc" display="0" datatype="char" arraysize="239*"><!-- ucd="ID_ASSOCIATED" -->
+      <DESCRIPTION>objid's of all sources within 2.5" (groupgidtot)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="OName" ucd="meta.id.assoc" display="0" datatype="char" arraysize="31*"><!-- ucd="ID_ASSOCIATED" -->
+      <DESCRIPTION>Extended object? (if not: "N") (inlargeobj) (2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Size" ucd="phys.angSize" display="0" datatype="double" width="8" precision="2" unit="pix"><!-- ucd="EXTENSION_DIAM" -->
+      <DESCRIPTION>[/38740]? Size of the extended object (largeobjsize) (3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+  </TABLE>
+<INFO name="matches" value="2">matching records</INFO>
+</RESOURCE>
+</VOTABLE>

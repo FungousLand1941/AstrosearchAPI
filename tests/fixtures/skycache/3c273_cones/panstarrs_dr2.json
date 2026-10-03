@@ -1,0 +1,112 @@
+{
+  "catalog": "panstarrs_dr2",
+  "cones": [
+    [
+      "center_10",
+      187.2779154,
+      2.0523883,
+      10.0,
+      null
+    ],
+    [
+      "center_90",
+      187.2779154,
+      2.0523883,
+      90.0,
+      null
+    ],
+    [
+      "north_30",
+      187.2779154,
+      2.1323883,
+      30.0,
+      null
+    ],
+    [
+      "east_45",
+      187.3779154,
+      2.0023883000000002,
+      45.0,
+      null
+    ],
+    [
+      "sw_120",
+      187.20791540000002,
+      1.9923883,
+      120.0,
+      null
+    ],
+    [
+      "epoch2000",
+      187.2779154,
+      2.0523883,
+      5.0,
+      2000.0
+    ],
+    [
+      "wide_600",
+      187.2779154,
+      2.0523883,
+      600.0,
+      null
+    ]
+  ],
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://catalogs.mast.stsci.edu/api/v0.1/panstarrs/dr2/mean.json?ra=187.277915400&dec=2.052388300&radius=0.0027777778&columns=%5B%22objID%22%2C+%22objName%22%2C+%22raMean%22%2C+%22decMean%22%2C+%22raMeanErr%22%2C+%22decMeanErr%22%2C+%22epochMean%22%2C+%22nDetections%22%2C+%22qualityFlag%22%2C+%22gMeanPSFMag%22%2C+%22gMeanPSFMagErr%22%2C+%22rMeanPSFMag%22%2C+%22rMeanPSFMagErr%22%2C+%22iMeanPSFMag%22%2C+%22iMeanPSFMagErr%22%2C+%22zMeanPSFMag%22%2C+%22zMeanPSFMagErr%22%2C+%22yMeanPSFMag%22%2C+%22yMeanPSFMagErr%22%2C+%22iMeanKronMag%22%2C+%22distance%22%5D&sort_by=distance&pagesize=201&nDetections.gt=1",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://catalogs.mast.stsci.edu/api/v0.1/panstarrs/dr2/mean.json?ra=187.277915400&dec=2.052388300&radius=0.0250000000&columns=%5B%22objID%22%2C+%22objName%22%2C+%22raMean%22%2C+%22decMean%22%2C+%22raMeanErr%22%2C+%22decMeanErr%22%2C+%22epochMean%22%2C+%22nDetections%22%2C+%22qualityFlag%22%2C+%22gMeanPSFMag%22%2C+%22gMeanPSFMagErr%22%2C+%22rMeanPSFMag%22%2C+%22rMeanPSFMagErr%22%2C+%22iMeanPSFMag%22%2C+%22iMeanPSFMagErr%22%2C+%22zMeanPSFMag%22%2C+%22zMeanPSFMagErr%22%2C+%22yMeanPSFMag%22%2C+%22yMeanPSFMagErr%22%2C+%22iMeanKronMag%22%2C+%22distance%22%5D&sort_by=distance&pagesize=201&nDetections.gt=1",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://catalogs.mast.stsci.edu/api/v0.1/panstarrs/dr2/mean.json?ra=187.277915400&dec=2.132388300&radius=0.0083333333&columns=%5B%22objID%22%2C+%22objName%22%2C+%22raMean%22%2C+%22decMean%22%2C+%22raMeanErr%22%2C+%22decMeanErr%22%2C+%22epochMean%22%2C+%22nDetections%22%2C+%22qualityFlag%22%2C+%22gMeanPSFMag%22%2C+%22gMeanPSFMagErr%22%2C+%22rMeanPSFMag%22%2C+%22rMeanPSFMagErr%22%2C+%22iMeanPSFMag%22%2C+%22iMeanPSFMagErr%22%2C+%22zMeanPSFMag%22%2C+%22zMeanPSFMagErr%22%2C+%22yMeanPSFMag%22%2C+%22yMeanPSFMagErr%22%2C+%22iMeanKronMag%22%2C+%22distance%22%5D&sort_by=distance&pagesize=201&nDetections.gt=1",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://catalogs.mast.stsci.edu/api/v0.1/panstarrs/dr2/mean.json?ra=187.377915400&dec=2.002388300&radius=0.0125000000&columns=%5B%22objID%22%2C+%22objName%22%2C+%22raMean%22%2C+%22decMean%22%2C+%22raMeanErr%22%2C+%22decMeanErr%22%2C+%22epochMean%22%2C+%22nDetections%22%2C+%22qualityFlag%22%2C+%22gMeanPSFMag%22%2C+%22gMeanPSFMagErr%22%2C+%22rMeanPSFMag%22%2C+%22rMeanPSFMagErr%22%2C+%22iMeanPSFMag%22%2C+%22iMeanPSFMagErr%22%2C+%22zMeanPSFMag%22%2C+%22zMeanPSFMagErr%22%2C+%22yMeanPSFMag%22%2C+%22yMeanPSFMagErr%22%2C+%22iMeanKronMag%22%2C+%22distance%22%5D&sort_by=distance&pagesize=201&nDetections.gt=1",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://catalogs.mast.stsci.edu/api/v0.1/panstarrs/dr2/mean.json?ra=187.207915400&dec=1.992388300&radius=0.0333333333&columns=%5B%22objID%22%2C+%22objName%22%2C+%22raMean%22%2C+%22decMean%22%2C+%22raMeanErr%22%2C+%22decMeanErr%22%2C+%22epochMean%22%2C+%22nDetections%22%2C+%22qualityFlag%22%2C+%22gMeanPSFMag%22%2C+%22gMeanPSFMagErr%22%2C+%22rMeanPSFMag%22%2C+%22rMeanPSFMagErr%22%2C+%22iMeanPSFMag%22%2C+%22iMeanPSFMagErr%22%2C+%22zMeanPSFMag%22%2C+%22zMeanPSFMagErr%22%2C+%22yMeanPSFMag%22%2C+%22yMeanPSFMagErr%22%2C+%22iMeanKronMag%22%2C+%22distance%22%5D&sort_by=distance&pagesize=201&nDetections.gt=1",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://catalogs.mast.stsci.edu/api/v0.1/panstarrs/dr2/mean.json?ra=187.277915400&dec=2.052388300&radius=0.0451388889&columns=%5B%22objID%22%2C+%22objName%22%2C+%22raMean%22%2C+%22decMean%22%2C+%22raMeanErr%22%2C+%22decMeanErr%22%2C+%22epochMean%22%2C+%22nDetections%22%2C+%22qualityFlag%22%2C+%22gMeanPSFMag%22%2C+%22gMeanPSFMagErr%22%2C+%22rMeanPSFMag%22%2C+%22rMeanPSFMagErr%22%2C+%22iMeanPSFMag%22%2C+%22iMeanPSFMagErr%22%2C+%22zMeanPSFMag%22%2C+%22zMeanPSFMagErr%22%2C+%22yMeanPSFMag%22%2C+%22yMeanPSFMagErr%22%2C+%22iMeanKronMag%22%2C+%22distance%22%5D&sort_by=distance&pagesize=2001&nDetections.gt=1",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://catalogs.mast.stsci.edu/api/v0.1/panstarrs/dr2/mean.json?ra=187.277915400&dec=2.052388300&radius=0.1666666667&columns=%5B%22objID%22%2C+%22objName%22%2C+%22raMean%22%2C+%22decMean%22%2C+%22raMeanErr%22%2C+%22decMeanErr%22%2C+%22epochMean%22%2C+%22nDetections%22%2C+%22qualityFlag%22%2C+%22gMeanPSFMag%22%2C+%22gMeanPSFMagErr%22%2C+%22rMeanPSFMag%22%2C+%22rMeanPSFMagErr%22%2C+%22iMeanPSFMag%22%2C+%22iMeanPSFMagErr%22%2C+%22zMeanPSFMag%22%2C+%22zMeanPSFMagErr%22%2C+%22yMeanPSFMag%22%2C+%22yMeanPSFMagErr%22%2C+%22iMeanKronMag%22%2C+%22distance%22%5D&sort_by=distance&pagesize=201&nDetections.gt=1",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    }
+  ]
+}

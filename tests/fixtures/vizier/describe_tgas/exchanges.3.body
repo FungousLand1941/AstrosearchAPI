@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-29T07:47:32 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-29T07:47:32">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-source=I%2F337%2Ftgas&amp;-meta.all=">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+
+<RESOURCE ID="yCat_1337_2" name="I/337/tgas" type="meta">
+  <INFO name="nrows" value="2057050">Number of rows of the table</INFO>
+  <DESCRIPTION>
+    Gaia DR1 (Gaia Collaboration, 2016)
+    TGAS: Subset of GaiaSource comprising those stars in the Hipparcos and Tycho-2 Catalogues for which a full 5-parameter astrometric solution has been possible in Gaia Data Release (TgasSource)
+  </DESCRIPTION>
+
+<!-- TGAS: Subset of GaiaSource \inputViz{gaia.intro.htx} (\originalcolumnnames) -->
+  <PARAM name="-c" datatype="char" arraysize="32*" value="">
+    <DESCRIPTION>Query from a celestial position according to ASU syntax:
+      {RA{+|-}Dec|object_name}[,eq=equinox][,ep=epoch][,rm=[min/]max]
+      (see http://vizier.cds.unistra.fr/doc/asu.html)
+    </DESCRIPTION>
+  </PARAM>
+  <LINK content-role="query" action="votable?-source=I/337/tgas&amp;">
+    Action to Query the current RESOURCE, to be completed by PARAMs and FIELDs contents
+  </LINK>
+
+  <TABLE name="I/337/tgas" nrows="2057050">
+    <COOSYS ID="H_2015.000" system="ICRS" epoch="2015.000"/>
+    <!-- Definitions of GROUPs and FIELDs -->
+
+<!-- +++No column could be found to attach a LINK in table: I/337/tgas -->
+    <FIELD name="recno" ucd="meta.record" display="0" datatype="long" width="10"><!-- ucd="RECORD" -->
+      <DESCRIPTION>Record number assigned by the VizieR team. Should Not be used for identification.</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-5?-info=XML&amp;-out.add=.&amp;-source=I/337/tgas&amp;recno=${recno}"/>
+    </FIELD>
+    <FIELD name="HIP" ucd="meta.id.cross" display="1" datatype="int" width="6"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>? Hipparcos identifier (hip)</DESCRIPTION>
+      <VALUES null="-2147483648" />
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-4?-info=XML&amp;-out.add=.&amp;-source=I/239/hip_main&amp;HIP=${HIP}"/>
+    </FIELD>
+    <FIELD name="TYC2" ucd="meta.id.cross" display="1" datatype="char" arraysize="12"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>Tycho 2 identifier (tycho2_id)</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-4?-info=XML&amp;-out.add=.&amp;-source=I/259/tyc2&amp;TYC1=${TYC2$-1}&amp;TYC2=${TYC2$-2}&amp;TYC3=${TYC2$-3}"/>
+    </FIELD>
+    <FIELD name="SolID" ucd="meta.id;meta.version" display="0" datatype="long" width="19"><!-- ucd="ID_NUMBER" -->
+      <DESCRIPTION>Solution ID (solution_id) (G1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Source" ucd="meta.id;meta.main" display="1" datatype="long" width="19"><!-- ucd="ID_MAIN" -->
+      <DESCRIPTION>Source ID (source_id) (G2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RandomI" ucd="meta.code" display="0" datatype="int" width="7"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Random index used to select subsets (random_index) (G3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Epoch" ucd="meta.ref;time.epoch" ref="time_4" display="0" datatype="float" width="6" precision="1" unit="yr"><!-- ucd="TIME_EPOCH" -->
+      <DESCRIPTION>[2015.0] Reference epoch in Julian years (ref_epoch) (G4)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RA_ICRS" ucd="pos.eq.ra;meta.main" ref="H_2015.000" display="1" datatype="double" width="14" precision="10" unit="deg"><!-- ucd="POS_EQ_RA_MAIN" -->
+      <DESCRIPTION>Right ascension (ICRS) at epoch 2015.0 (ra)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_RA_ICRS" ucd="stat.error;pos.eq.ra" display="1" datatype="float" width="6" precision="3" unit="mas"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Standard error of right ascension (ra_error)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DE_ICRS" ucd="pos.eq.dec;meta.main" ref="H_2015.000" display="1" datatype="double" width="14" precision="10" unit="deg"><!-- ucd="POS_EQ_DEC_MAIN" -->
+      <DESCRIPTION>Declination (ICRS) at epoch 2015.0 (dec)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_DE_ICRS" ucd="stat.error;pos.eq.dec" display="1" datatype="float" width="6" precision="3" unit="mas"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Standard error of declination (dec_error)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Plx" ucd="pos.parallax" display="1" datatype="float" width="6" precision="2" unit="mas"><!-- ucd="POS_PARLX_TRIG" -->
+      <DESCRIPTION>Absolute barycentric stellar parallax of the source at the reference epoch Epoch (parallax)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_Plx" ucd="stat.error;pos.parallax" display="1" datatype="float" width="5" precision="2" unit="mas"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Standard error of parallax (parallax_error)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="pmRA" ucd="pos.pm;pos.eq.ra" ref="H_2015.000" display="1" datatype="double" width="9" precision="3" unit="mas/yr"><!-- ucd="POS_EQ_PMRA" -->
+      <DESCRIPTION>Proper motion in right ascension direction (pmRA) (G5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_pmRA" ucd="stat.error;pos.pm;pos.eq.ra" display="1" datatype="float" width="6" precision="3" unit="mas/yr"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Standard error of proper motion in right ascension direction (pmra_error)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="pmDE" ucd="pos.pm;pos.eq.dec" ref="H_2015.000" display="1" datatype="double" width="9" precision="3" unit="mas/yr"><!-- ucd="POS_EQ_PMDEC" -->
+      <DESCRIPTION>Proper motion in declination direction (pmdec) (G6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_pmDE" ucd="stat.error;pos.pm;pos.eq.dec" display="1" datatype="float" width="6" precision="3" unit="mas/yr"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Standard error of proper motion in declination direction (pmdec_error)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RADEcor" ucd="stat.correlation" display="0" datatype="float" width="6" precision="3"><!-- ucd="STAT_CORRELATION" -->
+      <DESCRIPTION>Correlation between right ascension and declination (ra_dec_corr)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RAPlxcor" ucd="stat.correlation" display="0" datatype="float" width="6" precision="3"><!-- ucd="STAT_CORRELATION" -->
+      <DESCRIPTION>Correlation between right ascension and parallax (ra_parallax_corr)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RApmRAcor" ucd="stat.correlation" display="0" datatype="float" width="6" precision="3"><!-- ucd="STAT_CORRELATION" -->
+      <DESCRIPTION>Correlation between right ascension and proper motion in right ascension (ra_pmra_corr)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RApmDEcor" ucd="stat.correlation" display="0" datatype="float" width="6" precision="3"><!-- ucd="STAT_CORRELATION" -->
+      <DESCRIPTION>Correlation between right ascension and proper motion in declination (ra_pmdec_corr)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DEPlxcor" ucd="stat.correlation" display="0" datatype="float" width="6" precision="3"><!-- ucd="STAT_CORRELATION" -->
+      <DESCRIPTION>Correlation between declination and parallax (dec_parallax_corr)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DEpmRAcor" ucd="stat.correlation" display="0" datatype="float" width="6" precision="3"><!-- ucd="STAT_CORRELATION" -->
+      <DESCRIPTION>Correlation between declination and proper motion in right ascension (dec_pmra_corr)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DEpmDEcor" ucd="stat.correlation" display="0" datatype="float" width="6" precision="3"><!-- ucd="STAT_CORRELATION" -->
+      <DESCRIPTION>Correlation between declination and proper motion in declination (dec_pmdec_corr)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="PlxpmRAcor" ucd="stat.correlation" display="0" datatype="float" width="6" precision="3"><!-- ucd="STAT_CORRELATION" -->
+      <DESCRIPTION>Correlation between parallax and proper motion in right ascension (parallax_pmra_corr)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="PlxpmDEcor" ucd="stat.correlation" display="0" datatype="float" width="6" precision="3"><!-- ucd="STAT_CORRELATION" -->
+      <DESCRIPTION>Correlation between parallax and proper motion in declination (parallax_pmdec_corr)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="pmRApmDEcor" ucd="stat.correlation" display="0" datatype="float" width="6" precision="3"><!-- ucd="STAT_CORRELATION" -->
+      <DESCRIPTION>Correlation between proper motion in right ascension and proper motion in declination (pmra_pmdec_corr)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="NAL" ucd="meta.number" display="0" datatype="short" width="4"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Total number of observations AL (astrometric_n_obs_al) (G7)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="NAC" ucd="meta.number" display="0" datatype="short" width="4"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Total number of observations AC (astrometric_n_obs_ac) (G8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="NgAL" ucd="meta.number" display="0" datatype="short" width="4"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of good observations AL (astrometric_n_good_obs_al) (G9)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="NgAC" ucd="meta.number" display="0" datatype="short" width="4"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of good observations AC (astrometric_n_good_obs_ac) (G9)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="NbAL" ucd="meta.number" display="0" datatype="short" width="2"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of bad observations AL (astrometric_n_bad_obs_al) (G10)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="NbAC" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of bad observations AC (astrometric_n_bad_obs_ac) (G10)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DQ" ucd="stat.value" display="0" datatype="double" width="8" precision="2"><!-- ucd="STAT_PARAM" -->
+      <DESCRIPTION>? Hipparcos/Gaia data discrepancy (Hipparcos subset of TGAS only) (astrometric_delta_q) (G11)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="epsi" ucd="stat.value" display="0" datatype="float" width="5" precision="2" unit="mas"><!-- ucd="STAT_PARAM" -->
+      <DESCRIPTION>Excess noise of the source (astrometric_excess_noise) (G12)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="sepsi" ucd="stat.value" display="0" datatype="float" width="8" precision="E1"><!-- ucd="STAT_PARAM" -->
+      <DESCRIPTION>Significance of excess noise (astrometric_excess_noise_sig) (G13)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APF" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[1] Primary or secondary (astrometric_primary_flag) (G14)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="ARF" ucd="arith.factor" display="0" datatype="float" width="6" precision="2"><!-- ucd="STAT_PARAM" -->
+      <DESCRIPTION>Relegation factor (astrometric_relegation_factor)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="WAL" ucd="stat.weight;stat.mean" display="0" datatype="float" width="7" precision="3" unit="mas**-2"><!-- ucd="WEIGHT" -->
+      <DESCRIPTION>Mean astrometric weight of the source in the AL direction (astrometric_weight_al)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="WAC" ucd="stat.weight;stat.mean" display="0" datatype="float" width="9" precision="E2" unit="mas**-2"><!-- ucd="WEIGHT" -->
+      <DESCRIPTION>? Mean astrometric weight of the source in the AC direction (astrometric_weight_ac)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Apr" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[3/5] Type of prior used in in the astrometric solution (astrometric_priors_used) (G15)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MatchObs" ucd="meta.number" display="0" datatype="short" width="3"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Amount of observations matched to this source (matched_observations) (G16)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Dup" ucd="meta.code" display="1" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/1] Source with duplicate sources (duplicated_source) (G17)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="sK1" ucd="meta.code" display="0" datatype="float" width="6" precision="3"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/1] Degree of concentration of scan directions across the source (scan_direction_strength_k1) (G18)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="sK2" ucd="meta.code" display="0" datatype="float" width="6" precision="3"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/1] Degree of concentration of scan directions across the source (scan_direction_strength_k2) (G18)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="sK3" ucd="meta.code" display="0" datatype="float" width="6" precision="3"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/1] Degree of concentration of scan directions across the source (scan_direction_strength_k3) (G18)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="sK4" ucd="meta.code" display="0" datatype="float" width="6" precision="3"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/1] Degree of concentration of scan directions across the source (scan_direction_strength_k4) (G18)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="mK1" ucd="meta.code" display="0" datatype="double" width="13" precision="8" unit="deg"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Mean position angle of scan directions across the source (scan_direction_mean_k1) (G19)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="mK2" ucd="meta.code" display="0" datatype="double" width="12" precision="8" unit="deg"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Mean position angle of scan directions across the source (scan_direction_mean_k2) (G19)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="mK3" ucd="meta.code" display="0" datatype="double" width="12" precision="8" unit="deg"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Mean position angle of scan directions across the source (scan_direction_mean_k3) (G19)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="mK4" ucd="meta.code" display="0" datatype="double" width="12" precision="8" unit="deg"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Mean position angle of scan directions across the source (scan_direction_mean_k4) (G19)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="o_&lt;Gmag&gt;" ucd="meta.number" display="0" datatype="short" width="4"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>Number of observations contributing to G photometry (phot_g_n_obs)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="&lt;FG&gt;" ucd="phot.flux;stat.mean;em.opt" display="1" datatype="double" width="15" precision="5"><!-- ucd="PHOT_FLUX_R" -->
+      <DESCRIPTION>G-band mean flux (phot_g_mean_flux)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_&lt;FG&gt;" ucd="stat.error" display="1" datatype="double" width="13" precision="5"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Error on G-band mean flux (phot_g_mean_flux_error)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="&lt;Gmag&gt;" ucd="phot.mag;stat.mean;em.opt" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_MAG_R" -->
+      <DESCRIPTION>G-band mean magnitude (phot_g_mean_mag) (G20)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Var" ucd="meta.code;src.var" display="1" datatype="char" arraysize="13"><!-- ucd="CODE_VARIAB" -->
+      <DESCRIPTION>Photometric variability flag (phot_variable_flag) (G21)</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR?-6N&amp;-info=XML&amp;-out.add=.&amp;&amp;lt;&amp;quot;Note&amp;quot;&amp;catid=1337&amp;notid=40&amp;-out.emph=${Var}"/>
+    </FIELD>
+    <FIELD name="GLON" ucd="pos.galactic.lon" display="0" datatype="double" width="14" precision="10" unit="deg"><!-- ucd="POS_GAL_LON" -->
+      <DESCRIPTION>Galactic longitude at epoch 2015.0 (l)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="GLAT" ucd="pos.galactic.lat" display="0" datatype="double" width="14" precision="10" unit="deg"><!-- ucd="POS_GAL_LAT" -->
+      <DESCRIPTION>Galactic latitude at epoch 2015.0 (b)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="ELON" ucd="pos.ecliptic.lon" display="0" datatype="double" width="14" precision="10" unit="deg"><!-- ucd="POS_EC_LON" -->
+      <DESCRIPTION>Ecliptic longitude at epoch 2015.0 (ecl_lon)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="ELAT" ucd="pos.ecliptic.lat" display="0" datatype="double" width="14" precision="10" unit="deg"><!-- ucd="POS_EC_LAT" -->
+      <DESCRIPTION>Ecliptic latitude at epoch 2015.0 (ecl_lat)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="_RA.icrs" ucd="pos.eq.ra" display="1" datatype="double" width="14" precision="10" unit="deg"><!-- ucd="POS_EQ_RA_OTHER" -->
+      <DESCRIPTION>Right ascension (ICRS) at Epoch=J2000, proper motions taken into account</DESCRIPTION>
+<!-- Right Ascension (ICRS, epoch 2000) computed by CDS -->
+
+    </FIELD>
+    <FIELD name="_DE.icrs" ucd="pos.eq.dec" display="1" datatype="double" width="14" precision="10" unit="deg"><!-- ucd="POS_EQ_DEC_OTHER" -->
+      <DESCRIPTION>Declination (ICRS) at Epoch=J2000, proper motions taken into account</DESCRIPTION>
+<!-- Declination (ICRS, epoch 2000) computed by CDS -->
+
+    </FIELD>
+  </TABLE>
+<INFO name="matches" value="2">matching records</INFO>
+</RESOURCE>
+</VOTABLE>

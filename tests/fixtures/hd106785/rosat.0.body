@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<VOTABLE xmlns="http://www.ivoa.net/xml/VOTable/v1.3" xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.4">
+ <RESOURCE type="results">
+  <INFO name="QUERY_STATUS" value="OK">No errors detected in query preprocessing</INFO>
+  <TABLE>
+   <DESCRIPTION>Query result for:&#xA;SELECT TOP 201 name, ra, dec, x_pixel_error, y_pixel_error, count_rate, count_rate_error, detection_likelihood, exposure, source_extent, source_quality_flag, &quot;time&quot;, end_time, DISTANCE(POINT(&apos;ICRS&apos;, ra, dec), POINT(&apos;ICRS&apos;, 184.204024148, 12.539160289)) AS match_dist FROM rass2rxs WHERE 1 = CONTAINS(POINT(&apos;ICRS&apos;, ra, dec), CIRCLE(&apos;ICRS&apos;, 184.204024148, 12.539160289, 0.0027777778)) ORDER BY match_dist ASC</DESCRIPTION>
+   <FIELD datatype="char" arraysize="*" ucd="meta.id;meta.main" name="name">
+    <DESCRIPTION>IAU Source Designation</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="deg" datatype="double" ucd="pos.eq.ra;meta.main" precision="F5" name="ra">
+    <DESCRIPTION>Right Ascension</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="deg" datatype="double" ucd="pos.eq.dec;meta.main" precision="F5" name="dec">
+    <DESCRIPTION>Declination</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="pixel" datatype="double" ucd="stat.error;pos.cartesian.x;instr.pixel" precision="F6" name="x_pixel_error" width="8">
+    <DESCRIPTION>1-Sigma Error in X Image Coordinate</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="pixel" datatype="double" ucd="stat.error;pos.cartesian.y;instr.pixel" precision="F6" name="y_pixel_error" width="8">
+    <DESCRIPTION>1-Sigma Error in Y Image Coordinate</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="ct/s" datatype="double" ucd="phot.count;em.X-ray" precision="F4" name="count_rate" width="8">
+    <DESCRIPTION>Source Count Rate</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="ct/s" datatype="double" ucd="stat.error;phot.count;em.X-ray" precision="F4" name="count_rate_error" width="7">
+    <DESCRIPTION>Error in Source Count Rate</DESCRIPTION>
+   </FIELD>
+   <FIELD datatype="double" ucd="stat.likelihood;em.X-ray" precision="F2" name="detection_likelihood" width="9">
+    <DESCRIPTION>Detection Likelihood</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="s" datatype="double" ucd="time.duration;obs.exposure" precision="F2" name="exposure" width="8">
+    <DESCRIPTION>Source Exposure Time</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="pixel" datatype="double" ucd="phys.angSize;arith.ratio" precision="F3" name="source_extent" width="9">
+    <DESCRIPTION>Source Extent</DESCRIPTION>
+   </FIELD>
+   <FIELD datatype="short" ucd="meta.code" name="source_quality_flag" width="3">
+    <DESCRIPTION>Source Quality Flag (0=Good)</DESCRIPTION>
+    <VALUES null="-32768"/>
+   </FIELD>
+   <FIELD unit="d" datatype="double" ucd="time.start;obs" precision="F6" name="time">
+    <DESCRIPTION>Start Time of Exposure When Source Is within FOV and Detector on</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="d" datatype="double" ucd="time.end;obs" precision="F6" name="end_time">
+    <DESCRIPTION>End Time of Exposure When Source Is within FOV and Detector on</DESCRIPTION>
+   </FIELD>
+   <FIELD datatype="double" name="match_dist"/>
+   <DATA>
+    <BINARY>
+     <STREAM encoding="base64">
+
+     </STREAM>
+    </BINARY>
+   </DATA>
+  </TABLE>
+ </RESOURCE>
+</VOTABLE>

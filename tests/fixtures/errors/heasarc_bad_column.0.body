@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<VOTABLE xmlns="http://www.ivoa.net/xml/VOTable/v1.3" xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.4">
+ <RESOURCE type="results">
+  <INFO name="QUERY_STATUS" value="ERROR">Error[s] detected in query preprocessing: column &quot;hard_hs&quot; does not exist. Query: SELECT TOP 5 name, ra, dec, hard_hs FROM csc WHERE 1 = CONTAINS(POINT(&apos;ICRS&apos;, ra, dec), CIRCLE(&apos;ICRS&apos;, 187.2779154, 2.0523883, 0.0027777778))</INFO>
+ </RESOURCE>
+</VOTABLE>

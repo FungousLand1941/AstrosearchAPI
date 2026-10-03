@@ -1,0 +1,37 @@
+{
+  "case": "search_hipparcos",
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://vizier.cds.unistra.fr/viz-bin/votable?-meta=&-meta.max=20&-words=Hipparcos",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/x-votable+xml",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+100+table_name%2C+description%2C+nrows+FROM+TAP_SCHEMA.tables+WHERE+%28description+LIKE+%27%25Hipparcos%25%27+OR+description+LIKE+%27%25hipparcos%25%27+OR+description+LIKE+%27%25HIPPARCOS%25%27%29+ORDER+BY+nrows+DESC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://vizier.cds.unistra.fr/viz-bin/votable?-source=I%2F337+J%2FA%2BA%2F657%2FA7+J%2FA%2BA%2F623%2FA72+J%2FApJS%2F254%2F42+J%2FMNRAS%2F427%2F343+J%2FMNRAS%2F471%2F770+J%2FApJ%2F703%2FL72+II%2F354+J%2FA%2BA%2F352%2F555+J%2FA%2BA%2F523%2FA48+J%2FMNRAS%2F427%2F2917+J%2FA%2BA%2F397%2F997+J%2FA%2BAS%2F137%2F451+J%2FA%2BA%2F514%2FA2+J%2FAJ%2F129%2F2420+J%2FAJ%2F160%2F284+J%2FMNRAS%2F414%2F2602+J%2FApJ%2F595%2F1206+J%2FA%2BAS%2F146%2F251&-meta=",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/x-votable+xml",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+table_name%2C+description%2C+nrows+FROM+TAP_SCHEMA.tables+WHERE+table_name+LIKE+%27%22I%2F239%2F%25%27+OR+table_name+LIKE+%27%22I%2F337%2F%25%27+OR+table_name+LIKE+%27%22J%2FA%2BA%2F657%2FA7%2F%25%27+OR+table_name+LIKE+%27%22J%2FA%2BA%2F623%2FA72%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJS%2F254%2F42%2F%25%27+OR+table_name+LIKE+%27%22J%2FMNRAS%2F427%2F343%2F%25%27+OR+table_name+LIKE+%27%22J%2FMNRAS%2F471%2F770%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F703%2FL72%2F%25%27+OR+table_name+LIKE+%27%22II%2F354%2F%25%27+OR+table_name+LIKE+%27%22J%2FA%2BA%2F352%2F555%2F%25%27+OR+table_name+LIKE+%27%22J%2FA%2BA%2F523%2FA48%2F%25%27+OR+table_name+LIKE+%27%22J%2FMNRAS%2F427%2F2917%2F%25%27+OR+table_name+LIKE+%27%22J%2FA%2BA%2F397%2F997%2F%25%27+OR+table_name+LIKE+%27%22J%2FA%2BAS%2F137%2F451%2F%25%27+OR+table_name+LIKE+%27%22J%2FA%2BA%2F514%2FA2%2F%25%27+OR+table_name+LIKE+%27%22J%2FAJ%2F129%2F2420%2F%25%27+OR+table_name+LIKE+%27%22J%2FAJ%2F160%2F284%2F%25%27+OR+table_name+LIKE+%27%22J%2FMNRAS%2F414%2F2602%2F%25%27+OR+table_name+LIKE+%27%22J%2FApJ%2F595%2F1206%2F%25%27+OR+table_name+LIKE+%27%22J%2FA%2BAS%2F146%2F251%2F%25%27&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    }
+  ]
+}

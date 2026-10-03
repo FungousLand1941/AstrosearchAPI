@@ -1,0 +1,13 @@
+{
+  "case": "crossmatch_galex_hz43",
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+%22objid%22%2C+%22RAJ2000%22%2C+%22DEJ2000%22%2C+%22Nerr%22%2C+%22Name%22%2C+%22r.fov%22+AS+%22r.fov%22%2C+%22b%22%2C+%22FUVmag%22%2C+%22e_FUVmag%22%2C+%22NUVmag%22%2C+%22e_NUVmag%22%2C+%22Fafl%22%2C+%22Nafl%22%2C+%22Fexf%22%2C+%22Nexf%22%2C+%22Fr%22%2C+%22Nr%22%2C+DISTANCE%28POINT%28%27ICRS%27%2C+%22RAJ2000%22%2C+%22DEJ2000%22%29%2C+POINT%28%27ICRS%27%2C+199.091055171%2C+29.098725330%29%29+AS+match_dist+FROM+%22II%2F335%2Fgalex_ais%22+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+%22RAJ2000%22%2C+%22DEJ2000%22%29%2C+CIRCLE%28%27ICRS%27%2C+199.091055171%2C+29.098725330%2C+0.0027777778%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    }
+  ]
+}

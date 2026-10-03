@@ -1,0 +1,30 @@
+{
+  "scenario": "vlass_3c273_png",
+  "recorded_outcome": "64x64 coverage=0.0 degraded=None",
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://alasky.cds.unistra.fr/hips-image-services/hips2fits?hips=NRAO%2FP%2FVLASS-Quicklook-MedianStack&width=64&height=64&fov=0.03333333333333333&projection=TAN&ra=187.2779154&dec=2.0523883&format=png",
+      "request_body": "",
+      "status_code": 500,
+      "content_type": "application/json",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://alaskybis.cds.unistra.fr/hips-image-services/hips2fits?hips=NRAO%2FP%2FVLASS-Quicklook-MedianStack&width=64&height=64&fov=0.03333333333333333&projection=TAN&ra=187.2779154&dec=2.0523883&format=png",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "image/png",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://alasky.cds.unistra.fr/MocServer/query?RA=187.2779154&DEC=2.0523883&SR=0.023570226039551584&expr=ID%3DNRAO%2FP%2FVLASS-Quicklook-MedianStack&get=id&fmt=json",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json;charset=ISO-8859-1",
+      "match": []
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "reference": "2023A&A...674A...1G",
+  "recorded_check": {
+    "key": "2023A&A...674A...1G",
+    "bibcode": "2023A&A...674A...1G",
+    "exists": true,
+    "link_type": "PUB_HTML",
+    "resolved_url": "https://doi.org/10.1051/0004-6361/202243940",
+    "doi_from_ads": "10.1051/0004-6361/202243940",
+    "doi_matches": true,
+    "metadata": {
+      "title": "<i>Gaia</i>\n                    Data Release 3",
+      "year": 2023,
+      "volume": "674",
+      "page": "A1",
+      "container": "Astronomy &amp; Astrophysics",
+      "doi": "10.1051/0004-6361/202243940"
+    },
+    "metadata_matches": true,
+    "problems": [],
+    "ok": true
+  },
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://ui.adsabs.harvard.edu/link_gateway/2023A%26A...674A...1G/PUB_HTML",
+      "accept": "*/*",
+      "status_code": 302,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "location": "https://doi.org/10.1051/0004-6361/202243940"
+      }
+    },
+    {
+      "method": "GET",
+      "url": "https://doi.org/10.1051/0004-6361/202243940",
+      "accept": "application/vnd.citationstyles.csl+json",
+      "status_code": 302,
+      "headers": {
+        "content-type": "text/html;charset=utf-8",
+        "location": "https://api.crossref.org/v1/works/10.1051%2F0004-6361%2F202243940/transform"
+      }
+    },
+    {
+      "method": "GET",
+      "url": "https://api.crossref.org/v1/works/10.1051%2F0004-6361%2F202243940/transform",
+      "accept": "application/vnd.citationstyles.csl+json",
+      "status_code": 200,
+      "headers": {
+        "content-type": "application/vnd.citationstyles.csl+json"
+      }
+    }
+  ]
+}

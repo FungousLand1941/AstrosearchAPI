@@ -1,0 +1,613 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-29T07:48:04 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-29T07:48:04">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-source=V%2F147%2Fsdss12&amp;-meta.all=">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+
+<RESOURCE ID="yCat_5147_1" name="V/147/sdss12" type="meta">
+  <INFO name="nrows" value="794013968">Number of rows of the table</INFO>
+  <DESCRIPTION>
+    The SDSS Photometric Catalogue, Release 12 (Alam+, 2015)
+    * output of the SDSS photometric catalog
+  </DESCRIPTION>
+
+<!-- Data Release 12 (469,053,874 {\em primary} sources plus 324,960,094 {\em secondary} sources); 3,538,079 spectroscopic targets (\originalcolumnnames) -->
+  <PARAM name="-c" datatype="char" arraysize="32*" value="">
+    <DESCRIPTION>Query from a celestial position according to ASU syntax:
+      {RA{+|-}Dec|object_name}[,eq=equinox][,ep=epoch][,rm=[min/]max]
+      (see http://vizier.cds.unistra.fr/doc/asu.html)
+    </DESCRIPTION>
+  </PARAM>
+  <LINK content-role="query" action="votable?-source=V/147/sdss12&amp;">
+    Action to Query the current RESOURCE, to be completed by PARAMs and FIELDs contents
+  </LINK>
+
+  <TABLE name="V/147/sdss12" nrows="794013968">
+    <COOSYS ID="H_0.000" system="ICRS" epoch="0.000"/>
+    <TIMESYS ID="time_1" refposition="TOPOCENTER" timeorigin="0.000000" timescale="TAI"/>
+    <!-- Definitions of GROUPs and FIELDs -->
+    <FIELD name="RA_ICRS" ucd="pos.eq.ra;meta.main" ref="H_0.000" display="1" datatype="double" width="10" precision="6" unit="deg"><!-- ucd="POS_EQ_RA_MAIN" -->
+      <DESCRIPTION>Right Ascension of the object (ICRS) at Epoch="ObsDate" (ra)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DE_ICRS" ucd="pos.eq.dec;meta.main" ref="H_0.000" display="1" datatype="double" width="10" precision="6" unit="deg"><!-- ucd="POS_EQ_DEC_MAIN" -->
+      <DESCRIPTION>Declination of the object (ICRS) at Epoch="ObsDate" (dec)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="mode" ucd="meta.code.class" display="1" datatype="unsignedByte" width="1"><!-- ucd="CLASS_CODE" -->
+      <DESCRIPTION>[1/2] 1: primary (469,053,874 sources), 2: secondary (324,960,094 sources)</DESCRIPTION>
+<!-- [1/2] 1: primary (469,053,874 sources), 2: secondary (324,960,094 sources) \vizQual{=1} -->
+
+    </FIELD>
+    <FIELD name="q_mode" ucd="meta.code.qual;instr.setup" display="1" datatype="char" arraysize="1"><!-- ucd="CODE_QUALITY" -->
+      <DESCRIPTION>[+] '+' indicates clean photometry (310,190,812 sources with mode 1+) (clean)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="class" ucd="src.class" display="1" datatype="unsignedByte" width="1"><!-- ucd="CLASS_OBJECT" -->
+      <DESCRIPTION>Type of object (3=galaxy, 6=star) (1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="SDSS12" ucd="meta.id" display="1" datatype="char" arraysize="19*"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>SDSS-DR12 name, based on J2000 position</DESCRIPTION>
+    </FIELD>
+    <FIELD name="m_SDSS12" ucd="meta.code.multip" display="1" datatype="char" arraysize="1"><!-- ucd="CODE_MULT_INDEX" -->
+      <DESCRIPTION>[*] The asterisk indicates that 2 different SDSS objects share the same SDSS12 name</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-4?-info=XML&amp;-out.add=.&amp;-source=V/147&amp;SDSS12=${SDSS12}"/>
+    </FIELD>
+    <FIELD name="Im" ucd="meta.ref.url" display="0" datatype="char" arraysize="2"><!-- ucd="DATA_LINK" -->
+      <DESCRIPTION>Image from SDSS-server (DR12)</DESCRIPTION>
+      <LINK gref="SDSS3.dr12.id,w ${objID}"/>
+    </FIELD>
+    <FIELD name="SDSS-ID" ucd="meta.id" display="0" datatype="char" arraysize="20*"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>[0-9 -] SDSS object identifier (13)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="objID" ucd="meta.id;meta.main" display="1" datatype="long" width="19"><!-- ucd="ID_MAIN" -->
+      <DESCRIPTION>SDSS unique object identifier (2)</DESCRIPTION>
+<!-- SDSS unique object identifier (2) {\fg{DarkGreen}(links to SDSS-DR12 details)} -->
+
+      <LINK gref="SDSS3.dr12.id,w ${objID}"/>
+    </FIELD>
+    <FIELD name="Sp-ID" ucd="meta.id" display="0" datatype="char" arraysize="15*"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>? Spectroscopic Plate-MJD-Fiber identifier (7)</DESCRIPTION>
+<!-- ? Spectroscopic Plate-MJD-Fiber identifier (7) \ifnum\Vphase=3{\fg{DarkGreen}({\bf Tip}: to select SDSS spectroscopic sources, enter the condition {\fg{red4}\tt *[1-9]*})}\fi -->
+
+    </FIELD>
+    <FIELD name="SpObjID" ucd="meta.id" display="0" datatype="long" width="19"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>Pointer to the spectrum of object, or 0 (7)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="parentID" ucd="meta.id.parent" display="0" datatype="long" width="19"><!-- ucd="ID_PARENT" -->
+      <DESCRIPTION>Pointer to parent (if object deblended)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="flags" ucd="meta.code.error" display="0" datatype="long" width="19"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Photo Object Attribute flags (3)</DESCRIPTION>
+
+<!-- No link in: \showSflag{SDSS_photo}{${}} -->
+    </FIELD>
+    <FIELD name="Status" ucd="meta.code" display="0" datatype="short" width="4"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Hexadecimal status (4)</DESCRIPTION>
+
+<!-- No link in: \showFlag{SDSS_stat8}{${}} -->
+    </FIELD>
+    <FIELD name="e_RA_ICRS" ucd="stat.error;pos.eq.ra" display="0" datatype="float" width="6" precision="3" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0/51703] Mean error on RAdeg (raErr)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_DE_ICRS" ucd="stat.error;pos.eq.dec" display="0" datatype="float" width="6" precision="3" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[0/20301] Mean error on DEdeg (decErr)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="ObsDate" ucd="time.epoch;obs;stat.mean" ref="H_0.000" display="1" datatype="double" width="9" precision="4" unit="yr"><!-- ucd="TIME_DATE" -->
+      <DESCRIPTION>Mean Observation date (6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Q" ucd="meta.code.qual;obs.param;obs" display="1" datatype="unsignedByte" width="1"><!-- ucd="CODE_QUALITY" -->
+      <DESCRIPTION>[1/3] Quality of the observation: 1=bad 2=acceptable 3=good</DESCRIPTION>
+    </FIELD>
+    <FIELD name="umag" ucd="phot.mag;em.opt.U" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_SDSS_U" -->
+      <DESCRIPTION>[4/38]? Model magnitude in u filter, AB scale (u) (5)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_umag" ucd="stat.error;phot.mag" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on umag (err_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="gmag" ucd="phot.mag;em.opt.B" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_SDSS_G" -->
+      <DESCRIPTION>[5/40]? Model magnitude in g filter, AB scale (g) (5)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_gmag" ucd="stat.error;phot.mag" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on gmag (err_g)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="rmag" ucd="phot.mag;em.opt.R" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_SDSS_R" -->
+      <DESCRIPTION>[4/39]? Model magnitude in r filter, AB scale (r) (5)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_rmag" ucd="stat.error;phot.mag" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on rmag (err_r)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="imag" ucd="phot.mag;em.opt.I" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_SDSS_I" -->
+      <DESCRIPTION>[3/40]? Model magnitude in i filter, AB scale (i) (5)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_imag" ucd="stat.error;phot.mag" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on imag (err_i)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="zmag" ucd="phot.mag;em.opt.I" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_SDSS_Z" -->
+      <DESCRIPTION>[3/38]? Model magnitude in z filter, AB scale (z) (5)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_zmag" ucd="stat.error;phot.mag" display="1" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on zmag (err_z)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="zsp" ucd="src.redshift" display="1" datatype="double" width="8" precision="5"><!-- ucd="REDSHIFT_HC" -->
+      <DESCRIPTION>[-0.02/7.1]? Spectroscopic redshift (when SpObjID&gt;0) (7)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_zsp" ucd="stat.error" display="0" datatype="double" width="8" precision="5"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on zsp (negative for bad fit) (7)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="f_zsp" ucd="meta.code" display="0" datatype="short" width="3"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[0/196]? "zwarning" flag (9)</DESCRIPTION>
+      <VALUES null="-32768" />
+
+<!-- No link in: \showFlag{SDSS_zwarn}{${}} -->
+    </FIELD>
+    <FIELD name="Vdisp" ucd="phys.veloc.dispersion" display="0" datatype="double" width="10" precision="6" unit="km/s"><!-- ucd="VELOC_DISP" -->
+      <DESCRIPTION>[0/850]? Velocity dispersion (velDisp)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_Vdisp" ucd="stat.error" display="0" datatype="float" width="6" precision="3" unit="km/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on Vdisp (velDispErr)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="spInst" ucd="meta.id;instr" display="0" datatype="char" arraysize="4"><!-- ucd="INST_ID" -->
+      <DESCRIPTION>? Spectral instrument used (SDSS or BOSS) (instrument)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="spType" ucd="src.class" display="0" datatype="char" arraysize="19*"><!-- ucd="CLASS_OBJECT" -->
+      <DESCRIPTION>? Source type (sourceType) (10)</DESCRIPTION>
+<!-- ? Source type (sourceType) (10) \ifnum\Vphase=4\else(\pFile{_500x600}{V/147/type9.htx}{list of types})\fi -->
+
+    </FIELD>
+    <FIELD name="spCl" ucd="meta.code.class;pos.parallax.spect" display="0" datatype="char" arraysize="6*"><!-- ucd="CLASS_STAR/GALAXY" -->
+      <DESCRIPTION>? Spectroscopic class: GALAXY, QSO, STAR</DESCRIPTION>
+    </FIELD>
+    <FIELD name="subCl" ucd="src.spType" display="0" datatype="char" arraysize="21*"><!-- ucd="SPECT_GENERAL" -->
+      <DESCRIPTION>? Spectroscopic subclass (subClass) (11)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="spS/N" ucd="em.wl.central;stat.median" display="0" datatype="float" width="6" precision="2"><!-- ucd="INST_S/N" -->
+      <DESCRIPTION>[0/132]? Median signal-to-noise over all good pixels (snMedian)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="uFlags" ucd="meta.code" display="0" datatype="long" width="19"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Detection flags, u band (flags_u) (3)</DESCRIPTION>
+
+<!-- No link in: \showSflag{SDSS_photo}{${}} -->
+    </FIELD>
+    <FIELD name="us" ucd="src.class.starGalaxy" display="0" datatype="unsignedByte" width="1"><!-- ucd="CLASS_STAR/GALAXY" -->
+      <DESCRIPTION>0=notStar, 1=Star in u band (probPSF_u)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="uc" ucd="src.class.starGalaxy" display="0" datatype="unsignedByte" width="1"><!-- ucd="CLASS_STAR/GALAXY" -->
+      <DESCRIPTION>[0/6] Phototype in u band, 6=Star (type_u) (1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="uDate" ucd="time.epoch" ref="time_0" display="0" datatype="double" width="9" precision="4" unit="yr"><!-- ucd="TIME_DATE" -->
+      <DESCRIPTION>Date of observation in u band (6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="u'mag" ucd="phot.mag;em.opt.U" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_SDSS_U" -->
+      <DESCRIPTION>[4/38]? Model magnitude in u' filter (= umag) (5)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_u'mag" ucd="stat.error;phot.mag" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on u'mag (= e_umag)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="upmag" ucd="phot.mag;em.opt.U" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_SDSS_U" -->
+      <DESCRIPTION>[5/34]? PSF magnitude in u band (psfMag_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_upmag" ucd="stat.error;phot.mag" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on upmag (psfMagErr_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="uPmag" ucd="phot.mag;em.opt.U" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_SDSS_U" -->
+      <DESCRIPTION>[3/43]? Petrosian magnitude in u band (petroMag_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_uPmag" ucd="stat.error;phot.mag" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on uPmag (petroMagErr_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="uPrad" ucd="phys.angSize;src" display="0" datatype="double" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>[0/260]? Petrosian radius in u band (petroRad_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_uPrad" ucd="stat.error" display="0" datatype="double" width="9" precision="3" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error in uPrad (petroRadErr_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="uoRA" ucd="pos.angDistance" display="0" datatype="float" width="6" precision="2" unit="arcsec"><!-- ucd="POS_EQ_RA_OFF" -->
+      <DESCRIPTION>? Offset of u position along RA (offsetRa_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="uoDE" ucd="pos.angDistance" display="0" datatype="float" width="6" precision="2" unit="arcsec"><!-- ucd="POS_EQ_DEC_OFF" -->
+      <DESCRIPTION>? Offset of u position along Dec (offsetDec_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="udVrad" ucd="phys.angSize;src" display="0" datatype="double" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>? de Vaucouleurs fit radius, u band (deVRad_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="udVell" ucd="src.ellipticity" display="0" datatype="double" width="7" precision="3" unit="arcsec"><!-- ucd="PHYS_ELLIPTICITY" -->
+      <DESCRIPTION>? de Vaucouleurs fit ellipt, u band (1-deVAB_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="uPA" ucd="pos.posAng" display="0" datatype="float" width="5" precision="1" unit="deg"><!-- ucd="POS_POS-ANG" -->
+      <DESCRIPTION>? Position angle of dVrad in u band (deVPhi_u)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="gFlags" ucd="meta.code" display="0" datatype="long" width="19"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Detection flags, g band (flags_g) (3)</DESCRIPTION>
+
+<!-- No link in: \showSflag{SDSS_photo}{${}} -->
+    </FIELD>
+    <FIELD name="gs" ucd="src.class.starGalaxy" display="0" datatype="unsignedByte" width="1"><!-- ucd="CLASS_STAR/GALAXY" -->
+      <DESCRIPTION>0=notStar, 1=Star in g band (probPSF_g)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="gc" ucd="src.class.starGalaxy" display="0" datatype="unsignedByte" width="1"><!-- ucd="CLASS_STAR/GALAXY" -->
+      <DESCRIPTION>Phototype in g band, 6=Star (type_g) (1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="gDate" ucd="time.epoch" ref="time_0" display="0" datatype="double" width="9" precision="4" unit="yr"><!-- ucd="TIME_DATE" -->
+      <DESCRIPTION>Date of observation in g band (6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="g'mag" ucd="phot.mag;em.opt.B" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_SDSS_G" -->
+      <DESCRIPTION>[5/39]? Model magnitude in g' filter (= gmag) (5)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_g'mag" ucd="stat.error;phot.mag" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on g'mag (= e_gmag)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="gpmag" ucd="phot.mag;em.opt.B" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_SDSS_G" -->
+      <DESCRIPTION>[5/37]? PSF magnitude in g band (psfMag_g)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_gpmag" ucd="stat.error;phot.mag" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on gpmag (psfMagErr_g)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="gPmag" ucd="phot.mag;em.opt.B" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_SDSS_G" -->
+      <DESCRIPTION>[4/46]? Petrosian magnitude in g band (petroMag_g)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_gPmag" ucd="stat.error;phot.mag" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on gPmag (petroMagErr_g)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="gPrad" ucd="phys.angSize;src" display="0" datatype="double" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>? Petrosian radius in g band (petroRad_g)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_gPrad" ucd="stat.error" display="0" datatype="double" width="9" precision="3" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error in gPrad (petroRadErr_g)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="goRA" ucd="pos.angDistance" display="0" datatype="float" width="6" precision="2" unit="arcsec"><!-- ucd="POS_EQ_RA_OFF" -->
+      <DESCRIPTION>? Offset of g position along RA (offsetRa_g)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="goDE" ucd="pos.angDistance" display="0" datatype="float" width="6" precision="2" unit="arcsec"><!-- ucd="POS_EQ_DEC_OFF" -->
+      <DESCRIPTION>? Offset of g position along Dec (offsetDec_g)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="gdVrad" ucd="phys.angSize;src" display="0" datatype="double" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>? de Vaucouleurs fit radius, g band (deVRad_g)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="gdVell" ucd="src.ellipticity" display="0" datatype="double" width="7" precision="3" unit="arcsec"><!-- ucd="PHYS_ELLIPTICITY" -->
+      <DESCRIPTION>? de Vaucouleurs fit ellipt, g band (1-deVAB_g)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="gPA" ucd="pos.posAng" display="0" datatype="float" width="5" precision="1" unit="deg"><!-- ucd="POS_POS-ANG" -->
+      <DESCRIPTION>? Position angle of dVrad in g band (deVPhi_g)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="rFlags" ucd="meta.code" display="0" datatype="long" width="19"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Detection flags, r band (flags_r) (3)</DESCRIPTION>
+
+<!-- No link in: \showSflag{SDSS_photo}{${}} -->
+    </FIELD>
+    <FIELD name="rs" ucd="src.class.starGalaxy" display="0" datatype="unsignedByte" width="1"><!-- ucd="CLASS_STAR/GALAXY" -->
+      <DESCRIPTION>0=notStar, 1=Star in r band (probPSF_r)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="rc" ucd="src.class.starGalaxy" display="0" datatype="unsignedByte" width="1"><!-- ucd="CLASS_STAR/GALAXY" -->
+      <DESCRIPTION>Phototype in r band, 6=Star (type_r) (1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="rDate" ucd="time.epoch" ref="time_0" display="0" datatype="double" width="9" precision="4" unit="yr"><!-- ucd="TIME_DATE" -->
+      <DESCRIPTION>Date of observation in r band (6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="r'mag" ucd="phot.mag;em.opt.R" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_SDSS_R" -->
+      <DESCRIPTION>[4/39]? Model magnitude in r' filter (= rmag) (5)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_r'mag" ucd="stat.error;phot.mag" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on r'mag (= e_rmag)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="rpmag" ucd="phot.mag;em.opt.R" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_SDSS_R" -->
+      <DESCRIPTION>[4/33]? PSF magnitude in r band (psfMag_r)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_rpmag" ucd="stat.error;phot.mag" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on rpmag (psfMagErr_r)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="rPmag" ucd="phot.mag;em.opt.R" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_SDSS_R" -->
+      <DESCRIPTION>[4/43]? Petrosian magnitude in r band (petroMag_r)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_rPmag" ucd="stat.error;phot.mag" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on rPmag (petroMagErr_r)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="rPrad" ucd="phys.angSize;src" display="0" datatype="double" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>? Petrosian radius in r band (petroRad_r)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_rPrad" ucd="stat.error" display="0" datatype="double" width="9" precision="3" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error in rPrad (petroRadErr_r)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="roRA" ucd="pos.angDistance" display="0" datatype="float" width="6" precision="2" unit="arcsec"><!-- ucd="POS_EQ_RA_OFF" -->
+      <DESCRIPTION>? Offset of r position along RA (offsetRa_r)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="roDE" ucd="pos.angDistance" display="0" datatype="float" width="6" precision="2" unit="arcsec"><!-- ucd="POS_EQ_DEC_OFF" -->
+      <DESCRIPTION>? Offset of r position along Dec (offsetDec_r)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="rdVrad" ucd="phys.angSize;src" display="0" datatype="double" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>? de Vaucouleurs fit radius, r band (deVRad_r)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="rdVell" ucd="src.ellipticity" display="0" datatype="double" width="7" precision="3" unit="arcsec"><!-- ucd="PHYS_ELLIPTICITY" -->
+      <DESCRIPTION>? de Vaucouleurs fit ellipt, r band (1-deVAB_r)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="rPA" ucd="pos.posAng" display="0" datatype="float" width="5" precision="1" unit="deg"><!-- ucd="POS_POS-ANG" -->
+      <DESCRIPTION>? Position angle of dVrad in r band (deVPhi_r)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="iFlags" ucd="meta.code" display="0" datatype="long" width="19"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Detection flags, i band (flags_i) (3)</DESCRIPTION>
+
+<!-- No link in: \showSflag{SDSS_photo}{${}} -->
+    </FIELD>
+    <FIELD name="is" ucd="src.class.starGalaxy" display="0" datatype="unsignedByte" width="1"><!-- ucd="CLASS_STAR/GALAXY" -->
+      <DESCRIPTION>0=notStar, 1=Star in i band (probPSF_i)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="ic" ucd="src.class.starGalaxy" display="0" datatype="unsignedByte" width="1"><!-- ucd="CLASS_STAR/GALAXY" -->
+      <DESCRIPTION>Phototype in i band, 6=Star (type_i) (1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="iDate" ucd="time.epoch" ref="time_0" display="0" datatype="double" width="9" precision="4" unit="yr"><!-- ucd="TIME_DATE" -->
+      <DESCRIPTION>Date of observation in i band (6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="i'mag" ucd="phot.mag;em.opt.I" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_SDSS_I" -->
+      <DESCRIPTION>[3/40]? Model magnitude in i' filter (= imag) (5)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_i'mag" ucd="stat.error;phot.mag" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on i'mag (= e_imag)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ipmag" ucd="phot.mag;em.opt.I" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_SDSS_I" -->
+      <DESCRIPTION>[3/34]? PSF magnitude in i band (psfMag_i)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_ipmag" ucd="stat.error;phot.mag" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on ipmag (psfMagErr_i)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="iPmag" ucd="phot.mag;em.opt.I" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_SDSS_I" -->
+      <DESCRIPTION>[3/45]? Petrosian magnitude in i band (petroMag_i)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_iPmag" ucd="stat.error;phot.mag" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on iPmag (petroMagErr_i)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="iPrad" ucd="phys.angSize;src" display="0" datatype="double" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>? Petrosian radius in i band (petroRad_i)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_iPrad" ucd="stat.error" display="0" datatype="double" width="9" precision="3" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error in iPrad (petroRadErr_i)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ioRA" ucd="pos.angDistance" display="0" datatype="float" width="6" precision="2" unit="arcsec"><!-- ucd="POS_EQ_RA_OFF" -->
+      <DESCRIPTION>? Offset of i position along RA (offsetRa_i)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="ioDE" ucd="pos.angDistance" display="0" datatype="float" width="6" precision="2" unit="arcsec"><!-- ucd="POS_EQ_DEC_OFF" -->
+      <DESCRIPTION>? Offset of i position along Dec (offsetDec_i)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="idVrad" ucd="phys.angSize;src" display="0" datatype="double" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>? de Vaucouleurs fit radius, i band (deVRad_i)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="idVell" ucd="src.ellipticity" display="0" datatype="double" width="7" precision="3" unit="arcsec"><!-- ucd="PHYS_ELLIPTICITY" -->
+      <DESCRIPTION>? de Vaucouleurs fit ellipt, i band (1-deVAB_i)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="iPA" ucd="pos.posAng" display="0" datatype="float" width="5" precision="1" unit="deg"><!-- ucd="POS_POS-ANG" -->
+      <DESCRIPTION>? Position angle of dVrad in i band (deVPhi_i)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="zFlags" ucd="meta.code" display="0" datatype="long" width="19"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Detection flags, z band (flags_z) (3)</DESCRIPTION>
+
+<!-- No link in: \showSflag{SDSS_photo}{${}} -->
+    </FIELD>
+    <FIELD name="zs" ucd="src.class.starGalaxy" display="0" datatype="unsignedByte" width="1"><!-- ucd="CLASS_STAR/GALAXY" -->
+      <DESCRIPTION>0=notStar, 1=Star in z band (probPSF_z)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="zc" ucd="src.class.starGalaxy" display="0" datatype="unsignedByte" width="1"><!-- ucd="CLASS_STAR/GALAXY" -->
+      <DESCRIPTION>Phototype in z band, 6=Star (type_z) (1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="zDate" ucd="time.epoch" ref="time_0" display="0" datatype="double" width="9" precision="4" unit="yr"><!-- ucd="TIME_DATE" -->
+      <DESCRIPTION>Date of observation in z band (6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="z'mag" ucd="phot.mag;em.opt.I" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_SDSS_Z" -->
+      <DESCRIPTION>[3/38]? Model magnitude in z filter (= zmag) (5)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_z'mag" ucd="stat.error;phot.mag" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on z'mag (= e_zmag)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="zpmag" ucd="phot.mag;em.opt.I" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_SDSS_Z" -->
+      <DESCRIPTION>[3/32]? PSF magnitude in z band (psfMag_z)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_zpmag" ucd="stat.error;phot.mag" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on zpmag (psfMagErr_z)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="zPmag" ucd="phot.mag;em.opt.I" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="PHOT_SDSS_Z" -->
+      <DESCRIPTION>[3/42]? Petrosian magnitude in z band (petroMag_z)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_zPmag" ucd="stat.error;phot.mag" display="0" datatype="float" width="6" precision="3" unit="mag"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on zPmag (petroMagErr_z)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="zPrad" ucd="phys.angSize;src" display="0" datatype="double" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>? Petrosian radius in z band (petroRad_z)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_zPrad" ucd="stat.error" display="0" datatype="double" width="9" precision="3" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error in zPrad (petroRadErr_z)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="zoRA" ucd="pos.angDistance" display="0" datatype="float" width="6" precision="2" unit="arcsec"><!-- ucd="POS_EQ_RA_OFF" -->
+      <DESCRIPTION>? Offset of z position along RA (offsetRa_z)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="zoDE" ucd="pos.angDistance" display="0" datatype="float" width="6" precision="2" unit="arcsec"><!-- ucd="POS_EQ_DEC_OFF" -->
+      <DESCRIPTION>? Offset of z position along Dec (offsetDec_z)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="zdVrad" ucd="phys.angSize;src" display="0" datatype="double" width="7" precision="3" unit="arcsec"><!-- ucd="EXTENSION_RAD" -->
+      <DESCRIPTION>? de Vaucouleurs fit radius, z band (deVRad_z)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="zdVell" ucd="src.ellipticity" display="0" datatype="double" width="7" precision="3" unit="arcsec"><!-- ucd="PHYS_ELLIPTICITY" -->
+      <DESCRIPTION>? de Vaucouleurs fit ellipt, z band (1-deVAB_z)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="zPA" ucd="pos.posAng" display="0" datatype="float" width="5" precision="1" unit="deg"><!-- ucd="POS_POS-ANG" -->
+      <DESCRIPTION>? Position angle of dVrad in z band (deVPhi_z)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="pmRA" ucd="pos.pm;pos.eq.ra" ref="H_0.000" display="0" datatype="double" width="7" precision="1" unit="mas/yr"><!-- ucd="POS_EQ_PMRA" -->
+      <DESCRIPTION>[-6121/4129]? Proper motion along Right Ascension (pmRa) (8)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_pmRA" ucd="stat.error;pos.pm;pos.eq.ra" display="0" datatype="float" width="6" precision="1" unit="mas/yr"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on pmRA (pmRaErr) (8)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="pmDE" ucd="pos.pm;pos.eq.dec" ref="H_0.000" display="0" datatype="double" width="7" precision="1" unit="mas/yr"><!-- ucd="POS_EQ_PMDEC" -->
+      <DESCRIPTION>[-4846/4437]? Proper motion along Declination (pmDec) (8)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_pmDE" ucd="stat.error;pos.pm;pos.eq.dec" display="0" datatype="float" width="6" precision="1" unit="mas/yr"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on pmDE (pmDecErr) (8)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="sigRA" ucd="stat.fit.residual" display="0" datatype="double" width="7" precision="2" unit="mas"><!-- ucd="FIT_RESIDUAL" -->
+      <DESCRIPTION>[0/8662]? RMS residual of proper motion fit in RA (8)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="sigDE" ucd="stat.fit.residual" display="0" datatype="float" width="6" precision="2" unit="mas"><!-- ucd="FIT_RESIDUAL" -->
+      <DESCRIPTION>[0/10625]? RMS residual of proper motion fit in Dec (8)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="M" ucd="meta.number" display="0" datatype="short" width="2"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>[1/4]? Number of USNO-B objects matched within 1arcsec (match) (8)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="N" ucd="meta.number" display="0" datatype="short" width="2"><!-- ucd="NUMBER" -->
+      <DESCRIPTION>[4/6]? Number of detections used in the pm fit, including SDSS (nFit) (8)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="g(O)" ucd="phot.mag;em.opt.B" display="0" datatype="float" width="4" precision="1"><!-- ucd="PHOT_PHG_B" -->
+      <DESCRIPTION>? Magnitude from O plate recalibrated to g (8)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="r(E)" ucd="phot.mag;em.opt.R" display="0" datatype="float" width="4" precision="1"><!-- ucd="PHOT_PHG_R" -->
+      <DESCRIPTION>? Magnitude from E plate recalibrated to r (8)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="g(J)" ucd="phot.mag;em.opt.B" display="0" datatype="float" width="4" precision="1"><!-- ucd="PHOT_PHG_B" -->
+      <DESCRIPTION>? Magnitude from J plate recalibrated to g (8)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="r(F)" ucd="phot.mag;em.opt.R" display="0" datatype="float" width="4" precision="1"><!-- ucd="PHOT_PHG_R" -->
+      <DESCRIPTION>? Magnitude from F plate recalibrated to r (8)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="i(N)" ucd="phot.mag;em.opt.I" display="0" datatype="float" width="4" precision="1"><!-- ucd="PHOT_PHG_I" -->
+      <DESCRIPTION>? Magnitude from N plate recalibrated to i (8)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="zph" ucd="src.redshift" display="1" datatype="double" width="10" precision="4"><!-- ucd="REDSHIFT_PHOT" -->
+      <DESCRIPTION>[-9999/]? Photometric redshift; estimated by robust fit to nearest neighbors in a reference set (12)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_zph" ucd="stat.error" display="1" datatype="double" width="10" precision="4"><!-- ucd="ERROR" -->
+      <DESCRIPTION>[-9999/]? Estimated error of the photometric redshift (zErr) (12)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="&lt;zph&gt;" ucd="src.redshift.phot" display="1" datatype="float" width="7" precision="4"><!-- ucd="REDSHIFT_PHOT" -->
+      <DESCRIPTION>[0.009/0.9]? average redshift of the nearest neighbors; if significantly different from zph this might be a better estimate than zph (nnAvgZ)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="chi2" ucd="stat.value" display="0" datatype="double" width="7" precision="3"><!-- ucd="FIT_CHI2" -->
+      <DESCRIPTION>? Chi-square value for the minimum chi-square template fit (chisq_zph)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="u'Mag" ucd="phys.magAbs" display="0" datatype="double" width="8" precision="3" unit="mag"><!-- ucd="PHOT_ABS-MAG_BAND" -->
+      <DESCRIPTION>[-644/4]? rest frame u' absolute magnitude (absMagU)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="g'Mag" ucd="phys.magAbs" display="0" datatype="double" width="8" precision="3" unit="mag"><!-- ucd="PHOT_ABS-MAG_BAND" -->
+      <DESCRIPTION>[-472/3]? rest frame g' absolute magnitude (absMagG)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="r'Mag" ucd="phys.magAbs" display="0" datatype="double" width="8" precision="3" unit="mag"><!-- ucd="PHOT_ABS-MAG_BAND" -->
+      <DESCRIPTION>[-351/3]? rest frame r' absolute magnitude (absMagR)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="i'Mag" ucd="phys.magAbs" display="0" datatype="double" width="8" precision="3" unit="mag"><!-- ucd="PHOT_ABS-MAG_BAND" -->
+      <DESCRIPTION>[-271/7]? rest frame i' absolute magnitude (absMagI)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="z'Mag" ucd="phys.magAbs" display="0" datatype="double" width="8" precision="3" unit="mag"><!-- ucd="PHOT_ABS-MAG_BAND" -->
+      <DESCRIPTION>[-199/3]? rest frame z' absolute magnitude (absMagZ)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+  </TABLE>
+<INFO name="matches" value="2">matching records</INFO>
+</RESOURCE>
+</VOTABLE>

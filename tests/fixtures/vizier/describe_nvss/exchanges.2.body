@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-29T05:43:51 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-29T05:43:51">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-source=VIII%2F65%2Fnvss&amp;-meta.all=">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+
+<RESOURCE ID="yCat_8065_1" name="VIII/65/nvss" type="meta">
+  <INFO name="nrows" value="1773484">Number of rows of the table</INFO>
+  <DESCRIPTION>
+    1.4GHz NRAO VLA Sky Survey (NVSS) (Condon+ 1998)
+    The NVSS Catalog
+  </DESCRIPTION>
+  <PARAM name="-c" datatype="char" arraysize="32*" value="">
+    <DESCRIPTION>Query from a celestial position according to ASU syntax:
+      {RA{+|-}Dec|object_name}[,eq=equinox][,ep=epoch][,rm=[min/]max]
+      (see http://vizier.cds.unistra.fr/doc/asu.html)
+    </DESCRIPTION>
+  </PARAM>
+  <LINK content-role="query" action="votable?-source=VIII/65/nvss&amp;">
+    Action to Query the current RESOURCE, to be completed by PARAMs and FIELDs contents
+  </LINK>
+
+  <TABLE name="VIII/65/nvss" nrows="1773484">
+    <COOSYS ID="J2000" system="eq_FK5" equinox="J2000"/>
+    <!-- Definitions of GROUPs and FIELDs -->
+
+<!-- +++No column could be found to attach a LINK in table: VIII/65/nvss -->
+    <FIELD name="recno" ucd="meta.record" display="0" datatype="int" width="8"><!-- ucd="RECORD" -->
+      <DESCRIPTION>Record number assigned by the VizieR team. Should Not be used for identification.</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-5?-info=XML&amp;-out.add=.&amp;-source=VIII/65/nvss&amp;recno=${recno}"/>
+    </FIELD>
+    <FIELD name="Field" ucd="obs.field" display="0" datatype="char" arraysize="8*"><!-- ucd="ID_FIELD" -->
+      <DESCRIPTION>Name of the original survey image field from which the component was derived.</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Xpos" ucd="pos.cartesian.x;instr.det" display="0" datatype="float" width="7" precision="2" unit="pix"><!-- ucd="POS_CCD_X" -->
+      <DESCRIPTION>X position (RA direction) of the radio source</DESCRIPTION>
+    </FIELD>
+    <FIELD name="Ypos" ucd="pos.cartesian.y;instr.det" display="0" datatype="float" width="7" precision="2" unit="pix"><!-- ucd="POS_CCD_Y" -->
+      <DESCRIPTION>Y position (Dec direction) of the radio source</DESCRIPTION>
+    </FIELD>
+    <FIELD name="NVSS" ucd="meta.id;meta.main" display="1" datatype="char" arraysize="14*"><!-- ucd="ID_MAIN" -->
+      <DESCRIPTION>Source name (1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RAJ2000" ucd="pos.eq.ra;meta.main" ref="J2000" display="1" datatype="char" arraysize="11" xtype="hms"><!-- ucd="POS_EQ_RA_MAIN" -->
+      <DESCRIPTION>Right Ascension J2000 (2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DEJ2000" ucd="pos.eq.dec;meta.main" ref="J2000" display="1" datatype="char" arraysize="11" xtype="dms"><!-- ucd="POS_EQ_DEC_MAIN" -->
+      <DESCRIPTION>Declination J2000 (2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_RAJ2000" ucd="stat.error;pos.eq.ra" display="1" datatype="float" width="5" precision="2" unit="s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Mean error on RA</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_DEJ2000" ucd="stat.error;pos.eq.dec" display="1" datatype="float" width="4" precision="1" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Mean error on Dec</DESCRIPTION>
+    </FIELD>
+    <FIELD name="S1.4" ucd="phot.flux.density;em.radio.750-1500MHz" display="1" datatype="double" width="8" precision="1" unit="mJy"><!-- ucd="PHOT_FLUX_RADIO_1.4G" -->
+      <DESCRIPTION>Integrated 1.4GHz flux density of radio source</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_S1.4" ucd="stat.error" display="1" datatype="float" width="7" precision="1" unit="mJy"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Mean error on S1.4</DESCRIPTION>
+    </FIELD>
+    <FIELD name="l_MajAxis" ucd="meta.code.error;phys.angSize" display="1" datatype="char" arraysize="1"><!-- ucd="CODE_LIMIT" -->
+      <DESCRIPTION>Limit flag on MajAxis</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MajAxis" ucd="phys.angSize;em.radio;meta.modelled" display="1" datatype="float" width="5" precision="1" unit="arcsec"><!-- ucd="EXTENSION_FWHM_MAJ" -->
+      <DESCRIPTION>Fitted (deconvolved) major axis of radio source</DESCRIPTION>
+    </FIELD>
+    <FIELD name="l_MinAxis" ucd="meta.code.error;phys.angSize" display="1" datatype="char" arraysize="1"><!-- ucd="CODE_LIMIT" -->
+      <DESCRIPTION>Limit flag on MinAxis</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MinAxis" ucd="phys.angSize;em.radio;meta.modelled" display="1" datatype="float" width="5" precision="1" unit="arcsec"><!-- ucd="EXTENSION_FWHM_MIN" -->
+      <DESCRIPTION>Fitted (deconvolved) minor axis of radio source</DESCRIPTION>
+    </FIELD>
+    <FIELD name="PA" ucd="pos.posAng;meta.modelled" display="0" datatype="float" width="5" precision="1" unit="deg"><!-- ucd="POS_POS-ANG" -->
+      <DESCRIPTION>[-90, 90]? Position angle of fitted major axis</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_MajAxis" ucd="stat.error;phys.angSize" display="0" datatype="float" width="4" precision="1" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on MajAxis</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_MinAxis" ucd="stat.error;phys.angSize" display="0" datatype="float" width="4" precision="1" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on MinAxis</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_PA" ucd="stat.error" display="0" datatype="float" width="4" precision="1" unit="deg"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on PA</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="f_resFlux" ucd="meta.code" display="1" datatype="char" arraysize="2"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>[PS* ] Residual Code (3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="resFlux" ucd="phot.flux.density;em.radio" display="0" datatype="short" width="4" unit="mJy"><!-- ucd="PHOT_FLUX_RADIO_MISC" -->
+      <DESCRIPTION>? Peak residual flux, in mJy/beam (3)</DESCRIPTION>
+      <VALUES null="-32768" />
+    </FIELD>
+    <FIELD name="polFlux" ucd="phot.flux.density" display="0" datatype="float" width="6" precision="2" unit="mJy"><!-- ucd="POL_FLUX_LINEAR" -->
+      <DESCRIPTION>? Integrated linearly polarized flux density</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="polPA" ucd="pos.posAng;phys.polarization" display="0" datatype="float" width="5" precision="1" unit="deg"><!-- ucd="POL_PA_EQ" -->
+      <DESCRIPTION>[-90,90]? The position angle of polFlux (4)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_polFlux" ucd="stat.error" display="0" datatype="float" width="5" precision="2" unit="mJy"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on polFlux</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_polPA" ucd="stat.error" display="0" datatype="float" width="4" precision="1" unit="deg"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? Mean error on polPA</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="Image" ucd="meta.ref.url" display="0" datatype="char" arraysize="5*"><!-- ucd="DATA_LINK" -->
+      <DESCRIPTION>FITS Image of the target, about 200x200 pixels of 5x5arcsec (or consult http://www.cv.nrao.edu/nvss/postage.shtml)</DESCRIPTION>
+      <LINK content-type="image/fits" title="Image 17x17'" href="http://www.cv.nrao.edu/cgi-bin/postage.pl?RA=${RAJ2000}&amp;Dec=${DEJ2000}&amp;Cells=5.0+5.0&amp;Type=image/x-fits"/>
+    </FIELD>
+  </TABLE>
+<INFO name="matches" value="2">matching records</INFO>
+</RESOURCE>
+</VOTABLE>

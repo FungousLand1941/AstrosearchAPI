@@ -1,0 +1,19 @@
+{
+  "catalog": "xmm",
+  "target": "hd209458",
+  "ra": 330.79502,
+  "dec": 18.88432,
+  "radius_arcsec": 10.0,
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://heasarc.gsfc.nasa.gov/xamin/vo/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+srcid%2C+name%2C+ra%2C+dec%2C+error_radius%2C+error_ell_major%2C+error_ell_minor%2C+ep_flux%2C+ep_flux_error%2C+ep_det_ml%2C+sum_flag%2C+n_obs%2C+n_contrib%2C+extent%2C+%22time%22%2C+end_time%2C+DISTANCE%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+POINT%28%27ICRS%27%2C+330.795020000%2C+18.884320000%29%29+AS+match_dist+FROM+xmmssc+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+330.795020000%2C+18.884320000%2C+0.0027777778%29%29+ORDER+BY+match_dist+ASC",
+      "status_code": 200,
+      "content_type": "text/xml",
+      "match": [
+        "FROM xmmssc "
+      ]
+    }
+  ]
+}

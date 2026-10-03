@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>ESO 140-43</name>
+  <!-- Q8398749 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 85ms [2] -->
+    <oid>3433053</oid>
+    <otype>Sy1</otype>
+    <jpos>18:44:53.98 -62:21:52.8</jpos>
+    <jradeg>281.22495537</jradeg>
+    <jdedeg>-62.36468728</jdedeg>
+    <refPos>2020yCat.1350....0G</refPos>
+    <errRAmas>0.0286</errRAmas><errDEmas>0.0322</errDEmas>
+    <pm>
+      <v>0.272</v><e>0.048</e><q>A</q><r>2020yCat.1350....0G</r>
+      <pa>278</pa>
+      <pmRA>-0.269</pmRA><epmRA>0.034</epmRA>
+      <pmDE>0.037</pmDE><epmDE>0.034</epmDE>
+    </pm>
+    <z><v>0.01386410</v><e>0.0005</e><q>C</q><r>2022ApJS..261....2K</r></z>
+    <plx><v>0.2508</v><e>0.0418</e><q>A</q><r>2020yCat.1350....0G</r></plx>
+    <MType>2.6</MType>
+    <oname>ESO 140-43</oname>
+    <nrefs>269</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ****Total of 1 crashes -->
+<!-- Configuration tested: /run/sesame.conf -->

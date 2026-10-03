@@ -1,0 +1,93 @@
+{
+  "set": "explain_ngc4807",
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://cds.unistra.fr/cgi-bin/nph-sesame/-oxp/SNV?NGC%204807",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "text/plain",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://simbad.cds.unistra.fr/simbad/sim-tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&FORMAT=json&QUERY=SELECT+TOP+25+id+FROM+ident+WHERE+oidref+%3D+1985032+ORDER+BY+id+ASC",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://simbad.cds.unistra.fr/simbad/sim-tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&FORMAT=json&QUERY=SELECT+TOP+2+r.bibcode+AS+bibcode%2C+r.title+AS+title%2C+r.%22year%22+AS+pub_year%2C+r.journal+AS+journal%2C+r.nbobject+AS+nbobject%2C+r.doi+AS+doi%2C+h.ref_flag+AS+ref_flag%2C+h.obj_freq+AS+obj_freq+FROM+ref+AS+r+JOIN+has_ref+AS+h+ON+h.oidbibref+%3D+r.oidbib+WHERE+h.oidref+%3D+1985032+AND+r.nbobject+%3C%3D+5+AND+%28h.ref_flag+IS+NULL+OR+MOD%28h.ref_flag%2C+4%29+%3E+0%29+ORDER+BY+pub_year+ASC%2C+nbobject+ASC%2C+bibcode+ASC",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://simbad.cds.unistra.fr/simbad/sim-tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&FORMAT=json&QUERY=SELECT+TOP+10+dist%2C+plus_err%2C+minus_err%2C+unit%2C+method%2C+bibcode+FROM+mesDistance+WHERE+oidref+%3D+1985032+ORDER+BY+bibcode+DESC%2C+dist+ASC",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://simbad.cds.unistra.fr/simbad/sim-tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&FORMAT=json&QUERY=SELECT+DISTINCT+o.otype+AS+otype%2C+d.path+AS+path%2C+d.is_candidate+AS+is_candidate+FROM+otypes+AS+o+LEFT+OUTER+JOIN+otypedef+AS+d+ON+d.otype+%3D+o.otype+WHERE+o.oidref+%3D+1985032",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://simbad.cds.unistra.fr/simbad/sim-tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&FORMAT=json&QUERY=SELECT+TOP+6+r.bibcode+AS+bibcode%2C+r.title+AS+title%2C+r.%22year%22+AS+pub_year%2C+r.journal+AS+journal%2C+r.nbobject+AS+nbobject%2C+r.doi+AS+doi%2C+h.ref_flag+AS+ref_flag%2C+h.obj_freq+AS+obj_freq+FROM+ref+AS+r+JOIN+has_ref+AS+h+ON+h.oidbibref+%3D+r.oidbib+WHERE+h.oidref+%3D+1985032+AND+MOD%28h.ref_flag%2C+4%29+%3E+0+AND+h.obj_freq+IS+NOT+NULL+ORDER+BY+obj_freq+DESC%2C+pub_year+DESC%2C+bibcode+ASC",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://simbad.cds.unistra.fr/simbad/sim-tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&FORMAT=json&QUERY=SELECT+filter%2C+flux%2C+flux_err%2C+system%2C+bibcode+FROM+flux+WHERE+oidref+%3D+1985032+ORDER+BY+filter+ASC",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://simbad.cds.unistra.fr/simbad/sim-tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&FORMAT=json&QUERY=SELECT+b.oid+AS+oid%2C+b.main_id+AS+main_id%2C+b.otype+AS+otype%2C+od.description+AS+otype_description%2C+od.path+AS+otype_path%2C+b.ra+AS+ra%2C+b.dec+AS+dec%2C+b.coo_bibcode+AS+coo_bibcode%2C+b.plx_value+AS+plx_value%2C+b.plx_err+AS+plx_err%2C+b.plx_qual+AS+plx_qual%2C+b.plx_bibcode+AS+plx_bibcode%2C+b.pmra+AS+pmra%2C+b.pmdec+AS+pmdec%2C+b.pm_bibcode+AS+pm_bibcode%2C+b.rvz_type+AS+rvz_type%2C+b.rvz_nature+AS+rvz_nature%2C+b.rvz_qual+AS+rvz_qual%2C+b.rvz_radvel+AS+rvz_radvel%2C+b.rvz_redshift+AS+rvz_redshift%2C+b.rvz_err+AS+rvz_err%2C+b.rvz_radvel_prec+AS+rvz_radvel_prec%2C+b.rvz_redshift_prec+AS+rvz_redshift_prec%2C+b.rvz_bibcode+AS+rvz_bibcode%2C+b.sp_type+AS+sp_type%2C+b.sp_bibcode+AS+sp_bibcode%2C+b.morph_type+AS+morph_type%2C+b.morph_bibcode+AS+morph_bibcode%2C+b.galdim_majaxis+AS+galdim_majaxis%2C+b.galdim_minaxis+AS+galdim_minaxis%2C+b.galdim_bibcode+AS+galdim_bibcode%2C+b.nbref+AS+nbref+FROM+basic+AS+b+LEFT+OUTER+JOIN+otypedef+AS+od+ON+od.otype+%3D+b.otype+WHERE+b.oid+%3D+1985032",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://simbad.cds.unistra.fr/simbad/sim-tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&FORMAT=json&QUERY=SELECT+TOP+2+r.bibcode+AS+bibcode%2C+r.title+AS+title%2C+r.%22year%22+AS+pub_year%2C+r.journal+AS+journal%2C+r.nbobject+AS+nbobject%2C+r.doi+AS+doi%2C+h.ref_flag+AS+ref_flag%2C+h.obj_freq+AS+obj_freq+FROM+ref+AS+r+JOIN+has_ref+AS+h+ON+h.oidbibref+%3D+r.oidbib+WHERE+h.oidref+%3D+1985032+AND+MOD%28h.ref_flag%2C+4%29+%3E+0+ORDER+BY+pub_year+DESC%2C+bibcode+ASC",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://simbad.cds.unistra.fr/simbad/sim-tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&FORMAT=json&QUERY=SELECT+bibcode%2C+title%2C+%22year%22+AS+pub_year+FROM+ref+WHERE+bibcode+IN+%28%272000A%26AS..143....9W%27%2C+%272020yCat.1350....0G%27%2C+%272020ApJS..249....3A%27%2C+%272003A%26A...412...45P%27%2C+%272023ApJS..269....3M%27%2C+%272007ApJS..173..185G%27%2C+%272006AJ....131.1163S%27%2C+%272016AJ....152...50T%27%2C+%272013AJ....146...86T%27%2C+%272007ApJ...655..790C%27%29",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    },
+    {
+      "method": "POST",
+      "url": "https://simbad.cds.unistra.fr/simbad/sim-tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&FORMAT=json&QUERY=SELECT+bibcode%2C+title%2C+%22year%22+AS+pub_year+FROM+ref+WHERE+bibcode+IN+%28%272020A%26A...641A...6P%27%2C+%272020A%26A...641A...1P%27%2C+%272022ApJ...938..110B%27%29",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": []
+    }
+  ]
+}

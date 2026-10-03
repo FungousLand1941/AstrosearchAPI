@@ -1,4 +1,13 @@
-"""Streaming multi-format dataset generation, storage backends (SQLite/PostgreSQL/S3), and worker jobs."""
+"""Streaming multi-format dataset generation, storage backends (SQLite/PostgreSQL/S3), and worker jobs.
+
+A dataset is the crossmatch of a list of targets, filtered (confidence, query filters, count
+threshold) and exported as JSON, CSV, Parquet or FITS. Target lists of at least
+``DATASET_BATCH_MIN_TARGETS`` targets (default 50) are fetched with :mod:`batch` (TAP uploads,
+CDS XMatch and paced cone searches: a few requests per catalog instead of one per target) and
+then associated per target exactly as a single-object search (:meth:`CrossmatchService.finalize`);
+targets for which a batch query failed, and every target when the batch cannot run at all, are
+searched one by one. Every exported row carries its Bayesian match probabilities.
+"""
 
 from __future__ import annotations
 
@@ -9,6 +18,7 @@ import math
 import os
 import sqlite3
 import uuid
+from collections.abc import AsyncIterator
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Self, TextIO
@@ -18,8 +28,8 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 import structlog
 
-from crossmatch import AdvancedQuery, CrossmatchService, QueryValidator
-from models import CatalogRegistry, validate_target
+from crossmatch import AdvancedQuery, CrossmatchService, QueryBuilder, QueryValidator
+from models import AstroSearchError, CatalogRegistry, Settings, validate_target
 
 logger = structlog.get_logger()
 
@@ -27,22 +37,50 @@ logger = structlog.get_logger()
 # Multi-Format Streaming Exporter
 # ---------------------------------------------------------------------------
 
-_TEXT_COLUMNS = ("catalog", "source_id", "physical", "data", "metadata", "provenance", "links")
-_FLOAT_COLUMNS = ("ra", "dec", "separation_arcsec", "confidence", "epoch", "positional_error_arcsec")
-_COLUMNS = _TEXT_COLUMNS + _FLOAT_COLUMNS
+_JSON_COLUMNS = ("physical", "data", "metadata", "provenance", "links")
+# Text columns: identifiers, then the JSON-encoded nested fields, then the association labels
+# (group_id: the Bayesian object the row belongs to within its target's cone; match_flag:
+# 'best' / 'secondary' / None; coincident_with: the row this one duplicates in its catalog).
+_TEXT_COLUMNS = ("catalog", "source_id", *_JSON_COLUMNS, "group_id", "match_flag", "coincident_with")
+# Probabilities (crossmatch.associate_matches, Budavari & Szalay 2008 / NWAY):
+#   confidence / target_probability -- posterior that the row is the target's counterpart;
+#   match_probability -- posterior that the row belongs to its group's object;
+#   group_match_probability -- posterior of the group's association as a whole;
+#   p_any -- probability that the target has any counterpart among the rows of its cone.
+_FLOAT_COLUMNS = ("ra", "dec", "separation_arcsec", "confidence", "epoch", "positional_error_arcsec",
+                  "match_probability", "target_probability", "group_match_probability", "p_any",
+                  "target_ra", "target_dec")
+_INT_COLUMNS = ("target_index",)
+_BOOL_COLUMNS = ("contains_target",)
+_COLUMNS = _TEXT_COLUMNS + _FLOAT_COLUMNS + _INT_COLUMNS + _BOOL_COLUMNS
+#: Exported columns, in file order (CSV header, Parquet and FITS schema).
+EXPORT_COLUMNS = _COLUMNS
+
+
+def _float_or_none(value: Any) -> float | None:
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return None
+    return number if math.isfinite(number) else None
 
 
 def _flat(source: dict[str, Any]) -> dict[str, Any]:
-    return {
-        key: json.dumps(source.get(key), default=str)
-        if key in {"physical", "data", "metadata", "provenance", "links"}
-        else str(source[key])
-        if key in {"catalog", "source_id"} and key in source
-        else float(source[key])
-        if source.get(key) is not None and key in _FLOAT_COLUMNS
-        else None
-        for key in _COLUMNS
-    }
+    """One export row: nested fields JSON-encoded, numbers as floats (non-finite -> None)."""
+    row: dict[str, Any] = {}
+    for key in _COLUMNS:
+        value = source.get(key)
+        if key in _JSON_COLUMNS:
+            row[key] = json.dumps(value, default=str)
+        elif key in _FLOAT_COLUMNS:
+            row[key] = _float_or_none(value)
+        elif key in _INT_COLUMNS:
+            row[key] = int(value) if isinstance(value, int) and not isinstance(value, bool) else None
+        elif key in _BOOL_COLUMNS:
+            row[key] = bool(value) if isinstance(value, bool) else None
+        else:
+            row[key] = str(value) if value is not None else None
+    return row
 
 
 class DatasetWriter:
@@ -71,6 +109,8 @@ class DatasetWriter:
             self._schema = pa.schema(
                 [(name, pa.string()) for name in _TEXT_COLUMNS]
                 + [(name, pa.float64()) for name in _FLOAT_COLUMNS]
+                + [(name, pa.int64()) for name in _INT_COLUMNS]
+                + [(name, pa.bool_()) for name in _BOOL_COLUMNS]
             )
             self._parquet_writer = pq.ParquetWriter(self.path, self._schema, compression="zstd")
         elif self.output_format != "fits":
@@ -109,18 +149,33 @@ class DatasetWriter:
             elif self.output_format == "fits" and exc_type is None:
                 from astropy.table import Table
 
-                fits_rows = [
-                    {
-                        key: val if val is not None else float("nan") if key in _FLOAT_COLUMNS else ""
-                        for key, val in row.items()
-                    }
-                    for row in self._buffer
-                ]
-                table = Table(rows=fits_rows) if fits_rows else Table(
-                    names=_COLUMNS,
-                    dtype=["U1"] * len(_TEXT_COLUMNS) + ["f8"] * len(_FLOAT_COLUMNS),
-                )
-                table.write(self.path, format="fits", overwrite=True)
+                # FITS has no nulls for these types: NaN for a missing float, -1 for a missing
+                # target index, False for an unknown contains_target, '' for missing text.
+                def fits_value(key: str, val: Any) -> Any:
+                    if val is not None:
+                        return val
+                    if key in _FLOAT_COLUMNS:
+                        return float("nan")
+                    if key in _INT_COLUMNS:
+                        return -1
+                    if key in _BOOL_COLUMNS:
+                        return False
+                    return ""
+
+                import numpy as np
+
+                kinds = {**dict.fromkeys(_TEXT_COLUMNS, "U"), **dict.fromkeys(_FLOAT_COLUMNS, "f8"),
+                         **dict.fromkeys(_INT_COLUMNS, "i8"), **dict.fromkeys(_BOOL_COLUMNS, "bool")}
+                columns = {}
+                for key in _COLUMNS:
+                    values = [fits_value(key, row[key]) for row in self._buffer]
+                    kind = kinds[key]
+                    if kind == "U":  # at least one character wide (FITS cannot store zero-width strings)
+                        width = max([1, *(len(v) for v in values)])
+                        columns[key] = np.array(values, dtype=f"U{width}")
+                    else:
+                        columns[key] = np.array(values, dtype=kind)
+                Table(columns).write(self.path, format="fits", overwrite=True)
         finally:
             if self._handle:
                 self._handle.close()
@@ -263,19 +318,86 @@ class ObjectStore:
 # ---------------------------------------------------------------------------
 
 
+def crowded_targets(targets: list[dict[str, Any]], *, chunk: int = 20000) -> dict[int, str]:
+    """{target index: crowded stellar system} for the targets inside one, exactly as
+    ``astrometry.crowded_region`` decides it. A vectorised angular-distance screen against every
+    system (with 1" of margin) selects the candidates, which ``crowded_region`` then confirms:
+    100,000 targets take well under a second instead of ~13 s one by one."""
+    import numpy as np
+
+    from astrometry import (
+        CROWDED_GALAXIES,
+        CROWDED_MIN_RADIUS_ARCMIN,
+        CROWDED_RH_FACTOR,
+        CROWDED_STELLAR_SYSTEMS,
+        crowded_region,
+    )
+
+    if not targets:
+        return {}
+    centres = [(ra, dec, max(CROWDED_RH_FACTOR * (rh if rh is not None else CROWDED_MIN_RADIUS_ARCMIN),
+                              CROWDED_MIN_RADIUS_ARCMIN) / 60.0) for _, ra, dec, rh in CROWDED_STELLAR_SYSTEMS]
+    centres += [(ra, dec, radius / 60.0) for _, ra, dec, radius in CROWDED_GALAXIES]
+    region_ra = np.radians([c[0] for c in centres])
+    region_dec = np.radians([c[1] for c in centres])
+    limit = np.radians([c[2] for c in centres]) + np.radians(1.0 / 3600.0)
+    ra = np.radians(np.array([float(t["ra"]) for t in targets]))
+    dec = np.radians(np.array([float(t["dec"]) for t in targets]))
+    found: dict[int, str] = {}
+    for start in range(0, len(targets), chunk):
+        r, d = ra[start:start + chunk, None], dec[start:start + chunk, None]
+        # Haversine distance of every target to every system centre (radians).
+        hav = (np.sin((d - region_dec) / 2.0) ** 2
+               + np.cos(d) * np.cos(region_dec) * np.sin((r - region_ra) / 2.0) ** 2)
+        distance = 2.0 * np.arcsin(np.sqrt(np.clip(hav, 0.0, 1.0)))
+        for offset in np.flatnonzero((distance <= limit).any(axis=1)):
+            index = start + int(offset)
+            region = crowded_region(float(targets[index]["ra"]), float(targets[index]["dec"]))
+            if region is not None:
+                found[index] = region
+    return found
+
+
+def batch_min_targets() -> int:
+    """DATASET_BATCH_MIN_TARGETS (default 50): target lists at least this long are fetched with
+    :mod:`batch`; 0 disables batch mode."""
+    try:
+        return max(0, int(os.getenv("DATASET_BATCH_MIN_TARGETS", "50")))
+    except ValueError:
+        return 50
+
+
 class DatasetEngine:
-    """Processes search targets into filtered, deduplicated datasets with durable metadata."""
+    """Processes search targets into filtered, deduplicated datasets with durable metadata.
+
+    ``registry``: the catalogs datasets may use (default: the service's, else the embedded
+    registry plus the user catalogs of ``registry_path`` / CATALOG_REGISTRY_PATH, merged as
+    ``vizier.load_registry`` does). ``service``: the CrossmatchService per-target searches run
+    on (default: ``main.build_service`` on a client opened per dataset). ``min_batch_targets``:
+    target lists at least this long are fetched with :mod:`batch` (default
+    :func:`batch_min_targets`; 0 disables).
+    """
 
     def __init__(
         self,
         registry_path: str | None = None,
         storage_path: str | None = None,
         service: CrossmatchService | None = None,
+        *,
+        registry: CatalogRegistry | None = None,
+        min_batch_targets: int | None = None,
     ) -> None:
-        self.registry = CatalogRegistry(registry_path)
+        if registry is None and service is not None:
+            registry = service.registry
+        if registry is None:
+            import vizier
+
+            registry = vizier.load_registry(registry_path or Settings().catalog_registry_path or None)
+        self.registry = registry
         self.storage = Path(storage_path or os.getenv("DATASET_STORAGE_PATH") or "datasets").resolve()
         self.storage.mkdir(parents=True, exist_ok=True)
         self.service = service
+        self.min_batch_targets = batch_min_targets() if min_batch_targets is None else max(0, int(min_batch_targets))
         self.metadata = MetadataStore(local_dir=self.storage)
         self.objects = ObjectStore()
 
@@ -295,14 +417,33 @@ class DatasetEngine:
         min_confidence: float = 0.0,
         max_results: int | None = None,
         dataset_id: str | None = None,
+        any_export_path: bool = False,
     ) -> dict[str, Any]:
-        """Execute crossmatches across targets and stream filtered detections into an export file."""
+        """Crossmatch every target and stream the filtered detections into an export file.
+
+        ``export_path`` must lie inside DATASET_STORAGE_PATH (the REST API's rule, so a
+        client cannot write anywhere on the server) unless ``any_export_path`` (the local
+        CLI: any unused path of the user's).
+
+        Each group of a target's crossmatch (one Bayesian object in its cone) contributes its
+        members whose confidence is at least ``min_confidence`` and that pass the query and
+        ``filters``, when at least ``count_threshold`` of them do. A row found for several
+        targets is written once (for the first). Rows carry the target they were found for
+        (``target_index``, ``target_ra``, ``target_dec``) and the association probabilities
+        (``confidence`` = ``target_probability``, ``match_probability``, ``group_id``,
+        ``group_match_probability``, ``contains_target``, ``match_flag``, ``p_any``).
+        """
         if not name.strip() or not profile.strip():
             raise ValueError("name and profile are required")
         if output_format.lower() not in {"json", "csv", "parquet", "fits"}:
             raise ValueError("Unsupported output format")
         if not targets:
             raise ValueError("At least one target with ra and dec is required")
+        limit = Settings().max_radius_arcsec
+        if not math.isfinite(float(radius_arcsec)) or not 0.0 < float(radius_arcsec) <= limit:
+            # Every target's cone goes to every archive of the profile (main.check_search_radius).
+            raise ValueError(f"radius_arcsec must be in (0, {limit:g}] arcsec (API_MAX_RADIUS_ARCSEC), "
+                             f"got {radius_arcsec!r}")
 
         unknown = set(catalogs or ()) - set(self.registry.enabled_catalogs())
         if unknown:
@@ -324,26 +465,39 @@ class DatasetEngine:
         QueryValidator.validate(query, self.registry)
 
         for target in targets:
-            validate_target(target["ra"], target["dec"], epoch=target.get("epoch"))
+            validate_target(target["ra"], target["dec"], epoch=target.get("epoch"),
+                            pm_ra_masyr=target.get("pm_ra_masyr"), pm_dec_masyr=target.get("pm_dec_masyr"))
 
         dataset_id = dataset_id or uuid.uuid4().hex
-        path = Path(export_path).resolve() if export_path else self.storage / f"{dataset_id}.{output_format.lower()}"
-        if not path.is_relative_to(self.storage):
-            raise ValueError("output_path must be within DATASET_STORAGE_PATH")
-        if path.exists() or path.suffix.lower() != f".{output_format.lower()}":
-            raise ValueError("output_path must be unused and match output_format")
+        path = (self.check_export_path(export_path, output_format, any_path=any_export_path) if export_path
+                else self.storage / f"{dataset_id}.{output_format.lower()}")
 
         seen: set[tuple[str, str]] = set()
         catalogs_used: set[str] = set()
         failures: list[dict[str, Any]] = []
+        run_info: dict[str, Any] = {"method": "per-target", "batch": None}
+
+        def export_row(index: int, group: dict[str, Any], source: dict[str, Any]) -> dict[str, Any]:
+            target = targets[index]
+            return {
+                **source,
+                "target_index": index,
+                "target_ra": target.get("ra"),
+                "target_dec": target.get("dec"),
+                "group_id": group.get("group_id"),
+                "group_match_probability": group.get("match_probability"),
+                "contains_target": group.get("contains_target"),
+                "match_flag": group.get("match_flag"),
+                "p_any": group.get("p_any"),
+            }
 
         async def collect(active_service: CrossmatchService, writer: DatasetWriter) -> None:
-            async for result in self._search_targets(active_service, targets, query):
-                failures.extend(result.get("failures", []))
+            async for index, result in self._search_all(active_service, targets, query, run_info):
+                failures.extend({**failure, "target_index": index} for failure in result.get("failures", []))
                 for group in result["crossmatch_groups"]:
                     members = [
                         source for source in group["members"]
-                        if source["confidence"] >= min_confidence
+                        if (source.get("confidence") or 0.0) >= min_confidence
                         and query.apply_filters(source)
                         and (not catalogs or source["catalog"] in catalogs)
                         and all(self._passes_filter(source, k, v) for k, v in (filters or {}).items())
@@ -356,14 +510,15 @@ class DatasetEngine:
                             continue
                         seen.add(key)
                         catalogs_used.add(source["catalog"])
-                        writer.write(source)
+                        writer.write(export_row(index, group, source))
 
         with DatasetWriter(path, output_format) as writer:
             if self.service is None:
-                from providers import provider_map
-                async with httpx.AsyncClient(follow_redirects=True) as client:
-                    svc = CrossmatchService(self.registry, provider_map(client))
-                    await collect(svc, writer)
+                from main import build_service  # lazy: main imports this module
+
+                settings = Settings()
+                async with httpx.AsyncClient(timeout=settings.request_timeout_seconds, follow_redirects=True) as client:
+                    await collect(build_service(settings=settings, client=client, registry=self.registry), writer)
             else:
                 await collect(self.service, writer)
 
@@ -378,8 +533,12 @@ class DatasetEngine:
             "profile": profile,
             "status": "completed",
             "total_sources": writer.count,
+            "targets": len(targets),
             "catalogs_used": sorted(catalogs_used),
             "failures": failures,
+            "method": run_info["method"],
+            "batch": run_info["batch"],
+            "columns": list(EXPORT_COLUMNS) if output_format.lower() != "json" else None,
             "output_format": output_format.lower(),
             "export_path": str(path),
             "created_at": previous["created_at"] if previous else datetime.now(UTC).isoformat(),
@@ -388,6 +547,119 @@ class DatasetEngine:
         }
         self.metadata.put_dataset(metadata)
         return metadata
+
+    async def _search_all(
+        self,
+        service: CrossmatchService,
+        targets: list[dict[str, Any]],
+        query: AdvancedQuery,
+        run_info: dict[str, Any],
+    ) -> AsyncIterator[tuple[int, dict[str, Any]]]:
+        """(target index, record dict) for every target, in target order: from one batch run when
+        the list is long enough (:meth:`_batch_results`), per target otherwise and for every
+        target the batch did not serve completely.
+
+        Targets inside a crowded stellar system (``astrometry.crowded_region``: the Harris
+        globular clusters, the LMC/SMC/M31/M33 cores) are always searched one by one: there a
+        single-object search measures each catalogue's local source density with a wider density
+        probe, which a batch (whose cones are fetched in bulk) cannot run, so the batch would
+        fall back on the density map and overstate the posteriors.
+        """
+        batch_results: dict[int, dict[str, Any]] = {}
+        if self.min_batch_targets and len(targets) >= self.min_batch_targets:
+            crowded = await asyncio.to_thread(crowded_targets, targets)
+            eligible = [i for i in range(len(targets)) if i not in crowded]
+            if len(eligible) >= self.min_batch_targets:
+                batch_results = await self._batch_results(service, targets, eligible, query, run_info)
+            else:
+                run_info["batch"] = {"min_targets": self.min_batch_targets,
+                                     "error": f"only {len(eligible)} targets outside crowded stellar systems"}
+            if crowded:
+                run_info["batch"]["crowded_targets"] = len(crowded)
+                run_info["batch"]["crowded_regions"] = sorted(set(crowded.values()))
+        pending = [i for i in range(len(targets)) if i not in batch_results]
+        if batch_results:
+            run_info["method"] = "batch+per-target" if pending else "batch"
+        # Per-target results arrive in the (ascending) order of ``pending``.
+        singles = self._search_targets(service, [targets[i] for i in pending], query).__aiter__()
+        for index in range(len(targets)):
+            if index in batch_results:
+                yield index, batch_results.pop(index)
+            else:
+                yield index, await singles.__anext__()
+
+    async def _batch_results(
+        self,
+        service: CrossmatchService,
+        targets: list[dict[str, Any]],
+        indices: list[int],
+        query: AdvancedQuery,
+        run_info: dict[str, Any],
+    ) -> dict[int, dict[str, Any]]:
+        """Record-like dicts ({crossmatch_groups, failures}), keyed by target index, of the targets
+        (``indices`` of ``targets``) one batch run served
+        completely (every catalog of the dataset answered for them), from
+        :class:`batch.BatchCrossmatcher` with ``keep_groups``: the rows are fetched by TAP upload,
+        CDS XMatch or paced cones and associated per target by ``CrossmatchService.finalize``,
+        the single-object pipeline. Targets with a failed (target, catalog) query are left out
+        and searched one by one afterwards; a batch that cannot run (a radius beyond the XMatch
+        limit, too many catalogs, too many cone-only targets, an unexpected error) leaves every
+        target to the per-target path, with the reason in the dataset metadata (``batch.error``).
+        """
+        import batch as batch_module
+
+        catalogs = [plan.catalog for plan in QueryBuilder(self.registry).build(query)]
+        info: dict[str, Any] = {"min_targets": self.min_batch_targets, "catalogs": catalogs}
+        run_info["batch"] = info
+        if not catalogs:
+            info["error"] = "no enabled catalog matches the dataset's profile and catalogs"
+            return {}
+        if not 0.0 < float(query.radius_arcsec) <= batch_module.MAX_RADIUS_ARCSEC:
+            info["error"] = (f"radius {query.radius_arcsec:g} arcsec exceeds the batch limit of "
+                             f"{batch_module.MAX_RADIUS_ARCSEC:g} arcsec")
+            return {}
+        items = []
+        for index in indices:
+            target = targets[index]
+            item = {"id": str(index), "ra": target["ra"], "dec": target["dec"]}
+            for key in ("epoch", "pm_ra_masyr", "pm_dec_masyr", "parallax_mas"):
+                if target.get(key) is not None:
+                    item[key] = target[key]
+            items.append(item)
+        providers = getattr(service, "providers", None)
+        providers = providers if isinstance(providers, dict) else {}
+        shared = providers.get("tap")
+        client = next((getattr(p, "client", None) for p in providers.values() if getattr(p, "client", None) is not None),
+                      None)
+        engine = batch_module.BatchCrossmatcher(
+            registry=self.registry,
+            client=client,
+            guards=getattr(shared, "guards", None),
+            cache=getattr(shared, "cache", None),
+            association_config=getattr(service, "association_config", None),
+            keep_groups=True,
+        )
+        try:
+            result = await engine.run(items, catalogs, radius_arcsec=float(query.radius_arcsec))
+        except (AstroSearchError, ValueError) as exc:
+            info["error"] = str(exc)
+            logger.warning("dataset_batch_unavailable", error=str(exc))
+            return {}
+        except Exception as exc:
+            info["error"] = f"{type(exc).__name__}: {exc}"
+            logger.warning("dataset_batch_failed", error=info["error"])
+            return {}
+        failed = sorted(int(target_id) for target_id in result.failures_by_id())
+        info.update({
+            "strategies": {name: run.strategy for name, run in result.runs.items()},
+            "request_count": result.request_count,
+            "wall_time_s": round(result.wall_time_s, 3),
+            "fallback_targets": failed,
+        })
+        skipped = set(failed)
+        # BatchResult.groups is keyed by position in the batch; the batch ids are target indices.
+        return {index: {"crossmatch_groups": result.groups.get(position, []), "failures": []}
+                for position, index in enumerate(indices) if index not in skipped}
 
     @staticmethod
     async def _search_targets(service: CrossmatchService, targets: list[dict[str, Any]], base_query: AdvancedQuery):
@@ -402,8 +674,8 @@ class DatasetEngine:
                 return result.as_dict()
 
         for offset in range(0, len(targets), 10):
-            batch = targets[offset:offset + 10]
-            for res in await asyncio.gather(*(search(t) for t in batch)):
+            chunk = targets[offset:offset + 10]
+            for res in await asyncio.gather(*(search(t) for t in chunk)):
                 yield res
 
     @staticmethod
@@ -430,6 +702,20 @@ class DatasetEngine:
         except (TypeError, ValueError):
             return False
         return str(val) == str(limit)
+
+    def check_export_path(self, export_path: str | os.PathLike[str], output_format: str, *,
+                          any_path: bool = False) -> Path:
+        """The resolved export path, or ValueError: it must be unused, carry the format's
+        extension, and (unless ``any_path``, the local CLI) lie inside DATASET_STORAGE_PATH:
+        a REST client may not write anywhere on the server."""
+        path = Path(export_path).expanduser().resolve()
+        if not any_path and not path.is_relative_to(self.storage):
+            raise ValueError("output_path must be within DATASET_STORAGE_PATH")
+        if path.exists() or path.suffix.lower() != f".{output_format.lower()}":
+            raise ValueError(f"output path must not exist yet and must end in .{output_format.lower()}: {path}")
+        if not path.parent.is_dir():
+            raise ValueError(f"output directory does not exist: {path.parent}")
+        return path
 
     def list_datasets(self) -> list[dict[str, Any]]:
         return self.metadata.list_datasets()
@@ -480,9 +766,10 @@ def enqueue_dataset(payload: dict[str, Any], engine: DatasetEngine | None = None
     return metadata
 
 
-async def process_dataset_async(dataset_id: str, payload: dict[str, Any]) -> None:
-    """Execute dataset generation asynchronously, updating job status."""
-    engine = DatasetEngine()
+async def process_dataset_async(dataset_id: str, payload: dict[str, Any], engine: DatasetEngine | None = None) -> None:
+    """Execute dataset generation asynchronously, updating job status. ``engine``: the API's
+    engine (its service, registry and storage); a worker process builds its own."""
+    engine = engine or DatasetEngine()
     metadata = engine.get_dataset(dataset_id)
     if metadata is None:
         return

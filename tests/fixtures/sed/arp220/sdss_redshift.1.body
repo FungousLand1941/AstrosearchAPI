@@ -1,0 +1,23 @@
+[
+  {
+    "TableName": "Table1",
+    "Rows": [
+      {
+        "objID": "1237665537075511390",
+        "dist_arcsec": 1.65283140259759,
+        "z": 0.016553,
+        "zErr": 0.007071,
+        "photoErrorClass": -5,
+        "nnCount": 99
+      }
+    ]
+  },
+  {
+    "TableName": "SqlQuery",
+    "Rows": [
+      {
+        "query": "SELECT TOP 3 CAST(n.objID AS VARCHAR(24)) AS objID, n.distance*60.0 AS dist_arcsec, pz.z, pz.zErr, pz.photoErrorClass, pz.nnCount FROM dbo.fGetNearbyObjEq(233.738433167, 23.503224556, 0.0333333333) AS n JOIN PhotoPrimary AS p ON p.objID = n.objID JOIN Photoz AS pz ON pz.objID = n.objID ORDER BY n.distance"
+      }
+    ]
+  }
+]

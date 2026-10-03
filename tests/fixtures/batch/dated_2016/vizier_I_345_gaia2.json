@@ -1,0 +1,109 @@
+{
+  "case": "dated_2016",
+  "catalog": "vizier:I/345/gaia2",
+  "radius_arcsec": 3.0,
+  "targets": [
+    {
+      "id": "Barnard",
+      "ra": 269.4485022882884,
+      "dec": 4.739420031920115,
+      "epoch": 2016.0,
+      "pm_ra_masyr": -801.551,
+      "pm_dec_masyr": 10362.394
+    },
+    {
+      "id": "61 Cyg A",
+      "ra": 316.7484840976039,
+      "dec": 38.76385764778657,
+      "epoch": 2016.0,
+      "pm_ra_masyr": 4164.209,
+      "pm_dec_masyr": 3249.614
+    },
+    {
+      "id": "Kapteyn",
+      "ra": 77.95995544143416,
+      "dec": -45.043798156927586,
+      "epoch": 2016.0,
+      "pm_ra_masyr": 6491.223,
+      "pm_dec_masyr": -5708.614
+    },
+    {
+      "id": "Groombridge 1830",
+      "ra": 178.26734536311199,
+      "dec": 37.69282267701485,
+      "epoch": 2016.0,
+      "pm_ra_masyr": 4002.655,
+      "pm_dec_masyr": -5817.8
+    },
+    {
+      "id": "Lacaille 9352",
+      "ra": 346.5039139100236,
+      "dec": -35.84715280575089,
+      "epoch": 2016.0,
+      "pm_ra_masyr": 6765.995,
+      "pm_dec_masyr": 1330.285
+    },
+    {
+      "id": "tau Cet",
+      "ra": 26.00905520690899,
+      "dec": -15.933679909587605,
+      "epoch": 2016.0,
+      "pm_ra_masyr": -1721.728,
+      "pm_dec_masyr": 854.963
+    },
+    {
+      "id": "51 Peg",
+      "ra": 344.36757085363513,
+      "dec": 20.769104348329908,
+      "epoch": 2016.0,
+      "pm_ra_masyr": 207.328,
+      "pm_dec_masyr": 61.164
+    },
+    {
+      "id": "HD 189733",
+      "ra": 300.18212180797303,
+      "dec": 22.709741104292732,
+      "epoch": 2016.0,
+      "pm_ra_masyr": -3.208,
+      "pm_dec_masyr": -250.323
+    },
+    {
+      "id": "HD 80606",
+      "ra": 140.65696231658495,
+      "dec": 50.60377795008684,
+      "epoch": 2016.0,
+      "pm_ra_masyr": 56.022,
+      "pm_dec_masyr": 10.331
+    },
+    {
+      "id": "Polaris",
+      "ra": 37.969951861432506,
+      "dec": 89.26405627672511,
+      "epoch": 2016.0,
+      "pm_ra_masyr": 44.48,
+      "pm_dec_masyr": -11.85
+    }
+  ],
+  "strategy": "xmatch",
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "http://cdsxmatch.u-strasbg.fr/xmatch/api/v1/sync",
+      "request_content_type": "multipart/form-data",
+      "fields": {
+        "request": "xmatch",
+        "distMaxArcsec": "3.000",
+        "RESPONSEFORMAT": "votable",
+        "cat2": "vizier:I/345/gaia2",
+        "colRA1": "t_ra",
+        "colDec1": "t_dec",
+        "selection": "all",
+        "MAXREC": "200000",
+        "cat1": "t_idx,t_ra,t_dec\n0,269.4520767215652,4.693364948302219\n1,316.72475309303775,38.749412520209496\n2,77.91914243303688,-45.0184192728145\n3,178.24485606780257,37.71867742821553\n4,346.4668130102941,-35.85305948104407\n5,26.01701322232137,-15.93747959921714\n6,344.3665853570132,20.768832505519857\n7,300.1821372641456,22.710853650958516\n8,140.65657001401283,50.60373203387257\n9,37.954559569280285,89.26410891683979\n"
+      },
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/x-votable+xml"
+    }
+  ]
+}

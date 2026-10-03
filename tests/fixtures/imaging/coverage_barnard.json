@@ -1,0 +1,14 @@
+{
+  "scenario": "coverage_barnard",
+  "recorded_outcome": "checked=True panels=[('tgss', 'tgss', None), ('nvss', 'nvss', None), ('allwise', 'allwise_w1', None), ('2mass', '2mass_k', None), ('panstarrs', 'panstarrs_g', None), ('rass', 'rass', None)]",
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://alasky.cds.unistra.fr/MocServer/query?RA=269.45207696&DEC=4.69336497&SR=0.0002777777777777778&expr=ID%3DLeiden%2FP%2FTGSSADR%7C%7CID%3DCSIRO%2FP%2FRACS%2Flow%2FI%7C%7CID%3DCDS%2FP%2FNVSS%7C%7CID%3DCDS%2FP%2FPanSTARRS%2FDR1%2Fcolor-z-zg-g%7C%7CID%3DCDS%2FP%2FPanSTARRS%2FDR1%2Fg%7C%7CID%3DCDS%2FP%2FDESI-Legacy-Surveys%2FDR10%2Fcolor%7C%7CID%3DCDS%2FP%2FDESI-Legacy-Surveys%2FDR10%2Fr%7C%7CID%3DCDS%2FP%2FDESI-Legacy-Surveys%2FDR10%2Fg%7C%7CID%3DCDS%2FP%2FDESI-Legacy-Surveys%2FDR10%2Fz%7C%7CID%3DCDS%2FP%2FDESI-Legacy-Surveys%2FDR10%2Fi%7C%7CID%3DCDS%2FP%2FSDSS9%2Fcolor%7C%7CID%3DCDS%2FP%2FSDSS9%2Fr%7C%7CID%3DCDS%2FP%2FGALEXGR6_7%2Fcolor%7C%7CID%3DCDS%2FP%2FGALEXGR6_7%2FNUV%7C%7CID%3DCDS%2FP%2FGALEXGR6_7%2FFUV%7C%7CID%3Derosita%2Fdr1%2Fcount%2F024%7C%7CID%3Dxcatdb%2FP%2FXMM%2FPN%2Fcolor%7C%7CID%3Dxcatdb%2FP%2FXMM%2FPN%2Feb2%7C%7CID%3Dcxc.harvard.edu%2FP%2Fcda%2Fhips%2Fallsky%2Frgb&get=id&fmt=json",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json;charset=ISO-8859-1",
+      "match": []
+    }
+  ]
+}

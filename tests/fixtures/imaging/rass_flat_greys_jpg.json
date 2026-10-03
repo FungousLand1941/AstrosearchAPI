@@ -1,0 +1,22 @@
+{
+  "scenario": "rass_flat_greys_jpg",
+  "recorded_outcome": "32x32 coverage=1.0 blank=None degraded=None science=None",
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://alasky.cds.unistra.fr/hips-image-services/hips2fits?hips=CDS%2FP%2FRASS&width=32&height=32&fov=0.0033333333333333335&projection=TAN&ra=187.0&dec=40.0&format=jpg&cmap=Greys",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "image/jpeg",
+      "match": []
+    },
+    {
+      "method": "GET",
+      "url": "https://alasky.cds.unistra.fr/hips-image-services/hips2fits?hips=CDS%2FP%2FRASS&width=32&height=32&fov=0.0033333333333333335&projection=TAN&ra=187.0&dec=40.0&format=png&cmap=Greys",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "image/png",
+      "match": []
+    }
+  ]
+}

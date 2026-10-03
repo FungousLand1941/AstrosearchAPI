@@ -1,5 +1,28 @@
 # AstroSearch
 
+AstroSearch crossmatches a sky position or object name against public astronomical archives
+(Gaia DR3, SIMBAD, NED, 2MASS, AllWISE, Pan-STARRS, SDSS, FIRST, NVSS, VLASS, LoTSS, ROSAT,
+Chandra, XMM-Newton, the NASA Exoplanet Archive, and any VizieR table you register), and gives
+every catalogue row a Bayesian probability of being the target's counterpart. Around that engine
+it provides:
+
+- a REST API (FastAPI) with a single-page web UI at `/`;
+- server-sent-event streaming of results as each archive answers;
+- batch crossmatching of up to 100,000 targets through TAP uploads and CDS XMatch;
+- a local HATS/Parquet sky cache that answers mirrored regions without the network;
+- VizieR discovery and one-call registration of any VizieR table as a new catalogue;
+- SEDs with object classification and redshift, multi-survey light curves with variability and
+  period analysis, solar-system object checks, and multi-survey image cutouts;
+- IVOA services (Simple Cone Search, TAP/ADQL with UWS async jobs, VOSI) for TOPCAT, Aladin,
+  pyvo and astroquery;
+- live transient-alert ingestion (ALeRCE, Fink) with automatic crossmatch enrichment;
+- reproducibility manifests, replay diffs and verified citations;
+- natural-language queries and cited object explanations with Claude;
+- dataset generation (JSON, CSV, Parquet, FITS) with the match probabilities in every row.
+
+The full reference (architecture, every endpoint, every CLI command, configuration, the science
+methods with citations, testing) is in [DOCUMENTATION.md](DOCUMENTATION.md).
+
 ## Astronomical Summarizer and MIT CSAIL Mantis
 
 Object and extrasolar-system summaries, complete Exoplanet Archive ingestion, SIMBAD host identity cross-references, typed Mantis map exports, and recurring refresh support are documented in [ASTRONOMY.md](ASTRONOMY.md).
@@ -18,189 +41,121 @@ python -m signal_pipeline telescope-delivery.jsonl --references known-signal-ref
 
 Mantis publication requires a valid local `mantis setup` connection. The summary and data pipeline work independently of Mantis authentication.
 
-**AstroSearch** is a high-performance Python backend system for cross-matching sky coordinates and astronomical object identities across major public astronomical survey archives (Gaia, SIMBAD, NED, 2MASS, AllWISE, Pan-STARRS, SDSS, FIRST, NVSS, Chandra, XMM, etc.), applying astrophysical filters, and generating streaming datasets in JSON, CSV, Parquet, and FITS formats.
+## Installation
 
-The backend has six core modules plus dedicated astronomy summary and catalog pipeline modules.
-
----
-
-## 🏛️ Architecture
-
-```
-AstroSearch/
-├── models.py         # 1. Models, Astrometry, Parsers & Embedded 19-Catalog Registry
-├── providers.py      # 2. Archive Adapters (TAP, Gator, MAST, SDSS, HEASARC), Sesame & Caching
-├── crossmatch.py     # 3. Query DSL, Proper-Motion Propagation, DSU Grouping & Matching Engine
-├── datasets.py       # 4. Streaming Dataset Exports (JSON/CSV/Parquet/FITS), Storage & Jobs
-├── api.py            # 5. Production FastAPI REST Service (Auth, Quotas, Metrics, 15 Endpoints)
-├── main.py           # 6. Master Programmatic Facade, Unified CLI & Built-in Verification
-├── astronomy.py      # Evidence-based summaries, Exoplanet Archive and SIMBAD identity matching
-├── astronomy_pipeline.py # Atomic snapshots, Mantis exports, publication and refresh CLI
-├── representations.py # Light-curve/spectrum vectors and evidence-bounded novelty triage
-├── signal_pipeline.py # Immutable telescope deliveries and Mantis signal exports
-└── tess_adapter.py    # TESS SPOC FITS to canonical signal observations
-```
-
-1. **[models.py](models.py)**: Dataclasses (`Target`, `CatalogSource`, `UnifiedRecord`), Astropy spherical coordinate normalization, field normalizers mapping 30+ column aliases, multi-format response parsers (VOTable, IPAC ASCII, CSV, JSON), runtime settings, and the complete embedded 19-catalog registry.
-2. **[providers.py](providers.py)**: Async HTTP archive adapters for TAP/ADQL, IRSA Gator, MAST, SDSS, and HEASARC Xamin, CDS Sesame name resolver, `EndpointGuard` rate limiter & circuit breaker, and hybrid in-memory / Redis `CacheManager`.
-3. **[crossmatch.py](crossmatch.py)**: `AdvancedQuery` specification, `QueryValidator`, `QueryBuilder`, Astropy proper-motion epoch propagation, probabilistic Gaussian match scoring, adaptive radius density scaling, multi-wavelength Disjoint-Set Union (DSU) counterpart clustering, and `CrossmatchService`.
-4. **[datasets.py](datasets.py)**: High-throughput streaming `DatasetWriter` (`json`, `csv`, `parquet`, `fits`), `DatasetEngine` (multi-target execution, deduplication, detection thresholds), `MetadataStore` (SQLite/PostgreSQL), `ObjectStore` (S3/MinIO), and asynchronous worker jobs.
-5. **[api.py](api.py)**: Full FastAPI REST API with Pydantic request/response schemas, API key and JWT bearer authentication, sliding-window `RequestQuota`, Prometheus metrics (`/api/v1/monitoring/metrics`), structured JSON logging, and 15+ REST endpoints.
-6. **[main.py](main.py)**: High-level Python facade (`crossmatch`, `search_object`, `build_service`), comprehensive unified CLI (`serve`, `search`, `dataset`, `catalogs`, `benchmark`, `verify`), and a built-in offline test suite.
-
----
-
-## 🚀 Installation
-
-Requires **Python 3.12+**.
+Python 3.12 or later.
 
 ```bash
-# Clone and enter workspace
-git clone --branch codex/astronomy-mantis https://github.com/FungousLand1941/AstrosearchAPI.git
-cd AstrosearchAPI
-
-# Create virtual environment
+git clone <this repository> AstroSearch && cd AstroSearch
 python -m venv .venv
-source .venv/bin/activate       # Windows: .venv\Scripts\Activate.ps1
-
-# Install dependencies
-pip install -r requirements.txt  # Or: pip install .
+.venv/Scripts/activate            # Linux/macOS: source .venv/bin/activate
+pip install -e ".[dev]"           # runtime + test dependencies
+# optional extras: ".[plot]" (SED plots), ".[skycache-hats]" (remote HATS catalogs via lsdb),
+#                  ".[storage]" (PostgreSQL, S3), ".[worker]" (Redis RQ dataset workers)
 ```
 
-### Key Dependencies
-- `astropy>=6.0.0` (Coordinate frames, astrometric transformations, IPAC tables, FITS)
-- `fastapi>=0.110.0` & `uvicorn>=0.29.0` (REST API service)
-- `pydantic>=2.7.0` (Data validation and schema contracts)
-- `httpx>=0.27.0` (Async HTTP archive client)
-- `pyarrow>=15.0.0` (Streaming Parquet export with zstd compression)
-- `structlog` & `prometheus-client` (Structured observability and metrics)
-- Optional: `redis`, `rq`, `psycopg`, `boto3` (Distributed workers, PostgreSQL, and S3 storage)
+This installs the `astrosearch` command. The web UI lives in `web/`; an editable install or a
+checkout serves it directly, a wheel installs it under `share/astrosearch/web` of its install
+scheme (a virtual environment, `--user` or `--prefix`), and `ASTROSEARCH_WEB_DIR` points the
+server at another copy.
 
----
+**Install AstroSearch in its own virtual environment.** Its modules are installed as top-level
+modules with generic names (`api`, `main`, `cli`, `models`, `datasets`, `batch`, `ai`, ...), so
+next to another distribution with the same module name (for example Hugging Face `datasets`) one
+of the two is shadowed and the CLI and API fail to start (`ImportError: cannot import name
+'MetadataStore' from 'datasets'`). A script named `main.py` or `api.py` in the working directory
+shadows them too; `astrosearch verify` names every shadowed module and the file it resolves to.
+Moving the modules into an `astrosearch` package is planned (DOCUMENTATION.md, section 10).
 
-## 💻 Python Library Quickstart
+The dependency floors are the lowest versions that install on Python 3.12 and pass the suite:
+astropy 8 (the first release whose fast Lomb-Scargle gives the same powers on sub-grids of a
+frequency grid, which the chunked period search relies on) and therefore numpy 2. Check them with
+`uv pip install --resolution lowest-direct -e ".[dev]"` in a fresh environment.
 
-### 1. Crossmatch by Coordinates
+Check the installation (offline, no network):
+
+```bash
+astrosearch verify
+```
+
+## Quick start
+
+Run the API and the web UI:
+
+```bash
+astrosearch serve --host 127.0.0.1 --port 8000
+# UI:  http://127.0.0.1:8000/          API docs: http://127.0.0.1:8000/api/docs
+```
+
+Search from the command line:
+
+```bash
+astrosearch search --name "3C 273" --radius 10
+astrosearch search --ra 187.2779154 --dec 2.0523883 --radius 10 --catalogs gaia_dr3,simbad,nvss --format json
+astrosearch stream --name "Barnard's star" --radius 5            # one JSON line per event
+astrosearch batch --targets targets.csv --catalogs gaia_dr3,simbad --radius 3 --out matches.parquet
+astrosearch sed --name "3C 273"
+astrosearch lightcurve --name "RR Lyr" --surveys ztf,gaia
+astrosearch cutout --name M87 --survey dss2 --fov 5 --out m87.png
+astrosearch vizier search "Swift 2SXPS"
+astrosearch vizier add IX/58/2sxps --name swift_2sxps
+astrosearch mirror --catalog gaia_dr3 --ra 187.2779 --dec 2.0524 --radius-deg 0.2
+astrosearch alerts poll --broker alerce --limit 20
+```
+
+`astrosearch --help` lists every command; `astrosearch <command> --help` documents each one.
+Searches are limited to a cone of `API_MAX_RADIUS_ARCSEC` (default 1800" = 30'; `GET
+/api/v1/limits` reports it) and take an object name or coordinates, never both (HTTP 422, CLI
+exit 2; `search` exits 2 for any invalid input and 1 for an upstream failure); `dataset
+--catalogs` must belong to `--profile`, and its `--output` may be any unused path (over REST,
+`output_path` must stay inside `DATASET_STORAGE_PATH`). VizieR-hosted catalogs (`vlass`, `lotss`,
+tables added with `vizier add`) are batch-matched through CDS XMatch by default, and a registered
+table is cited with its own paper.
+
+Search over HTTP:
+
+```bash
+curl -s -X POST http://127.0.0.1:8000/api/v1/search \
+     -H 'content-type: application/json' \
+     -d '{"name": "3C 273", "radius_arcsec": 10, "catalogs": ["gaia_dr3", "simbad", "nvss"]}'
+curl -N "http://127.0.0.1:8000/api/v1/search/stream?name=3C%20273&radius_arcsec=10"
+```
+
+When the name resolver (CDS Sesame) is down, both answer 503 with `Retry-After: 30` (502 for an
+unusable resolver answer, 404 for an unknown name).
+
+From Python:
+
 ```python
 import asyncio
-from main import crossmatch
+from main import crossmatch, search_object
 
-async def main():
-    # Crossmatch near Virgo A (M87) with a 5.0 arcsecond radius
-    result = await crossmatch(187.705930, 12.391123, radius_arcsec=5.0)
-    print(f"Catalogs queried: {result.catalogs_queried}")
-    print(f"Physical objects clustered: {len(result.crossmatch_groups)}")
-    for wavelength, sources in result.counterparts.items():
-        print(f"  [{wavelength.upper()}] {len(sources)} detection(s)")
-
-asyncio.run(main())
+record = asyncio.run(search_object("3C 273", radius_arcsec=10.0))
+target = next(g for g in record.crossmatch_groups if g["contains_target"])
+for member in target["members"]:
+    print(member["catalog"], member["source_id"], member["target_probability"])
 ```
 
-### 2. Crossmatch by Astronomical Object Name (CDS Sesame)
-```python
-import asyncio
-from main import search_object
+Each match's `confidence` is the posterior probability that the row is the target's
+counterpart (Budavari & Szalay 2008; Salvato et al. 2018); `crossmatch_groups` are the most
+probable partition of all rows in the cone into physical objects, the target's group first.
 
-async def main():
-    # Resolves object name to canonical coordinates, then crossmatches
-    result = await search_object("M87", radius_arcsec=5.0, profile="optical")
-    print("Resolved Name:", result.resolved_object["canonical_name"])
-    print("Coordinates:", result.target["ra"], result.target["dec"])
-    print("Matches:", len(result.provenance["matches"]))
+## Testing
 
-asyncio.run(main())
-```
-
-### 3. Advanced Query with Physical and Spatial Filters
-```python
-import asyncio
-from crossmatch import AdvancedQuery, CrossmatchService
-from main import build_service
-
-async def main():
-    service = build_service()
-    query = AdvancedQuery.from_dict({
-        "ra": 187.705930,
-        "dec": 12.391123,
-        "radius_arcsec": 15.0,
-        "object_types": ["galaxy", "quasar"],
-        "min_confidence": 0.8,
-        "search_mode": "cone",
-        "proper_motion": True,
-        "adaptive_radius": True,
-    })
-    result = await service.crossmatch(187.705930, 12.391123, query=query)
-    print("Effective Radius:", result.provenance["effective_radius_arcsec"])
-
-asyncio.run(main())
-```
-
----
-
-## 🛠️ Command-Line Interface (CLI)
-
-`main.py` provides a unified operational command-line interface:
-
-### Start the REST API Server
 ```bash
-python main.py serve --host 127.0.0.1 --port 8000
-```
-API Documentation will be live at `http://127.0.0.1:8000/api/docs`.
-
-### Search by Sky Position
-```bash
-python main.py search --ra 187.27792 --dec 2.05239 --radius 3.0 --profile optical
+python -m pytest -q                 # offline suite: replays recorded archive answers (no network)
+python -m pytest -q -m live         # live suite: the same code against the real archives
+python -m pytest -q tests/test_integration_e2e.py   # the real server under uvicorn, every route
 ```
 
-### Search by Object Name
-```bash
-python main.py search --name "M87" --radius 5.0 --format json
-```
+Set `OPENBLAS_NUM_THREADS=1` on small machines. Live tests skip only when an archive or the
+name resolver is unreachable (network error, timeout, HTTP 5xx or 429; `tests/live_policy.py`);
+a parse error, a non-network catalog failure or an HTTP 500 from the API fails them. The Claude
+tests (`tests/test_ai_live.py`, `tests/test_ai_round3_live.py`) need `ANTHROPIC_API_KEY` (or
+`ANTHROPIC_AUTH_TOKEN`) and are skipped without it; so far the Claude features have been
+verified offline only, against a mocked SDK. Recording new fixtures is described in
+[DOCUMENTATION.md](DOCUMENTATION.md#11-testing).
 
-### Inspect Available Catalogs
-```bash
-python main.py catalogs
-python main.py catalogs --name gaia_dr3
-```
+## License
 
-### Export Benchmark
-```bash
-python main.py benchmark --rows 50000 --format parquet
-```
-
-### Run Built-in Offline Verification Suite
-```bash
-python main.py verify
-```
-
----
-
-## 🌐 HTTP REST API
-
-The FastAPI service in `api.py` exposes the full REST API:
-
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/api/v1/health` | Service health status and timestamp |
-| `GET` | `/api/v1/catalogs` | List all 19 configured astronomical catalogs |
-| `GET` | `/api/v1/catalogs/{name}` | Retrieve catalog parameters and table info |
-| `POST` | `/api/v1/search` | Single coordinate or object name crossmatch |
-| `POST` | `/api/v1/search/batch` | Concurrency-limited batch crossmatch |
-| `POST` | `/api/v1/datasets/create` | Submit asynchronous dataset creation (HTTP 202) |
-| `GET` | `/api/v1/datasets` | List all created datasets |
-| `GET` | `/api/v1/datasets/{id}` | Inspect dataset generation status & metadata |
-| `GET` | `/api/v1/datasets/{id}/export` | Download dataset (JSON, CSV, Parquet, FITS) |
-| `DELETE` | `/api/v1/datasets/{id}` | Delete dataset and local/S3 artifacts |
-| `GET` | `/api/v1/queries` | List saved queries |
-| `POST` | `/api/v1/queries` | Save query definition |
-| `DELETE` | `/api/v1/queries/{id}` | Delete saved query |
-| `GET` | `/api/v1/stats` | System metrics (datasets, exported sources) |
-| `GET` | `/api/v1/monitoring` | Provider circuit breaker states |
-| `GET` | `/api/v1/monitoring/metrics` | Prometheus scrape endpoint |
-
-For detailed API payload specifications, see [DOCUMENTATION.md](DOCUMENTATION.md).
-
----
-
-## 📄 License
 MIT License.

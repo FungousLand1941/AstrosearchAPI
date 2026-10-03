@@ -1,0 +1,45 @@
+{
+  "case": "wasp12_tess",
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://cds.unistra.fr/cgi-bin/nph-sesame/-oxp/SNV?WASP-12",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "text/plain",
+      "location": ""
+    },
+    {
+      "method": "POST",
+      "url": "https://mast.stsci.edu/api/v0/invoke",
+      "request_body": "request=%7B%22service%22%3A+%22Mast.Caom.Filtered.Position%22%2C+%22format%22%3A+%22json%22%2C+%22params%22%3A+%7B%22columns%22%3A+%22obsid%2Cobs_id%2Ctarget_name%2Csequence_number%2Ct_exptime%2Cs_ra%2Cs_dec%22%2C+%22filters%22%3A+%5B%7B%22paramName%22%3A+%22obs_collection%22%2C+%22values%22%3A+%5B%22TESS%22%5D%7D%2C+%7B%22paramName%22%3A+%22dataproduct_type%22%2C+%22values%22%3A+%5B%22timeseries%22%5D%7D%2C+%7B%22paramName%22%3A+%22provenance_name%22%2C+%22values%22%3A+%5B%22SPOC%22%5D%7D%5D%2C+%22position%22%3A+%2297.6366525%2C+29.6722954%2C+0.00083333%22%7D%7D",
+      "status_code": 200,
+      "content_type": "application/json; charset=utf-8",
+      "location": ""
+    },
+    {
+      "method": "POST",
+      "url": "https://mast.stsci.edu/api/v0/invoke",
+      "request_body": "request=%7B%22service%22%3A+%22Mast.Caom.Products%22%2C+%22format%22%3A+%22json%22%2C+%22params%22%3A+%7B%22obsid%22%3A+%22198791900%22%7D%7D",
+      "status_code": 200,
+      "content_type": "application/json; charset=utf-8",
+      "location": ""
+    },
+    {
+      "method": "GET",
+      "url": "https://mast.stsci.edu/api/v0.1/Download/file?uri=mast%3ATESS%2Fproduct%2Ftess2023315124025-s0072-0000000086396382-0267-s_lc.fits",
+      "request_body": "",
+      "status_code": 302,
+      "content_type": "",
+      "location": "https://stpubdata.s3.us-east-1.amazonaws.com/tess/public/tid/s0072/0000/0000/8639/6382/tess2023315124025-s0072-0000000086396382-0267-s_lc.fits"
+    },
+    {
+      "method": "GET",
+      "url": "https://stpubdata.s3.us-east-1.amazonaws.com/tess/public/tid/s0072/0000/0000/8639/6382/tess2023315124025-s0072-0000000086396382-0267-s_lc.fits",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/fits",
+      "location": ""
+    }
+  ]
+}

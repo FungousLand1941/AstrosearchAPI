@@ -1,0 +1,67 @@
+{
+  "case": "hd209458_offsets",
+  "catalog": "simbad",
+  "radius_arcsec": 3.0,
+  "targets": [
+    {
+      "id": "HD209458+0.5@0",
+      "ra": 330.79502,
+      "dec": 18.884458888888886
+    },
+    {
+      "id": "HD209458+0.5@45",
+      "ra": 330.7951237962134,
+      "dec": 18.884418209275164
+    },
+    {
+      "id": "HD209458+0.5@90",
+      "ra": 330.7951667900127,
+      "dec": 18.88432
+    },
+    {
+      "id": "HD209458+0.5@135",
+      "ra": 330.7951237962134,
+      "dec": 18.884221790724833
+    },
+    {
+      "id": "HD209458+0.5@180",
+      "ra": 330.79502,
+      "dec": 18.88418111111111
+    },
+    {
+      "id": "HD209458+0.5@225",
+      "ra": 330.79491620378667,
+      "dec": 18.884221790724833
+    },
+    {
+      "id": "HD209458+0.5@270",
+      "ra": 330.7948732099874,
+      "dec": 18.88432
+    },
+    {
+      "id": "HD209458+0.5@315",
+      "ra": 330.79491620378667,
+      "dec": 18.884418209275164
+    }
+  ],
+  "strategy": "upload",
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://simbad.cds.unistra.fr/simbad/sim-tap/sync",
+      "request_content_type": "multipart/form-data",
+      "fields": {
+        "REQUEST": "doQuery",
+        "LANG": "ADQL",
+        "QUERY": "SELECT tu.t_idx, b.main_id, b.ra, b.dec, b.coo_err_maj, b.coo_err_min, b.coo_err_angle, b.coo_qual, b.coo_wavelength, b.coo_bibcode, b.otype, b.sp_type, b.rvz_redshift, b.plx_value, b.pmra, b.pmdec, f.V, f.G, f.K FROM basic AS b LEFT OUTER JOIN allfluxes AS f ON f.oidref = b.oid, TAP_UPLOAD.targets AS tu WHERE 1 = CONTAINS(POINT('ICRS', b.ra, b.dec), CIRCLE('ICRS', tu.t_ra, tu.t_dec, tu.t_rad))",
+        "UPLOAD": "targets,param:targets",
+        "MAXREC": "200000",
+        "FORMAT": "json",
+        "targets": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<VOTABLE version=\"1.3\" xmlns=\"http://www.ivoa.net/xml/VOTable/v1.3\">\n<RESOURCE type=\"results\"><TABLE name=\"targets\">\n<FIELD name=\"t_idx\" datatype=\"int\"/>\n<FIELD name=\"t_ra\" datatype=\"double\" unit=\"deg\"/>\n<FIELD name=\"t_dec\" datatype=\"double\" unit=\"deg\"/>\n<FIELD name=\"t_rad\" datatype=\"double\" unit=\"deg\"/>\n<DATA><TABLEDATA>\n<TR><TD>0</TD><TD>330.79502</TD><TD>18.884458888888886</TD><TD>0.0008333333333333334</TD></TR>\n<TR><TD>1</TD><TD>330.7951237962134</TD><TD>18.884418209275164</TD><TD>0.0008333333333333334</TD></TR>\n<TR><TD>2</TD><TD>330.7951667900127</TD><TD>18.88432</TD><TD>0.0008333333333333334</TD></TR>\n<TR><TD>3</TD><TD>330.7951237962134</TD><TD>18.884221790724833</TD><TD>0.0008333333333333334</TD></TR>\n<TR><TD>4</TD><TD>330.79502</TD><TD>18.88418111111111</TD><TD>0.0008333333333333334</TD></TR>\n<TR><TD>5</TD><TD>330.79491620378667</TD><TD>18.884221790724833</TD><TD>0.0008333333333333334</TD></TR>\n<TR><TD>6</TD><TD>330.7948732099874</TD><TD>18.88432</TD><TD>0.0008333333333333334</TD></TR>\n<TR><TD>7</TD><TD>330.79491620378667</TD><TD>18.884418209275164</TD><TD>0.0008333333333333334</TD></TR>\n</TABLEDATA></DATA></TABLE></RESOURCE></VOTABLE>\n"
+      },
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8"
+    }
+  ]
+}

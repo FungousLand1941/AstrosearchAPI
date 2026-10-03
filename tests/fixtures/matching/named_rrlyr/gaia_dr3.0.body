@@ -1,0 +1,25 @@
+{"metadata":
+[
+{"name": "source_id", "datatype": "long", "xtype": null, "arraysize": null, "description": "Unique source identifier (unique within a particular Data Release)", "unit": null, "ucd": "meta.id", "utype": null},
+{"name": "ra", "datatype": "double", "xtype": null, "arraysize": null, "description": "Right ascension", "unit": "deg", "ucd": "pos.eq.ra;meta.main", "utype": "stc:AstroCoords.Position3D.Value3.C1"},
+{"name": "dec", "datatype": "double", "xtype": null, "arraysize": null, "description": "Declination", "unit": "deg", "ucd": "pos.eq.dec;meta.main", "utype": "stc:AstroCoords.Position3D.Value3.C2"},
+{"name": "ra_error", "datatype": "float", "xtype": null, "arraysize": null, "description": "Standard error of right ascension", "unit": "mas", "ucd": "stat.error;pos.eq.ra", "utype": "stc:AstroCoords.Position3D.Error3.C1"},
+{"name": "dec_error", "datatype": "float", "xtype": null, "arraysize": null, "description": "Standard error of declination", "unit": "mas", "ucd": "stat.error;pos.eq.dec", "utype": "stc:AstroCoords.Position3D.Error3.C2"},
+{"name": "ra_dec_corr", "datatype": "float", "xtype": null, "arraysize": null, "description": "Correlation between right ascension and declination", "unit": null, "ucd": "stat.correlation", "utype": null},
+{"name": "ref_epoch", "datatype": "double", "xtype": null, "arraysize": null, "description": "Reference epoch", "unit": "yr", "ucd": "meta.ref;time.epoch", "utype": "stc:AstroCoords.Time.TimeInstant"},
+{"name": "parallax", "datatype": "double", "xtype": null, "arraysize": null, "description": "Parallax", "unit": "mas", "ucd": "pos.parallax.trig", "utype": null},
+{"name": "parallax_error", "datatype": "float", "xtype": null, "arraysize": null, "description": "Standard error of parallax", "unit": "mas", "ucd": "stat.error;pos.parallax.trig", "utype": null},
+{"name": "pmra", "datatype": "double", "xtype": null, "arraysize": null, "description": "Proper motion in right ascension direction", "unit": "mas.yr**-1", "ucd": "pos.pm;pos.eq.ra", "utype": "stc:AstroCoords.Velocity3D.Value3.C1"},
+{"name": "pmdec", "datatype": "double", "xtype": null, "arraysize": null, "description": "Proper motion in declination direction", "unit": "mas.yr**-1", "ucd": "pos.pm;pos.eq.dec", "utype": "stc:AstroCoords.Velocity3D.Value3.C2"},
+{"name": "phot_g_mean_mag", "datatype": "float", "xtype": null, "arraysize": null, "description": "G-band mean magnitude", "unit": "mag", "ucd": "phot.mag;em.opt", "utype": null},
+{"name": "phot_bp_mean_mag", "datatype": "float", "xtype": null, "arraysize": null, "description": "Integrated BP mean magnitude", "unit": "mag", "ucd": "phot.mag;em.opt.B", "utype": null},
+{"name": "phot_rp_mean_mag", "datatype": "float", "xtype": null, "arraysize": null, "description": "Integrated RP mean magnitude", "unit": "mag", "ucd": "phot.mag;em.opt.R", "utype": null},
+{"name": "ruwe", "datatype": "float", "xtype": null, "arraysize": null, "description": "Renormalised unit weight error", "unit": null, "ucd": "stat.error", "utype": null},
+{"name": "astrometric_params_solved", "datatype": "short", "xtype": null, "arraysize": null, "description": "Which parameters have been solved for?", "unit": null, "ucd": "meta.number", "utype": null},
+{"name": "match_dist", "datatype": "double", "xtype": null, "arraysize": null, "description": null, "unit": null, "ucd": null, "utype": null}
+],
+"data":
+[
+[2125982599343482624,291.36564029422567,42.783488792618705,0.022394087,0.024162535,-0.072116815,2016.0,3.984858178256173,0.026521722,-109.59872730873641,-195.85073064533083,7.6188045,7.831135,7.257368,1.0359073,95,7.209576628553649E-4]
+]
+}

@@ -1,0 +1,12 @@
+{
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://skyserver.sdss.org/dr18/SkyServerWS/SearchTools/SqlSearch?cmd=SELECT+TOP+1+nosuchcolumn+FROM+PhotoPrimary&format=json",
+      "request_body": "",
+      "status_code": 500,
+      "content_type": "application/json; charset=utf-8",
+      "match": []
+    }
+  ]
+}

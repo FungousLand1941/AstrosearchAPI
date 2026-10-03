@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>Ton 618</name>
+  <!-- Q8398826 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 73ms [2] -->
+    <oid>1928128</oid>
+    <otype>Bla</otype>
+    <jpos>12:28:24.96 +31:28:37.6</jpos>
+    <jradeg>187.10402489</jradeg>
+    <jdedeg>31.47711916</jdedeg>
+    <refPos>2020yCat.1350....0G</refPos>
+    <errRAmas>0.0333</errRAmas><errDEmas>0.0216</errDEmas>
+    <pm>
+      <v>0.017</v><e>0.054</e><q>A</q><r>2020yCat.1350....0G</r>
+      <pa>7</pa>
+      <pmRA>0.002</pmRA><epmRA>0.038</epmRA>
+      <pmDE>0.017</pmDE><epmDE>0.039</epmDE>
+    </pm>
+    <z><v>2.2</v><q>C</q><r>2017AJ....154..114O</r></z>
+    <MType>?...</MType>
+    <oname>Ton  618</oname>
+    <nrefs>296</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ****Total of 1 crashes -->
+<!-- Configuration tested: /run/sesame.conf -->

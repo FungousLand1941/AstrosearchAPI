@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>M87</name>
+  <!-- Q8483486 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 0ms [0] -->
+    <INFO>from cache</INFO>
+    <oid>1937204</oid>
+    <otype>AGN</otype>
+    <jpos>12:30:49.42 +12:23:28.0</jpos>
+    <jradeg>187.70593077</jradeg>
+    <jdedeg>12.39112325</jdedeg>
+    <refPos>2020A&amp;A...644A.159C</refPos>
+    <errRAmas>0.030800</errRAmas><errDEmas>0.0305</errDEmas>
+    <pm>
+      <v>13.405</v><e>1.502</e><q>A</q><r>2018yCat.1345....0G</r>
+      <pa>323</pa>
+      <pmRA>-8.029</pmRA><epmRA>1.178</epmRA>
+      <pmDE>10.734</pmDE><epmDE>0.932</epmDE>
+    </pm>
+    <z><v>0.00420</v><e>0.00012</e><q>E</q><r>2009ApJS..182..543A</r></z>
+    <MType>E-E/S0</MType>
+    <oname>M  87</oname>
+    <alias>M 87</alias>
+    <alias>1A 1228+12</alias>
+    <alias>2A 1228+125</alias>
+    <alias>3A 1228+125</alias>
+    <alias>ACSVCS 2</alias>
+    <alias>APG 152</alias>
+    <alias>BWE 1228+1240</alias>
+    <alias>3C 274.0</alias>
+    <alias>3C 274</alias>
+    <alias>4C 12.45</alias>
+    <alias>3CR 274</alias>
+    <alias>CTA 54</alias>
+    <alias>Cul 1228+126</alias>
+    <alias>Cul 1228+12</alias>
+    <alias>DA 325</alias>
+    <alias>DB 85</alias>
+    <alias>2E 2744</alias>
+    <alias>2E 1228.2+1240</alias>
+    <alias>1ES 1228+12.6</alias>
+    <alias>2EUVE J1230+12.3</alias>
+    <alias>EUVE J1230+12.3</alias>
+    <alias>EVCC 786</alias>
+    <alias>1FGL J1230.8+1223</alias>
+    <alias>2FGL J1230.8+1224</alias>
+    <alias>3FGL J1230.9+1224</alias>
+    <alias>4FGL J1230.8+1223</alias>
+    <alias>1FHL J1230.8+1224</alias>
+    <alias>2FHL J1230.8+1225</alias>
+    <alias>3FHL J1230.8+1223</alias>
+    <alias>FIRST J123049.3+122323</alias>
+    <alias>FL8Y J1230.8+1223</alias>
+    <alias>GALEX J123049.4+122328</alias>
+    <alias>GB6 J1230+1223</alias>
+    <alias>GB6 B1228+1240</alias>
+    <alias>87GB 122819.0+124029</alias>
+    <alias>GIN 800</alias>
+    <alias>1H 1226+128</alias>
+    <alias>H 1228+127</alias>
+    <alias>H 1227+12</alias>
+    <alias>ICRF J123049.4+122328</alias>
+    <alias>IERS B1228+126</alias>
+    <alias>IGR J12310+1221</alias>
+    <alias>IRAS F12282+1240</alias>
+    <alias>IRAS 12282+1240</alias>
+    <alias>1Jy 1228+12</alias>
+    <alias>1Jy 1228+126</alias>
+    <alias>LEDA 41361</alias>
+    <alias>1M 1228+127</alias>
+    <alias>2MASX J12304942+1223279</alias>
+    <alias>MCG+02-32-105</alias>
+    <alias>Mills 12+1A</alias>
+    <alias>MRC 1228+126</alias>
+    <alias>NAME M 87*</alias>
+    <alias>NAME SMOKING GUN</alias>
+    <alias>NAME Vir A</alias>
+    <alias>NAME Virgo A</alias>
+    <alias>NAME Virgo Galaxy</alias>
+    <alias>NEWPS5 J1230+1223</alias>
+    <alias>NGC 4486</alias>
+    <alias>NGVS J123049.42+122328.0</alias>
+    <alias>NRAO 401</alias>
+    <alias>NRL 8</alias>
+    <alias>NVSS B122817+124004</alias>
+    <alias>NVSS J123049+122323</alias>
+    <alias>NVSS J123049+122321</alias>
+    <alias>PCCS1 857 G283.74+74.48</alias>
+    <alias>PCCS1 545 G283.76+74.47</alias>
+    <alias>PCCS2 143 G283.76+74.50</alias>
+    <alias>PKS J1230+1223</alias>
+    <alias>PKS 1228+12</alias>
+    <alias>PKS 1228+126</alias>
+    <alias>PKS 1228+127</alias>
+    <alias>QSO B1228+126</alias>
+    <alias>RFC J1230+1223</alias>
+    <alias>RGB J1230+123</alias>
+    <alias>RORF 1228+126</alias>
+    <alias>RX J1230.8+1223</alias>
+    <alias>RX J1230.1+1223</alias>
+    <alias>SDSS J123049.41+122328.1</alias>
+    <alias>SDSS J123047.55+122318.0</alias>
+    <alias>SIM 1228+06.0</alias>
+    <alias>TeV J1230+123</alias>
+    <alias>TGSSADR J123049.6+122321</alias>
+    <alias>2U 1228+12</alias>
+    <alias>3U 1228+12</alias>
+    <alias>4U 1228+12</alias>
+    <alias>UGC 7654</alias>
+    <alias>UZC J123049.3+122327</alias>
+    <alias>VCC 1316</alias>
+    <alias>VER J1230+123</alias>
+    <alias>VPC 771</alias>
+    <alias>VSOP J1230+1223</alias>
+    <alias>WMAP J1230+1223</alias>
+    <alias>WMAP 165</alias>
+    <alias>XSS J12309+1223</alias>
+    <alias>X Vir X-1</alias>
+    <alias>X Vir XR-1</alias>
+    <alias>9Y-MST J1230+1221</alias>
+    <alias>Z 70-139</alias>
+    <alias>Z 1228.3+1240</alias>
+    <alias>[BEC2010] HRS 183</alias>
+    <alias>[CAB95] IRAS F12282+1240</alias>
+    <alias>[CHM2007] HDC 720 J123049.42+1223279</alias>
+    <alias>[CHM2007] LDC 904 J123049.42+1223279</alias>
+    <alias>[DC78] UGC 7654</alias>
+    <alias>[DGW65] 57</alias>
+    <alias>[DLB87] V12</alias>
+    <alias>[DML87] 747</alias>
+    <alias>[DSB94] 254</alias>
+    <alias>[FWB89] Galaxy 270</alias>
+    <alias>[GW2008] CoNFIG 139</alias>
+    <alias>[PT56] 24</alias>
+    <alias>[TH2002] 1</alias>
+    <alias>[VDD93] 163</alias>
+    <alias>[VV2000c] J123049.5+122328</alias>
+    <alias>[VV2003c] J123049.5+122328</alias>
+    <alias>[VV2006c] J123049.5+122328</alias>
+    <alias>[VV2010c] J123049.5+122328</alias>
+    <alias>[WCO2009] J123049+122256</alias>
+    <alias>HIDDEN NAME M87*</alias>
+    <alias>Gaia DR2 3907709439453756032</alias>
+    <nrefs>7971</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ====Done (2026-Sep-29,05:01:59z)==== -->

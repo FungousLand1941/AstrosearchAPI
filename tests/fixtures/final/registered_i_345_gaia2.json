@@ -1,0 +1,97 @@
+{
+ "name": "vizier_i_345_gaia2",
+ "entry": {
+  "enabled": true,
+  "provider": "tap",
+  "wavelength": "optical",
+  "endpoint": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+  "table": "\"I/345/gaia2\"",
+  "description": "Gaia DR2 (Gaia Collaboration, 2018): GaiaSource DR2 data (VizieR I/345/gaia2)",
+  "query_method": "ADQL",
+  "units": "degrees",
+  "parameters": {
+   "columns": [
+    "\"source_id\"",
+    "\"ra\"",
+    "\"dec\"",
+    "\"ra_error\"",
+    "\"dec_error\"",
+    "\"pmra\"",
+    "\"pmdec\"",
+    "\"parallax\"",
+    "\"parallax_error\"",
+    "\"pmra_error\"",
+    "\"pmdec_error\"",
+    "\"duplicated_source\"",
+    "\"phot_g_mean_flux\"",
+    "\"phot_g_mean_mag\"",
+    "\"phot_bp_mean_flux\"",
+    "\"phot_bp_mean_mag\"",
+    "\"phot_rp_mean_flux\"",
+    "\"phot_rp_mean_mag\"",
+    "\"bp_rp\"",
+    "\"radial_velocity\"",
+    "\"radial_velocity_error\"",
+    "\"teff_val\"",
+    "\"a_g_val\"",
+    "\"e_bp_min_rp_val\"",
+    "\"radius_val\"",
+    "\"lum_val\""
+   ],
+   "id_field": "\"source_id\"",
+   "ra_field": "\"ra\"",
+   "dec_field": "\"dec\"",
+   "format": "json",
+   "distance": "deg",
+   "field_map": {
+    "pmra": "pmra",
+    "pmdec": "pmdec",
+    "parallax": "parallax"
+   },
+   "citation_references": [
+    {
+     "key": "2018A&A...616A...1G",
+     "entry_type": "article",
+     "authors": [
+      "{Gaia Collaboration}",
+      "Brown, A. G. A.",
+      "Vallenari, A.",
+      "Prusti, T."
+     ],
+     "title": "Gaia Data Release 2. Summary of the contents and survey properties",
+     "year": 2018,
+     "bibcode": "2018A&A...616A...1G",
+     "journal": "Astronomy & Astrophysics",
+     "volume": "616",
+     "pages": "A1",
+     "doi": "10.1051/0004-6361/201833051",
+     "more_authors": true,
+     "verified": true
+    }
+   ]
+  },
+  "profiles": [
+   "full",
+   "vizier",
+   "optical"
+  ],
+  "epoch": 2015.5,
+  "epoch_format": null,
+  "pos_error": {
+   "columns": [
+    "ra_error",
+    "dec_error"
+   ],
+   "units": [
+    "mas",
+    "mas"
+   ],
+   "kind": "sigma"
+  },
+  "citation": "Gaia Collaboration 2018, A&A 616, A1 (2018A&A...616A...1G); VizieR I/345 (I/345/gaia2), DOI 10.26093/cds/vizier.1345",
+  "acknowledgement": "This research has made use of the VizieR catalogue access tool, CDS, Strasbourg, France (DOI 10.26093/cds/vizier). The original description of the VizieR service was published in Ochsenbein, Bauer & Marcout 2000, A&AS 143, 23.",
+  "max_rows": 200,
+  "timeout_seconds": 60.0,
+  "coverage": "1,692,919,135 rows (VizieR I/345/gaia2)"
+ }
+}

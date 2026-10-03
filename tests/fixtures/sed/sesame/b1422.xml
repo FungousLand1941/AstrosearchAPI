@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>QSO B1422+231</name>
+  <!-- Q8483457 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 0ms [0] -->
+    <INFO>from cache</INFO>
+    <oid>2252669</oid>
+    <otype>BLL</otype>
+    <jpos>14:24:38.09 +22:56:00.5</jpos>
+    <jradeg>216.15872417</jradeg>
+    <jdedeg>22.93349639</jdedeg>
+    <refPos>2007ApJ...658..203H</refPos>
+    <errRAmas>0.15</errRAmas><errDEmas>0.15</errDEmas>
+    <z><v>3.62</v><q>C</q><r>2017AJ....154..114O</r></z>
+    <oname>QSO B1422+2309</oname>
+    <alias>QSO B1422+2309</alias>
+    <alias>1AXG J142438+2256</alias>
+    <alias>BWE 1422+2309</alias>
+    <alias>CGRaBS J1424+2256</alias>
+    <alias>CLASS B1422+231</alias>
+    <alias>FIRST J142438.1+225600</alias>
+    <alias>GB6 J1424+2255</alias>
+    <alias>GB6 B1422+2309</alias>
+    <alias>87GB 142219.8+230916</alias>
+    <alias>IERS B1422+231</alias>
+    <alias>JVAS B1422+231</alias>
+    <alias>JVAS J1424+2256</alias>
+    <alias>KODIAQ J142438+225600</alias>
+    <alias>2MASS J14243810+2256004</alias>
+    <alias>MITG J142438+2255</alias>
+    <alias>NVSS J142438+225600</alias>
+    <alias>QSO J1424+2256</alias>
+    <alias>QSO J1424+2255</alias>
+    <alias>QSO B1422+231</alias>
+    <alias>RGB J1424.6+2256</alias>
+    <alias>RGB J1424+229</alias>
+    <alias>RX J1424.6+2255</alias>
+    <alias>1RXS J142440.4+225532</alias>
+    <alias>SDSS J142438.10+225600.7</alias>
+    <alias>SDSS J142438.10+225600.6</alias>
+    <alias>TGSSADR J142438.0+225601</alias>
+    <alias>TIC 418024887</alias>
+    <alias>VIPS J14246+2256</alias>
+    <alias>WB 1422+2309</alias>
+    <alias>WISEA J142438.09+225600.4</alias>
+    <alias>WISE J142438.10+225600.5</alias>
+    <alias>3XMM J142437.8+225601</alias>
+    <alias>[BSF97] J142438.11+225600.7</alias>
+    <alias>[HB93] 1422+231</alias>
+    <alias>[MGL2009] BZQ J1424+2256</alias>
+    <alias>[MML2015] 5BZQ J1424+2256</alias>
+    <alias>[ODS2007] HFP J1424+2256</alias>
+    <alias>[S98b] 1422+231</alias>
+    <alias>[VV2000] J142438.1+225601</alias>
+    <alias>[VV2003] J142438.1+225601</alias>
+    <alias>[VV2006] J142438.1+225601</alias>
+    <alias>[VV2010] J142438.1+225601</alias>
+    <alias>[VV96] J142438.1+225601</alias>
+    <alias>[VV98] J142438.1+225601</alias>
+    <alias>Gaia DR2 1254357435159465088</alias>
+    <nrefs>466</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ====Done (2026-Sep-29,05:01:46z)==== -->

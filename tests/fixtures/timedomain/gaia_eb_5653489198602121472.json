@@ -1,0 +1,21 @@
+{
+  "case": "gaia_eb_5653489198602121472",
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://gea.esac.esa.int/tap-server/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&FORMAT=csv&QUERY=SELECT+TOP+5+source_id%2C+ra%2C+dec%2C+phot_g_mean_mag%2C+has_epoch_photometry%2C+phot_variable_flag%2C+DISTANCE%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+POINT%28%27ICRS%27%2C+130.5256310%2C+-24.4720779%29%29+AS+dist+FROM+gaiadr3.gaia_source+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+130.5256310%2C+-24.4720779%2C+0.00027778%29%29+ORDER+BY+dist+ASC",
+      "status_code": 200,
+      "content_type": "text/csv",
+      "location": ""
+    },
+    {
+      "method": "GET",
+      "url": "https://gea.esac.esa.int/data-server/data?RETRIEVAL_TYPE=EPOCH_PHOTOMETRY&ID=Gaia+DR3+5653489198602121472&DATA_STRUCTURE=INDIVIDUAL&FORMAT=CSV&RELEASE=Gaia+DR3&VALID_DATA=false",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "text/csv",
+      "location": ""
+    }
+  ]
+}

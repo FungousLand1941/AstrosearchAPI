@@ -1,0 +1,869 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.3"
+  xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3">
+ <DESCRIPTION>
+   VizieR Astronomical Server vizier.cds.unistra.fr
+    Date: 2026-09-29T07:48:35 [V7.6]
+   Explanations and Statistics of UCDs:			See LINK below
+   In case of problem, please report to:	cds-question@unistra.fr
+ </DESCRIPTION>
+<!-- VOTable description at http://www.ivoa.net/Documents/latest/VOT.html -->
+<INFO name="service_protocol" value="ASU">  IVOID of the protocol through which the data was retrieved</INFO>
+<INFO name="request_date" value="2026-09-29T07:48:35">  Query execution date</INFO>
+<INFO name="request" value="https://vizier.cds.unistra.fr/viz-bin/votable?-source=J%2FA%2BA%2F682%2FA34%2Ferass1-m&amp;-meta.all=">  Full request URL</INFO>
+<INFO name="contact" value="cds-question@unistra.fr">  Email or URL to contact publisher</INFO>
+<INFO name="server_software" value="VizieR/7.6">  Software version</INFO>
+<INFO name="publisher" value="CDS">  Data centre that produced the VOTable</INFO>
+<INFO name="MaxTuples" value="50000" />
+
+<RESOURCE ID="yCat_36820034_1" name="J/A+A/682/A34/erass1-m" type="meta">
+  <INFO name="nrows" value="930203">Number of rows of the table</INFO>
+  <DESCRIPTION>
+    SRG/eROSITA all-sky survey catalogs (eRASS1) (Merloni+, 2024)
+    All extended X-ray sources and all point-like X-ray sources with detection likelihood &gt;6, detected over a broad 0.2-2.3keV band
+  </DESCRIPTION>
+
+<!-- All extended X-ray sources and all point-like X-ray sources with detection likelihood &gt;6, detected over a broad 0.2-2.3keV band (\originalcolumnnames) -->
+  <PARAM name="-c" datatype="char" arraysize="32*" value="">
+    <DESCRIPTION>Query from a celestial position according to ASU syntax:
+      {RA{+|-}Dec|object_name}[,eq=equinox][,ep=epoch][,rm=[min/]max]
+      (see http://vizier.cds.unistra.fr/doc/asu.html)
+    </DESCRIPTION>
+  </PARAM>
+  <LINK content-role="query" action="votable?-source=J/A+A/682/A34/erass1-m&amp;">
+    Action to Query the current RESOURCE, to be completed by PARAMs and FIELDs contents
+  </LINK>
+
+  <TABLE name="J/A+A/682/A34/erass1-m" nrows="930203">
+    <COOSYS ID="H" system="ICRS"/>
+    <!-- Definitions of GROUPs and FIELDs -->
+
+<!-- +++No column could be found to attach a LINK in table: J/A+A/682/A34/erass1-m -->
+    <FIELD name="recno" ucd="meta.record" display="0" datatype="int" width="8"><!-- ucd="RECORD" -->
+      <DESCRIPTION>Record number assigned by the VizieR team. Should Not be used for identification.</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-5?-info=XML&amp;-out.add=.&amp;-source=J/A+A/682/A34/erass1-m&amp;recno=${recno}"/>
+    </FIELD>
+    <FIELD name="IAUName" ucd="meta.id;meta.main" display="1" datatype="char" arraysize="23"><!-- ucd="ID_MAIN" -->
+      <DESCRIPTION>String containing the official IAU name of the source (IAUNAME) (1eRASS JHHMMSS.s+DDMMSS)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DetUId" ucd="meta.id" display="0" datatype="char" arraysize="32"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>String unique detection ID (DETUID)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="SkyTile" ucd="obs.field" display="0" datatype="int" width="6"><!-- ucd="ID_FIELD" -->
+      <DESCRIPTION>Skytile ID (SKYTILE)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="IdSrc" ucd="meta.id" display="0" datatype="short" width="4"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>Source ID in each sky tile (ID_SRC) (G1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="UId" ucd="meta.id" display="0" datatype="long" width="12"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>Integer unique detection ID (UID) (G2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="UIdHard" ucd="meta.id" display="1" datatype="long" width="13"><!-- ucd="ID_ALTERNATIVE" -->
+      <DESCRIPTION>Hard catalog UID of the source with a strong association, or -UID if the association is weak (UId-1B in erass1-h.dat) (UID_Hard)</DESCRIPTION>
+      <LINK href="http://vizier.cds.unistra.fr/viz-bin/VizieR-4?-info=XML&amp;-out.add=.&amp;-source=J/A+A/682/A34/*h&amp;IAUName=${IAUName}"/>
+    </FIELD>
+    <FIELD name="IdCluster" ucd="meta.id.parent" display="0" datatype="short" width="4"><!-- ucd="ID_PARENT" -->
+      <DESCRIPTION>Group ID of simultaneously fitted sources (ID_CLUSTER)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RA_ICRS" ucd="pos.eq.ra;meta.main" ref="H" display="1" datatype="double" width="15" precision="11" unit="deg"><!-- ucd="POS_EQ_RA_MAIN" -->
+      <DESCRIPTION>Right ascension (ICRS), corrected (RA)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DE_ICRS" ucd="pos.eq.dec;meta.main" ref="H" display="1" datatype="double" width="15" precision="11" unit="deg"><!-- ucd="POS_EQ_DEC_MAIN" -->
+      <DESCRIPTION>Declination (ICRS), corrected (DEC)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RARdeg" ucd="pos.eq.ra" display="0" datatype="double" width="23" precision="19" unit="deg"><!-- ucd="POS_EQ_RA_OTHER" -->
+      <DESCRIPTION>Right ascension (ICRS), uncorrected (RA_RAW)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DERdeg" ucd="pos.eq.dec" display="0" datatype="double" width="22" precision="E15" unit="deg"><!-- ucd="POS_EQ_DEC_OTHER" -->
+      <DESCRIPTION>Declination (ICRS), uncorrected (DEC_RAW)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_RA_ICRS" ucd="stat.error;pos.eq.ra" display="0" datatype="double" width="14" precision="E7" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma lower error on RA (RA_LOWERR)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_RA_ICRS" ucd="stat.error;stat.max" display="0" datatype="double" width="14" precision="9" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma upper error on RA (RA_UPERR)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_DE_ICRS" ucd="stat.error;pos.eq.dec" display="0" datatype="double" width="14" precision="9" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma lower error on DEC (DEC_LOWERR)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_DE_ICRS" ucd="stat.error;stat.max" display="0" datatype="double" width="14" precision="E7" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma upper error on DEC (DEC_UPERR)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="posErr" ucd="stat.error;pos" display="0" datatype="double" width="12" precision="8" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma positional uncertainty (POS_ERR)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="RADEErr" ucd="stat.error;pos" display="0" datatype="double" width="13" precision="9" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Combined positional error, raw output from PSF fitting (RADEC_ERR)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="GLON" ucd="pos.galactic.lon" display="0" datatype="double" width="18" precision="14" unit="deg"><!-- ucd="POS_GAL_LON" -->
+      <DESCRIPTION>Galactic longitude (LII)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="GLAT" ucd="pos.galactic.lat" display="0" datatype="double" width="24" precision="20" unit="deg"><!-- ucd="POS_GAL_LAT" -->
+      <DESCRIPTION>Galactic latitude (BII)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="ELON" ucd="pos.ecliptic.lon" display="0" datatype="double" width="23" precision="19" unit="deg"><!-- ucd="POS_EC_LON" -->
+      <DESCRIPTION>Ecliptic longitude (ELON)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="ELAT" ucd="pos.ecliptic.lat" display="0" datatype="double" width="22" precision="E15" unit="deg"><!-- ucd="POS_EC_LAT" -->
+      <DESCRIPTION>Ecliptic latitude (ELAT)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MJD" ucd="time.epoch" ref="time_0" display="0" datatype="double" width="9" precision="3" unit="d"><!-- ucd="TIME_DATE" -->
+      <DESCRIPTION>Modified Julian Date of the observation of the source nearest to the optical axis of the telescope (MJD)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="b_MJD" ucd="time.epoch" ref="time_4" display="0" datatype="double" width="9" precision="3" unit="d"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Modified Julian Date of the first observation of the source (MJD_MIN)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="B_MJD" ucd="time.epoch" ref="time_0" display="0" datatype="double" width="9" precision="3" unit="d"><!-- ucd="ERROR" -->
+      <DESCRIPTION>Modified Julian Date of the last observation of the source (MJD_MAX)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="EXT" ucd="stat.param" display="0" datatype="double" width="10" precision="7" unit="arcsec"><!-- ucd="EXTENSION_DIAM" -->
+      <DESCRIPTION>Source Extent Parameter (EXT)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="s_EXT" ucd="stat.error" display="0" datatype="double" width="13" precision="9" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma error on EXT (EXT_ERR)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_EXT" ucd="stat.error" display="0" datatype="double" width="15" precision="11" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma lower error on EXT (EXT_LOWERR)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_EXT" ucd="stat.error;stat.max" display="0" datatype="double" width="12" precision="8" unit="arcsec"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma upper error on EXT (EXT_UPERR)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="EXTLike" ucd="stat.likelihood" display="0" datatype="double" width="13" precision="7"><!-- ucd="STAT_LIKELIHOOD" -->
+      <DESCRIPTION>Extent likelihood (EXT_LIKE)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="DetLike0" ucd="stat.likelihood" display="0" datatype="double" width="15" precision="7"><!-- ucd="STAT_LIKELIHOOD" -->
+      <DESCRIPTION>Detection likelihood in 0.2-2.3keV band (DET_LIKE_0)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLcts1" ucd="phot.count;em.X-ray" display="1" datatype="double" width="14" precision="7" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>Source net counts in 0.2-2.3keV band (ML_CTS_1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="s_MLcts1" ucd="stat.error;phot.count;em.X-ray.soft" display="1" datatype="double" width="15" precision="8" unit="ct"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma combined counts error in 0.2-2.3keV band (ML_CTS_ERR_1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_MLcts1" ucd="stat.error" display="1" datatype="double" width="16" precision="9" unit="ct"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma lower counts error in 0.2-2.3keV band (ML_CTS_LOWERR_1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_MLcts1" ucd="stat.error;stat.max" display="1" datatype="double" width="16" precision="9" unit="ct"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma upper counts error in 0.2-2.3keV band (ML_CTS_UPERR_1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="MLRate1" ucd="phot.count;em.X-ray" display="0" datatype="double" width="15" precision="10" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>Source count rate in 0.2-2.3keV band (ML_RATE_1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="s_MLRate1" ucd="arith.rate;phot.count;em.X-ray.soft" display="0" datatype="double" width="16" precision="11" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma combined count rate error in 0.2-2.3keV band (ML_RATE_ERR_1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_MLRate1" ucd="stat.error" display="0" datatype="double" width="14" precision="E7" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma lower count rate error in 0.2-2.3keV band (ML_RATE_LOWERR_1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_MLRate1" ucd="stat.error;stat.max" display="0" datatype="double" width="13" precision="E6" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma upper count rate error in 0.2-2.3keV band (ML_RATE_UPERR_1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="MLFlux1" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>Source flux in 0.2-2.3keV band (ML_FLUX_1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="s_MLFlux1" ucd="stat.error;phot.flux;em.X-ray.soft" display="0" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma combined error on flux in 0.2-2.3keV band (ML_FLUX_ERR_1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_MLFlux1" ucd="stat.error" display="0" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma lower error on flux in 0.2-2.3keV band (ML_FLUX_LOWERR_1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_MLFlux1" ucd="stat.error;stat.max" display="0" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma upper error on flux in 0.2-2.3keV band (ML_FLUX_UPERR_1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="MLBkg1" ucd="instr.background" display="1" datatype="double" width="14" precision="8" unit="arcmin**-2"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>Background at the source position in the 0.2-2.3keV band (ML_BKG_1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLExp1" ucd="time.duration;obs.exposure" display="1" datatype="double" width="13" precision="7" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>Vignetted exposure time at the source position in 0.2-2.3keV band (ML_EXP_1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLEef1" ucd="phys.energy" display="0" datatype="double" width="10" precision="7"><!-- ucd="PHYS_ENERGY_GENERAL" -->
+      <DESCRIPTION>Enclosed energy fraction in 0.2-2.3keV band (ML_EEF_1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEcts1" ucd="phot.count;em.X-ray" display="0" datatype="int" width="6" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>Total counts extracted within the aperture in 0.2-2.3keV band (APE_CTS_1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEBkg1" ucd="instr.background;em.X-ray.soft" display="1" datatype="double" width="14" precision="E7" unit="ct"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>Background counts extracted within the aperture in 0.2-2.3keV band, excluding nearby sources using the source map (APE_BKG_1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEExp1" ucd="time.expo" display="1" datatype="double" width="13" precision="7" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>Exposure map value in 0.2-2.3keV band at the given position (APE_EXP_1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APERad1" ucd="phys.angSize" display="0" datatype="double" width="10" precision="7" unit="pix"><!-- ucd="REDUCT_EXTR-RAD" -->
+      <DESCRIPTION>Extraction radius in pixels (4'') in the 0.2-2.3keV band (APE_RADIUS_1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEPois1" ucd="stat.fit.goodness" display="0" datatype="double" width="15" precision="E8"><!-- ucd="STAT_PROBABILITY" -->
+      <DESCRIPTION>? Poisson probability that the extracted counts (APE_CTS_1) are a background fluctuation (APE_POIS_1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="DetLikeP1" ucd="stat.likelihood" display="0" datatype="double" width="15" precision="E8"><!-- ucd="STAT_LIKELIHOOD" -->
+      <DESCRIPTION>? Detection likelihood in 0.2-0.5keV band (DET_LIKE_P1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="MLctsP1" ucd="phot.count;em.X-ray" display="1" datatype="double" width="14" precision="E7" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>Source net counts in 0.2-0.5keV band (ML_CTS_P1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="s_MLctsP1" ucd="stat.error;phot.count;em.X-ray.soft" display="1" datatype="double" width="13" precision="8" unit="ct"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma combined counts error in 0.2-0.5keV band (ML_CTS_ERR_P1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_MLctsP1" ucd="stat.error" display="1" datatype="double" width="14" precision="E7" unit="ct"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma lower counts error in 0.2-0.5keV band (ML_CTS_LOWERR_P1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_MLctsP1" ucd="stat.error;stat.max" display="1" datatype="double" width="14" precision="8" unit="ct"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma upper counts error in 0.2-0.5keV band (ML_CTS_UPERR_P1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="MLRateP1" ucd="phot.count;em.X-ray" display="0" datatype="double" width="15" precision="E8" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>Source count rate in 0.2-0.5keV band (ML_RATE_P1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="s_MLRateP1" ucd="arith.rate;phot.count;em.X-ray.soft" display="0" datatype="double" width="14" precision="E7" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma combined count rate error in 0.2-0.5keV band (ML_RATE_ERR_P1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_MLRateP1" ucd="stat.error" display="0" datatype="double" width="15" precision="E8" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma lower count rate error in 0.2-0.5keV band (ML_RATE_LOWERR_P1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_MLRateP1" ucd="stat.error;stat.max" display="0" datatype="double" width="14" precision="E7" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma upper count rate error in 0.2-0.5keV band (ML_RATE_UPERR_P1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="MLFluxP1" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>Source flux in 0.2-0.5keV band (ML_FLUX_P1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="s_MLFluxP1" ucd="stat.error;phot.flux;em.X-ray.soft" display="0" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma combined flux error in 0.2-0.5keV band (ML_FLUX_ERR_P1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_MLFluxP1" ucd="stat.error" display="0" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma lower flux error in 0.2-0.5keV band (ML_FLUX_LOWERR_P1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_MLFluxP1" ucd="stat.error;stat.max" display="0" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma upper flux error in 0.2-0.5keV band (ML_FLUX_UPERR_P1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="MLBkgP1" ucd="instr.background" display="1" datatype="double" width="14" precision="9" unit="arcmin**-2"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>Background at the source position in 0.2-0.5keV band (ML_BKG_P1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLExpP1" ucd="time.duration;obs.exposure" display="1" datatype="double" width="13" precision="7" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>Vignetted exposure time at the source position in 0.2-0.5keV band (ML_EXP_P1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLEefP1" ucd="phys.energy" display="0" datatype="double" width="10" precision="7"><!-- ucd="PHYS_ENERGY_GENERAL" -->
+      <DESCRIPTION>Enclosed energy fraction in 0.2-0.5keV band (ML_EEF_P1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEctsP1" ucd="phot.count;em.X-ray" display="0" datatype="int" width="5" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>Total counts extracted within the aperture in 0.2-0.5keV band (APE_CTS_P1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEBkgP1" ucd="instr.background;em.X-ray.soft" display="1" datatype="double" width="14" precision="E7" unit="ct"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>Background counts extracted within the aperture in 0.2-0.5keV band, excluding nearby sources using the source map (APE_BKG_P1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEExpP1" ucd="time.expo" display="1" datatype="double" width="13" precision="7" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>Exposure map value at the given position in the 0.2-0.5keV band (APE_EXP_P1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APERadP1" ucd="phys.angSize" display="0" datatype="double" width="10" precision="7" unit="pix"><!-- ucd="REDUCT_EXTR-RAD" -->
+      <DESCRIPTION>Extraction radius in pixels (4'') in the 0.2-0.5keV band (APE_RADIUS_P1)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEPoisP1" ucd="stat.fit.goodness" display="0" datatype="double" width="15" precision="E8"><!-- ucd="STAT_PROBABILITY" -->
+      <DESCRIPTION>? Poisson probability that the extracted counts (APE_CTS_P1) are a background fluctuation (APE_POIS_P1)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="DetLikeP2" ucd="stat.likelihood" display="0" datatype="double" width="15" precision="E8"><!-- ucd="STAT_LIKELIHOOD" -->
+      <DESCRIPTION>? Detection likelihood in 0.5-1.0keV band (DET_LIKE_P2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="MLctsP2" ucd="phot.count;em.X-ray" display="1" datatype="double" width="17" precision="11" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>Source net counts in 0.5-1.0keV band (ML_CTS_P2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="s_MLctsP2" ucd="stat.error;phot.count;em.X-ray.soft" display="1" datatype="double" width="14" precision="9" unit="ct"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma combined counts error in 0.5-1.0keV band (ML_CTS_ERR_P2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_MLctsP2" ucd="stat.error" display="1" datatype="double" width="16" precision="11" unit="ct"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma lower counts error in 0.5-1.0keV band (ML_CTS_LOWERR_P2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_MLctsP2" ucd="stat.error;stat.max" display="1" datatype="double" width="15" precision="8" unit="ct"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma upper counts error in 0.5-1.0keV band (ML_CTS_UPERR_P2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="MLRateP2" ucd="phot.count;em.X-ray" display="0" datatype="double" width="15" precision="E8" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>Source count rate in 0.5-1.0keV band (ML_RATE_P2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="s_MLRateP2" ucd="arith.rate;phot.count;em.X-ray.soft" display="0" datatype="double" width="14" precision="E7" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma combined count rate error in 0.5-1.0keV band (ML_RATE_ERR_P2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_MLRateP2" ucd="stat.error" display="0" datatype="double" width="15" precision="E8" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma lower count rate error in 0.5-1.0keV band (ML_RATE_LOWERR_P2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_MLRateP2" ucd="stat.error;stat.max" display="0" datatype="double" width="14" precision="E7" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma upper count rate error in 0.5-1.0keV band (ML_RATE_UPERR_P2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="MLFluxP2" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>Source flux in 0.5-1.0keV band (ML_FLUX_P2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="s_MLFluxP2" ucd="stat.error;phot.flux;em.X-ray.soft" display="0" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma combined flux error in 0.5-1.0keV band (ML_FLUX_ERR_P2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_MLFluxP2" ucd="stat.error" display="0" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma lower flux error in 0.5-1.0keV band (ML_FLUX_LOWERR_P2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_MLFluxP2" ucd="stat.error;stat.max" display="0" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma upper flux error in 0.5-1.0keV band (ML_FLUX_UPERR_P2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="MLBkgP2" ucd="instr.background" display="1" datatype="double" width="14" precision="9" unit="arcmin**-2"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>Background at the source position in 0.5-1.0keV band (ML_BKG_P2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLExpP2" ucd="time.duration;obs.exposure" display="1" datatype="double" width="13" precision="7" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>Vignetted exposure time at the source position in 0.5-1.0keV band (ML_EXP_P2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLEefP2" ucd="phys.energy" display="0" datatype="double" width="10" precision="7"><!-- ucd="PHYS_ENERGY_GENERAL" -->
+      <DESCRIPTION>Enclosed energy fraction in 0.5-1.0keV band (ML_EEF_P2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEctsP2" ucd="phot.count;em.X-ray" display="0" datatype="int" width="6" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>Total counts extracted within the aperture in 0.5-1.0keV band (APE_CTS_P2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEBkgP2" ucd="instr.background;em.X-ray.soft" display="1" datatype="double" width="17" precision="11" unit="ct"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>Background counts extracted within the aperture in 0.5-1.0keV band, excluding nearby sources using the source map (APE_BKG_P2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEExpP2" ucd="time.expo" display="1" datatype="double" width="13" precision="7" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>Exposure map value at the given position in the 0.5-1.0keV band (APE_EXP_P2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APERadP2" ucd="phys.angSize" display="0" datatype="double" width="10" precision="7" unit="pix"><!-- ucd="REDUCT_EXTR-RAD" -->
+      <DESCRIPTION>Extraction radius in pixels (4'') in the 0.5-1.0keV band (APE_RADIUS_P2)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEPoisP2" ucd="stat.fit.goodness" display="0" datatype="double" width="15" precision="E8"><!-- ucd="STAT_PROBABILITY" -->
+      <DESCRIPTION>? Poisson probability that the extracted counts (APE_CTS_P2) are a background fluctuation (APE_POIS_P2)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="DetLikeP3" ucd="stat.likelihood" display="0" datatype="double" width="15" precision="E8"><!-- ucd="STAT_LIKELIHOOD" -->
+      <DESCRIPTION>? Detection likelihood in 1.0-2.0keV band (DET_LIKE_P3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="MLctsP3" ucd="phot.count;em.X-ray" display="1" datatype="double" width="13" precision="E6" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>Source net counts in 1.0-2.0keV band (ML_CTS_P3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="s_MLctsP3" ucd="stat.error;phot.count;em.X-ray.soft" display="1" datatype="double" width="14" precision="9" unit="ct"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma combined counts error in 1.0-2.0keV band (ML_CTS_ERR_P3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_MLctsP3" ucd="stat.error" display="1" datatype="double" width="13" precision="E6" unit="ct"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma lower counts error in 1.0-2.0keV band (ML_CTS_LOWERR_P3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="E_MLctsP3" ucd="stat.error;stat.max" display="1" datatype="double" width="15" precision="8" unit="ct"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma upper counts error in 1.0-2.0keV band (ML_CTS_UPERR_P3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="MLRateP3" ucd="phot.count;em.X-ray" display="0" datatype="double" width="14" precision="E7" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>Source count rate in 1.0-2.0keV band (ML_RATE_P3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="s_MLRateP3" ucd="arith.rate;phot.count;em.X-ray.soft" display="0" datatype="double" width="14" precision="E7" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma combined count rate error in 1.0-2.0keV band (ML_RATE_ERR_P3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_MLRateP3" ucd="stat.error" display="0" datatype="double" width="14" precision="E7" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma lower count rate error in 1.0-2.0keV band (ML_RATE_LOWERR_P3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="E_MLRateP3" ucd="stat.error;stat.max" display="0" datatype="double" width="16" precision="11" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma upper count rate error in 1.0-2.0keV band (ML_RATE_UPERR_P3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="MLFluxP3" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>Source flux in 1.0-2.0keV band (ML_FLUX_P3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="s_MLFluxP3" ucd="stat.error;phot.flux;em.X-ray.soft" display="0" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma combined flux error in 1.0-2.0keV band (ML_FLUX_ERR_P3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_MLFluxP3" ucd="stat.error" display="0" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma lower flux error in 1.0-2.0keV band (ML_FLUX_LOWERR_P3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="E_MLFluxP3" ucd="stat.error;stat.max" display="0" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma upper flux error in 1.0-2.0keV band (ML_FLUX_UPERR_P3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="MLBkgP3" ucd="instr.background" display="1" datatype="double" width="15" precision="9" unit="mW.m**-2"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>Background at the source position in 1.0-2.0keV band (ML_BKG_P3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLExpP3" ucd="time.duration;obs.exposure" display="1" datatype="double" width="13" precision="7" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>Vignetted exposure time at the source position in 1.0-2.0keV band (ML_EXP_P3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLEefP3" ucd="phys.energy" display="0" datatype="double" width="10" precision="7"><!-- ucd="PHYS_ENERGY_GENERAL" -->
+      <DESCRIPTION>Enclosed energy fraction in 1.0-2.0keV band (ML_EEF_P3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEctsP3" ucd="phot.count;em.X-ray" display="0" datatype="int" width="6" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>Total counts extracted within the aperture in 1.0-2.0keV band (APE_CTS_P3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEBkgP3" ucd="instr.background;em.X-ray.soft" display="1" datatype="double" width="17" precision="11" unit="ct"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>Background counts extracted within the aperture in 1.0-2.0keV band, excluding nearby sources using the source map (APE_BKG_P3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEExpP3" ucd="time.expo" display="1" datatype="double" width="13" precision="7" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>Exposure map value at the given position in the 1.0-2.0keV band (APE_EXP_P3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APERadP3" ucd="phys.angSize" display="0" datatype="double" width="10" precision="7" unit="pix"><!-- ucd="REDUCT_EXTR-RAD" -->
+      <DESCRIPTION>Extraction radius in pixels (4'') in the 1.0-2.0keV band (APE_RADIUS_P3)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEPoisP3" ucd="stat.fit.goodness" display="0" datatype="double" width="15" precision="E8"><!-- ucd="STAT_PROBABILITY" -->
+      <DESCRIPTION>? Poisson probability that the extracted counts (APE_CTS_P3) are a background fluctuation (APE_POIS_P3)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="DetLikeP4" ucd="stat.likelihood" display="0" datatype="double" width="15" precision="E8"><!-- ucd="STAT_LIKELIHOOD" -->
+      <DESCRIPTION>? Detection likelihood in 2.0-5.0keV band (DET_LIKE_P4)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="MLctsP4" ucd="phot.count;em.X-ray" display="1" datatype="double" width="14" precision="E7" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>Source net counts in 2.0-5.0keV band (ML_CTS_P4)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="s_MLctsP4" ucd="stat.error;phot.count;em.X-ray.medium" display="1" datatype="double" width="14" precision="9" unit="ct"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma combined counts error in 2.0-5.0keV band (ML_CTS_ERR_P4)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_MLctsP4" ucd="stat.error" display="1" datatype="double" width="14" precision="E7" unit="ct"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma lower counts error in 2.0-5.0keV band (ML_CTS_LOWERR_P4)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="E_MLctsP4" ucd="stat.error;stat.max" display="1" datatype="double" width="15" precision="8" unit="ct"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma upper counts error in 2.0-5.0keV band (ML_CTS_UPERR_P4)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="MLRateP4" ucd="phot.count;em.X-ray" display="0" datatype="double" width="15" precision="E8" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>Source count rate in 2.0-5.0keV band (ML_RATE_P4)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="s_MLRateP4" ucd="arith.rate;phot.count;em.X-ray.medium" display="0" datatype="double" width="14" precision="E7" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma combined count rate error in 2.0-5.0keV band (ML_RATE_ERR_P4)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_MLRateP4" ucd="stat.error" display="0" datatype="double" width="15" precision="E8" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma lower count rate error in 2.0-5.0keV band (ML_RATE_LOWERR_P4)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="E_MLRateP4" ucd="stat.error;stat.max" display="0" datatype="double" width="14" precision="E7" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma upper count rate error in 2.0-5.0keV band (ML_RATE_UPERR_P4)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="MLFluxP4" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>Source flux in 2.0-5.0keV band (ML_FLUX_P4)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="s_MLFluxP4" ucd="stat.error;phot.flux;em.X-ray.medium" display="0" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma combined flux error in 2.0-5.0keV band (ML_FLUX_ERR_P4)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_MLFluxP4" ucd="stat.error" display="0" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma lower flux error in 2.0-5.0keV band (ML_FLUX_LOWERR_P4)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="E_MLFluxP4" ucd="stat.error;stat.max" display="0" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma upper flux error in 2.0-5.0keV band (ML_FLUX_UPERR_P4)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="MLBkgP4" ucd="instr.background" display="1" datatype="double" width="13" precision="8" unit="arcmin**-2"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>Background at the source position in 2.0-5.0keV band (ML_BKG_P4)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLExpP4" ucd="time.duration;obs.exposure" display="1" datatype="double" width="13" precision="7" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>Vignetted exposure time at the source position in 2.0-5.0keV band (ML_EXP_P4)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLEefP4" ucd="phys.energy" display="0" datatype="double" width="11" precision="8"><!-- ucd="PHYS_ENERGY_GENERAL" -->
+      <DESCRIPTION>Enclosed energy fraction in 2.0-5.0keV band (ML_EEF_P4)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEctsP4" ucd="phot.count;em.X-ray" display="0" datatype="int" width="5" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>Total counts extracted within the aperture in 2.0-5.0keV band (APE_CTS_P4)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEBkgP4" ucd="instr.background;em.X-ray.medium" display="1" datatype="double" width="17" precision="11" unit="ct"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>Background counts extracted within the aperture in 2.0-5.0keV band, excluding nearby sources using the source map (APE_BKG_P4)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEExpP4" ucd="time.expo" display="1" datatype="double" width="13" precision="7" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>Exposure map value at the given position in the 2.0-5.0keV band (APE_EXP_P4)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APERadP4" ucd="phys.angSize" display="0" datatype="double" width="10" precision="7" unit="pix"><!-- ucd="REDUCT_EXTR-RAD" -->
+      <DESCRIPTION>Extraction radius in pixels (4'') in the 2.0-5.0keV band (APE_RADIUS_P4)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEPoisP4" ucd="stat.fit.goodness" display="0" datatype="double" width="15" precision="E8"><!-- ucd="STAT_PROBABILITY" -->
+      <DESCRIPTION>? Poisson probability that the extracted counts (APE_CTS_P4) are a background fluctuation (APE_POIS_P4)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="DetLikeP5" ucd="stat.likelihood" display="0" datatype="double" width="15" precision="E8"><!-- ucd="STAT_LIKELIHOOD" -->
+      <DESCRIPTION>? Detection likelihood in 5.0-8.0keV band (DET_LIKE_P5)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="MLctsP5" ucd="phot.count;em.X-ray" display="1" datatype="double" width="14" precision="E7" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>Source net counts in 5.0-8.0keV band (ML_CTS_P5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="s_MLctsP5" ucd="stat.error;phot.count;em.X-ray.medium" display="1" datatype="double" width="13" precision="8" unit="ct"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma combined counts error in 5.0-8.0keV band (ML_CTS_ERR_P5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_MLctsP5" ucd="stat.error" display="1" datatype="double" width="14" precision="E7" unit="ct"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma lower counts error in 5.0-8.0keV band (ML_CTS_LOWERR_P5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="E_MLctsP5" ucd="stat.error;stat.max" display="1" datatype="double" width="13" precision="8" unit="ct"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma upper counts error in 5.0-8.0keV band (ML_CTS_UPERR_P5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLRateP5" ucd="phot.count;em.X-ray" display="0" datatype="double" width="15" precision="E8" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>Source count rate in 5.0-8.0keV band (ML_RATE_P5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="s_MLRateP5" ucd="arith.rate;phot.count;em.X-ray.medium" display="0" datatype="double" width="14" precision="11" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma combined count rate error in 5.0-8.0keV band (ML_RATE_ERR_P5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_MLRateP5" ucd="stat.error" display="0" datatype="double" width="15" precision="E8" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma lower count rate error in 5.0-8.0keV band (ML_RATE_LOWERR_P5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="E_MLRateP5" ucd="stat.error;stat.max" display="0" datatype="double" width="14" precision="11" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma upper count rate error in 5.0-8.0keV band (ML_RATE_UPERR_P5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLFluxP5" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>Source flux in 5.0-8.0keV band (ML_FLUX_P5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="s_MLFluxP5" ucd="stat.error;phot.flux;em.X-ray.medium" display="0" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma combined flux error in 5.0-8.0keV band (ML_FLUX_ERR_P5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_MLFluxP5" ucd="stat.error" display="0" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma lower flux error in 5.0-8.0keV band (ML_FLUX_LOWERR_P5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="E_MLFluxP5" ucd="stat.error;stat.max" display="0" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma upper flux error in 5.0-8.0keV band (ML_FLUX_UPERR_P5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLBkgP5" ucd="instr.background" display="1" datatype="double" width="13" precision="9" unit="arcmin**-2"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>Background at the source position in 5.0-8.0keV band (ML_BKG_P5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLExpP5" ucd="time.duration;obs.exposure" display="1" datatype="double" width="13" precision="7" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>Vignetted exposure time at the source position in 5.0-8.0keV band (ML_EXP_P5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLEefP5" ucd="phys.energy" display="0" datatype="double" width="11" precision="8"><!-- ucd="PHYS_ENERGY_GENERAL" -->
+      <DESCRIPTION>Enclosed energy fraction in 5.0-8.0keV band (ML_EEF_P5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEctsP5" ucd="phot.count;em.X-ray" display="0" datatype="short" width="4" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>Total counts extracted within the aperture in 5.0-8.0keV band (APE_CTS_P5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEBkgP5" ucd="instr.background;em.X-ray.medium" display="1" datatype="double" width="17" precision="11" unit="ct"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>Background counts extracted within the aperture in 5.0-8.0keV band, excluding nearby sources using the source map (APE_BKG_P5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEExpP5" ucd="time.expo" display="1" datatype="double" width="13" precision="7" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>Exposure map value at the given position in the 5.0-8.0keV band (APE_EXP_P5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APERadP5" ucd="phys.angSize" display="0" datatype="double" width="10" precision="7" unit="pix"><!-- ucd="REDUCT_EXTR-RAD" -->
+      <DESCRIPTION>Extraction radius in pixels (4'') in the 5.0-8.0keV band (APE_RADIUS_P5)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEPoisP5" ucd="stat.fit.goodness" display="0" datatype="double" width="15" precision="E8"><!-- ucd="STAT_PROBABILITY" -->
+      <DESCRIPTION>? Poisson probability that the extracted counts (APE_CTS_P5) are a background fluctuation (APE_POIS_P5)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="DetLikeP6" ucd="stat.likelihood" display="0" datatype="double" width="15" precision="E8"><!-- ucd="STAT_LIKELIHOOD" -->
+      <DESCRIPTION>? Detection likelihood in 4.0-10.0keV band (DET_LIKE_P6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="MLctsP6" ucd="phot.count;em.X-ray" display="1" datatype="double" width="15" precision="E8" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>Source net counts in 4.0-10.0keV band (ML_CTS_P6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="s_MLctsP6" ucd="stat.error;phot.count;em.X-ray.medium" display="1" datatype="double" width="13" precision="8" unit="ct"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma combined counts error in 4.0-10.0keV band (ML_CTS_ERR_P6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_MLctsP6" ucd="stat.error" display="1" datatype="double" width="15" precision="E8" unit="ct"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma lower counts error in 4.0-10.0keV band (ML_CTS_LOWERR_P6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_MLctsP6" ucd="stat.error;stat.max" display="1" datatype="double" width="14" precision="8" unit="ct"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma upper counts error in 4.0-10.0keV band (ML_CTS_UPERR_P6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="MLRateP6" ucd="phot.count;em.X-ray" display="0" datatype="double" width="15" precision="E8" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>Source count rate in 4.0-10.0keV band (ML_RATE_P6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="s_MLRateP6" ucd="arith.rate;phot.count;em.X-ray.medium" display="0" datatype="double" width="14" precision="E7" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma combined count rate error in 4.0-10.0keV band (ML_RATE_ERR_P6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_MLRateP6" ucd="stat.error" display="0" datatype="double" width="15" precision="E8" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma lower count rate error in 4.0-10.0keV band (ML_RATE_LOWERR_P6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_MLRateP6" ucd="stat.error;stat.max" display="0" datatype="double" width="15" precision="11" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma upper count rate error in 4.0-10.0keV band (ML_RATE_UPERR_P6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="MLFluxP6" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>Source flux in 4.0-10.0keV band (ML_FLUX_P6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="s_MLFluxP6" ucd="stat.error;phot.flux;em.X-ray.medium" display="0" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma combined flux error in 4.0-10.0keV band (ML_FLUX_ERR_P6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="e_MLFluxP6" ucd="stat.error" display="0" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma lower flux error in 4.0-10.0keV band (ML_FLUX_LOWERR_P6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="E_MLFluxP6" ucd="stat.error;stat.max" display="0" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>? 1-sigma upper flux error in 4.0-10.0keV band (ML_FLUX_UPERR_P6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="MLBkgP6" ucd="instr.background" display="1" datatype="double" width="12" precision="8" unit="arcmin**-2"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>Background at the source position in 4.0-10.0keV band (ML_BKG_P6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLExpP6" ucd="time.duration;obs.exposure" display="1" datatype="double" width="13" precision="7" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>Vignetted exposure time at the source position in 4.0-10.0keV band (ML_EXP_P6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLEefP6" ucd="phys.energy" display="0" datatype="double" width="11" precision="8"><!-- ucd="PHYS_ENERGY_GENERAL" -->
+      <DESCRIPTION>Enclosed energy fraction in 4.0-10.0keV band (ML_EEF_P6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEctsP6" ucd="phot.count;em.X-ray" display="0" datatype="short" width="4" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>Total counts extracted within the aperture in 4.0-10.0keV band (APE_CTS_P6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEBkgP6" ucd="instr.background;em.X-ray.medium" display="1" datatype="double" width="17" precision="11" unit="ct"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>Background counts extracted within the aperture in 4.0-10.0keV band, excluding nearby sources using the source map (APE_BKG_P6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEExpP6" ucd="time.expo" display="1" datatype="double" width="13" precision="7" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>Exposure map value at the given position in the 4.0-10.0keV band (APE_EXP_P6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APERadP6" ucd="phys.angSize" display="0" datatype="double" width="10" precision="7" unit="pix"><!-- ucd="REDUCT_EXTR-RAD" -->
+      <DESCRIPTION>Extraction radius in pixels (4'') in the 4.0-10.0keV band (APE_RADIUS_P6)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEPoisP6" ucd="stat.fit.goodness" display="0" datatype="double" width="15" precision="E8"><!-- ucd="STAT_PROBABILITY" -->
+      <DESCRIPTION>? Poisson probability that the extracted counts (APE_CTS_P6) are a background fluctuation (APE_POIS_P6)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="DetLikeP7" ucd="stat.likelihood" display="0" datatype="double" width="15" precision="E8"><!-- ucd="STAT_LIKELIHOOD" -->
+      <DESCRIPTION>? Detection likelihood in 5.1-6.1keV band (DET_LIKE_P7)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="MLctsP7" ucd="phot.count;em.X-ray" display="1" datatype="double" width="16" precision="11" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>Source net counts in 5.1-6.1keV band (ML_CTS_P7)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="s_MLctsP7" ucd="stat.error;phot.count;em.X-ray.medium" display="1" datatype="double" width="12" precision="8" unit="ct"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma combined counts error in 5.1-6.1keV band (ML_CTS_ERR_P7)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_MLctsP7" ucd="stat.error" display="1" datatype="double" width="14" precision="11" unit="ct"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma lower counts error in 5.1-6.1keV band (ML_CTS_LOWERR_P7)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="E_MLctsP7" ucd="stat.error;stat.max" display="1" datatype="double" width="12" precision="8" unit="ct"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma upper counts error in 5.1-6.1keV band (ML_CTS_UPERR_P7)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLRateP7" ucd="phot.count;em.X-ray" display="0" datatype="double" width="15" precision="E8" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>Source count rate in 5.1-6.1keV band (ML_RATE_P7)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="s_MLRateP7" ucd="arith.rate;phot.count;em.X-ray.medium" display="0" datatype="double" width="14" precision="E7" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma combined count rate error in 5.1-6.1keV band (ML_RATE_ERR_P7)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_MLRateP7" ucd="stat.error" display="0" datatype="double" width="15" precision="E8" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma lower count rate error in 5.1-6.1keV band (ML_RATE_LOWERR_P7)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="E_MLRateP7" ucd="stat.error;stat.max" display="0" datatype="double" width="14" precision="E7" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma upper count rate error in 5.1-6.1keV band (ML_RATE_UPERR_P7)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLFluxP7" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>Source flux in 5.1-6.1keV band (ML_FLUX_P7)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="s_MLFluxP7" ucd="stat.error;phot.flux;em.X-ray.medium" display="0" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma combined flux error in 5.1-6.1keV band (ML_FLUX_ERR_P7)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_MLFluxP7" ucd="stat.error" display="0" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma lower flux error in 5.1-6.1keV band (ML_FLUX_LOWERR_P7)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="E_MLFluxP7" ucd="stat.error;stat.max" display="0" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma upper flux error in 5.1-6.1keV band (ML_FLUX_UPERR_P7)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLBkgP7" ucd="instr.background" display="1" datatype="double" width="13" precision="9" unit="arcmin**-2"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>Background at the source position in 5.1-6.1keV band (ML_BKG_P7)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLExpP7" ucd="time.duration;obs.exposure" display="1" datatype="double" width="13" precision="7" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>Vignetted exposure time at the source position in 5.1-6.1keV band (ML_EXP_P7)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLEefP7" ucd="phys.energy" display="0" datatype="double" width="11" precision="8"><!-- ucd="PHYS_ENERGY_GENERAL" -->
+      <DESCRIPTION>Enclosed energy fraction in 5.1-6.1keV band (ML_EEF_P7)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEctsP7" ucd="phot.count;em.X-ray" display="0" datatype="short" width="4" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>Total counts extracted within the aperture in 5.1-6.1keV band (APE_CTS_P7)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEBkgP7" ucd="instr.background;em.X-ray.medium" display="1" datatype="double" width="16" precision="11" unit="ct"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>Background counts extracted within the aperture in 5.1-6.1keV band, excluding nearby sources using the source map (APE_BKG_P7)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEExpP7" ucd="time.expo" display="1" datatype="double" width="13" precision="7" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>Exposure map value at the given position in the 5.1-6.1keV band (APE_EXP_P7)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APERadP7" ucd="phys.angSize" display="0" datatype="double" width="10" precision="7" unit="pix"><!-- ucd="REDUCT_EXTR-RAD" -->
+      <DESCRIPTION>Extraction radius in pixels (4'') in the 5.1-6.1keV band (APE_RADIUS_P7)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEPoisP7" ucd="stat.fit.goodness" display="0" datatype="double" width="15" precision="E8"><!-- ucd="STAT_PROBABILITY" -->
+      <DESCRIPTION>? Poisson probability that the extracted counts (APE_CTS_P7) are a background fluctuation (APE_POIS_P7)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="DetLikeP8" ucd="stat.likelihood" display="0" datatype="double" width="15" precision="E8"><!-- ucd="STAT_LIKELIHOOD" -->
+      <DESCRIPTION>? Detection likelihood in 6.2-7.1keV band (DET_LIKE_P8)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="MLctsP8" ucd="phot.count;em.X-ray" display="1" datatype="double" width="14" precision="E7" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>Source net counts in 6.2-7.1keV band (ML_CTS_P8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="s_MLctsP8" ucd="stat.error;phot.count;em.X-ray.medium" display="1" datatype="double" width="11" precision="8" unit="ct"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma combined counts error in 6.2-7.1keV band (ML_CTS_ERR_P8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_MLctsP8" ucd="stat.error" display="1" datatype="double" width="14" precision="E7" unit="ct"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma lower counts error in 6.2-7.1keV band (ML_CTS_LOWERR_P8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="E_MLctsP8" ucd="stat.error;stat.max" display="1" datatype="double" width="11" precision="8" unit="ct"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma upper counts error in 6.2-7.1keV band (ML_CTS_UPERR_P8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLRateP8" ucd="phot.count;em.X-ray" display="0" datatype="double" width="15" precision="E8" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>Source count rate in 6.2-7.1keV band (ML_RATE_P8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="s_MLRateP8" ucd="arith.rate;phot.count;em.X-ray.medium" display="0" datatype="double" width="14" precision="E7" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma combined count rate error in 6.2-7.1keV band (ML_RATE_ERR_P8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_MLRateP8" ucd="stat.error" display="0" datatype="double" width="15" precision="E8" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma lower count rate error in 6.2-7.1keV band (ML_RATE_LOWERR_P8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="E_MLRateP8" ucd="stat.error;stat.max" display="0" datatype="double" width="14" precision="E7" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma upper count rate error in 6.2-7.1keV band (ML_RATE_UPERR_P8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLFluxP8" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>Source flux in 6.2-7.1keV band (ML_FLUX_P8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="s_MLFluxP8" ucd="stat.error;phot.flux;em.X-ray.medium" display="0" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma combined flux error in 6.2-7.1keV band (ML_FLUX_ERR_P8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_MLFluxP8" ucd="stat.error" display="0" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma lower flux error in 6.2-7.1keV band (ML_FLUX_LOWERR_P8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="E_MLFluxP8" ucd="stat.error;stat.max" display="0" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma upper flux error in 6.2-7.1keV band (ML_FLUX_UPERR_P8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLBkgP8" ucd="instr.background" display="1" datatype="double" width="12" precision="9" unit="arcmin**-2"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>Background at the source position in 6.2-7.1keV band (ML_BKG_P8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLExpP8" ucd="time.duration;obs.exposure" display="1" datatype="double" width="13" precision="7" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>Vignetted exposure time at the source position in 6.2-7.1keV band (ML_EXP_P8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLEefP8" ucd="phys.energy" display="0" datatype="double" width="11" precision="8"><!-- ucd="PHYS_ENERGY_GENERAL" -->
+      <DESCRIPTION>Enclosed energy fraction in 6.2-7.1keV band (ML_EEF_P8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEctsP8" ucd="phot.count;em.X-ray" display="0" datatype="short" width="3" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>Total counts extracted within the aperture in 6.2-7.1keV band (APE_CTS_P8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEBkgP8" ucd="instr.background;em.X-ray.medium" display="1" datatype="double" width="16" precision="11" unit="ct"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>Background counts extracted within the aperture in 6.2-7.1keV band, excluding nearby sources using the source map (APE_BKG_P8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEExpP8" ucd="time.expo" display="1" datatype="double" width="13" precision="7" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>Exposure map value at the given position in the 6.2-7.1keV band (APE_EXP_P8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APERadP8" ucd="phys.angSize" display="0" datatype="double" width="10" precision="7" unit="pix"><!-- ucd="REDUCT_EXTR-RAD" -->
+      <DESCRIPTION>Extraction radius in pixels (4'') in the 6.2-7.1keV band (APE_RADIUS_P8)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEPoisP8" ucd="stat.fit.goodness" display="0" datatype="double" width="15" precision="E8"><!-- ucd="STAT_PROBABILITY" -->
+      <DESCRIPTION>? Poisson probability that the extracted counts (APE_CTS_P8) are a background fluctuation (APE_POIS_P8)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="DetLikeP9" ucd="stat.likelihood" display="0" datatype="double" width="15" precision="E8"><!-- ucd="STAT_LIKELIHOOD" -->
+      <DESCRIPTION>? Detection likelihood in 7.2-8.2keV band (DET_LIKE_P9)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="MLctsP9" ucd="phot.count;em.X-ray" display="1" datatype="double" width="14" precision="E7" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>Source net counts in 7.2-8.2keV band (ML_CTS_P9)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="s_MLctsP9" ucd="stat.error;phot.count;em.X-ray.medium" display="1" datatype="double" width="11" precision="8" unit="ct"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma combined counts error in 7.2-8.2keV band (ML_CTS_ERR_P9)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_MLctsP9" ucd="stat.error" display="1" datatype="double" width="14" precision="E7" unit="ct"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma lower counts error in 7.2-8.2keV band (ML_CTS_LOWERR_P9)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="E_MLctsP9" ucd="stat.error;stat.max" display="1" datatype="double" width="11" precision="8" unit="ct"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma upper counts error in 7.2-8.2keV band (ML_CTS_UPERR_P9)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLRateP9" ucd="phot.count;em.X-ray" display="0" datatype="double" width="15" precision="E8" unit="ct/s"><!-- ucd="PHOT_COUNT-RATE_X" -->
+      <DESCRIPTION>Source count rate in 7.2-8.2keV band (ML_RATE_P9)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="s_MLRateP9" ucd="arith.rate;phot.count;em.X-ray.medium" display="0" datatype="double" width="14" precision="E7" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma combined count rate error in 7.2-8.2keV band (ML_RATE_ERR_P9)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_MLRateP9" ucd="stat.error" display="0" datatype="double" width="15" precision="E8" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma lower count rate error in 7.2-8.2keV band (ML_RATE_LOWERR_P9)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="E_MLRateP9" ucd="stat.error;stat.max" display="0" datatype="double" width="14" precision="E7" unit="ct/s"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma upper count rate error in 7.2-8.2keV band (ML_RATE_UPERR_P9)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLFluxP9" ucd="phot.flux;em.X-ray" display="1" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="PHOT_FLUX_X" -->
+      <DESCRIPTION>Source flux in 7.2-8.2keV band (ML_FLUX_P9)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="s_MLFluxP9" ucd="stat.error;phot.flux;em.X-ray.medium" display="0" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma combined flux error in 7.2-8.2keV band (ML_FLUX_ERR_P9)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="e_MLFluxP9" ucd="stat.error" display="0" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma lower flux error in 7.2-8.2keV band (ML_FLUX_LOWERR_P9)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="E_MLFluxP9" ucd="stat.error;stat.max" display="0" datatype="double" width="15" precision="E8" unit="mW.m**-2"><!-- ucd="ERROR" -->
+      <DESCRIPTION>1-sigma upper flux error in 7.2-8.2keV band (ML_FLUX_UPERR_P9)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLBkgP9" ucd="instr.background" display="1" datatype="double" width="13" precision="10" unit="arcmin**-2"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>Background at the source position in 7.2-8.2keV band (ML_BKG_P9)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLExpP9" ucd="time.duration;obs.exposure" display="1" datatype="double" width="13" precision="7" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>Vignetted exposure time at the source position in 7.2-8.2keV band (ML_EXP_P9)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="MLEefP9" ucd="phys.energy" display="0" datatype="double" width="11" precision="8"><!-- ucd="PHYS_ENERGY_GENERAL" -->
+      <DESCRIPTION>Enclosed energy fraction in 7.2-8.2keV band (ML_EEF_P9)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEctsP9" ucd="phot.count;em.X-ray" display="0" datatype="short" width="3" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>Total counts extracted within the aperture in 7.2-8.2keV band (APE_CTS_P9)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEBkgP9" ucd="instr.background;em.X-ray.medium" display="1" datatype="double" width="16" precision="11" unit="ct"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>Background counts extracted within the aperture in 7.2-8.2keV band, excluding nearby sources using the source map (APE_BKG_P9)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEExpP9" ucd="time.expo" display="1" datatype="double" width="13" precision="7" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>Exposure map value at the given position in the 7.2-8.2keV band (APE_EXP_P9)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APERadP9" ucd="phys.angSize" display="0" datatype="double" width="10" precision="7" unit="pix"><!-- ucd="REDUCT_EXTR-RAD" -->
+      <DESCRIPTION>Extraction radius in pixels (4'') in the 7.2-8.2keV band (APE_RADIUS_P9)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEPoisP9" ucd="stat.fit.goodness" display="0" datatype="double" width="15" precision="E8"><!-- ucd="STAT_PROBABILITY" -->
+      <DESCRIPTION>? Poisson probability that the extracted counts (APE_CTS_P9) are a background fluctuation (APE_POIS_P9)</DESCRIPTION>
+      <VALUES null="NaN" />
+    </FIELD>
+    <FIELD name="APEctsS" ucd="phot.count;em.X-ray" display="0" datatype="int" width="6" unit="ct"><!-- ucd="PHOT_COUNTS_X" -->
+      <DESCRIPTION>Total counts extracted within the aperture in 0.5-2.0keV band (APE_CTS_S)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEBkgS" ucd="instr.background;em.X-ray.soft" display="1" datatype="double" width="14" precision="9" unit="ct"><!-- ucd="INST_BACKGROUND" -->
+      <DESCRIPTION>Background counts extracted within the aperture in 0.5-2.0keV band, excluding nearby sources using the source map (APE_BKG_S)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEExpS" ucd="time.expo" display="1" datatype="double" width="13" precision="7" unit="s"><!-- ucd="TIME_EXPTIME" -->
+      <DESCRIPTION>Exposure map value at the given position in the 0.5-2.0keV band (APE_EXP_S)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="APEPoisS" ucd="stat.fit.goodness" display="0" datatype="double" width="23" precision="E16"><!-- ucd="STAT_PROBABILITY" -->
+      <DESCRIPTION>Poisson probability that the extracted counts (APE_CTS_S) are a background fluctuation (APE_POIS_S)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="FSPSNR" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Source may lie within an overdense region near a supernova remnant (FLAG_SP_SNR)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="FSPBPS" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Source may lie within an overdense region near a bright point source (FLAG_SP_BPS)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="FSPSCL" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Source may lie within an overdense region near a stellar cluster (FLAG_SP_SCL)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="FSPLGA" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Source may lie within an overdense region near a local large galaxy (FLAG_SP_LGA)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="FSPGCCons" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Source may lie within an overdense region near a galaxy cluster (FLAG_SP_GC_CONS)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="FNORADEerr" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Source contained no RADEC_ERR in the pre-processed version of the catalogue (FLAG_NO_RADEC_ERR)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="FNOEXTerr" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Source contained no EXT_ERR in the pre-processed version of the catalogue (FLAG_NO_EXT_ERR)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="FNOCTSerr" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Source contained no CTS_ERR in the pre-processed version of the catalogue (FLAG_NO_CTS_ERR)</DESCRIPTION>
+    </FIELD>
+    <FIELD name="FOPT" ucd="meta.code" display="0" datatype="unsignedByte" width="1"><!-- ucd="CODE_MISC" -->
+      <DESCRIPTION>Source matched within 15'' with a bright optical star, likely contaminated by optical loading (FLAG_OPT)</DESCRIPTION>
+    </FIELD>
+  </TABLE>
+<INFO name="matches" value="2">matching records</INFO>
+</RESOURCE>
+</VOTABLE>

@@ -1,0 +1,19 @@
+{
+  "catalog": "nvss",
+  "target": "named_casa",
+  "search": {
+    "name": "Cas A",
+    "sesame": "casa",
+    "radius_arcsec": 20.0
+  },
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://heasarc.gsfc.nasa.gov/xamin/vo/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+2001+name%2C+ra%2C+dec%2C+flux_20_cm%2C+flux_20_cm_error%2C+ra_error%2C+dec_error%2C+major_axis%2C+minor_axis%2C+position_angle%2C+pol_flux%2C+DISTANCE%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+POINT%28%27ICRS%27%2C+350.858400000%2C+58.811300000%29%29+AS+match_dist+FROM+nvss+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+350.858400000%2C+58.811300000%2C+0.0239305556%29%29+ORDER+BY+match_dist+ASC",
+      "status_code": 200,
+      "content_type": "text/xml",
+      "match": []
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<VOTABLE xmlns="http://www.ivoa.net/xml/VOTable/v1.3" xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.4">
+ <RESOURCE type="results">
+  <INFO name="QUERY_STATUS" value="OK">No errors detected in query preprocessing</INFO>
+  <TABLE>
+   <DESCRIPTION>Query result for:&#xA;SELECT TOP 201 name, ra, dec, positional_error, count_rate, count_rate_error, hardness_ratio_1, hardness_ratio_2, exposure, source_extent, detect_likelihood, DISTANCE(POINT(&apos;ICRS&apos;, ra, dec), POINT(&apos;ICRS&apos;, 187.277915400, 2.052388300)) AS match_dist FROM rassbsc WHERE 1 = CONTAINS(POINT(&apos;ICRS&apos;, ra, dec), CIRCLE(&apos;ICRS&apos;, 187.277915400, 2.052388300, 0.0027777778)) ORDER BY match_dist ASC</DESCRIPTION>
+   <FIELD datatype="char" arraysize="*" ucd="meta.id;meta.main" name="name">
+    <DESCRIPTION>Source Name</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="deg" datatype="double" ucd="pos.eq.ra;meta.main" precision="F5" name="ra">
+    <DESCRIPTION>Right Ascension J2000 coordinates</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="deg" datatype="double" ucd="pos.eq.dec;meta.main" precision="F5" name="dec">
+    <DESCRIPTION>Declination J2000 coordinates</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="arcsec" datatype="short" ucd="stat.error;pos" name="positional_error" width="3">
+    <DESCRIPTION>Total Positional Error</DESCRIPTION>
+    <VALUES null="-32768"/>
+   </FIELD>
+   <FIELD unit="ct/s" datatype="double" ucd="phot.count;em.X-ray" precision="F2" name="count_rate" width="6">
+    <DESCRIPTION>Source Count Rate</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="ct/s" datatype="double" ucd="stat.error;phot.count;em.X-ray" precision="F2" name="count_rate_error" width="5">
+    <DESCRIPTION>Source Count Rate Error</DESCRIPTION>
+   </FIELD>
+   <FIELD datatype="double" ucd="phot.count;arith.ratio;em.X-ray" precision="F2" name="hardness_ratio_1" width="5">
+    <DESCRIPTION>Hardness Ratio 1</DESCRIPTION>
+   </FIELD>
+   <FIELD datatype="double" ucd="phot.count;arith.ratio;em.X-ray" precision="F2" name="hardness_ratio_2" width="5">
+    <DESCRIPTION>Hardness Ratio 2</DESCRIPTION>
+   </FIELD>
+   <FIELD unit="s" datatype="int" ucd="time.duration;obs.exposure" name="exposure" width="5">
+    <DESCRIPTION>Exposure (seconds)</DESCRIPTION>
+    <VALUES null="-2147483648"/>
+   </FIELD>
+   <FIELD unit="arcsec" datatype="int" ucd="phys.angSize;src" name="source_extent">
+    <DESCRIPTION>Source Extent</DESCRIPTION>
+    <VALUES null="-2147483648"/>
+   </FIELD>
+   <FIELD datatype="int" ucd="stat.likelihood" name="detect_likelihood">
+    <DESCRIPTION>Likelihood of Detection Algorithm</DESCRIPTION>
+    <VALUES null="-2147483648"/>
+   </FIELD>
+   <FIELD datatype="double" name="match_dist"/>
+   <DATA>
+    <BINARY>
+     <STREAM encoding="base64">
+AAAAFTFSWFMgSjEyMjkwNi41KzAyMDMxMUBnaN3W4EwGQABsqrilzlsAB0AcLQ5W
+BBiTP9j5CWu5jH6/pHrhR64Uez/OuFHrhR64AAABbgAAAA0AAAQGP1GOU6Gh
+UuM=
+     </STREAM>
+    </BINARY>
+   </DATA>
+  </TABLE>
+ </RESOURCE>
+</VOTABLE>

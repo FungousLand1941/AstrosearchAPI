@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sesame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="https://vizier.cds.unistra.fr/xml/sesame_4x.xsd">
+<Target option="SNV">
+  <name>GJ 860 A</name>
+  <!-- Q8487642 #1 -->
+  <Resolver name="Sc=Simbad (CDS, via client/server)"><!--delay: 0ms [0] -->
+    <INFO>from cache</INFO>
+    <oid>5610039</oid>
+    <otype>PM*</otype>
+    <jpos>22:27:59.55 +57:41:42.0</jpos>
+    <jradeg>336.99815645</jradeg>
+    <jdedeg>57.69502238</jdedeg>
+    <refPos>2018yCat.1345....0G</refPos>
+    <errRAmas>0.1817</errRAmas><errDEmas>0.1329</errDEmas>
+    <pm>
+      <v>758.874</v><e>0.640</e><q>A</q><r>2018yCat.1345....0G</r>
+      <pa>252.87</pa>
+      <pmRA>-725.227</pmRA><epmRA>0.537</epmRA>
+      <pmDE>-223.461</pmDE><epmDE>0.348</epmDE>
+    </pm>
+    <Vel><v>-24.0</v><e>5</e><q>E</q><r>1953GCRV..C......0W</r></Vel>
+    <plx><v>249.3926</v><e>0.1653</e><q>A</q><r>2018yCat.1345....0G</r></plx>
+    <spType>M3V</spType><spNum>0.00027600.0030.0000000000000000</spNum>
+    <oname>HD 239960A</oname>
+    <nrefs>49</nrefs>
+  </Resolver>
+</Target>
+</Sesame>
+<!--- ====Done (2026-Sep-29,06:21:31z)==== -->

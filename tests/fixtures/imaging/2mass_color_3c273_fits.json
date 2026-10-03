@@ -1,0 +1,14 @@
+{
+  "scenario": "2mass_color_3c273_fits",
+  "recorded_outcome": "32x32 coverage=1.0 degraded=None",
+  "exchanges": [
+    {
+      "method": "GET",
+      "url": "https://alasky.cds.unistra.fr/hips-image-services/hips2fits?hips=CDS%2FP%2F2MASS%2Fcolor&width=32&height=32&fov=0.03333333333333333&projection=TAN&ra=187.2779154&dec=2.0523883&format=fits",
+      "request_body": "",
+      "status_code": 200,
+      "content_type": "application/fits",
+      "match": []
+    }
+  ]
+}

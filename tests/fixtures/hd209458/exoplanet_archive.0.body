@@ -1,0 +1,19 @@
+[
+{"pl_name": "HD 209458 b",
+"hostname": "HD 209458",
+"ra": 330.7950219,
+"dec": 18.8842419,
+"sy_dist": 48.30160000,
+"sy_vmag": 7.6500000,
+"sy_kmag": 6.3080000,
+"sy_gaiamag": 7.5086600,
+"sy_pmra": 29.5787000,
+"sy_pmdec": -17.8904000,
+"pl_orbper": 3.52474859000,
+"pl_rade": 15.58051000,
+"pl_bmasse": 232.01590000,
+"discoverymethod": "Radial Velocity",
+"disc_year": 1999,
+"gaia_dr3_id": "Gaia DR3 1779546757669063552",
+"match_dist": 7.81216431002983e-05}
+]

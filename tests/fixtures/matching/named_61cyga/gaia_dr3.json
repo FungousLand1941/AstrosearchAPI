@@ -1,0 +1,19 @@
+{
+  "catalog": "gaia_dr3",
+  "target": "named_61cyga",
+  "search": {
+    "name": "61 Cyg A",
+    "sesame": "61cyga",
+    "radius_arcsec": 10.0
+  },
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://gea.esac.esa.int/tap-server/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+2001+source_id%2C+ra%2C+dec%2C+ra_error%2C+dec_error%2C+ra_dec_corr%2C+ref_epoch%2C+parallax%2C+parallax_error%2C+pmra%2C+pmdec%2C+phot_g_mean_mag%2C+phot_bp_mean_mag%2C+phot_rp_mean_mag%2C+ruwe%2C+astrometric_params_solved%2C+DISTANCE%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+POINT%28%27ICRS%27%2C+316.736390312%2C+38.756501393%29%29+AS+match_dist+FROM+gaiadr3.gaia_source+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+ra%2C+dec%29%2C+CIRCLE%28%27ICRS%27%2C+316.736390312%2C+38.756501393%2C+0.0147380093%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json",
+      "match": []
+    }
+  ]
+}

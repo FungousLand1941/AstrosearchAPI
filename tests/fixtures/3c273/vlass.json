@@ -1,0 +1,19 @@
+{
+  "catalog": "vlass",
+  "target": "3c273",
+  "ra": 187.2779154,
+  "dec": 2.0523883,
+  "radius_arcsec": 10.0,
+  "exchanges": [
+    {
+      "method": "POST",
+      "url": "https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync",
+      "request_body": "REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+201+Name%2C+RAJ2000%2C+DEJ2000%2C+e_RAJ2000%2C+e_DEJ2000%2C+Flux%2C+e_Flux%2C+Fpk%2C+Type%2C+Obs%2C+Flag%2C+DISTANCE%28POINT%28%27ICRS%27%2C+RAJ2000%2C+DEJ2000%29%2C+POINT%28%27ICRS%27%2C+187.277915400%2C+2.052388300%29%29+AS+match_dist+FROM+%22J%2FApJ%2F914%2F42%2Ftable5%22+WHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C+RAJ2000%2C+DEJ2000%29%2C+CIRCLE%28%27ICRS%27%2C+187.277915400%2C+2.052388300%2C+0.0027777778%29%29+ORDER+BY+match_dist+ASC&FORMAT=json",
+      "status_code": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "match": [
+        "FROM \"J/ApJ/914/42/table5\" "
+      ]
+    }
+  ]
+}
