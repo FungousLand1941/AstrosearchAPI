@@ -60,6 +60,7 @@ COMMAND_MODULES: dict[str, str] = {command: module for module, commands in FEATU
 DISTRIBUTION_MODULES = (
     "models", "providers", "crossmatch", "astrometry", "streaming", "batch", "skycache", "vizier", "sed",
     "timedomain", "imaging", "ai", "provenance", "vo_server", "alerts", "datasets", "api", "cli", "main",
+    "astronomy", "astronomy_pipeline", "representations", "signal_pipeline", "tess_adapter",
 )
 
 
