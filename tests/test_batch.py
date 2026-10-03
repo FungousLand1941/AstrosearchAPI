@@ -128,7 +128,7 @@ def test_parse_targets_limit():
 
 
 def test_read_targets_csv_comments_bom_blanks():
-    text = "ï»¿# my targets\nid,ra,dec,epoch,pmra,pmdec\nA,187.2779154,2.0523883,,,\nB,279.23473479,38.78368896,2000,200.94,286.23\n"
+    text = "﻿# my targets\nid,ra,dec,epoch,pmra,pmdec\nA,187.2779154,2.0523883,,,\nB,279.23473479,38.78368896,2000,200.94,286.23\n"
     targets = read_targets_csv(text.encode("utf-8"))
     assert [t.id for t in targets] == ["A", "B"]
     assert targets[0].target.epoch is None and targets[0].target.proper_motion is None

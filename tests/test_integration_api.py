@@ -35,6 +35,8 @@ SESAME_3C273 = (FIXTURES / "sesame" / "3c273.xml").read_text(encoding="utf-8")
 
 # (method, path) of every route each feature module contributes.
 MODULE_ROUTES: dict[str, set[tuple[str, str]]] = {
+    "astronomy": {("POST", "/api/v1/summaries/system"), ("POST", "/api/v1/summaries/object"),
+                  ("POST", "/api/v1/signals/cross-reference")},
     "core": {("GET", "/api/v1/health"), ("GET", "/api/v1/limits"), ("GET", "/api/v1/catalogs"), ("GET", "/api/v1/catalogs/{catalog_name}"),
              ("POST", "/api/v1/search"), ("POST", "/api/v1/search/batch"), ("POST", "/api/v1/datasets/create"),
              ("GET", "/api/v1/datasets"), ("GET", "/api/v1/datasets/{dataset_name}"),
